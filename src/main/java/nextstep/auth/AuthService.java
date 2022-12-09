@@ -21,10 +21,10 @@ public class AuthService {
 
     /**
      * This method validate that given login information matches program's database.
-     * If validation is successfully done, response with token would be returned.
+     * If validation is successfully done, token would be returned.
      *
-     * @throws AuthorizationException when validation failed.
      * @param tokenRequest which contains login information.
+     * @throws AuthorizationException when validation failed.
      * @return tokenResponse which contains token.
      */
     public TokenResponse createToken(TokenRequest tokenRequest) {
@@ -33,6 +33,7 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
+        // 기본키인 id를 principal로 하여 accessToken을 생성.
         String accessToken = jwtTokenProvider.createToken(member.getId().toString());
         return new TokenResponse(accessToken);
     }

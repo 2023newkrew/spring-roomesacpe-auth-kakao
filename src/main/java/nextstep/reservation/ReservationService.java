@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
@@ -16,15 +16,18 @@ public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
+    private final MemberDao memberDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao, MemberDao memberDao) {
         this.reservationDao = reservationDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
+        this.memberDao = memberDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, String name) {
+    public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+        String memberName = memberDao.findById(memberId).getUsername();
         if (schedule == null) {
             throw new NullPointerException();
         }
@@ -36,7 +39,7 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                name
+                memberName
         );
 
         return reservationDao.save(newReservation);
@@ -51,12 +54,13 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, String userName) {
+    public void deleteById(Long id, Long memberId) {
         Reservation reservation = reservationDao.findById(id);
+        String memberName = memberDao.findById(memberId).getUsername();
         if (reservation == null) {
             throw new NullPointerException();
         }
-        if (!reservation.getName().equals(userName)){
+        if (!reservation.getName().equals(memberName)){
             throw new AuthorizationException();
         }
         reservationDao.deleteById(id);
