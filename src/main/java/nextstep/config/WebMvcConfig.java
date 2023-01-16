@@ -1,8 +1,8 @@
 package nextstep.config;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.member.AuthArgumentResolver;
-import nextstep.member.AuthInterceptor;
+import nextstep.auth.AuthArgumentResolver;
+import nextstep.auth.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

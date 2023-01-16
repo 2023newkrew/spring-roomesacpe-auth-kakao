@@ -1,7 +1,6 @@
-package nextstep.member;
+package nextstep.auth;
 
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
+import nextstep.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/login")
 public class LoginController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public LoginController(MemberService memberService) {
         this.memberService = memberService;

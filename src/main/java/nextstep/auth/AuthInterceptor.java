@@ -1,6 +1,5 @@
-package nextstep.member;
+package nextstep.auth;
 
-import nextstep.auth.JwtTokenProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,7 +15,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = extractToken(request);
 
         if (!jwtTokenProvider.validateToken(token)) {

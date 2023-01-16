@@ -1,7 +1,6 @@
-package nextstep.member;
+package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.auth.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

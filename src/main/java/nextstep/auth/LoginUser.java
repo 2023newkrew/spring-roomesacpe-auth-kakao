@@ -1,8 +1,8 @@
-package nextstep.member;
+package nextstep.auth;
 
 public class LoginUser {
 
-    private Long id;
+    private final Long id;
 
     public LoginUser(Long id) {
         this.id = id;
