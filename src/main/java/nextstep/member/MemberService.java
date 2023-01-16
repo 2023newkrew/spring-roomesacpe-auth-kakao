@@ -1,12 +1,13 @@
 package nextstep.member;
 
+import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -21,6 +22,6 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id).orElseThrow( () -> new IllegalArgumentException("존재하지 않는 아이디 입니다."));
+        return memberDao.findById(id).orElseThrow( () -> new NotExistEntityException("존재하지 않는 아이디 입니다."));
     }
 }
