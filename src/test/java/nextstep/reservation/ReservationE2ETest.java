@@ -3,7 +3,10 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberResponse;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ReservationE2ETest {
+    public static final String AUTHORIZATION = "Authorization";
+    public static String BEARER_TYPE = "Bearer";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
@@ -29,6 +37,7 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
@@ -56,22 +65,33 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
+        MemberRequest memberRequestBody = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(memberRequestBody)
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+
+        accessToken = tokenResponse.getAccessToken();
 
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                USERNAME
         );
     }
 
@@ -80,6 +100,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -126,11 +147,66 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("다른 사람의 예약을 삭제한다")
+    @Test
+    void delete_other_person() {
+        var reservation = createReservation();
+        String OTHER_USER_NAME = "OtherUser";
+
+        MemberRequest memberRequestBody = new MemberRequest(OTHER_USER_NAME, PASSWORD, "name", "010-1234-5678");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequestBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        TokenRequest body = new TokenRequest(OTHER_USER_NAME, PASSWORD);
+
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+
+        String otherPersonAccessToken = tokenResponse.getAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, BEARER_TYPE + otherPersonAccessToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    @DisplayName("로그인 없이 예약을 삭제한다")
+    @Test
+    void delete_without_login() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -179,6 +255,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
