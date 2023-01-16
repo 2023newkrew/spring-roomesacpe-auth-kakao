@@ -1,6 +1,7 @@
 package nextstep.member;
 
-import org.springframework.stereotype.Service;
+import nextstep.auth.JwtTokenProvider;
+import org.springframework.stereotype.Service;;
 
 import java.util.Optional;
 
@@ -18,5 +19,19 @@ public class MemberService {
 
     public Optional<Member> findById(Long id) {
         return memberDao.findById(id);
+    }
+
+    public Optional<Member> findMemberByToken(String token) {
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        if(!jwtTokenProvider.validateToken(token)){
+            // TODO: throw exception. Token invalid
+            return Optional.empty();
+        }
+        String payload = jwtTokenProvider.getPrincipal(token);
+        return findMember(payload);
+    }
+
+    private Optional<Member> findMember(String principal) {
+        return memberDao.findByUsername(principal);
     }
 }
