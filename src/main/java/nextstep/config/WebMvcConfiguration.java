@@ -13,11 +13,17 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final LoginArgumentResolver loginArgumentResolver;
     private final LoginInterceptor loginInterceptor;
+    private final LoginInfoInterceptor loginInfoInterceptor;
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
-                .addPathPatterns("/reservations");
+                .addPathPatterns("/reservations/**");
+
+        registry.addInterceptor(loginInfoInterceptor)
+                .excludePathPatterns("/reservations/**");
+
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

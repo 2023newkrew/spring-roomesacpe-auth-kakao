@@ -5,9 +5,14 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.support.exception.NoSuchMemberException;
+import nextstep.support.exception.NoSuchTokenException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
+
+import static org.springframework.util.StringUtils.hasText;
 
 @Component
 public class JwtTokenProvider {
@@ -28,7 +33,11 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        String subject = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        if (!hasText(subject)) {
+            throw new NoSuchMemberException();
+        }
+        return subject;
     }
 
     public boolean validateToken(String token) {

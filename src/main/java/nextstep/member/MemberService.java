@@ -2,6 +2,7 @@ package nextstep.member;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.infrastructure.JwtTokenProvider;
+import nextstep.support.exception.NoSuchMemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,8 +25,6 @@ public class MemberService {
     }
 
     public Member findByToken(String token){
-        return findByUsername(
-                jwtTokenProvider.getPrincipal(token.substring(BEARER.length()))
-        );
+        return findById(Long.valueOf(jwtTokenProvider.getPrincipal(token)));
     }
 }

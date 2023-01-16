@@ -3,6 +3,7 @@ package nextstep.reservation;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
+import nextstep.support.exception.AuthorizationException;
 import nextstep.support.exception.DuplicateReservationException;
 import nextstep.support.exception.NoSuchReservationException;
 import nextstep.support.exception.NotReservationOwnerException;
@@ -25,7 +26,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, Member member) {
+    public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -39,7 +40,7 @@ public class ReservationService {
         Reservation newReservation = new Reservation(
                 schedule,
                 reservationRequest.getName(),
-                member.getId()
+                memberId
         );
 
         return reservationDao.save(newReservation);
@@ -54,14 +55,14 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, Member member) {
+    public void deleteById(Long id, Long memberId) {
         Reservation reservation = reservationDao.findById(id);
 
         if (reservation == null) {
             throw new NoSuchReservationException();
         }
 
-        if(!Objects.equals(reservation.getMemberId(), member.getId())) {
+        if(!Objects.equals(reservation.getMemberId(), memberId)) {
             throw new NotReservationOwnerException();
         }
 

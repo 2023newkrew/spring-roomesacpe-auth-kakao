@@ -19,9 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     private static final String BEARER = "Bearer ";
-    private static final String AUTHORIZATION = "authorization";
-
-    private final MemberDao memberDao;
+    private static final String ACCESS_TOKEN = "accessToken";
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -32,17 +30,9 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = request.getHeader(AUTHORIZATION);
-        Member member = memberDao.findByUsername(jwtTokenProvider.getPrincipal(token.substring(BEARER.length())));
+        String token = String.valueOf(request.getAttribute(ACCESS_TOKEN));
 
-        if (isAuthenticatedUser(request, member)) {
-            throw new AuthorizationException();
-        }
-
-        return member;
+        return Long.valueOf(jwtTokenProvider.getPrincipal(token));
     }
 
-    private boolean isAuthenticatedUser(HttpServletRequest request, Member member) {
-        return request.getHeader(AUTHORIZATION).isBlank() || ObjectUtils.isEmpty(member);
-    }
 }
