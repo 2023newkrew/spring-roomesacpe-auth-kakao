@@ -1,7 +1,5 @@
 package nextstep.auth;
 
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
 import nextstep.support.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
