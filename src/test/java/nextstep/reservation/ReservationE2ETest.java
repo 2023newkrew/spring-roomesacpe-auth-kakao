@@ -129,6 +129,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
