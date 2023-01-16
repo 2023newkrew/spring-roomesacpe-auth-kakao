@@ -1,7 +1,5 @@
 package nextstep.member;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 public class Member {
     private Long id;
     private String username;
@@ -44,7 +42,4 @@ public class Member {
         return phone;
     }
 
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
-    }
 }

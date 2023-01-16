@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.util.Optional;
 
+import static nextstep.member.MemberJdbcSql.*;
+
 @Component
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
@@ -26,11 +28,10 @@ public class MemberDao {
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(INSERT_INTO_STATEMENT, new String[]{"id"});
             ps.setString(1, member.getUsername());
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
@@ -42,18 +43,11 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-   public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.query(sql, rowMapper, id).stream().findAny();
-    }
-
-    public Optional<Member> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.query(sql, rowMapper, username).stream().findAny();
+    public Optional<Member> findById(Long id) {
+        return jdbcTemplate.query(SELECT_BY_ID_STATEMENT, rowMapper, id).stream().findAny();
     }
 
     public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ? AND password = ?;";
-        return jdbcTemplate.query(sql, rowMapper, username, password).stream().findAny();
+        return jdbcTemplate.query(SELECT_BY_USERNAME_AND_PASSWORD_STATEMENT, rowMapper, username, password).stream().findAny();
     }
 }

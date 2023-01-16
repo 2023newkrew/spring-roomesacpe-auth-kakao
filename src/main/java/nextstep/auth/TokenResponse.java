@@ -3,7 +3,7 @@ package nextstep.auth;
 public class TokenResponse {
     public String accessToken;
 
-    public TokenResponse() {
+    protected TokenResponse() {
     }
 
     public TokenResponse(String accessToken) {

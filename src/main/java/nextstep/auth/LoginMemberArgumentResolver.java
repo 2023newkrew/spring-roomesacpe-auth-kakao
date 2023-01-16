@@ -29,8 +29,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         try {
             Long id = authService.decodeTokenByRequest(request);
-            System.out.println(id);
-
             return LoginMember.of(memberService.findById(id));
         } catch (Exception e){
             return null;
