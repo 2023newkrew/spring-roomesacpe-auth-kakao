@@ -1,8 +1,8 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.member.Member;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberResponse;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,32 +54,33 @@ public class AuthE2ETest {
     @DisplayName("토큰으로 멤버를 조회한다")
     @Test
     void findMemberByToken() {
+        // given
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var response = RestAssured
+        String token = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract();
+                .extract().as(TokenResponse.class).getAccessToken();
 
-        String token = response.as(TokenResponse.class).getAccessToken();
-
-        Member member =  RestAssured
+        // when
+        MemberResponse response =  RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(Member.class);
+                .extract().as(MemberResponse.class);
 
-        assertThat(member.getId()).isNotNull();
-        assertThat(member.getUsername()).isEqualTo(USERNAME);
-        assertThat(member.getPassword()).isEqualTo(PASSWORD);
-        assertThat(member.getName()).isEqualTo(NAME);
-        assertThat(member.getPhone()).isEqualTo(PHONE);
+        // then
+        assertThat(response.getId()).isNotNull();
+        assertThat(response.getUsername()).isEqualTo(USERNAME);
+        assertThat(response.getPassword()).isEqualTo(PASSWORD);
+        assertThat(response.getName()).isEqualTo(NAME);
+        assertThat(response.getPhone()).isEqualTo(PHONE);
     }
 
     @DisplayName("테마 목록을 조회한다")
