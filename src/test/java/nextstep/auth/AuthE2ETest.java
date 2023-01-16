@@ -20,18 +20,6 @@ public class AuthE2ETest {
     public static final String PASSWORD = "password";
     private Long memberId;
 
-    @BeforeEach
-    void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
-
     @DisplayName("토큰을 생성한다")
     @Test
     public void create() {

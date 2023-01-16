@@ -56,19 +56,6 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
         request = new ReservationRequest(
                 scheduleId,
                 "브라운"
