@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.auth.AuthenticationPrincipal;
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest httpServletRequest) {
-        String token = AuthorizationExtractor.extract(httpServletRequest);
-        Member member = memberService.findByUsername(tokenProvider.getPrincipal(token));
+    public ResponseEntity me(@AuthenticationPrincipal String username) {
+        Member member = memberService.findByUsername(username);
         return ResponseEntity.ok(member);
     }
 }

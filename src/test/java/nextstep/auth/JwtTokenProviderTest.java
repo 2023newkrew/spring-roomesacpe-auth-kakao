@@ -2,10 +2,12 @@ package nextstep.auth;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
+@Sql("/truncate.sql")
 class JwtTokenProviderTest {
 
     @Test
