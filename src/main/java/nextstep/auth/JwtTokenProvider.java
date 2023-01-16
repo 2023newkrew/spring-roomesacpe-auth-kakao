@@ -40,4 +40,8 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public String getPayload(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
 }

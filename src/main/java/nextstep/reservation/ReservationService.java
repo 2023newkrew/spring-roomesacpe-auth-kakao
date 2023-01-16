@@ -57,4 +57,12 @@ public class ReservationService {
 
         reservationDao.deleteById(id);
     }
+
+    public Reservation findById(Long id) {
+        Reservation reservation = reservationDao.findById(id);
+        if (reservation == null) {
+            throw new NullPointerException();
+        }
+        return reservation;
+    }
 }
