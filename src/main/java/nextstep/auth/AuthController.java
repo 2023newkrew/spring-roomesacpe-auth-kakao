@@ -2,9 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,17 +14,17 @@ public class AuthController {
 
     private MemberService memberService;
 
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
-    public AuthController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(MemberService memberService, AuthService authService) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.authService = authService;
     }
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
-        Member member = memberService.findByUsername(tokenRequest.getUsername(), tokenRequest.getPassword());
-
-        return ResponseEntity.ok(new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getUsername())));
+        Member member = memberService.findByUsername(tokenRequest.getUsername());
+        String accessToken = authService.createAccessToken(member, tokenRequest.getPassword());
+        return ResponseEntity.ok(new TokenResponse(accessToken));
     }
 }

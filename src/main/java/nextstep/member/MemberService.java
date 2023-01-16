@@ -19,11 +19,7 @@ public class MemberService {
         return memberDao.findById(id);
     }
 
-    public Member findByUsername(String username, String password) {
-        Member member = memberDao.findByUsername(username);
-        if (member.checkWrongPassword(password)) {
-            throw new NotExistEntityException();
-        }
-        return member;
+    public Member findByUsername(String username) {
+        return memberDao.findByUsername(username);
     }
 }
