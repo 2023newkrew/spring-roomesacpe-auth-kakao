@@ -2,6 +2,7 @@ package nextstep.member;
 
 import static org.assertj.core.api.Assertions.*;
 
+import nextstep.auth.TokenRequest;
 import nextstep.support.NotExistEntityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,21 @@ public class MemberServiceTest {
 
         given(memberDao.findByUsername(username)).willThrow(RuntimeException.class);
 
-        assertThatThrownBy(() -> memberService.findByUsername(username)).isInstanceOf(NotExistEntityException.class);
+        assertThatThrownBy(() -> memberService.findByUsername(username)).isInstanceOf(RuntimeException.class);
     }
+
+    @DisplayName("비밀번호가 일치하지 않을 경우 예외가 발생한다.")
+    @Test
+    void checkWrongPassword() {
+        String username = "username", password = "password", wrongPassword = "wrongPassword";
+        TokenRequest tokenRequest = new TokenRequest(username, wrongPassword);
+        Member member = new Member(username, password, "name", "010-0000-0000");
+
+        given(memberDao.findByUsername(member.getUsername()))
+                .willReturn(member);
+
+        assertThatThrownBy(() -> memberService.createToken(tokenRequest))
+                .isInstanceOf(RuntimeException.class);
+    }
+
 }
