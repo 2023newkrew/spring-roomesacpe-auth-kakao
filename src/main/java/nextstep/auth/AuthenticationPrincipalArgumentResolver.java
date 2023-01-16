@@ -25,7 +25,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        System.out.println(parameter.hasParameterAnnotation(AuthenticationPrincipal.class));
         return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
@@ -35,7 +34,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!jwtTokenProvider.validateToken(token)) {
             throw new NotExistEntityException();
         }
-        System.out.println(jwtTokenProvider.getPrincipal(token) + "여기에");
         Long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
 
         return memberDao.findById(id);
