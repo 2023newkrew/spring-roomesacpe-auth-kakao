@@ -13,6 +13,7 @@ import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,12 +34,15 @@ class ReservationE2ETest {
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
+    private Long memberId;
     private String token;
     @Autowired
     private MemberDao memberDao;
 
     @BeforeEach
     void setUp() {
+        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
 
