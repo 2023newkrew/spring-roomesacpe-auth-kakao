@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(RoomEscapeException.class)
     public ResponseEntity<?> handleApiException(RoomEscapeException exception) {
         return handleExceptionInternal(exception.getErrorCode());

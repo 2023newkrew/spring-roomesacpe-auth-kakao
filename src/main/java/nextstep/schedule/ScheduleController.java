@@ -9,7 +9,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/schedules")
 public class ScheduleController {
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;

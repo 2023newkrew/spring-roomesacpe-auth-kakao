@@ -3,7 +3,7 @@ package nextstep.auth;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.NotExistMemberException;
+import nextstep.support.NoSuchMemberException;
 import nextstep.support.PasswordNotMatchException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -17,7 +17,7 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername());
         if(ObjectUtils.isEmpty(member)) {
-            throw new NotExistMemberException();
+            throw new NoSuchMemberException();
         }
 
         if(!member.getPassword().equals(tokenRequest.getPassword())){

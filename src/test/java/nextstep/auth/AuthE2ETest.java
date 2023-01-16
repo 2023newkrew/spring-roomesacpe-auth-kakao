@@ -58,7 +58,7 @@ public class AuthE2ETest {
             .body(body)
             .when().post("/login/token")
             .then().log().all()
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("비밀번호가 틀린 경우")

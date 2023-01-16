@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.support.NoSuchMemberException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -48,6 +49,9 @@ public class MemberDao {
 
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        return jdbcTemplate.query(sql, rowMapper, username)
+                .stream()
+                .findFirst()
+                .orElseThrow(NoSuchMemberException::new);
     }
 }

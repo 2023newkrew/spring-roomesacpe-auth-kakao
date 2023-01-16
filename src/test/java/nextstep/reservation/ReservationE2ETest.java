@@ -3,6 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.AuthService;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.Member;
@@ -37,11 +38,21 @@ class ReservationE2ETest {
     private Long memberId;
     private String token;
     @Autowired
+    private AuthService authService;
+    @Autowired
     private MemberDao memberDao;
 
     @BeforeEach
     void setUp() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        var memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
@@ -79,17 +90,6 @@ class ReservationE2ETest {
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .auth().oauth2(token)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
 
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
@@ -191,7 +191,36 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("자신의 예약이 아닌 경우 예약 취소가 불가능하다.")
+    @Test
+    void deleteNotOwner() {
+        var reservation = createReservation();
+
+        Member anotherMember = new Member("notOwnerUsername", "notOwnerPassword", "notOwnerName", "010-1234-5678");
+        memberDao.save(anotherMember);
+        TokenRequest loginBody = new TokenRequest(anotherMember.getUsername(), anotherMember.getPassword());
+
+        String anotherToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+        System.out.println("token = " + token);
+        System.out.println("anotherToken = " + anotherToken);
+
+       RestAssured
+               .given().log().all()
+               .contentType(MediaType.APPLICATION_JSON_VALUE)
+               .auth().oauth2(anotherToken)
+               .when().delete(reservation.header("Location"))
+               .then().log().all()
+               .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     private ExtractableResponse<Response> createReservation() {
