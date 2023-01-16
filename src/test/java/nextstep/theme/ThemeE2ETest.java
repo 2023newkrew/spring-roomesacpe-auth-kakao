@@ -19,6 +19,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+
+    @Autowired
+    private MemberDao memberDao;
+    private String token;
+
+    @BeforeEach
+    void setUp() {
+        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+
+        TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
+
+        token = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+    }
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
@@ -27,6 +50,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(token)
                 .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -40,6 +64,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
+                .auth().oauth2(token)
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -54,6 +79,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/themes/" + id)
                 .then().log().all()
                 .extract();
@@ -66,6 +92,7 @@ public class ThemeE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
                 .when().post("/themes")
                 .then().log().all()
