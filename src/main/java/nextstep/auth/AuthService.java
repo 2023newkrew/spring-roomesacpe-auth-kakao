@@ -36,9 +36,6 @@ public class AuthService {
         if (Objects.isNull(actualMember)) {
             return false;
         }
-        if (actualMember.get().getPassword() != password) {
-            return false;
-        }
-        return true;
+        return actualMember.get().getPassword().equals(password);
     }
 }
