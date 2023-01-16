@@ -110,6 +110,7 @@ class ReservationE2ETest {
                 .body(request)
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -221,6 +222,7 @@ class ReservationE2ETest {
                 .body(request)
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
