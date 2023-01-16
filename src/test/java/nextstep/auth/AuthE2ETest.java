@@ -1,15 +1,23 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ResponseBodyExtractionOptions;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberResponse;
+import nextstep.reservation.ReservationRequest;
+import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String AUTHORIZATION = "Authorization";
+    public static String BEARER_TYPE = "Bearer";
     private Long memberId;
 
     @BeforeEach
@@ -36,16 +46,52 @@ public class AuthE2ETest {
     @Test
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var response = RestAssured
+        TokenResponse tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract();
+                .extract().as(TokenResponse.class);
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        String accessToken = tokenResponse.getAccessToken();
+        MemberResponse memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
+        assertThat(tokenResponse).isNotNull();
+    }
+
+    @DisplayName("토큰 정보로 회원 정보를 조회한다")
+    @Test
+    public void findMemberByToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+
+        String accessToken = tokenResponse.getAccessToken();
+        MemberResponse memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
+
+        assertThat(memberResponse.getUsername()).isEqualTo(USERNAME);
+        assertThat(memberResponse.getPassword()).isEqualTo(PASSWORD);
     }
 
     @DisplayName("테마 목록을 조회한다")

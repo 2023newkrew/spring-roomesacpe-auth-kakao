@@ -40,6 +40,15 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
+    public Reservation findById(Long id) {
+        Reservation reservation = reservationDao.findById(id);
+        if (reservation == null) {
+            throw new NullPointerException();
+        }
+
+        return reservation;
+    }
+
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
