@@ -55,22 +55,22 @@ Content-Type: application/json
 ```
 
 ## 기능 구현 목록
-- [ ] AuthController
-  - [ ] Post mapping "/login/token" 
-  - [ ] TokenRequest를 받는다.
-  - [ ] 토큰 생성 로직을 호출한다.
-  - [ ] TokenResponse 반환 with 코드 200
-- [ ] AuthService
-  - [ ] TokenRequest를 받는다.
-  - [ ] MemberDao에 이메일과 비밀번호를 검증한다.
-    - [ ] 실패 시 예외를 던진다.
-  - [ ] JwtTokenProvider를 사용해서 이메일로 토큰을 발급받아서 TokenResponse로 반환
-- [ ] MemberController
-  - [ ] Get mapping "/members/me"
-  - [ ] Authorization 헤더의 값을 읽어서 토큰을 추출한다.
-  - [ ] JwtTokenProvider의 validateToken()으로 토큰을 검증한다.
-    - [ ] 만료된 토큰이면 예외를 던진다.
-  - [ ] 토큰을 복호화해서 이메일을 추출한다.
-  - [ ] MemberDao의 findByEmail()로 Optional<Member> 객체를 얻는다.
-    - [ ] 멤버가 존재하지 않으면 예외를 던진다.
-  - [ ] Member를 반환한다.
+- [x] AuthController
+  - [x] Post mapping "/login/token" 
+  - [x] TokenRequest를 받는다.
+  - [x] 토큰 생성 로직을 호출한다.
+  - [x] TokenResponse 반환 with 코드 200
+- [x] AuthService
+  - [x] TokenRequest를 받는다.
+  - [x] MemberDao에 이메일과 비밀번호를 검증한다.
+    - [x] 실패 시 예외를 던진다.
+  - [x] JwtTokenProvider를 사용해서 이메일로 토큰을 발급받아서 TokenResponse로 반환
+- [x] MemberController
+  - [x] Get mapping "/members/me"
+  - [x] Authorization 헤더의 값을 읽어서 토큰을 추출한다.
+  - [x] JwtTokenProvider의 validateToken()으로 토큰을 검증한다.
+    - [x] 만료된 토큰이면 예외를 던진다.
+  - [x] 토큰을 복호화해서 이메일을 추출한다.
+  - [x] MemberDao의 findByEmail()로 Optional<Member> 객체를 얻는다.
+    - [x] 멤버가 존재하지 않으면 예외를 던진다.
+  - [x] Member를 반환한다.
