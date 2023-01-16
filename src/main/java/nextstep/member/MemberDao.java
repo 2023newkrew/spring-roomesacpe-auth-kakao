@@ -42,13 +42,18 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
-    public Member findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return null;
+        }
     }
 }
