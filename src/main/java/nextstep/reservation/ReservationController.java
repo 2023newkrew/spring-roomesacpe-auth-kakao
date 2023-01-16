@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservations")
@@ -23,13 +24,17 @@ public class ReservationController {
             @AuthenticationPrincipal Member member,
             @RequestBody ReservationRequest reservationRequest
     ) {
-        Long id = reservationService.create(reservationRequest);
+        Long id = reservationService.create(reservationRequest.getScheduleId(), member);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
     public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
+        List<ReservationResponse> results = reservationService
+                .findAllByThemeIdAndDate(themeId, date)
+                .stream()
+                .map(ReservationResponse::new)
+                .collect(Collectors.toList());
         return ResponseEntity.ok().body(results);
     }
 

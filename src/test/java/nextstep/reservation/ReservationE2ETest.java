@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -28,6 +29,7 @@ class ReservationE2ETest {
     public static final String NAME = "name";
 
     private TokenResponse token;
+    private Member member;
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
@@ -82,10 +84,7 @@ class ReservationE2ETest {
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
-        request = new ReservationRequest(
-                scheduleId,
-                "브라운"
-        );
+        request = new ReservationRequest(scheduleId);
     }
 
     @DisplayName("예약을 생성한다")
@@ -94,8 +93,8 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header("Authorization", this.token.getAccessToken())
-                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -116,7 +115,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
+        List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
         assertThat(reservations.size()).isEqualTo(1);
     }
 
@@ -143,8 +142,8 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header("Authorization", this.token.getAccessToken())
-                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -184,8 +183,8 @@ class ReservationE2ETest {
         return RestAssured
                 .given().log().all()
                 .header("Authorization", this.token.getAccessToken())
-                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
