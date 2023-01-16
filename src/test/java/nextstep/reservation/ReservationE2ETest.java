@@ -136,6 +136,37 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
+    @DisplayName("예약을 다수 조회한다")
+    @Test
+    void showMultiple() {
+        createReservation();
+
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, "11:00:00");
+        var scheduleResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        ReservationRequest reservationRequest = new ReservationRequest(scheduleId, memberId);
+        createReservation(reservationRequest);
+
+        var response = RestAssured
+                .given().log().all()
+                .param("themeId", themeId)
+                .param("date", DATE)
+                .when().get("/reservations")
+                .then().log().all()
+                .extract();
+
+        List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
+        assertThat(reservations.size()).isEqualTo(2);
+    }
+
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
@@ -248,6 +279,17 @@ class ReservationE2ETest {
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> createReservation(ReservationRequest reservationRequest) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
