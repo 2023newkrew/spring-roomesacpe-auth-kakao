@@ -25,8 +25,7 @@ public class AuthController {
     @PostMapping("token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request){
         Optional<Member> member = memberService.getByNameAndPassword(request.getUsername(), request.getPassword());
-        Long id = authService.validate(member);
-        TokenResponse response  = authService.createToken(id);
+        TokenResponse response  = authService.createToken(member);
         return ResponseEntity.ok(response);
     }
 

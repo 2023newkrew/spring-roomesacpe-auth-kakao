@@ -1,10 +1,12 @@
 package nextstep.auth;
 
+import nextstep.member.LoginMember;
 import nextstep.member.Member;
 import nextstep.support.UnauthorizedAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -15,11 +17,18 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Long validate(Optional<Member> member) {
+    private Long validate(Optional<Member> member) {
         return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다.")).getId();
     }
 
-    public TokenResponse createToken(Long id) {
+    public void validateLoginMember(LoginMember loginMember) {
+        if (Objects.isNull(loginMember)) {
+            throw new UnauthorizedAccessException("인증되지 않은 사용자입니다.");
+        }
+    }
+
+    public TokenResponse createToken(Optional<Member> member) {
+        Long id = validate(member);
         return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(id)));
     }
 
