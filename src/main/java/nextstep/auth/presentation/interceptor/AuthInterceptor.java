@@ -26,7 +26,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new ApplicationException(UNAUTHORIZED_ERROR);
         }
 
-        request.setAttribute("accessToken", token);
         return true;
     }
 

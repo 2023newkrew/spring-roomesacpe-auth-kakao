@@ -1,9 +1,12 @@
 package nextstep.reservation;
 
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.dto.request.TokenRequest;
+import nextstep.dto.response.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -19,6 +22,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -40,11 +44,11 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest("username", "password", "브라운", "010-1234-5678");
+        MemberRequest memberRequest = new MemberRequest("username", "password", "브라운", "010-1234-5678");
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(memberRequest)
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
@@ -52,7 +56,16 @@ class ReservationE2ETest {
 
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-        token = jwtTokenProvider.createToken(memberId + "");
+
+        var loginResponse = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest(memberRequest.getUsername(), memberRequest.getPassword()))
+                .when()
+                .post("/login/token")
+                .then()
+                .extract()
+                .as(new TypeRef<TokenResponse>() {});
+        token = loginResponse.getAccessToken();
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
@@ -110,6 +123,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -172,6 +186,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();

@@ -5,6 +5,7 @@ import nextstep.auth.presentation.argumentresolver.AuthenticationPrincipalArgume
 import nextstep.auth.presentation.interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,6 +22,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+        source.setBasenames("messages/message");
+        source.setDefaultEncoding("UTF-8");
+        return source;
+    }
+
+    @Bean
     public AuthInterceptor authInterceptor() {
         return new AuthInterceptor(jwtTokenProvider);
     }
@@ -34,8 +43,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor())
                 .order(1)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/login/token", "/members");
+                .addPathPatterns("/members/me", "/reservations");
     }
 
     @Override
