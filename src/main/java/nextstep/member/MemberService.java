@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import org.springframework.stereotype.Service;
@@ -7,9 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
     private MemberDao memberDao;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberDao memberDao) {
+    public MemberService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public Long create(MemberRequest memberRequest) {
@@ -27,7 +30,7 @@ public class MemberService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new TokenResponse();
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
     }
 
     public Member findByUsername(String username) {

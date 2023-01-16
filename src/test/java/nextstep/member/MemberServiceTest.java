@@ -2,6 +2,7 @@ package nextstep.member;
 
 import static org.assertj.core.api.Assertions.*;
 
+import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.TokenRequest;
 import nextstep.support.NotExistEntityException;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +20,9 @@ public class MemberServiceTest {
 
     @Mock
     private MemberDao memberDao;
+
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
 
     @InjectMocks
     private MemberService memberService;
@@ -61,4 +65,17 @@ public class MemberServiceTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
+    @DisplayName("비밀번호가 일치할 경우 토큰이 반환된다.")
+    @Test
+    void returnToken() {
+        String username = "username", password = "password", token = "TOKEN";
+        TokenRequest tokenRequest = new TokenRequest(username, password);
+        Member member = new Member(1L, username, password, "name", "010-0000-0000");
+
+        given(memberDao.findByUsername(member.getUsername()))
+                .willReturn(member);
+        given(jwtTokenProvider.createToken("1")).willReturn(token);
+
+        assertThat(memberService.createToken(tokenRequest).getAccessToken()).isEqualTo(token);
+    }
 }
