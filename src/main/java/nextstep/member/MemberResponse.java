@@ -2,41 +2,15 @@ package nextstep.member;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public class MemberResponse {
-
-    private Long id;
-
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
-
+public class MemberResponse extends MemberDtoBase{
     @JsonCreator
     public MemberResponse(Long id, String username, String password, String name, String phone) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
+        super(id, username, password, name, phone);
     }
 
-    public Long getId() {
-        return id;
+    public static MemberResponse of(LoginMember loginMember) {
+        return new MemberResponse(loginMember.getId(), loginMember.getUsername(),
+                loginMember.getPassword(), loginMember.getName(), loginMember.getPhone());
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
 }

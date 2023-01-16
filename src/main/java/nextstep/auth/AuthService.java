@@ -16,7 +16,7 @@ public class AuthService {
     }
 
     public Long validate(Optional<Member> member) {
-        return member.orElseThrow( () -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다.")).getId();
+        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다.")).getId();
     }
 
     public TokenResponse createToken(Long id) {
@@ -28,7 +28,11 @@ public class AuthService {
             throw new UnauthorizedAccessException("토큰이 존재하지 않습니다");
         }
         String token = request.getHeader("Authorization").split(" ")[1];
-        return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+        try {
+            return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+        } catch (IllegalArgumentException e) {
+            throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
+        }
     }
 
 }

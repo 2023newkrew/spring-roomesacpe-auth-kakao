@@ -21,6 +21,6 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id);
+        return memberDao.findById(id).orElseThrow( () -> new IllegalArgumentException("존재하지 않는 아이디 입니다."));
     }
 }
