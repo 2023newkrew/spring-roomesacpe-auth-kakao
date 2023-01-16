@@ -2,10 +2,10 @@ package nextstep.member;
 
 public class Member {
     private Long id;
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
 
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;

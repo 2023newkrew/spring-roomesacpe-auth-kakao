@@ -53,14 +53,4 @@ public class ReservationController {
         reservationService.deleteById(id, loginMember.getId());
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<Void> onUnauthorizedAccessException(UnauthorizedAccessException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> onException(Exception e) {
-        return ResponseEntity.badRequest().build();
-    }
 }

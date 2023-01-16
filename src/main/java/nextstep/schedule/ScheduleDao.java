@@ -19,7 +19,7 @@ import static nextstep.schedule.ScheduleJdbcSql.*;
 public class ScheduleDao {
 
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

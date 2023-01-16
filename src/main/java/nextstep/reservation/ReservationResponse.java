@@ -7,7 +7,7 @@ import nextstep.member.MemberInfoResponse;
 public class ReservationResponse {
 
     @JsonProperty("reservationId")
-    private Long id;
+    private final Long id;
 
     @JsonUnwrapped
     private ScheduleResponse schedule;

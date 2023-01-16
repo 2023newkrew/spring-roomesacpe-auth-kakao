@@ -3,8 +3,8 @@ package nextstep.member;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class MemberResponse extends MemberBaseDto {
-    private String password;
-    private String phone;
+    private final String password;
+    private final String phone;
 
     @JsonCreator
     public MemberResponse(Long id, String username, String password, String name, String phone) {

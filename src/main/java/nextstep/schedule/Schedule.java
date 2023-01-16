@@ -7,12 +7,9 @@ import java.time.LocalTime;
 
 public class Schedule {
     private Long id;
-    private Theme theme;
-    private LocalDate date;
-    private LocalTime time;
-
-    public Schedule() {
-    }
+    private final Theme theme;
+    private final LocalDate date;
+    private final LocalTime time;
 
     public Schedule(Long id, Theme theme, LocalDate date, LocalTime time) {
         this.id = id;

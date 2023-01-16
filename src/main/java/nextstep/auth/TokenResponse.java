@@ -1,10 +1,7 @@
 package nextstep.auth;
 
 public class TokenResponse {
-    public String accessToken;
-
-    protected TokenResponse() {
-    }
+    public final String accessToken;
 
     public TokenResponse(String accessToken) {
         this.accessToken = accessToken;

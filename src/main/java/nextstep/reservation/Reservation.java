@@ -5,11 +5,8 @@ import nextstep.schedule.Schedule;
 
 public class Reservation {
     private Long id;
-    private Schedule schedule;
-    private Member member;
-
-    public Reservation() {
-    }
+    private final Schedule schedule;
+    private final Member member;
 
     public Reservation(Schedule schedule, Member member) {
         this.schedule = schedule;

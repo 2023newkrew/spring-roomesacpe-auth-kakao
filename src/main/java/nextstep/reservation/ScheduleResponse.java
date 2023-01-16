@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ScheduleResponse {
-    private Long id;
-    private Theme theme;
-    private LocalDate date;
-    private LocalTime time;
+    private final Long id;
+    private final Theme theme;
+    private final LocalDate date;
+    private final LocalTime time;
 
     @JsonCreator
     public ScheduleResponse(Long id, Theme theme, LocalDate date, LocalTime time) {
