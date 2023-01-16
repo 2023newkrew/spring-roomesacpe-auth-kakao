@@ -1,8 +1,10 @@
-CREATE TABLE reservation
+CREATE TABLE member
 (
-    id          bigint      not null auto_increment,
-    schedule_id bigint      not null,
-    name        varchar(20) not null,
+    id       bigint      not null auto_increment,
+    username varchar(20) not null,
+    password varchar(20) not null,
+    name     varchar(20) not null,
+    phone    varchar(20) not null,
     primary key (id)
 );
 
@@ -21,15 +23,21 @@ CREATE TABLE schedule
     theme_id bigint not null,
     date     date   not null,
     time     time   not null,
-    primary key (id)
+    primary key (id),
+    foreign key (theme_id)
+        references theme(id)
 );
 
-CREATE TABLE member
+CREATE TABLE reservation
 (
-    id       bigint      not null auto_increment,
-    username varchar(20) not null,
-    password varchar(20) not null,
-    name     varchar(20) not null,
-    phone    varchar(20) not null,
-    primary key (id)
+    id          bigint      not null auto_increment,
+    schedule_id bigint      not null,
+    name        varchar(20) not null,
+    member_id   bigint      not null,
+    primary key (id),
+    foreign key (member_id)
+    references member(id),
+    foreign key (schedule_id)
+    references schedule(id)
 );
+

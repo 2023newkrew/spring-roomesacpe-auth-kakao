@@ -38,17 +38,17 @@ public class MemberE2ETest {
         createMember();
 
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var accessTokenResponse = RestAssured
+        var accessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract();
+                .extract().jsonPath().get("accessToken");
         var response = RestAssured
                 .given().log().all()
-                .header("authorization", "Bearer " + accessTokenResponse.jsonPath().get("accessToken"))
+                .header("authorization", "Bearer " + accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

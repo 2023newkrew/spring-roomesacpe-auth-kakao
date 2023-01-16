@@ -22,6 +22,10 @@ public class Member {
         this.phone = phone;
     }
 
+    public Member(Long id) {
+        this.id = id;
+    }
+
     public Member() {
     }
 

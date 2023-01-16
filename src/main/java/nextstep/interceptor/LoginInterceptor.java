@@ -25,8 +25,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new AuthorizationException();
         }
         String principal = authService.getPrincipal(accessToken);
-        System.out.println("Principal : " + principal);
-        Member member = memberService.findByUsername(principal);
+        Member member = memberService.findById(Long.parseLong(principal));
         request.setAttribute("member", member);
         return true;
     }

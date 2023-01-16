@@ -17,7 +17,7 @@ public class AuthService {
         if (member.checkWrongPassword(password)) {
             throw new NotExistEntityException();
         }
-        return jwtTokenProvider.createToken(member.getUsername());
+        return jwtTokenProvider.createToken(member.getId().toString());
     }
 
     public String getPrincipal(String accessToken) {
