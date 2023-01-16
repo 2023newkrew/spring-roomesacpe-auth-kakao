@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,5 +68,21 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.OK.value()).extract().as(Member.class);
 
         assertThat(member.getPhone()).isEqualTo("010-1234-5678");
+    }
+
+    @Disabled
+    @DisplayName("db에 없는 사람 조회하기")
+    @Test
+    public void showInformation2() {
+        TokenRequest body = new TokenRequest("asher", "1234");
+        var response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+        assertThat(response.as(TokenResponse.class)).isNull();
     }
 }
