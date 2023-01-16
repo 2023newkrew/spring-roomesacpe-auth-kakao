@@ -6,7 +6,10 @@
     - username을 통해 jwt 생성 
 - 내 정보 조회하기
   - 토큰을 이용하여 본인 정보 응답하기
-  - AuthService에 findMemberByToken 생성
+  - AuthService에 getUserByToken 생성
+  - MemberController가
+    - AuthService.getUsernameByToken -> getPrincipal()
+    - MemberService.getMemberByUsername
 
 ## 프로그래밍 요구사항
 인증 로직은 Controller에서 구현하기 보다는 재사용이 용이하도록 분리하여 구현하다.
