@@ -1,11 +1,14 @@
 package nextstep.auth.presentation.interceptor;
 
 import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.error.ApplicationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static nextstep.error.ErrorType.UNAUTHORIZED_ERROR;
 
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -20,7 +23,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = extractToken(request);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new RuntimeException("인증되지 않은 사용자입니다.");
+            throw new ApplicationException(UNAUTHORIZED_ERROR);
         }
 
         request.setAttribute("accessToken", token);
@@ -32,7 +35,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             return authorization.split(" ")[1];
         } catch (Exception e) {
-            throw new RuntimeException("인증되지 않은 사용자입니다.");
+            throw new ApplicationException(UNAUTHORIZED_ERROR);
         }
     }
 
