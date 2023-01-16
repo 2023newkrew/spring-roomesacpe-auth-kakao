@@ -43,7 +43,7 @@ public class Member {
         return phone;
     }
 
-    public boolean checkWrongPassword(String password) {
+    public boolean isWrongPassword(String password) {
         return !this.password.equals(password);
     }
 }

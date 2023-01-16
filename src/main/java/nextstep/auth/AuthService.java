@@ -27,7 +27,7 @@ public class AuthService {
 
     private Member login(String username, String password) {
         Member member = memberDao.findByUsername(username);
-        if (!member.getPassword().equals(password)) {
+        if (member.isWrongPassword(password)) {
             throw new AuthenticationException();
         }
         return member;
