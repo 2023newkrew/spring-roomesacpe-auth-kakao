@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,7 @@ public class ReservationController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity onException(Exception e) {
-        System.out.println(e.getMessage());
+        System.out.println(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.badRequest().build();
     }
 }

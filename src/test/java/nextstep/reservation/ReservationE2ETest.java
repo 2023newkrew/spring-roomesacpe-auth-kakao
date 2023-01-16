@@ -27,7 +27,7 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String NAME = "name";
 
-    private ReservationRequest request;
+    private String request;
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
@@ -82,7 +82,9 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().body().jsonPath().get("accessToken");
 
-        request = new ReservationRequest(scheduleId);
+        request = "{\n" +
+                "    \"scheduleId\": 1\n" +
+                "}";
     }
 
     @DisplayName("예약을 생성한다")
