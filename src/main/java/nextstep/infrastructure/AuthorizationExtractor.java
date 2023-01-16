@@ -10,7 +10,8 @@ import java.util.Enumeration;
 @Component
 @RequiredArgsConstructor
 public class AuthorizationExtractor {
-    public static final String AUTHORIZATION = "Authorization";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String ACCESS_TOKEN_TYPE = "accessTokenType";
     public static String BEARER_TYPE = "Bearer";
 
     public String extract(HttpServletRequest request) {
@@ -18,6 +19,7 @@ public class AuthorizationExtractor {
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
             if ((value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {
+                request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, BEARER_TYPE.length()).trim());
                 return value.substring(BEARER_TYPE.length()).trim();
             }
         }
