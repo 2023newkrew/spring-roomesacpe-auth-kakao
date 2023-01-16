@@ -15,12 +15,6 @@ import java.util.List;
 
 @Component
 public class ScheduleDao {
-    private JdbcTemplate jdbcTemplate;
-
-    public ScheduleDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Schedule> rowMapper = (resultSet, rowNum) -> new Schedule(
             resultSet.getLong("schedule.id"),
             new Theme(
@@ -32,6 +26,11 @@ public class ScheduleDao {
             resultSet.getDate("schedule.date").toLocalDate(),
             resultSet.getTime("schedule.time").toLocalTime()
     );
+    private JdbcTemplate jdbcTemplate;
+
+    public ScheduleDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Long save(Schedule schedule) {
         String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
