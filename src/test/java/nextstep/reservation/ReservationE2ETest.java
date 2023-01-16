@@ -8,12 +8,15 @@ import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
@@ -33,6 +36,8 @@ class ReservationE2ETest {
     private String accessToken;
 
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
@@ -90,9 +95,14 @@ class ReservationE2ETest {
 
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                memberId
         );
     }
+
+//    @BeforeEach
+//    void tearDown() {
+//        jdbcTemplate.update("DELETE FROM reservation");
+//    }
 
     @DisplayName("예약을 생성한다")
     @Test

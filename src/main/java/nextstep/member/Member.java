@@ -9,6 +9,8 @@ public class Member {
     private String name;
     private String phone;
 
+    // TODO : ReservationResponse로 대체
+    @JsonCreator
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
         this.username = username;
