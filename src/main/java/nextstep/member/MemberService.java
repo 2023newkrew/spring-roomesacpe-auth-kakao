@@ -1,6 +1,5 @@
 package nextstep.member;
 
-import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service

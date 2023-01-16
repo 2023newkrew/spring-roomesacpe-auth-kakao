@@ -1,4 +1,4 @@
 package nextstep.support;
 
-public class AuthorizationException extends RuntimeException{
+public class AuthorizationException extends RuntimeException {
 }

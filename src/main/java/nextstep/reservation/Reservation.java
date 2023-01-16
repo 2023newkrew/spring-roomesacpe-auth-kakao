@@ -1,6 +1,5 @@
 package nextstep.reservation;
 
-import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 
 public class Reservation {

@@ -1,7 +1,8 @@
 package nextstep.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
-import java.util.Objects;
 import nextstep.auth.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -56,7 +55,8 @@ public class MemberE2ETest {
 
         assertThat(response.as(Member.class)).isNotNull();
     }
-//
+
+    //
 //    @DisplayName("테마를 삭제한다")
 //    @Test
 //    void delete() {

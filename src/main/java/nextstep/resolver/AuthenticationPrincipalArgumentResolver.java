@@ -21,7 +21,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     // supportsParameter가 true인 경우 동작하는 메서드
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         Member member = (Member) request.getAttribute("member");

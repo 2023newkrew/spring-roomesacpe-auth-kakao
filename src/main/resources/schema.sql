@@ -25,7 +25,7 @@ CREATE TABLE schedule
     time     time   not null,
     primary key (id),
     foreign key (theme_id)
-        references theme(id)
+        references theme (id)
 );
 
 CREATE TABLE reservation
@@ -36,8 +36,8 @@ CREATE TABLE reservation
     member_id   bigint      not null,
     primary key (id),
     foreign key (member_id)
-    references member(id),
+        references member (id),
     foreign key (schedule_id)
-    references schedule(id)
+        references schedule (id)
 );
 

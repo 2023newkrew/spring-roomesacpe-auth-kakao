@@ -1,8 +1,11 @@
 package nextstep.reservation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.auth.TokenRequest;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
@@ -14,10 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -81,19 +80,11 @@ class ReservationE2ETest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var accessToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().get("accessToken");
+        String accessToken = loginAndGetAccessToken();
 
         var response = RestAssured
                 .given().log().all()
-                .header("authorization", "Bearer " + accessToken)
+                .header("authorization", accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -106,12 +97,15 @@ class ReservationE2ETest {
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
-        createReservation();
+        String accessToken = loginAndGetAccessToken();
+
+        createReservation(accessToken);
 
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header("authorization", accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -123,10 +117,13 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        var reservation = createReservation();
+        String accessToken = loginAndGetAccessToken();
+
+        var reservation = createReservation(accessToken);
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -137,7 +134,9 @@ class ReservationE2ETest {
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
-        createReservation();
+        String accessToken = loginAndGetAccessToken();
+
+        createReservation(accessToken);
 
         var response = RestAssured
                 .given().log().all()
@@ -153,10 +152,13 @@ class ReservationE2ETest {
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
     @Test
     void showEmptyReservations() {
+        String accessToken = loginAndGetAccessToken();
+
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header("authorization", accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -177,13 +179,29 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> createReservation() {
+    private ExtractableResponse<Response> createReservation(String accessToken) {
         return RestAssured
                 .given().log().all()
                 .body(request)
+                .header("authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
     }
+
+    private String loginAndGetAccessToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        var accessToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().get("accessToken");
+
+        return "Bearer " + accessToken.toString();
+    }
+
 }
