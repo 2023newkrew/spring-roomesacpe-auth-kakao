@@ -29,15 +29,15 @@ public class AuthControllerTest {
     @Test
     @DisplayName("로그인 API 테스트")
     void loginTest() {
-        TokenRequest tokenRequest = new TokenRequest("username1", "password1");
+        TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1");
 
-        when(authService.login(any(TokenRequest.class))).thenReturn("token");
+        when(authService.login(any(TokenRequestDto.class))).thenReturn("token");
 
         RestAssured.given()
                 .log()
                 .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
+                .body(tokenRequestDto)
                 .when()
                 .post("/login/token")
                 .then()

@@ -35,7 +35,7 @@ public class AuthE2ETest {
     @DisplayName("토큰을 생성한다")
     @Test
     public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        TokenRequestDto body = new TokenRequestDto(USERNAME, PASSWORD);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +45,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(response.as(TokenResponseDto.class)).isNotNull();
     }
 
     @DisplayName("테마 목록을 조회한다")

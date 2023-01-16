@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
-public class TokenRequest {
+public class TokenRequestDto {
     private String username;
     private String password;
 

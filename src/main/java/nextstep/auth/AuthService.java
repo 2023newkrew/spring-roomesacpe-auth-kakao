@@ -9,7 +9,7 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public String login(TokenRequest tokenRequest) {
-        return jwtTokenProvider.createToken(tokenRequest.getUsername());
+    public String login(TokenRequestDto tokenRequestDto) {
+        return jwtTokenProvider.createToken(tokenRequestDto.getUsername());
     }
 }

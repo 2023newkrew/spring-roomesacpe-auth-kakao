@@ -13,11 +13,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
-        String token = authService.login(tokenRequest);
+    public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
+        String token = authService.login(tokenRequestDto);
 
         return ResponseEntity.ok()
-                .body(new TokenResponse(token));
+                .body(new TokenResponseDto(token));
     }
 
 }

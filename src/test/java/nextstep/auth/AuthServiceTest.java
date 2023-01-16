@@ -21,10 +21,10 @@ public class AuthServiceTest {
     @Test
     void loginTest() {
         // given
-        TokenRequest tokenRequest = new TokenRequest("username1", "password1");
+        TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1");
 
-        when(jwtTokenProvider.createToken(tokenRequest.getUsername())).thenReturn("token");
+        when(jwtTokenProvider.createToken(tokenRequestDto.getUsername())).thenReturn("token");
 
-        assertThat(authService.login(tokenRequest)).isEqualTo("token");
+        assertThat(authService.login(tokenRequestDto)).isEqualTo("token");
     }
 }
