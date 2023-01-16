@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.AuthorizationException;
+import nextstep.support.UnAuthorizedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -25,15 +25,15 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    private void validateUsernamePassword(String username, String password) throws AuthorizationException {
+    private void validateUsernamePassword(String username, String password) throws UnAuthorizedException {
         Member member = memberDao.findByUsername(username);
 
         if (member == null) {
-            throw new AuthorizationException();
+            throw new UnAuthorizedException();
         }
 
         if (!Objects.equals(member.getPassword(), password)) {
-            throw new AuthorizationException();
+            throw new UnAuthorizedException();
         }
     }
 

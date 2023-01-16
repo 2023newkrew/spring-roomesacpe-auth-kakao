@@ -86,7 +86,7 @@ class ReservationE2ETest {
 
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                "username"
         );
     }
 
@@ -108,7 +108,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
-        createReservation();
+        createReservation(request);
 
         var response = RestAssured
                 .given().log().all()
@@ -125,7 +125,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        var reservation = createReservation();
+        var reservation = createReservation(request);
 
         var response = RestAssured
                 .given().log().all()
@@ -137,10 +137,27 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("다른 사람의 예약을 삭제한다")
+    @Test
+    void deleteOtherPeopleReservationExceptionTest() {
+        var reservationRequest = new ReservationRequest(1L, "otherName");
+
+        var reservation = createReservation(reservationRequest);
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", "Bearer " + accessToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
-        createReservation();
+        createReservation(request);
 
         var response = RestAssured
                 .given().log().all()
@@ -180,7 +197,7 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> createReservation() {
+    private ExtractableResponse<Response> createReservation(ReservationRequest request) {
         return RestAssured
                 .given().log().all()
                 .header("authorization", "Bearer " + accessToken)
