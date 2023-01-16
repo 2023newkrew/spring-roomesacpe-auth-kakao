@@ -34,9 +34,4 @@ public class ReservationController {
         reservationService.deleteById(id, username);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
-    }
 }

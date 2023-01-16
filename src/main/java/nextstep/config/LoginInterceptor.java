@@ -14,8 +14,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = request.getHeader("Authorization");
         if(!HttpMethod.GET.matches(request.getMethod()) && accessToken == null) {
-            response.sendError(401);
+//            response.sendError(401);
+            throw new AuthorizationException();
         }
+
 
         return super.preHandle(request, response, handler);
     }
