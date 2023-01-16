@@ -6,6 +6,7 @@ import nextstep.member.LoginMember;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.support.UnauthorizedAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,8 +45,14 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@Login LoginMember loginMember, @PathVariable Long id) {
-        reservationService.deleteById(id);
+        authService.validateLoginMember(loginMember);
+        reservationService.deleteById(id, loginMember.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity onUnauthorizedAccessException (UnauthorizedAccessException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(Exception.class)

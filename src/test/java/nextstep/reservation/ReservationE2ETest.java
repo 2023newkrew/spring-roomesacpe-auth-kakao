@@ -143,11 +143,59 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 예약을_삭제할_때_accessToken이_없으면_에러가_발생해야한다() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+
+    @Test
+    void 자신의_예약이_아닐_경우_에러가_발생해야한다() {
+        var reservation = createReservation();
+
+        MemberRequest body = new MemberRequest("Sienna", PASSWORD, NAME, PHONE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        String siennaToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("Sienna", PASSWORD))
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(siennaToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(siennaToken).isNotEqualTo(accessToken);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -204,4 +252,5 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
     }
+
 }
