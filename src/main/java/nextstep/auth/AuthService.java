@@ -15,17 +15,25 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public boolean checkInvalidLogin(String principal, String credentials) {
-        Member member = memberDao.findByUsername(principal);
+    public boolean checkInvalidLogin(String principal, String credentials, Member member) {
+
         return !member.getUsername().equals(principal) || !member.getPassword().equals(credentials);
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
+        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword(), member)) {
             throw new AuthorizationException();
         }
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(member.getId().toString());
         return new TokenResponse(accessToken);
+    }
+
+    public Long validateToken(String token){
+        if (!jwtTokenProvider.validateToken(token)){
+            throw new AuthorizationException();
+        }
+        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
     }
 }

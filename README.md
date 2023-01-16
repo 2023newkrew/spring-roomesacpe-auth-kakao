@@ -1,10 +1,10 @@
 ## 토큰 발급 API
 
 controller
-- [ ] post api /login/token 시 토큰 발급
+- [x] post api /login/token 시 토큰 발급
 
 service
-- [ ] memberDAO로 로그인
+- [x] memberDAO로 로그인
 
 
 ## 내 정보 조회
