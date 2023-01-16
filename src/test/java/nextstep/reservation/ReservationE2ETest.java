@@ -80,6 +80,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
