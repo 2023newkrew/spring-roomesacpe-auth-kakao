@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import nextstep.auth.jwt.JwtTokenProvider;
+import nextstep.exception.AuthErrorCode;
+import nextstep.exception.BusinessException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class AuthService {
         String password = request.getPassword();
         Member member = memberDao.findByUsername(username);
         if(member.checkWrongPassword(password)) {
-            throw new RuntimeException();
+            throw new BusinessException(AuthErrorCode.INVALID_PASSWORD);
         }
 
         return new TokenResponse(jwtTokenProvider.createToken(Long.toString(member.getId())));
