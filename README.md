@@ -74,3 +74,70 @@ Content-Type: application/json
   - [x] MemberDao의 findByEmail()로 Optional<Member> 객체를 얻는다.
     - [x] 멤버가 존재하지 않으면 예외를 던진다.
   - [x] Member를 반환한다.
+
+---
+
+# step2
+
+## 기능 요구사항
+- 예약하기, 예약취소 개선 
+  - 아래의 API 설계에 맞춰 API 스펙을 변경한다.
+  - 비로그인 사용자는 예약이 불가능하다.
+  - 자신의 예약이 아닌 경우 예약 취소가 불가능하다.
+
+## 프로그래밍 요구사항
+- `HandlerMethodArgumentResolver`를 활용한다.
+
+## API 설계
+
+### 예약 생성
+```http request
+POST /reservations HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk4NTkwLCJleHAiOjE2NjMzMDIxOTAsInJvbGUiOiJBRE1JTiJ9.-OO1QxEpcKhmC34HpmuBhlnwhKdZ39U8q91QkTdH9i0
+content-type: application/json; charset=UTF-8
+host: localhost:8080
+
+{
+    // 필요한 값
+    // ex) "scheduleId": 1
+}
+```
+
+```http request
+HTTP/1.1 201 Created
+Location: /reservations/1
+```
+
+### 예약 삭제
+```http request
+DELETE /reservations/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk5MDcwLCJleHAiOjE2NjMzMDI2NzAsInJvbGUiOiJBRE1JTiJ9.zgz7h7lrKLNw4wP9I0W8apQnMUn3WHnmqQ1N2jNqwlQ
+```
+
+```http request
+HTTP/1.1 204 
+```
+
+## 기능 구현 목록
+
+### 도메인 & DTO 변경
+- [ ] Reservation 테이블이 member 테이블을 참조(member_id 추가)
+- [ ] Reservation 도메인 변경
+  - [ ] String name 삭제
+  - [ ] Member member 추가
+- [ ] ReservationRequest 객체 변경
+  - [ ] String name 삭제
+- [ ] ReservationResponse 객체 추가
+  - [ ] Member 객체의 필드를 추출해서 만들기
+
+### 예약하기
+- [ ] 토큰으로 Member 인증하기
+- [ ] Member 정보와 함께 예약 저장하기
+
+### 예약 취소
+- [ ] 토큰으로 Member 인증
+- [ ] 취소하려는 예약의 소유자인지 확인
+  - [ ] 아니면 예외 던지기(401 코드)
+
+### 토큰 인증 과정 공통 관심사 분리
+- [ ] `HandlerMethodArgumentResolver` 와 어노테이션을 활용
