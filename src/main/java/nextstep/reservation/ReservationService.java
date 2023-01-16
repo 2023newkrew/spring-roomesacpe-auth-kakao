@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.auth.UnAuthorizationException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
@@ -55,12 +56,15 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
+    public void deleteById(Long authId, Long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId);
         if (reservation == null) {
             throw new NullPointerException();
         }
-
-        reservationDao.deleteById(id);
+        Member me = memberDao.findById(authId);
+        if (!reservation.isMyReservation(me)) {
+            throw new UnAuthorizationException();
+        }
+        reservationDao.deleteById(reservationId);
     }
 }
