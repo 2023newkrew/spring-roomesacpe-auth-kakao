@@ -137,8 +137,17 @@ class ReservationE2ETest {
     void delete() {
         var reservation = createReservation();
 
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("username", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -150,9 +159,17 @@ class ReservationE2ETest {
     @Test
     void createDuplicateReservation() {
         createReservation();
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("username", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -180,8 +197,17 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("username", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -190,8 +216,17 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> createReservation() {
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("username", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
