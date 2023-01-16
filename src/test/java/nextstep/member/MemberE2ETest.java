@@ -47,7 +47,6 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
         assertThat((String) response.path("username")).isEqualTo("username");
-        assertThat((String) response.path("password")).isEqualTo("password");
         assertThat((String) response.path("name")).isEqualTo("name");
         assertThat((String) response.path("phone")).isEqualTo("010-1234-5678");
     }
