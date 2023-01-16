@@ -3,6 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -71,16 +73,24 @@ class ReservationE2ETest {
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         request = new ReservationRequest(
-                scheduleId,
-                "브라운"
+                scheduleId
         );
     }
 
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("username", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -88,6 +98,21 @@ class ReservationE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("비로그인 사용자는 예약이 불가능하다.")
+    @Test
+    void create_Exception() {
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2("")
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("예약을 조회한다")

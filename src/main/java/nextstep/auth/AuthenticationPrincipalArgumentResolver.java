@@ -27,7 +27,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String authorizationHeader = request.getHeader("authorization");
-        if (authorizationHeader.length() < "Bearer ".length()) {
+        if (authorizationHeader == null ||
+                authorizationHeader.length() < "Bearer ".length()) {
             throw new UnAuthorizationException();
         }
         String token = authorizationHeader.substring("Bearer ".length());
