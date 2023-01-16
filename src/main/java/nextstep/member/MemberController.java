@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.auth.JwtTokenProvider;
+import nextstep.support.AuthorizationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,10 +10,12 @@ import java.net.URI;
 @RestController
 @RequestMapping("/members")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping
@@ -21,9 +25,12 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me() {
-        Long id = 1L;
-        Member member = memberService.findById(id);
-        return ResponseEntity.ok(member);
+    public ResponseEntity me(@RequestHeader(value="Authorization") String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.badRequest().build();
+        }
+        String username = jwtTokenProvider.getPrincipal(token);
+        Member member = memberService.findByUsername(username);
+        return ResponseEntity.ok(new MemberResponse(member));
     }
 }

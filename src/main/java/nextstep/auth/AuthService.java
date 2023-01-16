@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
