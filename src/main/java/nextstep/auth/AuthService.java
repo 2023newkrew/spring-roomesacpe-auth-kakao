@@ -23,4 +23,12 @@ public class AuthService {
         return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(id)));
     }
 
+    public Long decodeTokenByRequest(HttpServletRequest request) {
+        if (request.getHeader("Authorization") == null) {
+            throw new UnauthorizedAccessException("토큰이 존재하지 않습니다");
+        }
+        String token = request.getHeader("Authorization").split(" ")[1];
+        return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+    }
+
 }

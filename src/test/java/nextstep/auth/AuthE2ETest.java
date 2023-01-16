@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String NAME = "name";
+    public static final String PHONE = "010-1234-5678";
     private Long memberId;
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -46,6 +49,37 @@ public class AuthE2ETest {
                 .extract();
 
         assertThat(response.as(TokenResponse.class)).isNotNull();
+    }
+
+    @DisplayName("토큰으로 멤버를 조회한다")
+    @Test
+    void findMemberByToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        var response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        String token = response.as(TokenResponse.class).getAccessToken();
+
+        Member member =  RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Member.class);
+
+        assertThat(member.getId()).isNotNull();
+        assertThat(member.getUsername()).isEqualTo(USERNAME);
+        assertThat(member.getPassword()).isEqualTo(PASSWORD);
+        assertThat(member.getName()).isEqualTo(NAME);
+        assertThat(member.getPhone()).isEqualTo(PHONE);
     }
 
     @DisplayName("테마 목록을 조회한다")

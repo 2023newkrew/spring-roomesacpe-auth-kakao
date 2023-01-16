@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public class Member {
     private Long id;
     private String username;
@@ -7,6 +9,7 @@ public class Member {
     private String name;
     private String phone;
 
+    @JsonCreator
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
         this.username = username;
