@@ -1,5 +1,13 @@
 package nextstep.member;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
 public class Member {
     private Long id;
     private String username;
