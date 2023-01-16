@@ -18,6 +18,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationExtractor authorizationExtractor;
 
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthorizationExtractor authorizationExtractor;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = authorizationExtractor.extract(request);
