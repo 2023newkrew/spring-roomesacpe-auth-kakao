@@ -1,10 +1,10 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.JwtTokenProvider;
+import nextstep.infrastructure.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.AuthorizationException;
+import nextstep.support.exception.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -19,10 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     private static final String BEARER = "Bearer ";
-    private static final String TOKEN_KEY = "authorization";
+    private static final String AUTHORIZATION = "authorization";
 
     private final MemberDao memberDao;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(Login.class);
@@ -31,13 +32,17 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = request.getHeader(TOKEN_KEY);
+        String token = request.getHeader(AUTHORIZATION);
         Member member = memberDao.findByUsername(jwtTokenProvider.getPrincipal(token.substring(BEARER.length())));
 
-        if (request.getHeader(TOKEN_KEY).isBlank() || ObjectUtils.isEmpty(member)) {
+        if (isAuthenticatedUser(request, member)) {
             throw new AuthorizationException();
         }
 
         return member;
+    }
+
+    private boolean isAuthenticatedUser(HttpServletRequest request, Member member) {
+        return request.getHeader(AUTHORIZATION).isBlank() || ObjectUtils.isEmpty(member);
     }
 }

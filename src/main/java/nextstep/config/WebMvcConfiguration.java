@@ -16,7 +16,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
-                .excludePathPatterns("/login/**", "/members", "/h2-console/**");
+                .addPathPatterns("/reservations");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

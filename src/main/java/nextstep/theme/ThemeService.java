@@ -1,6 +1,6 @@
 package nextstep.theme;
 
-import nextstep.support.NoSuchThemeException;
+import nextstep.support.exception.NoSuchThemeException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

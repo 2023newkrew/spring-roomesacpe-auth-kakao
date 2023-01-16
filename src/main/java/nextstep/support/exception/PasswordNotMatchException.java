@@ -1,4 +1,6 @@
-package nextstep.support;
+package nextstep.support.exception;
+
+import nextstep.support.ErrorCode;
 
 public class PasswordNotMatchException extends RoomEscapeException {
     @Override

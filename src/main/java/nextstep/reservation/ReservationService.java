@@ -3,7 +3,9 @@ package nextstep.reservation;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.*;
+import nextstep.support.exception.DuplicateReservationException;
+import nextstep.support.exception.NoSuchReservationException;
+import nextstep.support.exception.NotReservationOwnerException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -59,10 +61,9 @@ public class ReservationService {
             throw new NoSuchReservationException();
         }
 
-        if(!Objects.equals(member.getId(), reservation.getMemberId())) {
+        if(!Objects.equals(reservation.getMemberId(), member.getId())) {
             throw new NotReservationOwnerException();
         }
-
 
         reservationDao.deleteById(id);
     }
