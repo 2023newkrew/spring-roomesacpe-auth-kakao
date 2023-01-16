@@ -48,6 +48,33 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
+    @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치")
+    @Test
+    public void createToken_wrongPassword() {
+        TokenRequest body = new TokenRequest(USERNAME, "wrongPassword");
+
+       RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("토큰 생성에 실패한다 - 유저네임 없음")
+    @Test
+    public void createTokenFailure() {
+        TokenRequest body = new TokenRequest("notexistname", "wrongPassword");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
