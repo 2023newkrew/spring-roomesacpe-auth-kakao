@@ -48,7 +48,7 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("회원이 아닌 유저가 토큰 생성을 시도한다.")
+    @DisplayName("회원이 아닌 유저가 로그인을 시도한다.")
     @Test
     public void createTokenUnExistMember(){
         TokenRequest body = new TokenRequest("AnotherUsername", "AnotherPassword");
@@ -61,7 +61,7 @@ public class AuthE2ETest {
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("비밀번호가 틀린 경우")
+    @DisplayName("비밀번호가 틀린 경우 로그인에 실패한다.")
     @Test
     public void createTokenWithInvalidPassword(){
         TokenRequest body = new TokenRequest(USERNAME, "WrongPassword");

@@ -38,8 +38,6 @@ class ReservationE2ETest {
     private Long memberId;
     private String token;
     @Autowired
-    private AuthService authService;
-    @Autowired
     private MemberDao memberDao;
 
     @BeforeEach
@@ -57,14 +55,7 @@ class ReservationE2ETest {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
 
-        token = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginBody)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class).getAccessToken();
+        token = requestLogin(loginBody);
 
         var themeResponse = RestAssured
                 .given().log().all()
@@ -100,14 +91,25 @@ class ReservationE2ETest {
         );
     }
 
+    private String requestLogin(TokenRequest loginBody) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+    }
+
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
         var response = RestAssured
                 .given().log().all()
                 .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -138,14 +140,13 @@ class ReservationE2ETest {
     void delete() {
         var reservation = createReservation();
 
-        var response = RestAssured
-                .given().log().all()
-                .auth().oauth2(token)
-                .when().delete(reservation.header("Location"))
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .when().delete(reservation.header("Location"))
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value())
+            .extract();
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -201,18 +202,9 @@ class ReservationE2ETest {
 
         Member anotherMember = new Member("notOwnerUsername", "notOwnerPassword", "notOwnerName", "010-1234-5678");
         memberDao.save(anotherMember);
-        TokenRequest loginBody = new TokenRequest(anotherMember.getUsername(), anotherMember.getPassword());
+        TokenRequest loginBodyAnother = new TokenRequest(anotherMember.getUsername(), anotherMember.getPassword());
 
-        String anotherToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginBody)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class).getAccessToken();
-        System.out.println("token = " + token);
-        System.out.println("anotherToken = " + anotherToken);
+        String anotherToken = requestLogin(loginBodyAnother);
 
        RestAssured
                .given().log().all()
@@ -227,8 +219,8 @@ class ReservationE2ETest {
         return RestAssured
                 .given().log().all()
                 .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
