@@ -1,5 +1,7 @@
-package nextstep.auth;
+package nextstep.auth.principal;
 
+import nextstep.auth.AuthorizationExtractor;
+import nextstep.auth.jwt.JwtTokenProvider;
 import nextstep.member.MemberDao;
 import nextstep.support.NotExistEntityException;
 import org.springframework.core.MethodParameter;

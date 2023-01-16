@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.principal.AuthenticationPrincipalArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

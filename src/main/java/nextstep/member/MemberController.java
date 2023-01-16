@@ -1,7 +1,6 @@
 package nextstep.member;
 
-import nextstep.auth.AuthenticationPrincipal;
-import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.principal.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

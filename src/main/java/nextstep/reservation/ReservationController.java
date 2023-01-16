@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.auth.AuthenticationPrincipal;
+import nextstep.auth.principal.AuthenticationPrincipal;
 import nextstep.member.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +20,20 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@AuthenticationPrincipal Member member,
+    public ResponseEntity<Void> createReservation(@AuthenticationPrincipal Member member,
                                             @RequestBody ReservationRequest reservationRequest) {
         Long id = reservationService.create(member.getName(), reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Reservation>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@AuthenticationPrincipal Member member,
+    public ResponseEntity<Void> deleteReservation(@AuthenticationPrincipal Member member,
                                             @PathVariable Long id) {
         reservationService.deleteById(member.getName(), id);
 
@@ -41,7 +41,7 @@ public class ReservationController {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
+    public ResponseEntity<Void> onException(Exception e) {
         System.out.println(Arrays.toString(e.getStackTrace()));
         return ResponseEntity.badRequest().build();
     }

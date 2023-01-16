@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.jwt.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.beans.factory.annotation.Autowired;
