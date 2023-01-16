@@ -12,4 +12,8 @@ public class AuthService {
     public String login(TokenRequestDto tokenRequestDto) {
         return jwtTokenProvider.createToken(tokenRequestDto.getUsername());
     }
+
+    public String findUsernameByToken(String token) {
+        return jwtTokenProvider.getPrincipal(token);
+    }
 }
