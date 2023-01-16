@@ -28,4 +28,8 @@ public class MemberService {
             throw new NotExistEntityException();
         }
     }
+
+    public Member findByUsername(String username) {
+        return memberDao.findByUsername(username);
+    }
 }
