@@ -85,8 +85,7 @@ class ReservationE2ETest {
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         request = new ReservationRequest(
-                scheduleId,
-                "브라운"
+                scheduleId
         );
     }
 
@@ -104,6 +103,21 @@ class ReservationE2ETest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
+
+    @DisplayName("권한이 없는 경우 예약을 생성하지 못한다.")
+    @Test
+    void createWithNoAuth() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
 
     @DisplayName("예약을 조회한다")
     @Test
@@ -137,6 +151,53 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("권한없는 예약을 삭제한다")
+    @Test
+    void deleteWithNoAuth() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("다른 권한을 가진 예약을 삭제한다")
+    @Test
+    void deleteWithOtherAuth() {
+        MemberRequest body2 = new MemberRequest(USERNAME+"1", PASSWORD+"1", NAME, "010-1234-5678");
+        var memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body2)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        String otherAccessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest(USERNAME+"1", PASSWORD+"1"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(otherAccessToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
@@ -144,6 +205,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -173,6 +235,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -183,6 +246,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

@@ -35,7 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest httpServletRequest = (HttpServletRequest)webRequest.getNativeRequest();
         String token = AuthorizationExtractor.extract(httpServletRequest);
         Long id = authService.validateToken(token);
-        // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
+
         return memberService.findById(id);
     }
 }
