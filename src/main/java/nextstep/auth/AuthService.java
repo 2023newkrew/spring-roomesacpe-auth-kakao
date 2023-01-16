@@ -24,8 +24,6 @@ public class AuthService {
     }
 
     public boolean checkInvalidLogin(String username, String password) {
-        System.out.println(username);
-        System.out.println("=====");
         Member member = memberDao.findByUsername(username);
         return !password.equals(member.getPassword());
     }

@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.support.AuthorizationException;
@@ -10,11 +11,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-@Component
-@RequiredArgsConstructor
 public class AuthenticationMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

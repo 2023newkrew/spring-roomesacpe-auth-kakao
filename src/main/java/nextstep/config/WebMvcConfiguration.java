@@ -12,20 +12,17 @@ import java.util.List;
 
 
 @Configuration
-@RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-
-    private final AuthenticationMemberArgumentResolver authenticationMemberArgumentResolver;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
-                .addPathPatterns("/reservations/**");
+                .addPathPatterns("/reservations");
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authenticationMemberArgumentResolver);
+        resolvers.add(new AuthenticationMemberArgumentResolver());
     }
 }
