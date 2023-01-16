@@ -20,6 +20,10 @@ public class MemberService {
         return memberDao.findById(id);
     }
 
+    public Member findByUsername(String username) {
+        return memberDao.findByUsername(username);
+    }
+
     public void validateUserPassword(TokenRequest tokenRequest) {
         if (!memberDao.isUsernameAndPasswordMatch(
                 tokenRequest.getUsername(),
