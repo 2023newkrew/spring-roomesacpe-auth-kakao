@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest);
+        Long id = reservationService.create(reservationRequest, new Member(1L, "temp", "temp", "temp", "temp"));
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
