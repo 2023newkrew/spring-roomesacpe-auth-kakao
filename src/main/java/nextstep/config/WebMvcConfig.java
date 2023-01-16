@@ -1,8 +1,8 @@
 package nextstep.config;
 
-import nextstep.auth.JwtTokenProvider;
-import nextstep.member.AuthArgumentResolver;
-import nextstep.member.AuthInterceptor;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.auth.presentation.argumentresolver.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.presentation.interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -26,8 +26,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthArgumentResolver authArgumentResolver() {
-        return new AuthArgumentResolver(jwtTokenProvider);
+    public AuthenticationPrincipalArgumentResolver authArgumentResolver() {
+        return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
     }
 
     @Override

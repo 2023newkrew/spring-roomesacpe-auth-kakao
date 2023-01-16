@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.dto;
 
 public class TokenResponse {
     public String accessToken;

@@ -2,9 +2,8 @@ package nextstep.member;
 
 import static org.assertj.core.api.Assertions.*;
 
-import nextstep.auth.JwtTokenProvider;
-import nextstep.auth.TokenRequest;
-import nextstep.support.NotExistEntityException;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.auth.dto.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

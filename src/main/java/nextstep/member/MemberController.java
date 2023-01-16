@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.auth.dto.LoginMember;
+import nextstep.auth.presentation.argumentresolver.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +23,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@Authenticated LoginUser loginUser) {
-        Member member = memberService.findById(loginUser.getId());
+    public ResponseEntity me(@AuthenticationPrincipal LoginMember loginMember) {
+        Member member = memberService.findById(loginMember.getId());
         return ResponseEntity.ok(member);
     }
 }

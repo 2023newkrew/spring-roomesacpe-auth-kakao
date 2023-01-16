@@ -1,6 +1,7 @@
-package nextstep.member;
+package nextstep.auth.presentation.argumentresolver;
 
-import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.auth.dto.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -9,17 +10,20 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Authenticated.class);
+        boolean hasAuthenticationPrincipalAnnotation = parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
+        boolean hasLoginMemberType = LoginMember.class.isAssignableFrom(parameter.getParameterType());
+
+        return hasAuthenticationPrincipalAnnotation && hasLoginMemberType;
     }
 
     @Override
@@ -28,7 +32,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         String token = (String) request.getAttribute("accessToken");
 
         String principal = jwtTokenProvider.getPrincipal(token);
-        return new LoginUser(Long.valueOf(principal));
+        return new LoginMember(Long.valueOf(principal));
     }
 
 }

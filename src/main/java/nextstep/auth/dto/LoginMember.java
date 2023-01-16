@@ -1,10 +1,10 @@
-package nextstep.member;
+package nextstep.auth.dto;
 
-public class LoginUser {
+public class LoginMember {
 
     private Long id;
 
-    public LoginUser(Long id) {
+    public LoginMember(Long id) {
         this.id = id;
     }
 

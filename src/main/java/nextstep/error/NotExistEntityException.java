@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.error;
 
 
 import org.springframework.http.HttpStatus;

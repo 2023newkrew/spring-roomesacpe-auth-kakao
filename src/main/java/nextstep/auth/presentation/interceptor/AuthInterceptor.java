@@ -1,6 +1,6 @@
-package nextstep.member;
+package nextstep.auth.presentation.interceptor;
 
-import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.utils.JwtTokenProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 
