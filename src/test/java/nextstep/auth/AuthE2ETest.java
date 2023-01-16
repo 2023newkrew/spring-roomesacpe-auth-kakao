@@ -48,6 +48,31 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
+    @DisplayName("아이디가 잘못된 토큰을 요청하는 경우")
+    @Test
+    public void invalidUsername() {
+        TokenRequest body = new TokenRequest(USERNAME+ "s", PASSWORD);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+    @DisplayName("비밀번호가 잘못된 토큰을 요청하는 경우")
+    @Test
+    public void invalidPassword() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD+ "s");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
