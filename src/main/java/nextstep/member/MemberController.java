@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/members")
@@ -23,7 +24,7 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity me() {
         Long id = 1L;
-        Member member = memberService.findById(id);
-        return ResponseEntity.ok(member);
+        Optional<Member> member = memberService.findById(id);
+        return ResponseEntity.ok(member.get());
     }
 }

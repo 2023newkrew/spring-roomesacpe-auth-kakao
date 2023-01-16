@@ -2,6 +2,8 @@ package nextstep.member;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private MemberDao memberDao;
@@ -14,7 +16,7 @@ public class MemberService {
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         return memberDao.findById(id);
     }
 }
