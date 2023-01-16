@@ -8,6 +8,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/members")
 public class MemberController {
+
     private MemberService memberService;
 
     public MemberController(MemberService memberService) {

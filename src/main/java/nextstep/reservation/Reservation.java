@@ -3,6 +3,7 @@ package nextstep.reservation;
 import nextstep.schedule.Schedule;
 
 public class Reservation {
+
     private Long id;
     private Schedule schedule;
     private String name;

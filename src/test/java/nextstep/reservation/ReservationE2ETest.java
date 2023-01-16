@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ReservationE2ETest {
+
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";

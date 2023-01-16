@@ -1,6 +1,7 @@
 package nextstep.member;
 
 public class MemberRequest {
+
     private String username;
     private String password;
     private String name;

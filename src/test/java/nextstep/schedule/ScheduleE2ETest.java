@@ -18,6 +18,19 @@ public class ScheduleE2ETest {
 
     private Long themeId;
 
+    public static String requestCreateSchedule() {
+        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .header("Location");
+    }
+
     @BeforeEach
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
@@ -75,18 +88,5 @@ public class ScheduleE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .header("Location");
     }
 }
