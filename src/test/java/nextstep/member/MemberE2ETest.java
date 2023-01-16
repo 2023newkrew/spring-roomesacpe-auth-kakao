@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
-import nextstep.theme.ThemeRequest;
+import nextstep.auth.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
@@ -25,6 +25,31 @@ public class ThemeE2ETest {
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("본인 정보를 조회한다")
+    @Test
+    public void me() {
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        String token = jwtTokenProvider.createToken("username");
+        var response = RestAssured
+                .given().header("authorization", "Bearer " + token).log().all()
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+        assertThat((String) response.path("username")).isEqualTo("username");
+        assertThat((String) response.path("password")).isEqualTo("password");
+        assertThat((String) response.path("name")).isEqualTo("name");
+        assertThat((String) response.path("phone")).isEqualTo("010-1234-5678");
     }
 //
 //    @DisplayName("테마 목록을 조회한다")
