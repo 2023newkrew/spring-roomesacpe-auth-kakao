@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import io.restassured.common.mapper.TypeRef;
+import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.dto.request.TokenRequest;

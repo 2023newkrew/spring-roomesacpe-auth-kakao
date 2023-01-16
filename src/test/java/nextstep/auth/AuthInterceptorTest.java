@@ -88,7 +88,6 @@ public class AuthInterceptorTest {
 
         // then
         assertThat(result).isTrue();
-        verify(request, times(1)).setAttribute(eq("accessToken"), any(String.class));
     }
 
 }

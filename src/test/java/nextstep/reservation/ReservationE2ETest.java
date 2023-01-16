@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import io.restassured.RestAssured;
-import io.restassured.common.mapper.TypeRef;
+import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.utils.JwtTokenProvider;
