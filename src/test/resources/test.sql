@@ -39,4 +39,4 @@ CREATE TABLE member
     primary key (id)
 );
 
-INSERT INTO member(username, password, name, phone) VALUES ('user', 'pw', 'user', '010-0000-0000');
+INSERT INTO member(username, password, name, phone) VALUES ('user', 'pw', '브라운', '010-0000-0000');
