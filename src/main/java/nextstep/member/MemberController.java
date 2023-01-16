@@ -26,4 +26,5 @@ public class MemberController {
         Member member = memberService.findById(id);
         return ResponseEntity.ok(member);
     }
+
 }
