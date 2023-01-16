@@ -1,6 +1,7 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
+import java.util.Objects;
 import nextstep.auth.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
