@@ -1,18 +1,20 @@
 package nextstep.member;
 
+import lombok.AllArgsConstructor;
+import nextstep.auth.AuthService;
+import nextstep.infrastructure.AuthorizationExtractor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
 @RequestMapping("/members")
+@AllArgsConstructor
 public class MemberController {
     private MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private AuthService authService;
 
     @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
@@ -21,9 +23,10 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me() {
-        Long id = 1L;
-        Member member = memberService.findById(id);
-        return ResponseEntity.ok(member);
+    public ResponseEntity me(HttpServletRequest request) {
+        String accessToken = AuthorizationExtractor.extract(request);
+        String username = authService.findUsernameByToken(accessToken);
+        MemberResponseDto memberDto = memberService.findByUsername(username);
+        return ResponseEntity.ok(memberDto);
     }
 }
