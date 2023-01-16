@@ -89,6 +89,19 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("토큰 정보가 없으면 예약을 할 수 없다")
+    @Test
+    public void create_reservation_not_login() {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new ReservationRequest(1L, "bryan"))
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
+    }
+
     @DisplayName("예약을 조회한다")
     @Test
     void show() {

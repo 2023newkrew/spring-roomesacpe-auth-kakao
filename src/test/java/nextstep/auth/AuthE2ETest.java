@@ -67,43 +67,6 @@ public class AuthE2ETest {
         assertThat(tokenResponse).isNotNull();
     }
 
-    @DisplayName("토큰 정보가 없으면 예약을 할 수 없다")
-    @Test
-    public void create_reservation_not_login() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        TokenResponse tokenResponse = RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class);
-
-        String themeLocation = RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new ThemeRequest("testTheme", "some description", 10000))
-                .when().post("/themes").then().extract().header("Location");
-
-        Long createdThemeId = Long.parseLong(themeLocation.split("/")[2]);
-
-        String scheduleLocation = RestAssured.given().contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new ScheduleRequest(createdThemeId, "2022-01-16", "14:00"))
-                .when().post("/schedules").then().extract().header("Location");
-
-        Long createdScheduleId = Long.parseLong(scheduleLocation.split("/")[2]);
-
-        String accessToken = tokenResponse.getAccessToken();
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
-                .body(new ReservationRequest(createdScheduleId, "bryan"))
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-    }
-
     @DisplayName("토큰 정보로 회원 정보를 조회한다")
     @Test
     public void findMemberByToken() {

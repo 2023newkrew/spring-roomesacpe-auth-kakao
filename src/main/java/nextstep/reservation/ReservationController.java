@@ -2,7 +2,9 @@ package nextstep.reservation;
 
 import nextstep.member.Member;
 import nextstep.member.MemberService;
+import nextstep.support.AuthorizationException;
 import nextstep.ui.AuthenticationPrincipal;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +24,11 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal String token) {
-        Member member = memberService.findByToken(token);
+    public ResponseEntity createReservation(@AuthenticationPrincipal String token, @RequestBody ReservationRequest reservationRequest) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        memberService.findByToken(token);
         Long id = reservationService.create(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
