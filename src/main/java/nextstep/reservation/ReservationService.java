@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.member.LoginMember;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
@@ -21,12 +22,8 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
-        }
-
+    public Long create(Long scheduleId, LoginMember loginMember) {
+        Schedule schedule = scheduleDao.findById(scheduleId).orElseThrow(NullPointerException::new);
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
@@ -34,7 +31,7 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                loginMember.getUsername()
         );
 
         return reservationDao.save(newReservation);
@@ -49,12 +46,14 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, LoginMember loginMember) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();
         }
-
+        if (!reservation.getName().equals(loginMember.getUsername())) {
+            throw new IllegalArgumentException();
+        }
         reservationDao.deleteById(id);
     }
 }

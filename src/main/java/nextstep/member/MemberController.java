@@ -22,10 +22,6 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity<LoginMember> me(@AuthenticationPrincipal LoginMember loginMember) {
-//        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-//        String token = httpServletRequest.getHeader("authorization").substring("Bearer ".length());
-//        String username = jwtTokenProvider.getPrincipal(token);
-//        Member member = memberService.findByUsername();
         return ResponseEntity.ok(loginMember);
     }
 }

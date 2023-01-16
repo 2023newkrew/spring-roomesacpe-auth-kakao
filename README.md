@@ -1,8 +1,10 @@
+# 1단계 - 로그인
+
 ## 기능 요구사항
 
 - [x] 토큰 발급하는 API 생성
-- [ ] 내 정보 조회하기
-    - [ ] 토큰을 이용하여 본인 정보 응답하기
+- [x] 내 정보 조회하기
+    - [x] 토큰을 이용하여 본인 정보 응답하기
 
 ## 프로그래밍 요구사항
 
@@ -52,4 +54,49 @@ Content-Type: application/json
     "name": "name",
     "phone": "010-1234-5678"
 }
+```
+
+# 2단계 - 로그인 리팩터링
+
+## 기능 요구사항
+
+- [x] 예약하기, 예약취소 개선
+    - [x] 아래의 API 설계에 맞춰 API 스펙을 변경한다.
+    - [x] 비로그인 사용자는 예약이 불가능하다.
+    - [x] 자신의 예약이 아닌 경우 예약 취소가 불가능하다.
+
+## 프로그래밍 요구사항
+
+- [x] HandlerMethodArgumentResolver를 활용한다.
+
+## API 설계
+
+### 예약 생성
+
+```
+POST /reservations HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk4NTkwLCJleHAiOjE2NjMzMDIxOTAsInJvbGUiOiJBRE1JTiJ9.-OO1QxEpcKhmC34HpmuBhlnwhKdZ39U8q91QkTdH9i0
+content-type: application/json; charset=UTF-8
+host: localhost:8080
+
+{
+    // 필요한 값
+    // ex) "scheduleId": 1
+}
+```
+
+```
+HTTP/1.1 201 Created
+Location: /reservations/1
+```
+
+### 예약 삭제
+
+```
+DELETE /reservations/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk5MDcwLCJleHAiOjE2NjMzMDI2NzAsInJvbGUiOiJBRE1JTiJ9.zgz7h7lrKLNw4wP9I0W8apQnMUn3WHnmqQ1N2jNqwlQ
+```
+
+```
+HTTP/1.1 204
 ```
