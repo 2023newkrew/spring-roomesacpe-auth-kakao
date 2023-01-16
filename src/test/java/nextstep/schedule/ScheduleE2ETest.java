@@ -1,11 +1,15 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.JwtTokenProvider;
+import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -18,13 +22,33 @@ public class ScheduleE2ETest {
 
     private Long themeId;
 
+    private String token;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @BeforeEach
     void setUp() {
+        MemberRequest body = new MemberRequest("username", "password", "브라운", "010-1234-5678");
+        var memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        String[] memberLocation = memberResponse.header("Location").split("/");
+        Long memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+        token = jwtTokenProvider.createToken(memberId + "");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
@@ -41,6 +65,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -55,6 +80,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", "2022-08-11")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -70,6 +96,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().delete(location)
                 .then().log().all()
                 .extract();
@@ -77,12 +104,13 @@ public class ScheduleE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static String requestCreateSchedule() {
+    public String requestCreateSchedule() {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
