@@ -12,5 +12,4 @@ public class MemberResponse extends MemberBaseDto {
         return new MemberResponse(loginMember.getId(), loginMember.getUsername(),
                 loginMember.getPassword(), loginMember.getName(), loginMember.getPhone());
     }
-
 }
