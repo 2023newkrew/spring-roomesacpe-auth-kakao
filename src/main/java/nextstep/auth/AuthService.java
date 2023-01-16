@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.support.NotExistEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +11,15 @@ public class AuthService {
 
     private final MemberDao memberDao;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     @Autowired
-    public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(MemberDao memberDao) {
         this.memberDao = memberDao;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
     public TokenResponse login(TokenRequest tokenRequest) {
-        memberDao.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword())
+        Member member = memberDao.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword())
                 .orElseThrow(NotExistEntityException::new);
-        return new TokenResponse(jwtTokenProvider.createToken("1"));
+        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(member.getId())));
     }
 }
