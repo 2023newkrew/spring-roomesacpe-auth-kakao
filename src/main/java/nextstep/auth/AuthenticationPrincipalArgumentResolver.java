@@ -30,6 +30,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthenticationException();
         }
-        return jwtTokenProvider.getPrincipal(token);
+        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
     }
 }

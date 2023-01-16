@@ -1,7 +1,5 @@
 package nextstep.member;
 
-import nextstep.auth.TokenRequest;
-import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,13 +20,5 @@ public class MemberService {
 
     public Member findByUsername(String username) {
         return memberDao.findByUsername(username);
-    }
-
-    public void validateUserPassword(TokenRequest tokenRequest) {
-        if (!memberDao.isUsernameAndPasswordMatch(
-                tokenRequest.getUsername(),
-                tokenRequest.getPassword())) {
-            throw new NotExistEntityException();
-        }
     }
 }

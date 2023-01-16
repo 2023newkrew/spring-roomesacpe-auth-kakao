@@ -26,7 +26,7 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, String username) {
+    public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -37,7 +37,7 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Member member = memberDao.findByUsername(username);
+        Member member = memberDao.findById(memberId);
         if (member == null) {
             throw new NullPointerException();
         }
@@ -59,8 +59,8 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(String username, Long id) {
-        Member member = memberDao.findByUsername(username);
+    public void deleteById(Long memberId, Long id) {
+        Member member = memberDao.findById(memberId);
         if (member == null) {
             throw new NullPointerException();
         }
