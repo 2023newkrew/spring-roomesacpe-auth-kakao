@@ -25,7 +25,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@Login LoginMember member) {
+    public ResponseEntity<MemberResponse> me(@Login LoginMember loginMember) {
+        Member member = memberService.findById(loginMember.getId());
         return ResponseEntity.ok(MemberResponse.of(member));
     }
 }
