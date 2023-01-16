@@ -1,30 +1,31 @@
 package nextstep.member;
 
-import nextstep.auth.dto.LoginMember;
+import lombok.RequiredArgsConstructor;
+import nextstep.dto.request.LoginMember;
 import nextstep.auth.presentation.argumentresolver.AuthenticationPrincipal;
+import nextstep.dto.response.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@RestController
+@RequiredArgsConstructor
 @RequestMapping("/members")
+@RestController
 public class MemberController {
-    private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
-        return ResponseEntity.ok(member);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal LoginMember loginMember) {
+        MemberResponse memberResponse = MemberResponseConverter.memberResponse(memberService.findById(loginMember.getId()));
+
+        return ResponseEntity.ok(memberResponse);
     }
 }

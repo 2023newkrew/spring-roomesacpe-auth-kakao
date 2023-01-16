@@ -2,12 +2,17 @@ package nextstep.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.utils.JwtTokenProvider;
-import nextstep.auth.dto.TokenRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.dto.request.TokenRequest;
+import nextstep.dto.response.TokenResponse;
+import nextstep.error.ApplicationException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import org.springframework.stereotype.Service;
+
+import static nextstep.error.ErrorType.MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
+@Service
 public class LoginService {
 
     private final MemberDao memberDao;
@@ -17,7 +22,7 @@ public class LoginService {
         Member member = findByUsername(tokenRequest.getUsername());
 
         if (member.checkWrongPassword(tokenRequest.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new ApplicationException(MEMBER_NOT_FOUND);
         }
 
         return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
@@ -27,7 +32,7 @@ public class LoginService {
         try {
             return memberDao.findByUsername(username);
         } catch (RuntimeException e) {
-            throw new RuntimeException("아이디에 해당하는 사용자가 존재하지 않습니다.");
+            throw new ApplicationException(MEMBER_NOT_FOUND);
         }
     }
 

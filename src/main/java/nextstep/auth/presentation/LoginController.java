@@ -1,8 +1,8 @@
 package nextstep.auth.presentation;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.dto.TokenRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.dto.request.TokenRequest;
+import nextstep.dto.response.TokenResponse;
 import nextstep.auth.service.LoginService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

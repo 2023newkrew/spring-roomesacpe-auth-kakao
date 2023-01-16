@@ -1,7 +1,7 @@
 package nextstep.auth.presentation.argumentresolver;
 
 import nextstep.auth.utils.JwtTokenProvider;
-import nextstep.auth.dto.LoginMember;
+import nextstep.dto.request.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
