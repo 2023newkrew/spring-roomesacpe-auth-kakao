@@ -38,8 +38,6 @@ class ReservationE2ETest {
     private Long memberId;
     private String token;
     @Autowired
-    private AuthService authService;
-    @Autowired
     private MemberDao memberDao;
 
     @BeforeEach
@@ -113,6 +111,7 @@ class ReservationE2ETest {
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -225,6 +224,7 @@ class ReservationE2ETest {
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
