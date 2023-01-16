@@ -17,4 +17,8 @@ public class MemberService {
     public Member findById(Long id) {
         return memberDao.findById(id);
     }
+
+    public MemberResponseDto findByUsername(String username) {
+        return MemberResponseDto.toDto(memberDao.findByUsername(username));
+    }
 }
