@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.support.NotExistMemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,5 +17,9 @@ public class MemberService {
 
     public Member findById(Long id) {
         return memberDao.findById(id);
+    }
+
+    public Member findByUserName(String userName) {
+        return memberDao.findByUsername(userName).orElseThrow(NotExistMemberException::new);
     }
 }
