@@ -1,12 +1,14 @@
 package nextstep.reservation;
 
+import lombok.NoArgsConstructor;
 import nextstep.schedule.Schedule;
 
+@NoArgsConstructor
 public class Reservation {
     private Long id;
-    private final Schedule schedule;
-    private final String name;
-    private final Long memberId;
+    private Schedule schedule;
+    private String name;
+    private Long memberId;
 
     public Reservation(Schedule schedule, String name, Long memberId) {
         this.schedule = schedule;

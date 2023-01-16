@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
     private final MemberDao memberDao;
     private final JwtTokenProvider jwtTokenProvider;
     private static final String BEARER = "Bearer ";

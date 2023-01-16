@@ -10,7 +10,7 @@ import java.net.URI;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private final String TOKEN_KEY = "authorization";
+    private static final String AUTHORIZATION = "authorization";
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -23,10 +23,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Member> me(
-            HttpServletRequest httpServletRequest
-    ) {
-        String token = httpServletRequest.getHeader(TOKEN_KEY);
+    public ResponseEntity<Member> me(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader(AUTHORIZATION);
         Member member = memberService.findByToken(token);
         return ResponseEntity.ok(member);
     }

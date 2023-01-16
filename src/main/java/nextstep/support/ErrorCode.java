@@ -10,6 +10,8 @@ public enum ErrorCode {
     // Authentication Error
     NOT_AUTHORIZED("인증되지 않은 회원입니다.", HttpStatus.UNAUTHORIZED),
     PASSWORD_NOT_MATCH("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
+    NO_SUCH_TOKEN("토큰이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED),
+
     NO_SUCH_MEMBER("존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND),
 
     // Room Escape Error
