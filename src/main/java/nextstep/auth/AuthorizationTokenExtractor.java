@@ -12,6 +12,10 @@ public class AuthorizationTokenExtractor {
 
     public static Optional<String> extract(HttpServletRequest request) {
         String authorization = request.getHeader(AUTHORIZATION);
+        return extract(authorization);
+    }
+
+    public static Optional<String> extract(String authorization) {
         if (authorization == null) {
             return Optional.empty();
         }
