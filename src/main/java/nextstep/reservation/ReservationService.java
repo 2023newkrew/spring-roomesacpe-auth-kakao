@@ -3,6 +3,7 @@ package nextstep.reservation;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
+import nextstep.support.exception.AuthorizationException;
 import nextstep.support.exception.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
@@ -50,12 +51,14 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Member member) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();
         }
-
+        if (!reservation.getMemberId().equals(member.getId())) {
+            throw new AuthorizationException();
+        }
         reservationDao.deleteById(id);
     }
 }

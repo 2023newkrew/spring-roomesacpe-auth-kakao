@@ -134,6 +134,41 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("권한이 없는 상태에서 예약을 삭제한다")
+    @Test
+    void mismatchDelete() {
+        MemberRequest body = new MemberRequest("a", "b", "c", "010-1111-2222");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        TokenRequest tokenRequest = new TokenRequest("a", "b");
+        var wrongToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(TokenResponse.class);
+
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("Authorization", wrongToken.getAccessToken())
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
