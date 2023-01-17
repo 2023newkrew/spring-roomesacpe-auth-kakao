@@ -35,10 +35,6 @@ class ReservationE2ETest {
     private static final String PHONE = "010-1234-5678";
 
     private String accessToken;
-
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
@@ -94,16 +90,8 @@ class ReservationE2ETest {
                 .extract().as(TokenResponse.class).getAccessToken();
 
 
-        request = new ReservationRequest(
-                scheduleId,
-                memberId
-        );
+        request = new ReservationRequest(scheduleId);
     }
-
-//    @BeforeEach
-//    void tearDown() {
-//        jdbcTemplate.update("DELETE FROM reservation");
-//    }
 
     @DisplayName("예약을 생성한다")
     @Test
@@ -135,6 +123,8 @@ class ReservationE2ETest {
 
         List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
         assertThat(reservations.size()).isEqualTo(1);
+        assertThat(reservations.get(0).getSchedule().getDate()).isEqualTo(DATE);
+        assertThat(reservations.get(0).getSchedule().getTheme().getId()).isEqualTo(themeId);
     }
 
     @DisplayName("예약을 다수 조회한다")
@@ -153,7 +143,7 @@ class ReservationE2ETest {
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-        ReservationRequest reservationRequest = new ReservationRequest(scheduleId, memberId);
+        ReservationRequest reservationRequest = new ReservationRequest(scheduleId);
         createReservation(reservationRequest);
 
         var response = RestAssured

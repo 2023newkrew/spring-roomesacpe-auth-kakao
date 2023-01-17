@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dto.MemberRequest;
-import nextstep.member.dto.MemberResponse;
+import nextstep.member.dto.MemberCreatedResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,14 +67,14 @@ public class AuthE2ETest {
                 .extract().as(TokenResponse.class).getAccessToken();
 
         // when
-        MemberResponse response =  RestAssured
+        MemberCreatedResponse response =  RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
+                .extract().as(MemberCreatedResponse.class);
 
         // then
         assertThat(response.getId()).isNotNull();

@@ -3,6 +3,7 @@ package nextstep.reservation;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 import static nextstep.reservation.ReservationJdbcSql.*;
 
@@ -62,11 +64,12 @@ public class ReservationDao {
         return jdbcTemplate.query(SELECT_BY_THEME_ID_AND_DATE_STATEMENT, rowMapper, themeId, Date.valueOf(date));
     }
 
-    public Reservation findById(Long id) {
+    public Optional<Reservation> findById(Long id) {
         try {
-            return jdbcTemplate.queryForObject(SELECT_BY_RESERVATION_ID_STATEMENT, rowMapper, id);
-        } catch (Exception e) {
-            return null;
+            Reservation reservation = jdbcTemplate.queryForObject(SELECT_BY_RESERVATION_ID_STATEMENT, rowMapper, id);
+            return Optional.of(reservation);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
     }
 

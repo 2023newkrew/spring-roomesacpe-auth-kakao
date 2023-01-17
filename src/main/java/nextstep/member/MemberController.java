@@ -3,7 +3,7 @@ package nextstep.member;
 import nextstep.common.Login;
 import nextstep.member.dto.LoginMember;
 import nextstep.member.dto.MemberRequest;
-import nextstep.member.dto.MemberResponse;
+import nextstep.member.dto.MemberCreatedResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +25,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@Login LoginMember loginMember) {
+    public ResponseEntity<MemberCreatedResponse> me(@Login LoginMember loginMember) {
         Member member = memberService.findById(loginMember.getId());
-        return ResponseEntity.ok(MemberResponse.of(member));
+        return ResponseEntity.ok(MemberCreatedResponse.of(member));
     }
 }

@@ -12,45 +12,26 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
     public final ReservationDao reservationDao;
-    public final ThemeDao themeDao;
-    public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService(ReservationDao reservationDao) {
         this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, Member member) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
-        }
-
+    public Long create(Member member, Schedule schedule) {
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
-        System.out.println(reservation);
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                member
-        );
-
-        return reservationDao.save(newReservation);
+        return reservationDao.save(new Reservation(schedule, member));
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
-            throw new NullPointerException();
-        }
-
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
@@ -72,10 +53,7 @@ public class ReservationService {
     }
 
     public Reservation findById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NotExistEntityException("해당 아이디의 예약이 존재하지 않습니다.");
-        }
-        return reservation;
+        return reservationDao.findById(id)
+                .orElseThrow(() -> new NotExistEntityException("해당 아이디의 예약이 존재하지 않습니다."));
     }
 }

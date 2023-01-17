@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import nextstep.theme.Theme;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,13 +13,12 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static nextstep.schedule.ScheduleJdbcSql.*;
 
 @Component
 public class ScheduleDao {
-
-
     private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
@@ -52,8 +52,14 @@ public class ScheduleDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Schedule findById(Long id) {
-        return jdbcTemplate.queryForObject(SELECT_BY_ID_STATEMENT, rowMapper, id);
+    public Optional<Schedule> findById(Long id) {
+        try {
+            Schedule schedule = jdbcTemplate.queryForObject(SELECT_BY_ID_STATEMENT, rowMapper, id);
+            return Optional.of(schedule);
+        }
+        catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

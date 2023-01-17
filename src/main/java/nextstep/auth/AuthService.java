@@ -30,7 +30,9 @@ public class AuthService {
 
     public TokenResponse createToken(Optional<Member> member) {
         Long id = validate(member);
-        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(id)));
+        String token = jwtTokenProvider.createToken(String.valueOf(id));
+        System.out.println("?????"+token);
+        return new TokenResponse(token);
     }
 
     public Long decodeTokenByRequest(HttpServletRequest request) {
