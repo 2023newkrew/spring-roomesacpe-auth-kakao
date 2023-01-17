@@ -12,6 +12,8 @@ import static nextstep.error.ErrorType.UNAUTHORIZED_ERROR;
 
 public class AuthInterceptor implements HandlerInterceptor {
 
+    private static final String ACCESS_TOKEN = "accessToken";
+
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthInterceptor(JwtTokenProvider jwtTokenProvider) {
@@ -26,6 +28,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new ApplicationException(UNAUTHORIZED_ERROR);
         }
 
+        request.setAttribute(ACCESS_TOKEN, token);
         return true;
     }
 
