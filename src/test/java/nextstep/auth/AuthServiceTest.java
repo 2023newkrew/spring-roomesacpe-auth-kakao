@@ -21,8 +21,8 @@ public class AuthServiceTest {
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
-    @DisplayName("TokenRequest가 넘어오면 JWT를 반환한다.")
     @Test
+    @DisplayName("TokenRequest가 넘어오면 JWT를 반환한다.")
     void loginTest() {
         // given
         TokenRequestDto tokenRequestDto = new TokenRequestDto(USERNAME, PASSWORD);
@@ -32,8 +32,8 @@ public class AuthServiceTest {
         assertThat(authService.login(tokenRequestDto)).isEqualTo(TOKEN);
     }
 
-    @DisplayName("토큰을 이용하여 username을 구한다.")
     @Test
+    @DisplayName("토큰을 이용하여 username을 구한다.")
     void findUsernameByTokenTest() {
         when(jwtTokenProvider.getPrincipal(anyString())).thenReturn(USERNAME);
 

@@ -41,9 +41,9 @@ public class ReservationControllerTest {
                 scheduleId);
     }
 
-    @DisplayName("예약을 생성한다")
     @Test
-    void create() {
+    @DisplayName("예약을 생성한다")
+    void createTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
 
@@ -68,9 +68,9 @@ public class ReservationControllerTest {
     }
 
 
-    @DisplayName("예약을 생성할 때 액세스 토큰이 유효해야한다.")
     @Test
-    void create_with_invalid_accessToken() {
+    @DisplayName("예약을 생성할 때 액세스 토큰이 유효해야한다.")
+    void createWithInvalidAccessToken() {
         when(jwtTokenProvider.getPrincipal(invalidAccessToken)).thenThrow(JwtException.class);
 
         RestAssured
@@ -89,9 +89,9 @@ public class ReservationControllerTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("예약을 생성할 때 액세스 토큰이 존재해야 한다.")
     @Test
-    void create_without_accessToken() {
+    @DisplayName("예약을 생성할 때 액세스 토큰이 존재해야 한다.")
+    void createWithoutAccessToken() {
         RestAssured
                 .given()
                 .log()
@@ -106,9 +106,9 @@ public class ReservationControllerTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("권한을 가진 예약만 삭제할 수 있다.")
     @Test
-    void delete_with_invalid_accessToken_test() {
+    @DisplayName("권한을 가진 예약만 삭제할 수 있다.")
+    void deleteWithInvalidAccessTokenTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
         doThrow(new UnauthorizedException()).when(reservationService)
@@ -128,9 +128,9 @@ public class ReservationControllerTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("존재하는 예약만 삭제할 수 있다.")
     @Test
-    void delete_not_exist_reservation_test() {
+    @DisplayName("존재하는 예약만 삭제할 수 있다.")
+    void deleteNotExistReservationTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
         doThrow(new NotExistEntityException()).when(reservationService)
