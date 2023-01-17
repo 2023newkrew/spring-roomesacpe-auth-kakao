@@ -6,6 +6,8 @@ import nextstep.member.MemberDao;
 import nextstep.support.AuthorizationException;
 import org.springframework.stereotype.Service;
 
+import static nextstep.support.ErrorMessage.LOGIN_FAIL;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -15,7 +17,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(LOGIN_FAIL);
         }
 
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());

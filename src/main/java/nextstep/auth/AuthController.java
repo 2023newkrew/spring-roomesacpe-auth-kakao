@@ -13,7 +13,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest){
+    public ResponseEntity<TokenResponse> loginWithToken(@RequestBody TokenRequest tokenRequest){
         TokenResponse token = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(token);
     }

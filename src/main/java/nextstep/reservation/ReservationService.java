@@ -9,7 +9,7 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
+import static nextstep.support.ErrorMessage.RESERVATION_FAIL;
 
 @Service
 public class ReservationService {
@@ -58,7 +58,7 @@ public class ReservationService {
         }
 
         if(!name.equals(reservation.getName())){
-            throw new AuthorizationException("예약자의 이름과 일치하지 않습니다.");
+            throw new AuthorizationException(RESERVATION_FAIL);
         }
 
         reservationDao.deleteById(id);
