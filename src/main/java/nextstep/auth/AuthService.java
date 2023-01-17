@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -31,11 +30,11 @@ public class AuthService {
     public boolean checkPassword(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
-        Optional<Member> actualMember = memberDao.findByUsername(username);
+        Member actualMember = memberDao.findByUsername(username);
 
         if (Objects.isNull(actualMember)) {
             return false;
         }
-        return actualMember.get().getPassword().equals(password);
+        return actualMember.getPassword().equals(password);
     }
 }
