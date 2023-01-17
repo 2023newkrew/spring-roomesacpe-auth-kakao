@@ -2,8 +2,8 @@ package nextstep.auth.principal;
 
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.jwt.JwtTokenProvider;
+import nextstep.exception.AuthErrorCode;
 import nextstep.exception.BusinessException;
-import nextstep.exception.CommonErrorCode;
 import nextstep.member.MemberDao;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
+            throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
         }
         Long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
 
