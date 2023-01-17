@@ -4,12 +4,14 @@ import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import static nextstep.support.ErrorMessage.RESERVATION_FAIL;
+import static nextstep.support.ErrorMessage.RESERVATION_NOT_FOUND;
 
 @Service
 public class ReservationService {
@@ -54,7 +56,7 @@ public class ReservationService {
     public void deleteById(Long id, String name) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException(RESERVATION_NOT_FOUND);
         }
 
         if(!name.equals(reservation.getName())){

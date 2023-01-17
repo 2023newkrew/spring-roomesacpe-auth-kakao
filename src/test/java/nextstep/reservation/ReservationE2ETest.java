@@ -74,7 +74,7 @@ class ReservationE2ETest {
 
         request = new ReservationRequest(
                 scheduleId,
-                "username"
+                "name"
         );
 
         accessToken = RestAssured
@@ -84,7 +84,6 @@ class ReservationE2ETest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
                 .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-
     }
 
     @DisplayName("예약을 생성한다")
@@ -184,6 +183,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();

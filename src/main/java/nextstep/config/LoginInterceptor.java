@@ -25,16 +25,28 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = request.getHeader("Authorization");
 
-        // GET 메서드가 아니고 (GET은 예약 목록 조회에만 사용되고 있기 때문에 로그인 하지 않아도 가능해야 함), token이 없을 때
-        if(!HttpMethod.GET.matches(request.getMethod()) && accessToken == null) {
-            throw new AuthorizationException(LOGIN_FAIL);
-        }
-
-        // token 만료 되었는지 확인
-        if(!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthorizationException(TOKEN_EXPIRATION);
+        // GET 메서드가 아닐때 (GET은 예약 목록 조회에만 사용되고 있기 때문에 로그인 하지 않아도 가능해야 함)
+        if(!HttpMethod.GET.matches(request.getMethod())) {
+            // 검증 로직들
+            checkNullToken(accessToken);
+            checkTokenExpiration(accessToken);
         }
 
         return super.preHandle(request, response, handler);
+    }
+
+    // token 값이 비어있는지 확인
+    private void checkNullToken(String accessToken){
+        if(accessToken == null) {
+            throw new AuthorizationException(LOGIN_FAIL);
+        }
+    }
+
+    // token 만료 되었는지 확인
+    private void checkTokenExpiration(String accessToken){
+        String token = accessToken.split(" ")[1];
+        if(!jwtTokenProvider.validateToken(token)) {
+            throw new AuthorizationException(TOKEN_EXPIRATION);
+        }
     }
 }
