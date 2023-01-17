@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.config;
 
 import nextstep.auth.principal.AuthenticationPrincipalArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
