@@ -1,5 +1,7 @@
-package nextstep.auth;
+package nextstep.config;
 
+import nextstep.auth.AuthorizationExtractor;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.AuthorizationException;
 import nextstep.member.MemberDao;
 import org.springframework.core.MethodParameter;
@@ -30,7 +32,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
 

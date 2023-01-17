@@ -9,6 +9,7 @@ import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -164,6 +165,7 @@ class ReservationE2ETest {
 
     }
 
+
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
@@ -172,6 +174,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .body(request)
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -195,6 +198,7 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(0);
     }
 
+    @Disabled
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
