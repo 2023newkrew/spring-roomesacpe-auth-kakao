@@ -22,11 +22,7 @@ public class ThemeService {
     }
 
     public void delete(Long id) {
-        Theme theme = themeDao.findById(id);
-        if (theme == null) {
-            throw new NotExistEntityException();
-        }
-
+        themeDao.findById(id).orElseThrow(NotExistEntityException::new);
         themeDao.delete(id);
     }
 }
