@@ -1,8 +1,9 @@
 package nextstep.auth;
 
-import nextstep.member.LoginMember;
+import nextstep.auth.dto.TokenResponse;
+import nextstep.member.dto.LoginMember;
 import nextstep.member.Member;
-import nextstep.support.UnauthorizedAccessException;
+import nextstep.exception.UnauthorizedAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;

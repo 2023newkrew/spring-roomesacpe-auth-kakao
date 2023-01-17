@@ -1,6 +1,7 @@
-package nextstep.member;
+package nextstep.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import nextstep.member.Member;
 
 public class MemberInfoResponse {
 
@@ -8,8 +9,7 @@ public class MemberInfoResponse {
     private final String username;
     private final String phone;
 
-    @JsonCreator
-    public MemberInfoResponse(String name, String username, String phone) {
+    private MemberInfoResponse(String name, String username, String phone) {
         this.name = name;
         this.username = username;
         this.phone = phone;

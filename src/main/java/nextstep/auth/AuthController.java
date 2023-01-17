@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.http.ResponseEntity;

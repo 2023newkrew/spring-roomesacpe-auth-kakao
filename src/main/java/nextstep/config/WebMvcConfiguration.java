@@ -1,7 +1,7 @@
 package nextstep.config;
 
 import nextstep.auth.AuthService;
-import nextstep.auth.LoginMemberArgumentResolver;
+import nextstep.common.LoginMemberArgumentResolver;
 import nextstep.member.MemberService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

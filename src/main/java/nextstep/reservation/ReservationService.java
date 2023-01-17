@@ -1,11 +1,12 @@
 package nextstep.reservation;
 
 import nextstep.member.Member;
+import nextstep.reservation.dto.ReservationRequest;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.NotExistEntityException;
-import nextstep.support.UnauthorizedAccessException;
+import nextstep.exception.DuplicateEntityException;
+import nextstep.exception.NotExistEntityException;
+import nextstep.exception.UnauthorizedAccessException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;

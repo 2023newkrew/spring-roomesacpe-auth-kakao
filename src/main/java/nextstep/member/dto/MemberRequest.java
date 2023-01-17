@@ -1,4 +1,6 @@
-package nextstep.member;
+package nextstep.member.dto;
+
+import nextstep.member.Member;
 
 public class MemberRequest {
     private final String username;

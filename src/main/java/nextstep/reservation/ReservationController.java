@@ -1,18 +1,17 @@
 package nextstep.reservation;
 
 import nextstep.auth.AuthService;
-import nextstep.auth.Login;
-import nextstep.member.LoginMember;
+import nextstep.common.Login;
+import nextstep.member.dto.LoginMember;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.support.UnauthorizedAccessException;
-import org.springframework.http.HttpStatus;
+import nextstep.reservation.dto.ReservationRequest;
+import nextstep.reservation.dto.ReservationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController

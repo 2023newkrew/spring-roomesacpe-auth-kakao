@@ -1,6 +1,7 @@
-package nextstep.auth;
+package nextstep.common;
 
-import nextstep.member.LoginMember;
+import nextstep.auth.AuthService;
+import nextstep.member.dto.LoginMember;
 import nextstep.member.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

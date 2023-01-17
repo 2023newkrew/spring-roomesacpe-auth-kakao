@@ -1,22 +1,22 @@
-package nextstep.reservation;
+package nextstep.schedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
+import nextstep.theme.dto.ThemeResponse;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ScheduleResponse {
     private final Long id;
-    private final Theme theme;
+    private final ThemeResponse theme;
     private final LocalDate date;
     private final LocalTime time;
 
-    @JsonCreator
-    public ScheduleResponse(Long id, Theme theme, LocalDate date, LocalTime time) {
+    private ScheduleResponse(Long id, Theme theme, LocalDate date, LocalTime time) {
         this.id = id;
-        this.theme = theme;
+        this.theme = ThemeResponse.of(theme);
         this.date = date;
         this.time = time;
     }
@@ -29,7 +29,7 @@ public class ScheduleResponse {
         return id;
     }
 
-    public Theme getTheme() {
+    public ThemeResponse getTheme() {
         return theme;
     }
 

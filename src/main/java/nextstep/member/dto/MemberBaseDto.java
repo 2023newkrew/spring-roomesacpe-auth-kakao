@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.member.dto;
 
 public abstract class MemberBaseDto {
 
@@ -6,7 +6,7 @@ public abstract class MemberBaseDto {
     private final String username;
     private final String name;
 
-    public MemberBaseDto(Long id, String username, String name) {
+    protected MemberBaseDto(Long id, String username, String name) {
         this.id = id;
         this.username = username;
         this.name = name;

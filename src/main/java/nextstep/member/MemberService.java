@@ -1,6 +1,7 @@
 package nextstep.member;
 
-import nextstep.support.NotExistEntityException;
+import nextstep.exception.NotExistEntityException;
+import nextstep.member.dto.MemberRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

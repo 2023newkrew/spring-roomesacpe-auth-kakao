@@ -1,4 +1,6 @@
-package nextstep.theme;
+package nextstep.theme.dto;
+
+import nextstep.theme.Theme;
 
 public class ThemeRequest {
     private String name;

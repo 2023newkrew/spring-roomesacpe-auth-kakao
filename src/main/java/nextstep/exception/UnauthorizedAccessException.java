@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.exception;
 
 public class UnauthorizedAccessException extends RuntimeException{
     public UnauthorizedAccessException(String message) {

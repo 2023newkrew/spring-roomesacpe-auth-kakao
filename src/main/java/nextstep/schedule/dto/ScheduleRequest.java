@@ -1,5 +1,6 @@
-package nextstep.schedule;
+package nextstep.schedule.dto;
 
+import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 
 import java.time.LocalDate;
@@ -9,9 +10,6 @@ public class ScheduleRequest {
     private Long themeId;
     private String date;
     private String time;
-
-    public ScheduleRequest() {
-    }
 
     public ScheduleRequest(Long themeId, String date, String time) {
         this.themeId = themeId;
