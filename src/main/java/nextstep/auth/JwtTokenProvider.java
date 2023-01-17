@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
+import nextstep.support.AuthorizationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +29,15 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        try{
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        }catch (Exception e){
+            throw new AuthorizationException();
+        }
     }
 
     public String getCredential(String token) {
