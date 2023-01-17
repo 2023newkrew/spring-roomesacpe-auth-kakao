@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class ThemeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
+    public ResponseEntity<Void> createTheme(@Valid @RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }

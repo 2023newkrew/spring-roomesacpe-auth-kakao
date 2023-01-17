@@ -3,6 +3,7 @@ package nextstep.schedule;
 import lombok.*;
 import nextstep.theme.Theme;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -10,7 +11,10 @@ import java.time.LocalTime;
 @ToString
 public class ScheduleRequest {
     private Long themeId;
+    @NotBlank
     private String date;
+
+    @NotBlank
     private String time;
 
     public ScheduleRequest() {

@@ -2,10 +2,10 @@ package nextstep.reservation;
 
 import nextstep.auth.AuthPrincipal;
 import nextstep.member.Member;
-import nextstep.support.DuplicateEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@AuthPrincipal Member member, @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity createReservation(@AuthPrincipal Member member, @Valid @RequestBody ReservationRequest reservationRequest) {
         reservationRequest.setUsername(member.getName());
         Long id = reservationService.create(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
@@ -37,10 +37,5 @@ public class ReservationController {
         reservationService.deleteById(id, member);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler({NullPointerException.class, DuplicateEntityException.class})
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
     }
 }
