@@ -63,7 +63,10 @@ public class ReservationDao {
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id," +
+                " schedule.id, schedule.theme_id, schedule.date, schedule.time," +
+                " theme.id, theme.name, theme.desc, theme.price," +
+                " member.id, member.username, member.password, member.name, member.phone " +
                 "from reservation " +
                 "inner join member on reservation.member_id = member.id " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
@@ -74,7 +77,10 @@ public class ReservationDao {
     }
 
     public Optional<Reservation> findById(Long id) {
-        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id," +
+                " schedule.id, schedule.theme_id, schedule.date, schedule.time," +
+                " theme.id, theme.name, theme.desc, theme.price," +
+                " member.id, member.username, member.password, member.name, member.phone " +
                 "from reservation " +
                 "inner join member on reservation.member_id = member.id " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
@@ -88,7 +94,10 @@ public class ReservationDao {
     }
 
     public List<Reservation> findByScheduleId(Long id) {
-        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id," +
+                " schedule.id, schedule.theme_id, schedule.date, schedule.time," +
+                " theme.id, theme.name, theme.desc, theme.price," +
+                " member.id, member.username, member.password, member.name, member.phone " +
                 "from reservation " +
                 "inner join member on reservation.member_id = member.id " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
