@@ -3,6 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -20,7 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Sql("/init.sql")
 class ReservationE2ETest {
+
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
@@ -29,6 +34,8 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
@@ -69,9 +76,20 @@ class ReservationE2ETest {
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
+        TokenRequest tokenRequest = new TokenRequest("username", "password");
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+        accessToken = tokenResponse.getAccessToken();
+
         request = new ReservationRequest(
-                scheduleId,
-                "브라운"
+                scheduleId
         );
     }
 
@@ -82,11 +100,27 @@ class ReservationE2ETest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("존재하지 않는 스케줄로 예약을 생성한다")
+    @Test
+    void createWithoutExistSchedule() {
+        var response = RestAssured
+                .given().log().all()
+                .body(new ReservationRequest(scheduleId + 1))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -113,6 +147,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -129,6 +164,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -143,6 +179,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .auth().oauth2(accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -156,6 +193,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -168,6 +206,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
