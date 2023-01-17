@@ -9,12 +9,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AuthE2ETest {
+class AuthE2ETest {
     @DisplayName("토큰을 생성한다")
     @Test
-    public void create() {
+    void create() {
         TokenResponse tokenResponse = AuthUtil.createTokenForReservationExistUser();
-
         assertThat(tokenResponse).isNotNull();
     }
 }

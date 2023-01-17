@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ScheduleE2ETest {
+class ScheduleE2ETest {
 
     @DisplayName("스케줄을 생성한다")
     @Test
-    public void createSchedule() {
+    void createSchedule() {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         RestAssured
                 .given().log().all()
@@ -29,7 +29,7 @@ public class ScheduleE2ETest {
 
     @DisplayName("스케줄을 조회한다")
     @Test
-    public void showSchedules() {
+    void showSchedules() {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", 1L)

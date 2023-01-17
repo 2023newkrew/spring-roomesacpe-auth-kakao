@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
-    public void create() {
+    void create() {
         MemberRequest memberRequest = new MemberRequest("username2", "password", "name", "010-1234-5678");
         createMember(memberRequest);
     }

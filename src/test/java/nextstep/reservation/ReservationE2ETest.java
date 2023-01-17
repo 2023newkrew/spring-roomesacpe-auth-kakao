@@ -110,13 +110,12 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> removeReservation(Long id, String accessToken) {
-        var response = RestAssured
+        return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .when().delete("/reservations/" + id)
                 .then().log().all()
                 .extract();
-        return response;
     }
 
     private ExtractableResponse<Response> getReservations(Long themeId, String date) {
