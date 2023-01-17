@@ -20,11 +20,13 @@
 가능하면 Controller와 인증 로직을 분리한다.
 토큰을 이용한 인증 프로세스에 대해 이해가 어려운 경우 페어와 함께 추가학습을 진행한다.
 ---
+
 # Step2
 
 ## 기능 요구사항
 
 - resolver 이용
+    - 존재하지 않는 회원일 때 토큰 발급 실패
     - accessToken 없으면 예외 throw
     - accessToken 복호화 후 username 반환
 - 예약하기, 예약취소 개선
@@ -39,4 +41,5 @@
             - 예약번호가 유효한 지 확인
 
 ## 프로그래밍 요구사항
+
 - HandlerMethodArgumentResolver를 활용한다.
