@@ -7,3 +7,7 @@ spring:
   h2:
     console:
       enabled: true
+
+jwt:
+  secret-key: "learning-test-spring"
+  validity-in-milliseconds: 3600000
