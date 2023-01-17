@@ -47,10 +47,10 @@ public class MemberDao {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
-    public Optional<Member> findByUsername(String username) {
+    public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
+            return jdbcTemplate.queryForObject(sql, rowMapper, username);
         } catch (Exception e) {
             //e.printStackTrace();
             return null;
