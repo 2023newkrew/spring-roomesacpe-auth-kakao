@@ -10,12 +10,12 @@ public class AuthorizationTokenExtractor {
     private AuthorizationTokenExtractor() {
     }
 
-    public static Optional<String> extract(String authorization) {
-        if (authorization == null) {
+    public static Optional<String> extract(String authorizationHeaderValue) {
+        if (authorizationHeaderValue == null) {
             return Optional.empty();
         }
-        if (authorization.toLowerCase().startsWith(BEARER_TYPE.toLowerCase())) {
-            return Optional.of(authorization.substring(BEARER_TYPE.length()).split(",")[0].trim());
+        if (authorizationHeaderValue.toLowerCase().startsWith(BEARER_TYPE.toLowerCase())) {
+            return Optional.of(authorizationHeaderValue.substring(BEARER_TYPE.length()).split(",")[0].trim());
         }
         return Optional.empty();
     }
