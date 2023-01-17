@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ValidatableResponse;
 import org.springframework.http.MediaType;
 
 public class AuthUtil {
@@ -21,12 +22,16 @@ public class AuthUtil {
     }
 
     public static TokenResponse createToken(TokenRequest tokenRequest) {
+        return createTokenAndGetValidatableResponse(tokenRequest)
+                .extract().as(TokenResponse.class);
+    }
+
+    public static ValidatableResponse createTokenAndGetValidatableResponse(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
                 .when().post("/login/token")
-                .then().log().all()
-                .extract().as(TokenResponse.class);
+                .then().log().all();
     }
 }
