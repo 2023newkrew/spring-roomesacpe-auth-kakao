@@ -1,6 +1,9 @@
-package nextstep.member;
+package nextstep.ui;
 
 import nextstep.auth.JwtTokenProvider;
+import nextstep.login.LoginMember;
+import nextstep.login.LoginService;
+import nextstep.member.Member;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

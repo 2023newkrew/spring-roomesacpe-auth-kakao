@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.member.LoginMember;
+import nextstep.login.LoginMember;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;

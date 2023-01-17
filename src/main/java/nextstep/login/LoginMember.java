@@ -1,4 +1,6 @@
-package nextstep.member;
+package nextstep.login;
+
+import nextstep.member.Member;
 
 public class LoginMember {
 
