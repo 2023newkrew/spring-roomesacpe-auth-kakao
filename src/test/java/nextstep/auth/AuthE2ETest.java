@@ -32,9 +32,9 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("토큰 생성에 성공한다")
     @Test
-    public void create() {
+    public void createTokenSuccess() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         var response = RestAssured
                 .given().log().all()
@@ -46,6 +46,32 @@ public class AuthE2ETest {
                 .extract();
 
         assertThat(response.as(TokenResponse.class)).isNotNull();
+    }
+
+    @DisplayName("토큰 생성에 실패한다 : 틀린 비밀번호")
+    @Test
+    public void createTokenWrongPassword() {
+        TokenRequest body = new TokenRequest(USERNAME, "different" + PASSWORD);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("토큰 생성에 실패한다 : 없는 유저네임")
+    @Test
+    public void createTokenWrongUsername() {
+        TokenRequest body = new TokenRequest("never exist" + USERNAME, PASSWORD);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
