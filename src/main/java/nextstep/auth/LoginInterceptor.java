@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.support.AuthorizationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +17,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         String accessToken = request.getHeader("Authorization");
         if (accessToken == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return false;
+            throw new AuthorizationException();
         }
         return true;
     }
