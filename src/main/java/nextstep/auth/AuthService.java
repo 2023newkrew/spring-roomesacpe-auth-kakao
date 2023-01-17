@@ -15,14 +15,10 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public boolean checkInvalidLogin(String principal, String credentials, Member member) {
-
-        return !member.getUsername().equals(principal) || !member.getPassword().equals(credentials);
-    }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername());
-        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword(), member)) {
+        if (member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
 
