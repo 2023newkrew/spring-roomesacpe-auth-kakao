@@ -108,6 +108,21 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("존재하지 않는 스케줄로 예약을 생성한다")
+    @Test
+    void createWithoutExistSchedule() {
+        var response = RestAssured
+                .given().log().all()
+                .body(new ReservationRequest(scheduleId + 1))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
