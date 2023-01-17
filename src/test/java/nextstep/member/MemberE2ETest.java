@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class MemberE2ETest {
 
-    @DisplayName("이미 존재하지 않는 username으로 멤버를 생성할 수 있다.")
+    @DisplayName("존재하지 않는 username으로 멤버를 생성할 수 있다.")
     @Test
     void test1() {
         MemberRequest memberRequest = MemberUtil.NOT_EXIST_MEMBER.toDto();
@@ -27,7 +27,7 @@ class MemberE2ETest {
     @DisplayName("이미 존재하는 username으로는 멤버를 생성할 수 없다.")
     @Test
     void test2() {
-        MemberRequest memberRequest = MemberUtil.RESERVATION_EXIST_MEMBER.toDto();
+        MemberRequest memberRequest = MemberUtil.RESERVATION_EXIST_MEMBER_1.toDto();
 
         MemberUtil.createMemberAndGetValidatableResponse(memberRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value());

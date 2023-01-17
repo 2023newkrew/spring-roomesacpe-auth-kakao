@@ -30,6 +30,7 @@ public class ReservationService {
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
+
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
@@ -42,21 +43,21 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date, Member loginUser) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
             throw new NullPointerException();
         }
 
-        return reservationDao.findAllByThemeIdAndDate(themeId, date);
+        return reservationDao.findAllByThemeIdAndDateAndUsername(themeId, date, loginUser.getUsername());
     }
 
-    public void deleteById(Long id, Member principal) {
+    public void deleteById(Long id, Member loginUser) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();
         }
-        if (!reservation.getUsername().equals(principal.getUsername())) {
+        if (!reservation.getUsername().equals(loginUser.getUsername())) {
             throw new AuthorizationException();
         }
 

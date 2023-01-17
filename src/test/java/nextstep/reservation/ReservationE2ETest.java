@@ -1,131 +1,90 @@
 package nextstep.reservation;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.auth.AuthUtil;
-import org.junit.jupiter.api.BeforeEach;
+import nextstep.auth.TokenResponse;
+import nextstep.member.Member;
+import nextstep.member.MemberUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ReservationE2ETest {
-    private String RESERVATION_EXIST_USER_ACCESS_TOKEN;
 
-    @BeforeEach
-    void setUp() {
-        RESERVATION_EXIST_USER_ACCESS_TOKEN = AuthUtil.createTokenForReservationExistUser().getAccessToken();
-    }
-
-    @DisplayName("예약을 생성한다")
+    @DisplayName("인증된 사용자는 예약할 수 있다.")
     @Test
-    void create() {
-        ReservationRequest reservationRequest = new ReservationRequest(3L);
+    void test1() {
+        Member reservationExistUser = MemberUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthUtil.createToken(reservationExistUser);
+        ReservationRequest reservationRequest = new ReservationRequest(6L);
 
-        var response = createReservation(reservationRequest, RESERVATION_EXIST_USER_ACCESS_TOKEN);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        ReservationUtil.createReservation(reservationRequest, tokenResponse.getAccessToken())
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     @DisplayName("인증되지 않은 사용자는 예약을 할 수 없다")
     @Test
-    void createUnauthenticated() {
+    void test2() {
         ReservationRequest reservationRequest = new ReservationRequest(3L);
 
-        var response = createReservation(reservationRequest, "");
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ReservationUtil.createReservation(reservationRequest, "")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("예약을 조회한다")
+    @DisplayName("인증되지 않은 사용자는 예약을 조회할 수 없다.")
     @Test
-    void show() {
-        var response = getReservations(1L, "2022-11-11");
-
-        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
-        assertThat(reservations.size()).isEqualTo(2);
+    void test3() {
+        ReservationUtil.requestReservationsAndGetValidatableResponse(1L, "2022-11-11", "")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("본인의 예약만 조회할 수 있다.")
     @Test
-    void delete() {
-        ExtractableResponse<Response> response = removeReservation(1L, RESERVATION_EXIST_USER_ACCESS_TOKEN);
+    void test4() {
+        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        List<Reservation> reservations = ReservationUtil.getReservations(1L, "2022-11-11", tokenResponse.getAccessToken());
+        List<Reservation> notMyReservations = reservations.stream()
+                .filter((reservation -> !reservation.getUsername().equals(ReservationExistUser.getUsername())))
+                .collect(Collectors.toList());
+
+        assertThat(reservations.size()).isEqualTo(3);
+        assertThat(notMyReservations.size()).isZero();
     }
 
-    @DisplayName("인증되지 않은 사용자는 예약을 삭제할 수 없다")
+    @DisplayName("인증된 사용자는 본인의 예약을 삭제할 수 있다.")
     @Test
-    void deleteUnauthenticated() {
-        ExtractableResponse<Response> response = removeReservation(1L, "");
+    void test6() {
+        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        ReservationUtil.removeReservation(1L, tokenResponse.getAccessToken())
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("중복 예약을 생성한다")
+    @DisplayName("인증되지 않은 사용자는 예약을 삭제할 수 없다.")
     @Test
-    void createDuplicateReservation() {
-        ReservationRequest reservationRequest = new ReservationRequest(1L);
-
-        var response = createReservation(reservationRequest, RESERVATION_EXIST_USER_ACCESS_TOKEN);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    void test7() {
+        ReservationUtil.removeReservation(1L, "")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("예약이 없을 때 예약 목록을 조회한다")
+    @DisplayName("타인의 예약을 삭제할 수 없다.")
     @Test
-    void showEmptyReservations() {
-        var response = getReservations(1L, "2023-01-01");
+    void test8() {
+        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
 
-        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
-        assertThat(reservations.size()).isEqualTo(0);
-    }
-
-    @DisplayName("없는 예약을 삭제한다")
-    @Test
-    void createNotExistReservation() {
-        var response = removeReservation(10L, RESERVATION_EXIST_USER_ACCESS_TOKEN);
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private ExtractableResponse<Response> createReservation(ReservationRequest reservationRequest, String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .body(reservationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/reservations")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> removeReservation(Long id, String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/reservations/" + id)
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> getReservations(Long themeId, String date) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(RESERVATION_EXIST_USER_ACCESS_TOKEN)
-                .param("themeId", themeId)
-                .param("date", date)
-                .when().get("/reservations")
-                .then().log().all()
-                .extract();
+        ReservationUtil.removeReservation(5L, tokenResponse.getAccessToken())
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }

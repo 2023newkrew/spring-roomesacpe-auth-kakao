@@ -1,17 +1,15 @@
 package nextstep.reservation;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+@Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class ReservationRequest {
-    @NotBlank
+    @NotNull
     private Long scheduleId;
 
     @Setter

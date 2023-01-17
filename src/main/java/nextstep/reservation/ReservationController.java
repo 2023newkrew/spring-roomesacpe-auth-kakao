@@ -27,8 +27,8 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
+    public ResponseEntity readReservations(@AuthPrincipal Member member, @RequestParam Long themeId, @RequestParam String date) {
+        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date, member);
         return ResponseEntity.ok().body(results);
     }
 

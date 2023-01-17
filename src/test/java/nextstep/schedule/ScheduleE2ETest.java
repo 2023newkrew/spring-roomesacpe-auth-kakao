@@ -39,7 +39,7 @@ class ScheduleE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(3);
+        assertThat(response.jsonPath().getList(".")).hasSize(6);
     }
 
     @DisplayName("스케줄을 삭제한다")
