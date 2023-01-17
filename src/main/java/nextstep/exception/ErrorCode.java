@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    NOT_AUTHORIZED("인증되지 않은 회원입니다.", HttpStatus.UNAUTHORIZED),
+    NOT_AUTHENTICATED("인증되지 않은 회원입니다.", HttpStatus.UNAUTHORIZED),
     NOT_RESERVATION_OWNER("본인의 예약이 아니면 삭제할 수 없습니다.", HttpStatus.FORBIDDEN),
     DUPLICATE_RESERVATION("중복된 예약입니다.", HttpStatus.BAD_REQUEST),
     PASSWORD_NOT_MATCH("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),

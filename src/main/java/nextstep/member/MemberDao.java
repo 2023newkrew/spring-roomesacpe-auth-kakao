@@ -1,6 +1,7 @@
 package nextstep.member;
 
-import nextstep.support.NoSuchMemberException;
+import nextstep.exception.ErrorCode;
+import nextstep.exception.RoomEscapeException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -52,6 +53,6 @@ public class MemberDao {
         return jdbcTemplate.query(sql, rowMapper, username)
                 .stream()
                 .findFirst()
-                .orElseThrow(NoSuchMemberException::new);
+                .orElseThrow(() -> new RoomEscapeException(ErrorCode.NO_SUCH_MEMBER));
     }
 }

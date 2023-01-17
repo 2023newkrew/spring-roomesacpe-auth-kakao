@@ -1,6 +1,7 @@
 package nextstep.theme;
 
-import nextstep.support.NoSuchThemeException;
+import nextstep.exception.ErrorCode;
+import nextstep.exception.RoomEscapeException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ThemeService {
     public void delete(Long id) {
         Theme theme = themeDao.findById(id);
         if (theme == null) {
-            throw new NoSuchThemeException();
+            throw new RoomEscapeException(ErrorCode.NO_SUCH_THEME);
         }
 
         themeDao.delete(id);

@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.AuthorizationException;
+import nextstep.exception.ErrorCode;
+import nextstep.exception.RoomEscapeException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -25,7 +26,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Login.class);
+        return parameter.hasParameterAnnotation(AuthenticatedMember.class);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         Member member = memberDao.findByUsername(jwtTokenProvider.getPrincipal(token.substring(BEARER.length())));
 
         if (request.getHeader(TOKEN_KEY).isBlank() || ObjectUtils.isEmpty(member)) {
-            throw new AuthorizationException();
+            throw new RoomEscapeException(ErrorCode.NOT_AUTHENTICATED);
         }
 
         return member;

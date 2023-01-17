@@ -1,6 +1,7 @@
 package nextstep.config;
 
-import nextstep.support.AuthorizationException;
+import nextstep.exception.ErrorCode;
+import nextstep.exception.RoomEscapeException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +12,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = request.getHeader("authorization");
         if(accessToken == null){
-            throw new AuthorizationException();
+            throw new RoomEscapeException(ErrorCode.NOT_AUTHENTICATED);
         }
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
