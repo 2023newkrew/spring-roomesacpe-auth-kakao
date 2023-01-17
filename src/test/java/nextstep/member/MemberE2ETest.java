@@ -57,8 +57,28 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("중복되는 이름의 멤버를 생성 시, 400 에러를 반환한다")
+    @Test
+    void getMemberNameDuplicated() {
+        String name = "joel";
+        createMember(name);
+
+        MemberRequest duplicatedName = new MemberRequest(USERNAME, PASSWORD, name, "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(duplicatedName)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     private void createMember() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        createMember("name");
+    }
+
+    private void createMember(String name) {
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, name, "010-1234-5678");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

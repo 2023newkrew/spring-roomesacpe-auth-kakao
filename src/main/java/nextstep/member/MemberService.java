@@ -3,8 +3,11 @@ package nextstep.member;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.support.AuthorizationException;
+import nextstep.support.DuplicateNameException;
 import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -16,8 +19,15 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
+        Member member = memberRequest.toEntity();
+        String name = member.getName();
+        boolean existingName = memberDao.isExistingMemberName(name);
+        if (existingName) {
+            throw new DuplicateNameException();
+        }
+        return memberDao.save(member);
     }
 
 
@@ -38,9 +48,12 @@ public class MemberService {
     public void validateIsMember(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
-        boolean memberResult = memberDao.isMember(username, password);
-        if (!memberResult) {
-            throw new NotExistEntityException();
+        Member member = memberDao.findByUsername(username);
+        if (member == null) {
+            throw new AuthorizationException();
+        }
+        if (member.checkWrongPassword(password)) {
+            throw new AuthorizationException();
         }
     }
 }

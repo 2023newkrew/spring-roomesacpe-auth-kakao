@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-    @ExceptionHandler({DuplicateEntityException.class, NotExistEntityException.class})
+    @ExceptionHandler({DuplicateEntityException.class, NotExistEntityException.class, DuplicateNameException.class})
     public ResponseEntity<String> handleDuplicateEntityException(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
