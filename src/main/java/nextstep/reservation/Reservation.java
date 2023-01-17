@@ -24,6 +24,10 @@ public class Reservation {
         this.username = username;
     }
 
+    public boolean isOwner(String username) {
+        return this.username.equals(username);
+    }
+
     public Long getId() {
         return id;
     }

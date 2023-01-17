@@ -58,7 +58,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if (!username.equals(reservation.getUsername())) {
+        if (!reservation.isOwner(username)) {
             throw new ForbiddenException();
         }
 
