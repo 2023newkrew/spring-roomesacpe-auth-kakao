@@ -1,12 +1,16 @@
 package nextstep.schedule;
 
-import io.restassured.RestAssured;
+import nextstep.auth.AuthUtil;
+import nextstep.auth.TokenResponse;
+import nextstep.member.Member;
+import nextstep.member.MemberUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,43 +18,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ScheduleE2ETest {
 
-    @DisplayName("스케줄을 생성한다")
+    @DisplayName("인증된 사용자는 스케줄을 생성할 수 있다.")
     @Test
-    void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/schedules")
-                .then().log().all()
+    void test1() {
+        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
+
+        ScheduleRequest schedule = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleUtil.createScheduleAndGetValidatableResponse(schedule, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("스케줄을 조회한다")
+    @DisplayName("인증되지 않은 사용자는 스케줄을 생성할 수 없다.")
     @Test
-    void showSchedules() {
-        var response = RestAssured
-                .given().log().all()
-                .param("themeId", 1L)
-                .param("date", "2022-11-11")
-                .when().get("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-
-        assertThat(response.jsonPath().getList(".")).hasSize(6);
+    void test2() {
+        ScheduleRequest schedule = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleUtil.createScheduleAndGetValidatableResponse(schedule, "")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("스케줄을 삭제한다")
+    @DisplayName("인증되지 않은 사용자는 스케줄을 조회할 수 있다.")
     @Test
-    void delete() {
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/schedules/2")
-                .then().log().all()
-                .extract();
+    void test3() {
+        List<Schedule> schedules = ScheduleUtil.getSchedules(1L, "2022-11-11");
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(schedules).hasSize(6);
+    }
+
+    @DisplayName("인증된 사용자는 스케줄을 삭제할 수 있다.")
+    @Test
+    void test4() {
+        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
+
+        ScheduleUtil.deleteScheduleAndGetValidatableResponse(2L, tokenResponse.getAccessToken())
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("인증되지 않은 사용자는 스케줄을 삭제할 수 없다.")
+    @Test
+    void test5() {
+        ScheduleUtil.deleteScheduleAndGetValidatableResponse(2L, "")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
