@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.support.DuplicateEntityException;
+import nextstep.support.exception.DuplicateEntityException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

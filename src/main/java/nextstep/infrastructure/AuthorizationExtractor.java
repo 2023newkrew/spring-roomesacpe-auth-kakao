@@ -1,6 +1,6 @@
 package nextstep.infrastructure;
 
-import nextstep.support.NoAccessTokenException;
+import nextstep.support.exception.NoAccessTokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
