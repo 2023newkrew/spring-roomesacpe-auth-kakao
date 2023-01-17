@@ -41,7 +41,12 @@ public class MemberDao implements MemberRepository {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Number key = keyHolder.getKey();
+
+        if (Objects.isNull(key))
+            throw new FailedRecordSaveException();
+        
+        return key.longValue();
     }
 
     @Override
