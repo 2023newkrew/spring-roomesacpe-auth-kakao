@@ -108,7 +108,7 @@ class ReservationE2ETest {
                 .extract();
 
         List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
-        assertThat(reservations.size()).isEqualTo(1);
+        assertThat(reservations).hasSize(1);
     }
 
     @DisplayName("예약을 삭제한다")
@@ -154,7 +154,7 @@ class ReservationE2ETest {
                 .extract();
 
         List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
-        assertThat(reservations.size()).isEqualTo(0);
+        assertThat(reservations).isEmpty();
     }
 
     @DisplayName("없는 예약을 삭제한다")

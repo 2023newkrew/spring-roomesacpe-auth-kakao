@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AuthE2ETest {
+class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     private Long memberId;
@@ -34,7 +34,7 @@ public class AuthE2ETest {
 
     @DisplayName("토큰을 생성한다")
     @Test
-    public void create() {
+    void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         var response = RestAssured
                 .given().log().all()
@@ -50,7 +50,7 @@ public class AuthE2ETest {
 
     @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
+    void showThemes() {
         createTheme();
 
         var response = RestAssured
@@ -60,7 +60,7 @@ public class AuthE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList(".")).hasSize(1);
     }
 
     @DisplayName("테마를 삭제한다")
