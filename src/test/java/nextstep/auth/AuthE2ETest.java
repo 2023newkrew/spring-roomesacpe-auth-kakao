@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,7 @@ public class AuthE2ETest {
     @DisplayName("토큰을 생성한다")
     @Test
     public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        AuthRequest body = new AuthRequest(USERNAME, PASSWORD);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

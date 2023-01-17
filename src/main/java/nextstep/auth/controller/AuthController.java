@@ -1,6 +1,6 @@
 package nextstep.auth.controller;
 
-import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody AuthRequest request) {
 
         return ResponseEntity.ok(authService.login(request));
     }

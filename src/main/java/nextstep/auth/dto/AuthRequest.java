@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenRequest {
+public class AuthRequest {
 
     private String username;
     private String password;

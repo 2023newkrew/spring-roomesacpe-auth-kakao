@@ -3,7 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dto.MemberRequest;
 import nextstep.reservation.dto.ReservationRequest;
@@ -78,11 +78,11 @@ class ReservationE2ETest {
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
+        AuthRequest authRequest = new AuthRequest("username", "password");
         var tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
+                .body(authRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

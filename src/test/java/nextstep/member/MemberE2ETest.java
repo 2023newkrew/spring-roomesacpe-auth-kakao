@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
-import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,11 +65,11 @@ public class MemberE2ETest {
                 .then().log().all()
                 .extract();
 
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
+        AuthRequest authRequest = new AuthRequest("username", "password");
         var tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
+                .body(authRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())

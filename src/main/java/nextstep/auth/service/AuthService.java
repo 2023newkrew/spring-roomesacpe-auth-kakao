@@ -1,7 +1,7 @@
 package nextstep.auth.service;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dao.MemberDao;
 import nextstep.member.entity.Member;
@@ -19,8 +19,8 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public TokenResponse login(TokenRequest tokenRequest) {
-        Member member = memberDao.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword())
+    public TokenResponse login(AuthRequest authRequest) {
+        Member member = memberDao.findByUsernameAndPassword(authRequest.getUsername(), authRequest.getPassword())
                 .orElseThrow(NotExistEntityException::new);
         return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(member.getId())));
     }
