@@ -72,6 +72,16 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
+        MemberRequest body2 = new MemberRequest("someoneelse", "password", "name", "010-1234-5678");
+        var memberResponse2 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body2)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
@@ -119,9 +129,11 @@ class ReservationE2ETest {
     @Test
     void delete() {
         var reservation = createReservation();
-
+        String userName = "username";
+        String token = jwtTokenProvider.createToken(userName);
         var response = RestAssured
                 .given().log().all()
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -134,9 +146,13 @@ class ReservationE2ETest {
     void createDuplicateReservation() {
         createReservation();
 
+        String userName = "username";
+        String token = jwtTokenProvider.createToken(userName);
+
         var response = RestAssured
                 .given().log().all()
                 .body(request)
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -162,9 +178,12 @@ class ReservationE2ETest {
 
     @DisplayName("없는 예약을 삭제한다")
     @Test
-    void createNotExistReservation() {
+    void deleteNotExistReservation() {
+        String userName = "username";
+        String token = jwtTokenProvider.createToken(userName);
         var response = RestAssured
                 .given().log().all()
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -172,10 +191,43 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("다른 사람의 예약을 삭제하면 예외 발생")
+    @Test
+    void tryDeleteNotMyReservation() {
+        String userName = "someoneelse";
+        String token = jwtTokenProvider.createToken(userName);
+        var response = RestAssured
+                .given().log().all()
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("잘못된 인증 토큰이 들어오면 400 코드 반환")
+    @Test
+    void test() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .header("Authorization", "wrongToken")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> createReservation() {
+        String userName = "username";
+        String token = jwtTokenProvider.createToken(userName);
         return RestAssured
                 .given().log().all()
                 .body(request)
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
