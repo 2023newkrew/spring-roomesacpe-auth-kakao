@@ -3,7 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.AuthorizationTokenExtractor;
+import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
