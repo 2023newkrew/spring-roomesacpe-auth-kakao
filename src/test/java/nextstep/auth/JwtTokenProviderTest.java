@@ -8,10 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
 class JwtTokenProviderTest {
+    private static final String SECRET_KEY = "secretKey";
+    private static final Long MAX_AGE = 32000L;
 
     @Test
     void createToken() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(SECRET_KEY, MAX_AGE);
 
         String token = jwtTokenProvider.createToken("1");
 
@@ -20,7 +22,7 @@ class JwtTokenProviderTest {
 
     @Test
     void getPrincipal() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(SECRET_KEY, MAX_AGE);
 
         String token = jwtTokenProvider.createToken("1");
 

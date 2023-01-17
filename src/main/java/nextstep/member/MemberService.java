@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class MemberService {
     private final MemberDao memberDao;
     private final JwtTokenProvider jwtTokenProvider;
-    private static final String BEARER = "Bearer ";
 
     public Long create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());

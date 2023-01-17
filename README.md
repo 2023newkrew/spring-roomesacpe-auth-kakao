@@ -30,3 +30,4 @@
 - [x] AuthorizationExtractor 적용
 - [x] 인증 방식 변경
 - [x] 리팩토링 및 변경된 인증 방식에 따른 코드 변경
+- [x] 토큰 유형을 attribute에 set할 수 있도록 변경

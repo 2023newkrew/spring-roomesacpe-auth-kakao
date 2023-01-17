@@ -5,8 +5,11 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nextstep.support.exception.NoSuchMemberException;
 import nextstep.support.exception.NoSuchTokenException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,9 +18,14 @@ import java.util.Date;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring";
-    private long validityInMilliseconds = 3600000;
+    @Value("${auth.secretKey}")
+    private String secretKey;
+
+    @Value("${auth.validityInMilliseconds}")
+    private long validityInMilliseconds;
 
     public String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);

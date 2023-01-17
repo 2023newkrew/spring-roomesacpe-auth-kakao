@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @RequiredArgsConstructor
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
-    private static final String BEARER = "Bearer ";
     private static final String ACCESS_TOKEN = "accessToken";
     private final JwtTokenProvider jwtTokenProvider;
 

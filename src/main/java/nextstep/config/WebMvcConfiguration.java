@@ -14,8 +14,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private final LoginArgumentResolver loginArgumentResolver;
     private final LoginInterceptor loginInterceptor;
     private final LoginInfoInterceptor loginInfoInterceptor;
-
-
+    
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
