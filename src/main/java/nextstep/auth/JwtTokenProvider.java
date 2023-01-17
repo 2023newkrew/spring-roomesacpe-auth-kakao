@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
 public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
