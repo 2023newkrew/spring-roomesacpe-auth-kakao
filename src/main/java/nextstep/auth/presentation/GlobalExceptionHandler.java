@@ -22,14 +22,14 @@ public class GlobalExceptionHandler {
     private final MessageSource messageSource;
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ErrorResponse> handleReservationNotFoundException(ApplicationException e) {
+    public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException e) {
         ErrorType errorType = e.getErrorType();
         String message = messageSource.getMessage(errorType.name(), null, Locale.KOREA);
 
         log.error(LOG_FORMAT, errorType.name(), errorType.getHttpStatus(), message);
 
         return ResponseEntity.status(errorType.getHttpStatus())
-                .body(ErrorResponse.of(errorType.getHttpStatus(), message));
+                .body(new ErrorResponse(errorType.getHttpStatus(), message));
     }
 
 }

@@ -40,7 +40,7 @@ public class ReservationService {
         Reservation reservation = findByReservationId(reservationId);
         Member member = memberService.findById(memberId);
 
-        if (!Objects.equals(reservation.getName(), member.getName())) {
+        if (!reservation.isMine(member)) {
             throw new ApplicationException(UNAUTHORIZED_ERROR);
         }
 
