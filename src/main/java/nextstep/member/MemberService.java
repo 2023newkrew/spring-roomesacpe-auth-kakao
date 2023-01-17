@@ -16,10 +16,6 @@ public class MemberService {
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
-        return memberDao.findById(id);
-    }
-
     public void validateIsMember(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
@@ -30,6 +26,10 @@ public class MemberService {
     }
 
     public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
+        Member member = memberDao.findByUsername(username);
+        if (member == null) {
+            throw new NotExistEntityException();
+        }
+        return member;
     }
 }
