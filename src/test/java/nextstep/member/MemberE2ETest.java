@@ -3,6 +3,7 @@ package nextstep.member;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.auth.role.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "admin");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -36,7 +37,7 @@ public class MemberE2ETest {
     @DisplayName("토큰으로 멤버 정보를 조회한다")
     @Test
     public void findByToken() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+        memberDao.save(new Member("username", "password", "name", "010-1234-5678", Role.ADMIN));
 
         String token = requestLogin();
 

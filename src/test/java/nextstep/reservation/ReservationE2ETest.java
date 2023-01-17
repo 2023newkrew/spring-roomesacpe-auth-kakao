@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.auth.AuthService;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.auth.role.Role;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.MemberRequest;
@@ -42,7 +43,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "admin");
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -202,7 +203,7 @@ class ReservationE2ETest {
     void deleteNotOwner() {
         var reservation = createReservation();
 
-        Member anotherMember = new Member("notOwnerUsername", "notOwnerPassword", "notOwnerName", "010-1234-5678");
+        Member anotherMember = new Member("notOwnerUsername", "notOwnerPassword", "notOwnerName", "010-1234-5678", Role.ADMIN);
         memberDao.save(anotherMember);
         TokenRequest loginBodyAnother = new TokenRequest(anotherMember.getUsername(), anotherMember.getPassword());
 

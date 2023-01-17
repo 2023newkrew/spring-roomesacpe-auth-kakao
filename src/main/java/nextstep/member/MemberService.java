@@ -24,6 +24,6 @@ public class MemberService {
     }
 
     public Member findByToken(String token){
-        return findById(Long.valueOf(jwtTokenProvider.getPrincipal(token)));
+        return findById(jwtTokenProvider.getPrincipal(token).getId());
     }
 }

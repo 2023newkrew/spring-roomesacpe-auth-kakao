@@ -7,6 +7,10 @@ spring:
   h2:
     console:
       enabled: true
+  sql:
+    init:
+      schema-locations: classpath:sql/schema.sql
+      mode: always
 
 auth:
   secretKey: learning-test-spring

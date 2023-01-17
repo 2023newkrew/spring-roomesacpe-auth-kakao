@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.infrastructure.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.MemberMapper;
 import nextstep.support.exception.NoSuchMemberException;
 import nextstep.support.exception.PasswordNotMatchException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.util.ObjectUtils;
 @RequiredArgsConstructor
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberMapper memberMapper;
     private final MemberDao memberDao;
 
     @Transactional(readOnly = true)
@@ -24,6 +26,6 @@ public class AuthService {
             throw new PasswordNotMatchException();
         }
 
-        return TokenResponse.of(jwtTokenProvider.createToken(String.valueOf(member.getId())));
+        return TokenResponse.of(jwtTokenProvider.createToken(memberMapper.memberToMemberDetails(member)));
     }
 }
