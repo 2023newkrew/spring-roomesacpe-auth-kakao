@@ -3,7 +3,6 @@ package nextstep.member;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.reservation.ReservationRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +37,6 @@ public class MemberE2ETest {
     @Test
     public void find() {
         create();
-        System.out.println("aaaaa");
         String accessToken = RestAssured
                 .given().log().all()
                 .body(new TokenRequest(USERNAME, PASSWORD))
@@ -47,19 +45,14 @@ public class MemberE2ETest {
                 .when().post("/login/token")
                 .then().log().all().extract().as(TokenResponse.class).getAccessToken();
 
-        ReservationRequest request = new ReservationRequest(
-                1L,
-                NAME
-        );
         var response = RestAssured
                 .given().log().all()
-                .body(request)
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/reservations")
+                .when().get("/members/me")
                 .then().log().all()
-                .extract();
+                .extract().as(MemberResponse.class);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getUsername()).isEqualTo(USERNAME);
     }
 }

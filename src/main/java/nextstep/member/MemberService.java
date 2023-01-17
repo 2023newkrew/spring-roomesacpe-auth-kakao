@@ -19,9 +19,12 @@ public class MemberService {
         return memberDao.findById(id);
     }
 
+    public Member findByUsername(String username) {
+        return memberDao.findByUsername(username);
+    }
+
     public Member findByToken(String token) {
         String payload = jwtTokenProvider.getPayload(token);
-        System.out.println("payload: " + payload);
-        return findById(1L);
+        return findByUsername(payload);
     }
 }
