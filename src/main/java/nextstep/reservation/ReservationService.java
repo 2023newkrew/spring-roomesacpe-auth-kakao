@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.exception.DuplicateEntityException;
-import nextstep.exception.NotExistReservationException;
+import nextstep.exception.NotExistEntityException;
 import nextstep.exception.NotQualifiedMemberException;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
@@ -50,7 +50,7 @@ public class ReservationService {
     }
 
     public void deleteById(Long id, Member member) {
-        Reservation reservation = reservationDao.findById(id).orElseThrow(NotExistReservationException::new);
+        Reservation reservation = reservationDao.findById(id).orElseThrow(NotExistEntityException::new);
         if(!reservation.isCorrectMember(member)) {
             throw new NotQualifiedMemberException();
         }

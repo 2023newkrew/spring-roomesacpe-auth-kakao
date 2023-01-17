@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import nextstep.exception.NotCorrectPasswordException;
-import nextstep.exception.NotExistMemberException;
+import nextstep.exception.NotExistEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.createToken(tokenRequest));
     }
 
-    @ExceptionHandler(value = {NotExistMemberException.class, NotCorrectPasswordException.class})
+    @ExceptionHandler(value = {NotExistEntityException.class, NotCorrectPasswordException.class})
     public ResponseEntity handle() {
         return ResponseEntity.badRequest().build();
     }

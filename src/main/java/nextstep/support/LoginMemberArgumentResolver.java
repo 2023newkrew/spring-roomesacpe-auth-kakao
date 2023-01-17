@@ -3,7 +3,7 @@ package nextstep.support;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.InvalidAuthorizationTokenException;
-import nextstep.exception.NotExistMemberException;
+import nextstep.exception.NotExistEntityException;
 import nextstep.member.MemberDao;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = AuthorizationTokenExtractor.extract(
                 webRequest.getHeader(AuthorizationTokenExtractor.AUTHORIZATION))
                 .orElseThrow(InvalidAuthorizationTokenException::new);
@@ -38,7 +38,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new InvalidAuthorizationTokenException();
         }
 
-        return memberDao.findByUsername(jwtTokenProvider.getPrincipal(token))
-                .orElseThrow(NotExistMemberException::new);
+        String username = jwtTokenProvider.getPrincipal(token);
+        return memberDao.findByUsername(username)
+                .orElseThrow(() -> new NotExistEntityException("존재하지 않는 멤버입니다 - " + username));
     }
 }

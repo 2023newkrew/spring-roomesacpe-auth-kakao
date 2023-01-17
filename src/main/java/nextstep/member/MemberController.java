@@ -3,7 +3,7 @@ package nextstep.member;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.InvalidAuthorizationTokenException;
-import nextstep.exception.NotExistMemberException;
+import nextstep.exception.NotExistEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +39,7 @@ public class MemberController {
         return ResponseEntity.ok(member);
     }
 
-    @ExceptionHandler(value = {NotExistMemberException.class, InvalidAuthorizationTokenException.class})
+    @ExceptionHandler(value = {NotExistEntityException.class, InvalidAuthorizationTokenException.class})
     public ResponseEntity handle() {
         return ResponseEntity.badRequest().build();
     }

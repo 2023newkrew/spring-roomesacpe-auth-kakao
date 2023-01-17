@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.exception.NotExistMemberException;
+import nextstep.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +21,6 @@ public class MemberService {
 
     public Member findByUserName(String userName) {
         return memberDao.findByUsername(userName)
-                .orElseThrow(NotExistMemberException::new);
+                .orElseThrow(() -> new NotExistEntityException("존재하지 않는 멤버입니다 - " + userName));
     }
 }

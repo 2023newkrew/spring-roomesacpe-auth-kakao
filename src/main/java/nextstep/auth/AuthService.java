@@ -1,9 +1,9 @@
 package nextstep.auth;
 
+import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.exception.NotCorrectPasswordException;
-import nextstep.exception.NotExistMemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +19,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(NotExistMemberException::new);
+                .orElseThrow(() -> new NotExistEntityException("존재하지 않는 멤버입니다 - " + tokenRequest.getUsername()));
         if(member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new NotCorrectPasswordException();
         }
