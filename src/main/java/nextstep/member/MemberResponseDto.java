@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
-public class MemberResponseDto{
+public class MemberResponseDto {
     private Long id;
     private String username;
     private String password;

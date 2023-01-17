@@ -15,11 +15,10 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthControllerTest {
-    @MockBean
-    private AuthService authService;
-
     @LocalServerPort
     int port;
+    @MockBean
+    private AuthService authService;
 
     @BeforeEach
     void setUp() {

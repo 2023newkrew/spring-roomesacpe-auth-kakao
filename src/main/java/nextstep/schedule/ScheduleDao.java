@@ -15,12 +15,6 @@ import java.util.List;
 
 @Component
 public class ScheduleDao {
-    private JdbcTemplate jdbcTemplate;
-
-    public ScheduleDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Schedule> rowMapper = (resultSet, rowNum) -> new Schedule(
             resultSet.getLong("schedule.id"),
             new Theme(
@@ -29,9 +23,16 @@ public class ScheduleDao {
                     resultSet.getString("theme.desc"),
                     resultSet.getInt("theme.price")
             ),
-            resultSet.getDate("schedule.date").toLocalDate(),
-            resultSet.getTime("schedule.time").toLocalTime()
+            resultSet.getDate("schedule.date")
+                    .toLocalDate(),
+            resultSet.getTime("schedule.time")
+                    .toLocalTime()
     );
+    private JdbcTemplate jdbcTemplate;
+
+    public ScheduleDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Long save(Schedule schedule) {
         String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
@@ -39,14 +40,16 @@ public class ScheduleDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, schedule.getTheme().getId());
+            ps.setLong(1, schedule.getTheme()
+                    .getId());
             ps.setDate(2, Date.valueOf(schedule.getDate()));
             ps.setTime(3, Time.valueOf(schedule.getTime()));
             return ps;
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKey()
+                .longValue();
     }
 
     public Schedule findById(Long id) {

@@ -1,6 +1,6 @@
 package nextstep.support.exception;
 
-public class UnauthorizedException extends RuntimeException{
+public class UnauthorizedException extends RuntimeException {
 
     public UnauthorizedException() {
     }

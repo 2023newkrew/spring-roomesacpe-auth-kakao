@@ -15,24 +15,23 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReservationControllerTest {
 
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-
-    @MockBean
-    private ReservationService reservationService;
-    @LocalServerPort
-    int port;
-    private ReservationRequest request;
-    private Long scheduleId = 1L;
     private final String validAccessToken = "valid_token";
     private final String invalidAccessToken = "invalid_token";
+    @LocalServerPort
+    int port;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    private ReservationService reservationService;
+    private ReservationRequest request;
+    private Long scheduleId = 1L;
 
     @BeforeEach
     void setUp() {

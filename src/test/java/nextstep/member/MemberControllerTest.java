@@ -17,12 +17,12 @@ import static org.mockito.Mockito.when;
 public class MemberControllerTest {
 
     public static final String ACCESS_TOKEN = "token";
+    @LocalServerPort
+    int port;
     @MockBean
     private AuthService authService;
     @MockBean
     private MemberService memberService;
-    @LocalServerPort
-    int port;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +31,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("토큰으로 멤버 조회 API 테스트")
-    void findMemberByTokenTest(){
+    void findMemberByTokenTest() {
         MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678");
         when(authService.findUsernameByToken(anyString())).thenReturn("username");
         when(memberService.findByUsername("username")).thenReturn(memberResponseDto);
@@ -46,7 +46,8 @@ public class MemberControllerTest {
                 .then()
                 .log()
                 .all()
-                .body("id", is(memberResponseDto.getId().intValue()))
+                .body("id", is(memberResponseDto.getId()
+                        .intValue()))
                 .body("username", is(memberResponseDto.getUsername()))
                 .body("password", is(memberResponseDto.getPassword()))
                 .body("name", is(memberResponseDto.getName()))

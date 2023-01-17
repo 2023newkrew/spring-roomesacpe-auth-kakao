@@ -12,11 +12,6 @@ import java.sql.PreparedStatement;
 @Component
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
-
-    public MemberDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
             resultSet.getLong("id"),
             resultSet.getString("username"),
@@ -24,6 +19,10 @@ public class MemberDao {
             resultSet.getString("name"),
             resultSet.getString("phone")
     );
+
+    public MemberDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
