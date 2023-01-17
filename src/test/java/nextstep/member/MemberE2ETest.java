@@ -1,6 +1,7 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
+import nextstep.auth.AuthUtil;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,35 +19,39 @@ public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest("username2", "password", "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+        MemberRequest memberRequest = new MemberRequest("username2", "password", "name", "010-1234-5678");
+        createMember(memberRequest);
     }
 
     @DisplayName("내 정보를 조회한다")
     @Test
     void me() {
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("username", "password"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+        TokenRequest tokenRequest = AuthUtil.RESERVATION_EXIST_USER_TOKEN_REQUEST;
+        final TokenResponse tokenResponse = AuthUtil.createToken(tokenRequest);
+        final String accessToken = tokenResponse.getAccessToken();
 
-        Member member = RestAssured
+        Member member = getMemberSelfInfo(accessToken);
+        assertThat(member.getUsername()).isEqualTo(tokenRequest.getUsername());
+    }
+
+    private static void createMember(MemberRequest memberRequest) {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+    }
+
+    private static Member getMemberSelfInfo(String accessToken) {
+        return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract().as(Member.class);
-
-        assertThat(member.getUsername()).isEqualTo("username");
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(Member.class);
     }
 }

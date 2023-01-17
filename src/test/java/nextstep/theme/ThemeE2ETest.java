@@ -33,12 +33,12 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .param("date", "2022-08-11")
+                .param("date", "2022-11-11")
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList(".").size()).isEqualTo(3);
     }
 
     @DisplayName("테마를 삭제한다")
