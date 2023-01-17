@@ -1,5 +1,5 @@
 # Step1
-
+https://edu.nextstep.camp/s/GiKTqpMP/ls/ZuVOiQlB
 ## 기능 요구사항
 
 - username 중복 불가
@@ -22,7 +22,7 @@
 ---
 
 # Step2
-
+https://edu.nextstep.camp/s/GiKTqpMP/ls/MlRKpeWQ
 ## 기능 요구사항
 
 - resolver 이용
