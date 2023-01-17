@@ -191,19 +191,20 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("다른 사람의 예약을 삭제하면 예외 발생")
+    @DisplayName("다른 사람의 예약을 삭제하면 401 코드 반환")
     @Test
     void tryDeleteNotMyReservation() {
+        createReservation();
+
         String userName = "someoneelse";
         String token = jwtTokenProvider.createToken(userName);
-        var response = RestAssured
+
+        RestAssured
                 .given().log().all()
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("잘못된 인증 토큰이 들어오면 400 코드 반환")
