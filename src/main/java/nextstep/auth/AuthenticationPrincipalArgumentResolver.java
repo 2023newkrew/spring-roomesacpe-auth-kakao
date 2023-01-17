@@ -1,5 +1,8 @@
 package nextstep.auth;
 
+import nextstep.member.Member;
+import nextstep.member.MemberService;
+import nextstep.support.NotExistEntityException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -13,9 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.memberService = memberService;
     }
 
     @Override
@@ -30,6 +35,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthenticationException();
         }
-        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
+        Member loggedInMember = memberService.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)));
+        if (loggedInMember == null) {
+            throw new NotExistEntityException();
+        }
+        return loggedInMember;
     }
 }
