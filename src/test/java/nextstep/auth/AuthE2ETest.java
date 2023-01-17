@@ -2,7 +2,6 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,13 +17,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Sql("/init.sql")
 public class AuthE2ETest {
+
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private static final Long memberId = 1L;
+    public static final String NAME = "name";
+    public static final String PHONE = "010-1234-5678";
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

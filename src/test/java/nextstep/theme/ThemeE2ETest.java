@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Sql("/init.sql")
 public class ThemeE2ETest {
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
