@@ -8,27 +8,27 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedAccessException.class)
-    public ResponseEntity<Void> onUnauthorizedAccessException(UnauthorizedAccessException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<String> onUnauthorizedAccessException(UnauthorizedAccessException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler(NotExistEntityException.class)
-    public ResponseEntity<Void> onNotExistEntityException(NotExistEntityException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<String> onNotExistEntityException(NotExistEntityException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(DuplicateEntityException.class)
-    public ResponseEntity<Void> onDuplicateEntityException(DuplicateEntityException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    public ResponseEntity<String> onDuplicateEntityException(DuplicateEntityException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> onIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> onIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> onException(Exception e) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> onException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
