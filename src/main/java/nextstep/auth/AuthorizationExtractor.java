@@ -3,6 +3,13 @@ package nextstep.auth;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
+/**
+ * This contains static method which can convert authorization header to token.
+ * <br><br>
+ * 이 소스를 그대로 썼습니다(기술온보딩 제공) :
+ * <a href="https://github.com/next-step/spring-learning-test/blob/auth/src/main/java/nextstep/helloworld/auth/infrastructure/AuthorizationExtractor.java">
+ *     AuthorizationExtractor.java</a>
+ */
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "authorization";
     public static String BEARER_TYPE = "Bearer";
