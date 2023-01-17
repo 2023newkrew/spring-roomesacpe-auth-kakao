@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.support.LoginException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -19,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = extractToken(request);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new RuntimeException("인증되지 않은 사용자입니다.");
+            throw new LoginException();
         }
 
         request.setAttribute("accessToken", token);
@@ -31,7 +32,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             return authorization.split(" ")[1];
         } catch (Exception e) {
-            throw new RuntimeException("인증되지 않은 사용자입니다.");
+            throw new LoginException();
         }
     }
 
