@@ -21,20 +21,20 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+    public Long create(Long scheduleId, Long memberId) {
+        Schedule schedule = scheduleDao.findById(scheduleId);
         if (schedule == null) {
             throw new NullPointerException();
         }
 
-        List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
+        List<Reservation> reservation = reservationDao.findByScheduleId(scheduleId);
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                memberId
         );
 
         return reservationDao.save(newReservation);
@@ -49,10 +49,9 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
+    public void delete(Long id, Long memberId) {
+        if (!reservationDao.existsByIdAndMemberId(id, memberId)) {
+            return;
         }
 
         reservationDao.deleteById(id);
