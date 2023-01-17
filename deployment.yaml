@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: soony-was
+  name: soony-was
+spec:
+  replicas: 1
+  minReadySeconds: 0
+  selector:
+    matchLabels:
+      app: soony-was
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: soony-was
+    spec:
+      containers:
+        - image: idock.daumkakao.io/onboarding2023/soony.kwonn
+          imagePullPolicy: "Always"
+          ports:
+            - containerPort: 8080
+          name: was
+          #          resources:
+          #            limits:
+          #              cpu: 100m
+          #              memory: 100Mi
+          #            requests:
+          #              cpu: 100m
+          #              memory: 100Mi
+#          readinessProbe:
+#            httpGet:
+#              path: /
+#              port: 8080
+#            initialDelaySeconds: 5
+#            periodSeconds: 10
+#          livenessProbe:
+#            httpGet:
+#              path: /
+#              port: 8080
+#            initialDelaySeconds: 15
+#            periodSeconds: 20
