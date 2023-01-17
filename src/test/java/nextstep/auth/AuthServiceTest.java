@@ -23,8 +23,9 @@ class AuthServiceTest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    @BeforeEach
-    void setUp() {
+    @DisplayName("username과 password 일치 확인 후 토큰을 발급해서 반환")
+    @Test
+    void login() {
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
@@ -33,11 +34,7 @@ class AuthServiceTest {
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
-    }
 
-    @DisplayName("username과 password 일치 확인 후 토큰을 발급해서 반환")
-    @Test
-    void login() {
         TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
 
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
