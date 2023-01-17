@@ -1,5 +1,10 @@
 package nextstep.theme;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class ThemeRequest {
     private String name;
     private String desc;
@@ -9,18 +14,6 @@ public class ThemeRequest {
         this.name = name;
         this.desc = desc;
         this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public int getPrice() {
-        return price;
     }
 
     public Theme toEntity() {

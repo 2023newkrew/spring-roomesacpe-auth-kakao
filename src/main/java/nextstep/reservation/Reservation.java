@@ -1,7 +1,11 @@
 package nextstep.reservation;
 
+import lombok.Getter;
+import lombok.ToString;
 import nextstep.schedule.Schedule;
 
+@Getter
+@ToString
 public class Reservation {
     private Long id;
     private Schedule schedule;
@@ -19,17 +23,5 @@ public class Reservation {
         this.id = id;
         this.schedule = schedule;
         this.username = username;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public String getUsername() {
-        return username;
     }
 }

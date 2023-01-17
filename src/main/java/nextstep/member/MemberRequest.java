@@ -1,5 +1,10 @@
 package nextstep.member;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class MemberRequest {
     private String username;
     private String password;
@@ -11,22 +16,6 @@ public class MemberRequest {
         this.password = password;
         this.name = name;
         this.phone = phone;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 
     public Member toEntity() {

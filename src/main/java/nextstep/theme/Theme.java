@@ -1,5 +1,9 @@
 package nextstep.theme;
 
+import lombok.*;
+
+@Getter
+@ToString
 public class Theme {
     private Long id;
     private String name;
@@ -20,21 +24,5 @@ public class Theme {
         this.name = name;
         this.desc = desc;
         this.price = price;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public int getPrice() {
-        return price;
     }
 }
