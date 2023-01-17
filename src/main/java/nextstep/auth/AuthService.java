@@ -8,19 +8,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final MemberDao memberDao;
+    private final JwtTokenProvider tokenProvider;
 
-    public AuthService(MemberDao memberDao) {
+    public AuthService(MemberDao memberDao, JwtTokenProvider tokenProvider) {
         this.memberDao = memberDao;
+        this.tokenProvider = tokenProvider;
     }
 
-    public Long validateAndGetMemberId(TokenRequest tokenRequest) {
+    public String getToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername());
         if (member == null) {
             throw new NotExistEntityException();
         }
+        validateTokenRequest(member, tokenRequest);
+        return generateTokenForMember(member);
+    }
+
+    private void validateTokenRequest(Member member, TokenRequest tokenRequest) {
         if (member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new IllegalArgumentException();
         }
-        return member.getId();
+    }
+
+    private String generateTokenForMember(Member member) {
+        return tokenProvider.createToken(member.getId().toString());
     }
 }
