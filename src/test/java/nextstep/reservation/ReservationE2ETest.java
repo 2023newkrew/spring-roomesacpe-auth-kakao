@@ -61,23 +61,23 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
     @Test
+    @DisplayName("예약을 삭제한다")
     void delete() {
         token = loginUser();
         var reservation = createReservation();
 
         RestAssured
-            .given().log().all()
-            .auth().oauth2(token)
-            .when().delete(reservation.header("Location"))
-            .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value())
-            .extract();
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .extract();
     }
 
-    @DisplayName("중복 예약을 생성한다")
     @Test
+    @DisplayName("중복 예약을 생성한다")
     void createDuplicateReservation() {
         token = loginUser();
         createReservation();
@@ -94,8 +94,8 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("예약이 없을 때 예약 목록을 조회한다")
     @Test
+    @DisplayName("예약이 없을 때 예약 목록을 조회한다")
     void showEmptyReservations() {
         token = loginUser();
 
@@ -112,8 +112,8 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(0);
     }
 
-    @DisplayName("없는 예약을 삭제한다")
     @Test
+    @DisplayName("없는 예약을 삭제한다")
     void createNotExistReservation() {
         token = loginUser();
 
@@ -127,8 +127,8 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("자신의 예약이 아닌 경우 예약 취소가 불가능하다.")
     @Test
+    @DisplayName("자신의 예약이 아닌 경우 예약 취소가 불가능하다.")
     void deleteNotOwner() {
         token = loginUser();
         var reservation = createReservation();

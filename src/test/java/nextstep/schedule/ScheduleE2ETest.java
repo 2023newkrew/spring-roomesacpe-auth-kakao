@@ -40,8 +40,8 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("스케줄을 조회한다")
     @Test
+    @DisplayName("스케줄을 조회한다")
     public void showSchedules() {
         token = loginUser();
         requestCreateSchedule();

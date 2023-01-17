@@ -1,9 +1,9 @@
 package nextstep.support.exception.api;
 
-import nextstep.support.ErrorCode;
-import nextstep.support.exception.RoomEscapeException;
+import nextstep.support.exception.ErrorCode;
+import nextstep.support.exception.ApiException;
 
-public class NoSuchReservationException extends RoomEscapeException {
+public class NoSuchReservationException extends ApiException {
     @Override
     public ErrorCode getErrorCode() {
         return ErrorCode.NO_SUCH_RESERVATION;
