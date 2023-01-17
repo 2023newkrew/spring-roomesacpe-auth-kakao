@@ -1,8 +1,10 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
+import nextstep.support.exception.AuthorizationExcpetion;
+import nextstep.support.exception.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, Member member) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -34,7 +36,8 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                reservationRequest.getName(),
+                member.getId()
         );
 
         return reservationDao.save(newReservation);
@@ -49,12 +52,15 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Member member) {
         Reservation reservation = reservationDao.findById(id);
+        Long memberId = reservation.getMemberId();
         if (reservation == null) {
             throw new NullPointerException();
         }
-
+        if (member.getId() != memberId) {
+            throw new AuthorizationExcpetion();
+        }
         reservationDao.deleteById(id);
     }
 }
