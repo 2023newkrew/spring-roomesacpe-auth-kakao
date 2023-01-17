@@ -1,28 +1,46 @@
 package nextstep.member;
 
 public class MemberResponse {
-    private Long id;
-    private String email;
-    private Integer age;
+    private final Long id;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
 
-    public MemberResponse() {
+    public MemberResponse (Member member) {
+        this.id = member.getId();
+        this.username = member.getUsername();
+        this.password = member.getPassword();
+        this.name = member.getName();
+        this.phone = member.getPhone();
     }
 
-    public MemberResponse(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
+
+    public MemberResponse(String username, String password, String name, String phone) {
+        this.id = null;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.phone = phone;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public Integer getAge() {
-        return age;
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

@@ -1,20 +1,19 @@
 package nextstep.auth;
 
 import nextstep.exceptions.exception.AuthorizationException;
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
-import nextstep.member.MemberResponse;
+import nextstep.member.MemberService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
     private JwtTokenProvider jwtTokenProvider;
-    private MemberDao memberDao;
+    private MemberService memberService;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
+        this.memberService = memberService;
     }
 
     public TokenResponse createToken(TokenRequest request) {
@@ -25,16 +24,10 @@ public class AuthService {
     }
 
     private boolean checkInvalidLogin(String username, String password) {
-        Member member = memberDao.findByUsername(username);
-        return member.checkWrongPassword(password);
+        return !memberService
+                .findByUsername(username)
+                .getPassword()
+                .equals(password);
     }
 
-    public MemberResponse findMember(String principal) {
-        return new MemberResponse(1L, principal, 10);
-    }
-
-    public MemberResponse findMemberByToken(String token) {
-        String payload = jwtTokenProvider.getPayload(token);
-        return findMember(payload);
-    }
 }
