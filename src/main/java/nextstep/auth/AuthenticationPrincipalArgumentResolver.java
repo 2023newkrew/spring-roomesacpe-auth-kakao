@@ -1,8 +1,7 @@
 package nextstep.auth;
 
-import javax.servlet.http.HttpServletRequest;
 import nextstep.member.Member;
-import nextstep.member.MemberResponse;
+import nextstep.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -11,11 +10,13 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Autowired
-    private AuthService authService;
+    private MemberService memberService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -23,10 +24,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public MemberResponse resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Member resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest nativeRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String token = AuthorizationExtractor.extract(nativeRequest);
-        return authService.findMemberByToken(token);
+        return memberService.findByToken(token);
     }
 }
