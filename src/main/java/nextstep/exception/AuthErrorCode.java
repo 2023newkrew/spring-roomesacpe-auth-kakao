@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 
 public enum AuthErrorCode implements ErrorCode {
 
-    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "아이디 혹은 비밀번호가 잘못됐습니다.");
+    INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "아이디 혹은 비밀번호가 잘못됐습니다."),
+
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "수행 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
 

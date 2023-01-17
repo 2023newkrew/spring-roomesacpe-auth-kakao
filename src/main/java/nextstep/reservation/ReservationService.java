@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.exception.AuthErrorCode;
 import nextstep.exception.BusinessException;
 import nextstep.exception.CommonErrorCode;
 import nextstep.schedule.Schedule;
@@ -45,7 +46,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+            throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
@@ -54,10 +55,10 @@ public class ReservationService {
     public void deleteById(String memberName, Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+            throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
         if(!Objects.equals(reservation.getName(), memberName)) {
-            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+            throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
         }
 
         reservationDao.deleteById(id);
