@@ -32,11 +32,6 @@ public class AuthenticationMemberArgumentResolver implements HandlerMethodArgume
         String authorization = webRequest.getHeader("Authorization");
         String token = authorization.split(" ")[1];
 
-        // token 만료 되었는지 확인
-        if(!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException();
-        }
-
         // LoginMember로 반환
         String username = jwtTokenProvider.getPrincipal(token);
         Member member = memberDao.findByUsername(username);
