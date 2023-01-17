@@ -2,7 +2,8 @@ package nextstep.config;
 
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.member.MemberDao;
 import org.springframework.core.MethodParameter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,7 +39,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String token = AuthorizationExtractor.extract(httpServletRequest);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException();
+            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED);
         }
 
         String username = jwtTokenProvider.getPrincipal(token);
