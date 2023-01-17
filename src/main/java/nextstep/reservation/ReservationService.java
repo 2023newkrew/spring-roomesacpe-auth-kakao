@@ -3,6 +3,7 @@ package nextstep.reservation;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -61,9 +62,8 @@ public class ReservationService {
     public void deleteById(Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException("예약");
         }
-
         reservationDao.deleteById(id);
     }
 }

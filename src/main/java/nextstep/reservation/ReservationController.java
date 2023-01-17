@@ -3,8 +3,8 @@ package nextstep.reservation;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.support.AuthorizationException;
+import nextstep.support.ForbiddenAccessException;
 import nextstep.ui.AuthenticationPrincipal;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,32 +24,31 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@AuthenticationPrincipal String token, @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<URI> createReservation(@AuthenticationPrincipal String token, @RequestBody ReservationRequest reservationRequest) {
         if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new AuthorizationException();
         }
-        Member member = memberService.findByToken(token);
+        memberService.findByToken(token);
         Long id = reservationService.create(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Reservation>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@AuthenticationPrincipal String token, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@AuthenticationPrincipal String token, @PathVariable Long id) {
         if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new AuthorizationException();
         }
 
-        // 권한 체크(본인의 예약건인지 확인)
         Member member = memberService.findByToken(token);
         Reservation reservation = reservationService.findById(id);
-        if (!reservation.getName().equals(member.getName())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (!reservation.getName().equals(member.getUsername())) {
+            throw new ForbiddenAccessException();
         }
 
         reservationService.deleteById(id);
@@ -57,8 +56,8 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Void> onException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
 }
