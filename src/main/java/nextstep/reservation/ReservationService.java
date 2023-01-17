@@ -25,9 +25,9 @@ public class ReservationService {
     public Long create(ReservationRequest reservationRequest, String token) {
 
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        if(!jwtTokenProvider.validateToken(token)){
+        if (!jwtTokenProvider.validateToken(token)) {
             // TODO: throw exception. Token invalid
-            return null;
+            throw new IllegalArgumentException("토큰 잘못됨");
         }
 
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
@@ -58,9 +58,24 @@ public class ReservationService {
     }
 
     public void deleteById(Long id) {
+        reservationDao.deleteById(id);
+    }
+
+    public void deleteById(Long id, String token) {
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        if (!jwtTokenProvider.validateToken(token)) {
+            // TODO: throw exception. Token invalid
+            System.out.println("invalid token");
+            throw new IllegalArgumentException("토큰 잘못됨");
+        }
         Reservation reservation = reservationDao.findById(id);
+
         if (reservation == null) {
             throw new NullPointerException();
+        }
+
+        if (!reservation.getName().equals(jwtTokenProvider.getPrincipal(token))) {
+            throw new IllegalArgumentException("본인 예약이 아님");
         }
 
         reservationDao.deleteById(id);
