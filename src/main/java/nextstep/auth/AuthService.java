@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
+
     private final MemberDao memberDao;
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
@@ -24,6 +25,6 @@ public class AuthService {
 
     public boolean checkInvalidLogin(String username, String password) {
         Member member = memberDao.findByUsername(username);
-        return !password.equals(member.getPassword());
+        return member.checkWrongPassword(password);
     }
 }
