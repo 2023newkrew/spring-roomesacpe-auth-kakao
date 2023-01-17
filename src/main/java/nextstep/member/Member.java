@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.permission.Permission;
+import nextstep.permission.Authority;
 
 @NoArgsConstructor // 테스트 시 Serializable 관련 이슈로 추가
 @AllArgsConstructor
@@ -16,7 +16,7 @@ public class Member {
     private String password;
     private String name;
     private String phone;
-    private Permission permission;
+    private Authority authority;
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }

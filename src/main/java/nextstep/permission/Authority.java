@@ -1,6 +1,6 @@
 package nextstep.permission;
 
-public enum Permission {
+public enum Authority {
     ADMIN(100),
     GUEST(0),
     USER(50);
@@ -8,7 +8,7 @@ public enum Permission {
     static final int MAX_SECURITY_LEVEL = 100;
     static final int MIN_SECURITY_LEVEL = 0;
 
-    Permission(int securityLevel){
+    Authority(int securityLevel){
         if (securityLevel > MAX_SECURITY_LEVEL){
             securityLevel = MAX_SECURITY_LEVEL;
         }
