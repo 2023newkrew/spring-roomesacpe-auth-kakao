@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -34,18 +36,18 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             MethodParameter parameter,
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
-            WebDataBinderFactory binderFactory) throws Exception {
+            WebDataBinderFactory binderFactory) {
 
         var bearerToken = webRequest.getHeader(ACCESS_TOKEN_NAME);
 
         if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(ErrorCode.NO_TOKEN);
         }
 
         var accessToken = bearerToken.substring(7);
 
         if (!provider.validateToken(accessToken)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
         }
 
         return Long.parseLong(provider.getPrincipal(accessToken));
