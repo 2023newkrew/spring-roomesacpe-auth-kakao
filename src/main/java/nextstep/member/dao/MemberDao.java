@@ -1,6 +1,6 @@
 package nextstep.member.dao;
 
-import nextstep.member.entity.Member;
+import nextstep.member.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,7 +16,7 @@ public class MemberDao {
 
     public final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
+    private final RowMapper<MemberEntity> rowMapper = (resultSet, rowNum) -> new MemberEntity(
             resultSet.getLong("id"),
             resultSet.getString("username"),
             resultSet.getString("password"),
@@ -29,35 +29,37 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Member member) {
+    public Long save(MemberEntity memberEntity) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, member.getUsername());
-            ps.setString(2, member.getPassword());
-            ps.setString(3, member.getName());
-            ps.setString(4, member.getPhone());
+            ps.setString(1, memberEntity.getUsername());
+            ps.setString(2, memberEntity.getPassword());
+            ps.setString(3, memberEntity.getName());
+            ps.setString(4, memberEntity.getPhone());
             return ps;
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey())
+                .map(Number::longValue)
+                .orElse(-1L);
     }
 
-    public Member findById(Long id) {
+    public MemberEntity findById(Long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByUsername(String username) {
+    public MemberEntity findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
-    public Optional<Member> findByUsernameAndPassword(String username, String password) {
+    public MemberEntity findByUsernameAndPassword(String username, String password) {
         String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username, password));
+        return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
     }
 }

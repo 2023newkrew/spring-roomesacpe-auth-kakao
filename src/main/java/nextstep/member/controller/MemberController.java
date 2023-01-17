@@ -2,7 +2,7 @@ package nextstep.member.controller;
 
 import nextstep.auth.AuthenticationPrincipal;
 import nextstep.member.dto.MemberRequest;
-import nextstep.member.entity.Member;
+import nextstep.member.dto.MemberResponse;
 import nextstep.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,16 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
-        Long id = memberService.create(memberRequest);
+        Long id = memberService.create(memberRequest.getUsername(), memberRequest.getPassword(),
+                memberRequest.getName(), memberRequest.getPhone());
+
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Member> me(@AuthenticationPrincipal String principal) {
-        Member member = memberService.findById(Long.parseLong(principal));
-        return ResponseEntity.ok(member);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal String principal) {
+        MemberResponse memberResponse = memberService.findById(Long.parseLong(principal));
+
+        return ResponseEntity.ok(memberResponse);
     }
 }

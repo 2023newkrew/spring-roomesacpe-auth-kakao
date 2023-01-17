@@ -1,26 +1,32 @@
 package nextstep.member.service;
 
-import nextstep.member.dao.MemberDao;
-import nextstep.member.dto.MemberRequest;
-import nextstep.member.entity.Member;
+import nextstep.member.datamapper.MemberMapper;
+import nextstep.member.domain.Member;
+import nextstep.member.dto.MemberResponse;
+import nextstep.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
-    private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public MemberService(MemberDao memberDao) {
-        this.memberDao = memberDao;
+    public MemberService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
-    public Long create(MemberRequest memberRequest) {
-        return memberDao.save(new Member(null, memberRequest.getUsername(), memberRequest.getPassword(), memberRequest.getName(), memberRequest.getPhone()));
+    public Long create(String username, String password, String name, String phone) {
+        Member requestedMember = new Member(username, password, name, phone);
+        requestedMember.encryptPassword();
+
+        return memberRepository.save(requestedMember);
     }
 
-    public Member findById(Long id) {
-        return memberDao.findById(id);
+    public MemberResponse findById(Long id) {
+        return memberRepository.findById(id)
+                .map(MemberMapper.INSTANCE::domainToResponseDto)
+                .orElse(null);
     }
 }

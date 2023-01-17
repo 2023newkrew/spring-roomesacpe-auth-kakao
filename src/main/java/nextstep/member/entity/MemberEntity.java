@@ -7,15 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
+public class MemberEntity {
 
     private Long id;
     private String username;
     private String password;
     private String name;
     private String phone;
-
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
-    }
 }

@@ -2,13 +2,11 @@ package nextstep.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class AuthRequest {
 
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 }
