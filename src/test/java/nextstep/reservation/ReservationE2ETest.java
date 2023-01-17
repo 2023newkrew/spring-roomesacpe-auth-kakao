@@ -78,10 +78,7 @@ class ReservationE2ETest {
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
-        request = new ReservationRequest(
-                scheduleId,
-                "username"
-        );
+        request = new ReservationRequest(scheduleId);
 
         accessToken = RestAssured
                 .given().log().all()
