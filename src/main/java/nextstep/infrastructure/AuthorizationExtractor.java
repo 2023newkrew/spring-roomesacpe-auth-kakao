@@ -1,5 +1,7 @@
 package nextstep.infrastructure;
 
+import nextstep.support.NoAccessTokenException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
@@ -10,6 +12,9 @@ public class AuthorizationExtractor {
 
     public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
+        if(!headers.hasMoreElements()){
+            throw new NoAccessTokenException("액세스 토큰이 존재하지 않습니다.");
+        }
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
             if ((value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {

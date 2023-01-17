@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
+import nextstep.support.NoAccessTokenException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -25,11 +26,19 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        String parsedToken = null;
+        try {
+            parsedToken = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (JwtException jwtException) {
+            throw new JwtException("유효하지 않은 토큰입니다.");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new NoAccessTokenException("액세스 토큰이 존재하지 않습니다.");
+        }
+        return parsedToken;
     }
 
     public boolean validateToken(String token) {
