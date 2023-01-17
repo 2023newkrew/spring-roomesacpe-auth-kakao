@@ -31,6 +31,10 @@ public class ReservationService {
         if (schedule == null) {
             throw new NullPointerException();
         }
+        Member member = memberDao.findById(reservationRequest.getMemberId());
+        if (member == null) {
+            throw new NullPointerException();
+        }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
@@ -39,7 +43,7 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                member
         );
 
         return reservationDao.save(newReservation);
@@ -60,7 +64,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
         Member member = memberDao.findById(memberId);
-        if (!Objects.equals(reservation.getName(), member.getName())) {
+        if (!Objects.equals(reservation.getMember().getId(), member.getId())) {
             throw new RuntimeException("자신의 예약만 취소할 수 있습니다.");
         }
 

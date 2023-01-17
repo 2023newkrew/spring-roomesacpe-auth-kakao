@@ -78,9 +78,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        request = new ReservationRequest(scheduleId,
-                NAME
-        );
+        request = new ReservationRequest(scheduleId, memberId);
     }
 
     @DisplayName("예약을 생성한다")
