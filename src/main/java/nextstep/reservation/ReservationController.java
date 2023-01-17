@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.exception.DuplicateReservationException;
+import nextstep.exception.DuplicateEntityException;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistReservationException;
 import nextstep.exception.NotQualifiedMemberException;
@@ -40,7 +40,7 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({NotExistReservationException.class, NotQualifiedMemberException.class, DuplicateReservationException.class, NotQualifiedMemberException.class, InvalidAuthorizationTokenException.class})
+    @ExceptionHandler({NotExistReservationException.class, NotQualifiedMemberException.class, DuplicateEntityException.class, NotQualifiedMemberException.class, InvalidAuthorizationTokenException.class})
     public ResponseEntity handle() {
         return ResponseEntity.badRequest().build();
     }

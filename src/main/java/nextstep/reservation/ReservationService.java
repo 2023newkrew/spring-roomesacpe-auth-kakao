@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.exception.DuplicateReservationException;
+import nextstep.exception.DuplicateEntityException;
 import nextstep.exception.NotExistReservationException;
 import nextstep.exception.NotQualifiedMemberException;
 import nextstep.member.Member;
@@ -32,7 +32,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateReservationException();
+            throw new DuplicateEntityException();
         }
 
         Reservation newReservation = new Reservation(schedule, member);
