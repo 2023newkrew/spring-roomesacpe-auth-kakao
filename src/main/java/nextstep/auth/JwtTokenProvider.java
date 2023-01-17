@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtTokenProvider {
@@ -29,6 +30,14 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getCredential(String token) {
+        return Optional.ofNullable(token)
+                .map((a) -> a.split(" "))
+                .filter((b) -> b.length > 1)
+                .map((split) -> split[1])
+                .orElse(null);
     }
 
     public boolean validateToken(String token) {
