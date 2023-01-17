@@ -1,5 +1,7 @@
 package nextstep.reservation;
 
+import nextstep.auth.LoginMember;
+import nextstep.member.MemberDao;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
@@ -13,17 +15,19 @@ import java.util.List;
 
 @Service
 public class ReservationService {
-    public final ReservationDao reservationDao;
-    public final ThemeDao themeDao;
-    public final ScheduleDao scheduleDao;
+    private final ReservationDao reservationDao;
+    private final ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+    private final MemberDao memberDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao, MemberDao memberDao) {
         this.reservationDao = reservationDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
+        this.memberDao = memberDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, String name) {
+    public Long create(ReservationRequest reservationRequest, LoginMember loginMember) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -35,8 +39,8 @@ public class ReservationService {
         }
 
         Reservation newReservation = new Reservation(
-                schedule,
-                name
+                schedule, memberDao.findById(loginMember.getId())
+
         );
 
         return reservationDao.save(newReservation);
@@ -51,12 +55,13 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, String userName) {
+    public void deleteById(Long id, Long memberId) {
         Reservation reservation = reservationDao.findById(id);
+        Member member = memberDao.findById(memberId);
         if (reservation == null) {
             throw new NullPointerException();
         }
-        if (!reservation.getName().equals(userName)){
+        if (!reservation.getMember().getId().equals(member.getId())){
             throw new AuthorizationException();
         }
         reservationDao.deleteById(id);

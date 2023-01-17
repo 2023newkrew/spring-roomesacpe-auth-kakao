@@ -30,10 +30,4 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public Long validateToken(String token){
-        if (!jwtTokenProvider.validateToken(token)){
-            throw new AuthorizationException();
-        }
-        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
-    }
 }

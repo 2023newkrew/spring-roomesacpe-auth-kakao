@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.support.AuthorizationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +17,10 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id);
+        try {
+            return memberDao.findById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new AuthorizationException();
+        }
     }
 }

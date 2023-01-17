@@ -2,9 +2,14 @@ package nextstep.config;
 
 import nextstep.auth.AuthService;
 import nextstep.auth.AuthorizationExtractor;
+import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.LoginMember;
+import nextstep.member.Member;
 import nextstep.member.MemberService;
+import nextstep.support.AuthorizationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -15,12 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private final AuthService authService;
-    private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService, MemberService memberService){
-        this.authService = authService;
-        this.memberService =  memberService;
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     // resolveArgument 메서드가 동작하는 조건을 정의하는 메서드
     @Override
@@ -32,10 +35,19 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     // supportsParameter가 true인 경우 동작하는 메서드
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        HttpServletRequest httpServletRequest = (HttpServletRequest)webRequest.getNativeRequest();
-        String token = AuthorizationExtractor.extract(httpServletRequest);
-        Long id = authService.validateToken(token);
+        String token = extractToken((HttpServletRequest) webRequest.getNativeRequest());
+        jwtTokenProvider.validateToken(token);
+        String principal = jwtTokenProvider.getPrincipal(token);
 
-        return memberService.findById(id);
+        return LoginMember.from(principal);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        try {
+            String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+            return header.split(" ")[1];
+        } catch (Exception e) {
+            throw new AuthorizationException();
+        }
     }
 }
