@@ -10,16 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Sql(scripts = "/sql/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class AuthE2ETest {
     public static final String USERNAME = "admin";
     public static final String PASSWORD = "admin";
-    private String token;
-
     @Test
     @DisplayName("로그인에 성공하여 토큰을 생성한다")
     public void create() {
@@ -36,8 +35,8 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("회원이 아닌 유저가 로그인을 시도한다.")
     @Test
+    @DisplayName("회원이 아닌 유저가 로그인을 시도한다.")
     public void createTokenUnExistMember(){
         TokenRequest body = new TokenRequest("AnotherUsername", "AnotherPassword");
         RestAssured
@@ -49,8 +48,8 @@ public class AuthE2ETest {
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("비밀번호가 틀린 경우 로그인에 실패한다.")
     @Test
+    @DisplayName("비밀번호가 틀린 경우 로그인에 실패한다.")
     public void createTokenWithInvalidPassword(){
         TokenRequest body = new TokenRequest(USERNAME, "WrongPassword");
         RestAssured
