@@ -21,10 +21,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(adminInterceptor)
-                .addPathPatterns("/**/admin");
+                .addPathPatterns("/**/admin/**");
 
         registry.addInterceptor(userInterceptor)
-                .excludePathPatterns("/**/admin", "/login/**");
+                .excludePathPatterns("/**/admin/**", "/login/**");
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }
