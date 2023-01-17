@@ -22,7 +22,7 @@ public class ThemeService {
     }
 
     public void delete(Long id) {
-        themeDao.findById(id).orElseThrow(NotExistEntityException::new);
+        themeDao.findById(id).orElseThrow(() -> new NotExistEntityException("존재하지 않는 테마입니다 - " + id));
         themeDao.delete(id);
     }
 }

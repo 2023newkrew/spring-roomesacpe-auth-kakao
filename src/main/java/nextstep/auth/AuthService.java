@@ -20,9 +20,10 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(() -> new NotExistEntityException("존재하지 않는 멤버입니다 - " + tokenRequest.getUsername()));
+                .orElseThrow(() -> new NotExistEntityException(
+                        "존재하지 않는 멤버입니다 - " + tokenRequest.getUsername()));
         if(member.checkWrongPassword(tokenRequest.getPassword())) {
-            throw new NotCorrectPasswordException();
+            throw new NotCorrectPasswordException("잘못된 비밀번호입니다");
         }
         String accessToken = jwtTokenProvider.createToken(member.getUsername());
         return new TokenResponse(accessToken);

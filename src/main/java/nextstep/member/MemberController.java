@@ -29,9 +29,9 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity me(HttpServletRequest request) {
         String token = AuthorizationTokenExtractor.extract(request)
-                .orElseThrow(InvalidAuthorizationTokenException::new);
+                .orElseThrow(() -> new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다"));
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException();
+            throw new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다 - " + token);
         }
         String userName = jwtTokenProvider.getPrincipal(token);
         Member member = memberService.findByUserName(userName);

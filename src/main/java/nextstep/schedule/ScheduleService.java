@@ -19,7 +19,8 @@ public class ScheduleService {
 
     public Long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId())
-                .orElseThrow(NotExistEntityException::new);
+                .orElseThrow(() -> new NotExistEntityException(
+                        "존재하지 않는 테마입니다 - " + scheduleRequest.getThemeId()));
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 

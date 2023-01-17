@@ -29,13 +29,15 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+
         String token = AuthorizationTokenExtractor.extract(
                 webRequest.getHeader(AuthorizationTokenExtractor.AUTHORIZATION))
-                .orElseThrow(InvalidAuthorizationTokenException::new);
+                .orElseThrow(() -> new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다"));
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException();
+            throw new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다 - " + token);
         }
 
         String username = jwtTokenProvider.getPrincipal(token);
