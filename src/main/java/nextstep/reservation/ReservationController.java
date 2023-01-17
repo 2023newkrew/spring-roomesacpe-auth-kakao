@@ -1,11 +1,10 @@
 package nextstep.reservation;
 
-import nextstep.exception.*;
 import nextstep.member.Member;
 import nextstep.support.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -23,7 +22,8 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest, @LoginMember Member member) {
         Long id = reservationService.create(reservationRequest, member);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).build();
+        URI uri = UriComponentsBuilder.fromUriString("/reservations/{id}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping

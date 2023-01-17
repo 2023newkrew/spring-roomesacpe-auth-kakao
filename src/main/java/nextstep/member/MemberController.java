@@ -5,6 +5,7 @@ import nextstep.auth.util.JwtTokenProvider;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -23,7 +24,8 @@ public class MemberController {
     @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
-        return ResponseEntity.created(URI.create("/members/" + id)).build();
+        URI uri = UriComponentsBuilder.fromUriString("/members/{id}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("/me")
