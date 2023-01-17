@@ -7,15 +7,15 @@ import org.springframework.http.MediaType;
 public class LoginUtils {
     public static String loginUser() {
         TokenRequest request = new TokenRequest("user", "user");
-        return login(request);
+        return loginByRequest(request);
     }
 
     public static String loginAdmin() {
         TokenRequest request = new TokenRequest("admin", "admin");
-        return login(request);
+        return loginByRequest(request);
     }
 
-    private static String login(TokenRequest request) {
+    public static String loginByRequest(TokenRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
