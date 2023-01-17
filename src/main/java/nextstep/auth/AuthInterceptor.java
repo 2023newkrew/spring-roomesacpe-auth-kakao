@@ -2,10 +2,12 @@ package nextstep.auth;
 
 import nextstep.support.AuthorizationException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
@@ -19,6 +21,13 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        LoginRequired loginRequired = handlerMethod.getMethod().getAnnotation(LoginRequired.class);
+
+        if(Objects.isNull(loginRequired)){
+            return true;
+        }
+
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader == null) {
             throw new AuthorizationException();

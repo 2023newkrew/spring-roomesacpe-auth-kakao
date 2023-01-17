@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import nextstep.auth.LoginRequired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,9 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
+    @LoginRequired
     @PostMapping
-    public ResponseEntity createSchedule(@Valid  @RequestBody ScheduleRequest scheduleRequest) {
+    public ResponseEntity createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
     }
@@ -27,6 +29,7 @@ public class ScheduleController {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
+    @LoginRequired
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
