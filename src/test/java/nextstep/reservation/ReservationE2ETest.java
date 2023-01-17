@@ -150,6 +150,20 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("비로그인 상태에서 예약을 취소 시 401(Unauthorized) 을 반환한다.")
+    @Test
+    void deleteWithoutAuth() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("다른 사람의 예약을 취소 시도 시 403(Forbidden) 을 반환한다.")
     @Test
     void deleteWithoutPermission() {
