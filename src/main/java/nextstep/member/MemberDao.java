@@ -39,7 +39,7 @@ public class MemberDao {
                 return ps;
 
             }, keyHolder);
-        } catch(DataAccessException e){
+        } catch (DataAccessException e) {
             throw new DuplicateEntityException();
         }
 

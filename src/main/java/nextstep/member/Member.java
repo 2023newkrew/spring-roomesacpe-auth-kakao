@@ -9,6 +9,7 @@ public class Member {
 
     public Member() {
     }
+
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
         this.username = username;

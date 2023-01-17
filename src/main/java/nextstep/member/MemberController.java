@@ -5,10 +5,8 @@ import nextstep.config.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import nextstep.auth.AuthService;
-import nextstep.auth.AuthorizationExtractor;
+
 
 @RestController
 @RequestMapping("/members")

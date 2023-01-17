@@ -1,13 +1,8 @@
 package nextstep.config;
 
-import nextstep.auth.AuthService;
-import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.LoginMember;
-import nextstep.member.Member;
-import nextstep.member.MemberService;
 import nextstep.support.AuthorizationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -25,6 +20,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
+
     // resolveArgument 메서드가 동작하는 조건을 정의하는 메서드
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
