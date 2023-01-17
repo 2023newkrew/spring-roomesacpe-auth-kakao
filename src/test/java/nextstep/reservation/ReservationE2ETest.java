@@ -24,7 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
+    public static final String USERNAME = "username";
     public static final String NAME = "name";
+    public static final String TOKEN = new JwtTokenProvider().createToken(USERNAME);
 
     private ReservationRequest request;
     private Long themeId;
@@ -57,7 +59,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, "password", NAME, "010-1234-5678");
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -78,11 +80,9 @@ class ReservationE2ETest {
 
     @DisplayName("예약을 생성한다")
     @Test
-    void create() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken("username");
+    void createLoginUserReservation() {
         var response = RestAssured
-                .given().header("authorization", "Bearer " + token).log().all()
+                .given().header("authorization", "Bearer " + TOKEN).log().all()
                 .body(scheduleId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -90,6 +90,20 @@ class ReservationE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("비로그인 유저가 예약을 생성한다")
+    @Test
+    void createNonLoginUserReservation() {
+        var response = RestAssured
+                .given().log().all()
+                .body(scheduleId)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -113,11 +127,9 @@ class ReservationE2ETest {
     @Test
     void deleteMyReservation() {
         var reservation = createReservation();
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken("username");
 
         var response = RestAssured
-                .given().header("authorization", "Bearer " + token).log().all()
+                .given().header("authorization", "Bearer " + TOKEN).log().all()
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -130,10 +142,10 @@ class ReservationE2ETest {
     void deleteYourReservation() {
         var reservation = createReservation();
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken("otto");
+        String otherToken = jwtTokenProvider.createToken("otto");
 
         var response = RestAssured
-                .given().header("authorization", "Bearer " + token).log().all()
+                .given().header("authorization", "Bearer " + otherToken).log().all()
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -185,10 +197,8 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> createReservation() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken("username");
         return RestAssured
-                .given().header("authorization", "Bearer " + token).log().all()
+                .given().header("authorization", "Bearer " + TOKEN).log().all()
                 .body(scheduleId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
