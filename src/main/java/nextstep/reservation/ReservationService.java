@@ -6,6 +6,7 @@ import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
+import nextstep.auth.JwtTokenProvider;
 
 import java.util.List;
 
@@ -21,7 +22,14 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, String token) {
+
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        if(!jwtTokenProvider.validateToken(token)){
+            // TODO: throw exception. Token invalid
+            return null;
+        }
+
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
