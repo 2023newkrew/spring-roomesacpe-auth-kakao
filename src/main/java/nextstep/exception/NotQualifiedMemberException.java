@@ -1,6 +1,6 @@
 package nextstep.exception;
 
-public class NotQualifiedMemberException extends RuntimeException {
+public class NotQualifiedMemberException extends RoomEscapeException {
     public NotQualifiedMemberException() {
         super();
     }

@@ -1,6 +1,6 @@
 package nextstep.exception;
 
-public class InvalidAuthorizationTokenException extends RuntimeException {
+public class InvalidAuthorizationTokenException extends RoomEscapeException {
     public InvalidAuthorizationTokenException() {
         super();
     }

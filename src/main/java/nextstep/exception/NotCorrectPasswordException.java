@@ -1,6 +1,6 @@
 package nextstep.exception;
 
-public class NotCorrectPasswordException extends RuntimeException {
+public class NotCorrectPasswordException extends RoomEscapeException {
     public NotCorrectPasswordException() {
         super();
     }

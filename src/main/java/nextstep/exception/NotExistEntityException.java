@@ -1,6 +1,6 @@
 package nextstep.exception;
 
-public class NotExistEntityException extends RuntimeException {
+public class NotExistEntityException extends RoomEscapeException {
     public NotExistEntityException() {
         super();
     }
