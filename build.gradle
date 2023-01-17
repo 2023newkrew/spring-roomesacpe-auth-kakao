@@ -6,6 +6,8 @@ plugins {
 
 group 'nextstep'
 version '1.0-SNAPSHOT'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -28,6 +30,12 @@ dependencies {
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.5.3.Final'
+    implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 }
 
 test {

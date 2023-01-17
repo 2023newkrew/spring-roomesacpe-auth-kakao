@@ -8,6 +8,8 @@ import nextstep.theme.entity.Theme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -24,7 +26,7 @@ public class ScheduleService {
 
     public Long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId());
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
+        return scheduleDao.save(new Schedule(null, theme, LocalDate.parse(scheduleRequest.getDate()), LocalTime.parse(scheduleRequest.getTime())));
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

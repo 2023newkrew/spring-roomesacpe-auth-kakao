@@ -13,13 +13,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JdbcTest
 @Sql("/init.sql")
 public class ThemeDaoTest {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-        Long id = themeDao.save(new Theme("테마 이름", "테마 설명", 22_000));
+        Long id = themeDao.save(new Theme(null, "테마 이름", "테마 설명", 22_000));
         assertThat(id).isNotNull();
     }
 }

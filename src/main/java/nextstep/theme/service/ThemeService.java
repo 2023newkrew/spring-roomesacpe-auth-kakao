@@ -20,7 +20,7 @@ public class ThemeService {
     }
 
     public Long create(ThemeRequest themeRequest) {
-        return themeDao.save(themeRequest.toEntity());
+        return themeDao.save(new Theme(null, themeRequest.getName(), themeRequest.getDesc(), themeRequest.getPrice()));
     }
 
     public List<Theme> findAll() {
