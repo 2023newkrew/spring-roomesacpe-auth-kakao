@@ -32,7 +32,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         String token = parseTokenFromHeader(header);
 
-        if(!jwtTokenProvider.validateToken(token)) {
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new UnAuthorizedException();
         }
 
