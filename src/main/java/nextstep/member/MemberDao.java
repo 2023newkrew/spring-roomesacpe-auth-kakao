@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.error.exception.FailedRecordSaveException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -7,9 +8,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
+import java.util.Objects;
 
 @Component
-public class MemberDao {
+public class MemberDao implements MemberRepository {
     public final JdbcTemplate jdbcTemplate;
 
     public MemberDao(JdbcTemplate jdbcTemplate) {
@@ -24,6 +26,7 @@ public class MemberDao {
             resultSet.getString("phone")
     );
 
+    @Override
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -41,11 +44,13 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
+    @Override
     public Member findById(Long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    @Override
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
