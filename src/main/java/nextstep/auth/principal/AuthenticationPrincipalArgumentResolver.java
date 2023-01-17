@@ -12,9 +12,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
-
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -33,7 +30,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String token = AuthorizationExtractor.extract(Objects.requireNonNull(webRequest.getNativeRequest(HttpServletRequest.class)));
+        String token = AuthorizationExtractor.extractTokenFromRequest();
         if (!jwtTokenProvider.validateToken(token)) {
             throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
         }
