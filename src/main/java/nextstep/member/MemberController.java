@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import nextstep.auth.util.AuthorizationTokenExtractor;
-import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.util.JwtTokenProvider;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
 import org.springframework.http.ResponseEntity;

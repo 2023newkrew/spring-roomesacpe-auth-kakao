@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.util.JwtTokenProvider;
 import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;

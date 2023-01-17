@@ -2,7 +2,7 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.util.AuthorizationTokenExtractor;
-import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.util.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
