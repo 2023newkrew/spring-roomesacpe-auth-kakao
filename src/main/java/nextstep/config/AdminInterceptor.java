@@ -1,6 +1,7 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.role.Role;
 import nextstep.infrastructure.AuthorizationExtractor;
 import nextstep.infrastructure.JwtTokenProvider;
 import nextstep.support.exception.AuthorizationException;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 @RequiredArgsConstructor
-public class LoginInterceptor implements HandlerInterceptor {
+public class AdminInterceptor implements HandlerInterceptor {
     private static final String ACCESS_TOKEN = "accessToken";
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationExtractor authorizationExtractor;
@@ -31,6 +32,10 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthorizationException();
+        }
+
+        if(!jwtTokenProvider.validateRole(token, Role.ADMIN)) {
             throw new AuthorizationException();
         }
 

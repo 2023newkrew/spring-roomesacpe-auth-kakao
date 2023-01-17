@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
+import static nextstep.auth.role.Role.*;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
@@ -26,10 +27,10 @@ public class JwtTokenProvider {
     private static final String MEMBER_DETAIL = "memberDetail";
     private final ObjectMapper objectMapper;
     @Value("${auth.secretKey}")
-    private String secretKey;
+    private String secretKey = "default";
 
     @Value("${auth.validityInMilliseconds}")
-    private long validityInMilliseconds;
+    private long validityInMilliseconds = 10000L;
 
     public String createToken(MemberDetails memberDetails) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(memberDetails.getId()));
@@ -64,5 +65,19 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public boolean validateRole(String token, Role role) {
+        Role memberRole = getPrincipal(token).getRole();
+        if (role.equals(ADMIN)) {
+            return memberRole.equals(ADMIN);
+        }
+        if (role.equals(USER)) {
+            return memberRole.equals(ADMIN) || memberRole.equals(USER);
+        }
+        if (role.equals(GUEST)) {
+            return memberRole.equals(ADMIN) || memberRole.equals(USER) || memberRole.equals(GUEST);
+        }
+        return false;
     }
 }

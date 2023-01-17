@@ -8,7 +8,7 @@ import nextstep.support.exception.NoSuchRoleException;
 import java.util.Arrays;
 
 public enum Role {
-    ADMIN("admin"), USER("user");
+    ADMIN("admin"), USER("user"), GUEST("guest");
     @Getter
     private final String role;
 

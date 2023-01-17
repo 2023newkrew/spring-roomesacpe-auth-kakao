@@ -12,12 +12,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final LoginArgumentResolver loginArgumentResolver;
-    private final LoginInterceptor loginInterceptor;
+    private final UserInterceptor userInterceptor;
+    private final AdminInterceptor adminInterceptor;
     private final LoginInfoInterceptor loginInfoInterceptor;
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginInterceptor)
+        registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/reservations/**");
 
         registry.addInterceptor(loginInfoInterceptor)
