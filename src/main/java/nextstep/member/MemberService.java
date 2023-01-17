@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final JwtTokenProvider jwtTokenProvider;
+
     private final MemberDao memberDao;
 
     public Long create(MemberRequest memberRequest) {
@@ -20,7 +21,7 @@ public class MemberService {
     }
 
     public Member findMemberByToken(String token) {
-        String username = jwtTokenProvider.getPrincipal(token);
+        String username = jwtTokenProvider.getUsername(token);
         return memberDao.findByUsername(username);
     }
 }
