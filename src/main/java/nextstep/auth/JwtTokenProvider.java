@@ -1,17 +1,28 @@
 package nextstep.auth;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 public class JwtTokenProvider {
 
-    private static final String secretKey = "learning-test-spring";
+    private static final String secretKey = "lXH810veBaPOZAh5WN4cuo9BFRolED9ELuOuUa10lQCBcn0ckL";
+
+    private static final SecretKey key;
+
+    private static final JwtParser parserBuilder;
 
     private static final long validityInMilliseconds = 3_600_000;
+
+    static {
+        key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
+        parserBuilder = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build();
+    }
 
     public static String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);
@@ -22,13 +33,12 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public static String getPrincipal(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+        return parserBuilder
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -36,8 +46,7 @@ public class JwtTokenProvider {
 
     public static boolean validateToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(secretKey)
+            parserBuilder
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
