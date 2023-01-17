@@ -15,8 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static nextstep.schedule.ScheduleJdbcSql.*;
-
 @Component
 public class ScheduleDao {
     private final JdbcTemplate jdbcTemplate;
@@ -41,7 +39,7 @@ public class ScheduleDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_INTO_STATEMENT, new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(ScheduleJdbcSql.INSERT.toString(), new String[]{"id"});
             ps.setLong(1, schedule.getTheme().getId());
             ps.setDate(2, Date.valueOf(schedule.getDate()));
             ps.setTime(3, Time.valueOf(schedule.getTime()));
@@ -54,7 +52,7 @@ public class ScheduleDao {
 
     public Optional<Schedule> findById(Long id) {
         try {
-            Schedule schedule = jdbcTemplate.queryForObject(SELECT_BY_ID_STATEMENT, rowMapper, id);
+            Schedule schedule = jdbcTemplate.queryForObject(ScheduleJdbcSql.SELECT_BY_ID.toString(), rowMapper, id);
             return Optional.of(schedule);
         }
         catch (EmptyResultDataAccessException e) {
@@ -63,11 +61,12 @@ public class ScheduleDao {
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
-        return jdbcTemplate.query(SELECT_BY_THEME_ID_AND_DATE_STATEMENT, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
+        return jdbcTemplate.query(ScheduleJdbcSql.SELECT_BY_THEME_ID_AND_DATE.toString(),
+                rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update(DELETE_BY_ID_STATEMENT, id);
+        jdbcTemplate.update(ScheduleJdbcSql.DELETE_BY_ID.toString(), id);
     }
 
 }

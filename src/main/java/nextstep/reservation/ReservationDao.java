@@ -50,7 +50,7 @@ public class ReservationDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(INSERT_INTO_STATEMENT, new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(INSERT.toString(), new String[]{"id"});
             ps.setLong(1, reservation.getSchedule().getId());
             ps.setLong(2, reservation.getMember().getId());
             return ps;
@@ -61,12 +61,13 @@ public class ReservationDao {
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        return jdbcTemplate.query(SELECT_BY_THEME_ID_AND_DATE_STATEMENT, rowMapper, themeId, Date.valueOf(date));
+        return jdbcTemplate.query(ReservationJdbcSql.SELECT_BY_THEME_ID_AND_DATE.toString(),
+                rowMapper, themeId, Date.valueOf(date));
     }
 
     public Optional<Reservation> findById(Long id) {
         try {
-            Reservation reservation = jdbcTemplate.queryForObject(SELECT_BY_RESERVATION_ID_STATEMENT, rowMapper, id);
+            Reservation reservation = jdbcTemplate.queryForObject(SELECT_BY_RESERVATION_ID.toString(), rowMapper, id);
             return Optional.of(reservation);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -75,7 +76,7 @@ public class ReservationDao {
 
     public List<Reservation> findByScheduleId(Long id) {
         try {
-            return jdbcTemplate.query(SELECT_BY_SCHEDULE_ID_STATEMENT, rowMapper, id);
+            return jdbcTemplate.query(ReservationJdbcSql.SELECT_BY_SCHEDULE_ID.toString(), rowMapper, id);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -84,6 +85,6 @@ public class ReservationDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update(DELETE_BY_ID_STATEMENT, id);
+        jdbcTemplate.update(ReservationJdbcSql.DELETE_BY_ID.toString(), id);
     }
 }
