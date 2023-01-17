@@ -18,7 +18,7 @@ public class AuthorizationTokenExtractorTest {
                 AuthorizationTokenExtractor.AUTHORIZATION,
                 AuthorizationTokenExtractor.BEARER_TYPE + " " + accessToken);
 
-        Optional<String> token = AuthorizationTokenExtractor.extract(request);
+        Optional<String> token = AuthorizationTokenExtractor.extract(request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION));
 
         Assertions.assertThat(token).isNotEmpty().get()
                 .isEqualTo("token");
@@ -33,7 +33,7 @@ public class AuthorizationTokenExtractorTest {
                 AuthorizationTokenExtractor.AUTHORIZATION,
                 AuthorizationTokenExtractor.BEARER_TYPE + " " + accessTokens);
 
-        Optional<String> token = AuthorizationTokenExtractor.extract(request);
+        Optional<String> token = AuthorizationTokenExtractor.extract(request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION));
 
         Assertions.assertThat(token).isNotEmpty().get()
                 .isEqualTo("token1");
@@ -44,7 +44,7 @@ public class AuthorizationTokenExtractorTest {
     void extract_empty() {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
-        Optional<String> token = AuthorizationTokenExtractor.extract(request);
+        Optional<String> token = AuthorizationTokenExtractor.extract(request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION));
 
         Assertions.assertThat(token).isEmpty();
     }
@@ -58,7 +58,7 @@ public class AuthorizationTokenExtractorTest {
                 AuthorizationTokenExtractor.AUTHORIZATION,
                 "wrongScheme" + " " + accessToken);
 
-        Optional<String> token = AuthorizationTokenExtractor.extract(request);
+        Optional<String> token = AuthorizationTokenExtractor.extract(request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION));
 
         Assertions.assertThat(token).isEmpty();
     }

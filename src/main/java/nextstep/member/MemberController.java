@@ -2,6 +2,7 @@ package nextstep.member;
 
 import nextstep.auth.AuthorizationTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.support.LoginMember;
 import nextstep.support.excpetion.InvalidAuthorizationTokenException;
 import nextstep.support.excpetion.NotExistMemberException;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest request) {
-        String token = AuthorizationTokenExtractor.extract(request)
-                .orElseThrow(InvalidAuthorizationTokenException::new);
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException();
-        }
-        String userName = jwtTokenProvider.getPrincipal(token);
-        return ResponseEntity.ok(memberService.findByUserName(userName));
+    public ResponseEntity me(@LoginMember Member member) {
+        return ResponseEntity.ok(memberService.findByUserName(member.getUsername()));
     }
 
     @ExceptionHandler()
