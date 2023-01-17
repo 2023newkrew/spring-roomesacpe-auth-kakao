@@ -2,10 +2,9 @@ package nextstep.support;
 
 public class AuthorizationException extends RuntimeException {
 
-    public AuthorizationException() {
-    }
+    private static final String EXCEPTION_MESSAGE = "권한이 필요합니다.";
 
-    public AuthorizationException(String message) {
-        super(message);
+    public AuthorizationException() {
+        super(EXCEPTION_MESSAGE);
     }
 }
