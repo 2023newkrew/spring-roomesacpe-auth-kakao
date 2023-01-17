@@ -90,31 +90,26 @@ class ReservationE2ETest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
-        var response = RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
+                .statusCode(HttpStatus.CREATED.value()).extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("잘못된 토큰으로 예약 생성")
     @Test
     void createWithInvalidToken() {
-        var response = RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
                 .auth().oauth2("abcd")
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
     }
 
     @DisplayName("예약을 조회한다")
@@ -165,9 +160,8 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
-                .extract();
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
