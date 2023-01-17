@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservations")
@@ -19,25 +20,25 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody Long scheduleId, @AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<Void> createReservation(@RequestBody Long scheduleId, @AuthenticationPrincipal LoginMember loginMember) {
         Long id = reservationService.create(scheduleId, loginMember);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
-        return ResponseEntity.ok().body(results);
+    public ResponseEntity<List<ReservationResponse>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
+        List<ReservationResponse> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
+        return ResponseEntity.ok().body(reservations);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id, @AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthenticationPrincipal LoginMember loginMember) {
         reservationService.deleteById(id, loginMember);
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
