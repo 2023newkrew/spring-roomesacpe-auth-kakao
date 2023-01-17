@@ -2,16 +2,12 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
+import nextstep.member.MemberUtil;
 import org.springframework.http.MediaType;
 
 public class AuthUtil {
-    private static final String RESERVATION_EXIST_USERNAME = "reservation_exist_user";
-    private static final String RESERVATION_EXIST_PASSWORD = "password";
-    private static final String RESERVATION_NOT_EXIST_USERNAME = "reservation_exist_user";
-    private static final String RESERVATION_NOT_EXIST_PASSWORD = "password";
-
-    public static final TokenRequest RESERVATION_EXIST_USER_TOKEN_REQUEST = new TokenRequest(RESERVATION_EXIST_USERNAME, RESERVATION_EXIST_PASSWORD);
-    public static final TokenRequest RESERVATION_NOT_EXIST_USER_TOKEN_REQUEST = new TokenRequest(RESERVATION_NOT_EXIST_USERNAME, RESERVATION_NOT_EXIST_PASSWORD);
+    public static final TokenRequest RESERVATION_EXIST_USER_TOKEN_REQUEST = new TokenRequest(MemberUtil.RESERVATION_EXIST_MEMBER.getUsername(), MemberUtil.RESERVATION_EXIST_MEMBER.getPassword());
+    public static final TokenRequest RESERVATION_NOT_EXIST_USER_TOKEN_REQUEST = new TokenRequest(MemberUtil.RESERVATION_NOT_EXIST_MEMBER.getUsername(), MemberUtil.RESERVATION_NOT_EXIST_MEMBER.getPassword());
 
     public static TokenResponse createTokenForReservationExistUser() {
         return createToken(RESERVATION_EXIST_USER_TOKEN_REQUEST);
@@ -26,6 +22,9 @@ public class AuthUtil {
                 .extract().as(TokenResponse.class);
     }
 
+    public static TokenRequest getNotExistUserTokenRequest(){
+        return new TokenRequest(MemberUtil.NOT_EXIST_MEMBER.getUsername(), MemberUtil.NOT_EXIST_MEMBER.getPassword());
+    }
     public static ValidatableResponse createTokenAndGetValidatableResponse(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
