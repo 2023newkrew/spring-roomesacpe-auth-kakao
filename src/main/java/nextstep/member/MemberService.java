@@ -1,8 +1,7 @@
 package nextstep.member;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.JwtTokenProvider;
-import nextstep.support.exception.NoSuchMemberException;
+import nextstep.infrastructure.auth.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,7 +1,6 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.auth.role.Role;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,24 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    public static final String USERNAME = "admin";
+    public static final String PASSWORD = "admin";
     private String token;
 
-    @BeforeEach
-    void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", "admin");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("토큰을 생성한다")
     @Test
+    @DisplayName("로그인에 성공하여 토큰을 생성한다")
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         var response = RestAssured

@@ -1,13 +1,10 @@
-package nextstep.config;
+package nextstep.config.interceptor;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.JwtTokenProvider;
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
-import nextstep.support.exception.AuthorizationException;
+import nextstep.infrastructure.annotation.Login;
+import nextstep.infrastructure.auth.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

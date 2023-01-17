@@ -1,15 +1,13 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.JwtTokenProvider;
+import nextstep.infrastructure.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.MemberMapper;
-import nextstep.support.exception.NoSuchMemberException;
 import nextstep.support.exception.PasswordNotMatchException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Service
 @RequiredArgsConstructor

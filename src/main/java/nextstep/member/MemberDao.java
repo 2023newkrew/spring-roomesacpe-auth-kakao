@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.auth.role.Role;
+import nextstep.infrastructure.role.Role;
 import nextstep.support.exception.NoSuchMemberException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

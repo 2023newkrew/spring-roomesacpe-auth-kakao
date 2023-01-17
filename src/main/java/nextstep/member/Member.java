@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import lombok.NoArgsConstructor;
-import nextstep.auth.role.Role;
+import nextstep.infrastructure.role.Role;
 
 @NoArgsConstructor
 public class Member {

@@ -1,9 +1,9 @@
-package nextstep.config;
+package nextstep.config.interceptor;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.role.Role;
-import nextstep.infrastructure.AuthorizationExtractor;
-import nextstep.infrastructure.JwtTokenProvider;
+import nextstep.infrastructure.role.Role;
+import nextstep.infrastructure.auth.AuthorizationExtractor;
+import nextstep.infrastructure.auth.JwtTokenProvider;
 import nextstep.support.exception.AuthorizationException;
 import nextstep.support.exception.NoSuchTokenException;
 import org.springframework.stereotype.Component;
@@ -14,16 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 @RequiredArgsConstructor
-public class AdminInterceptor implements HandlerInterceptor {
+public class UserInterceptor implements HandlerInterceptor {
     private static final String ACCESS_TOKEN = "accessToken";
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationExtractor authorizationExtractor;
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthorizationExtractor authorizationExtractor;
-
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)  {
         String token = authorizationExtractor.extract(request);
         request.setAttribute(ACCESS_TOKEN, token);
 
@@ -35,7 +32,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             throw new AuthorizationException();
         }
 
-        if(!jwtTokenProvider.validateRole(token, Role.ADMIN)) {
+        if (!jwtTokenProvider.validateRole(token, Role.USER)) {
             throw new AuthorizationException();
         }
 

@@ -1,6 +1,9 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.config.interceptor.AdminInterceptor;
+import nextstep.config.interceptor.LoginArgumentResolver;
+import nextstep.config.interceptor.UserInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,15 +17,14 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private final LoginArgumentResolver loginArgumentResolver;
     private final UserInterceptor userInterceptor;
     private final AdminInterceptor adminInterceptor;
-    private final LoginInfoInterceptor loginInfoInterceptor;
-    
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(userInterceptor)
-                .addPathPatterns("/reservations/**");
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin/**");
 
-        registry.addInterceptor(loginInfoInterceptor)
-                .excludePathPatterns("/reservations/**");
+        registry.addInterceptor(userInterceptor)
+                .excludePathPatterns("/admin/**", "/login/**");
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }

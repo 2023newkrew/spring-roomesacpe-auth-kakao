@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.infrastructure.MemberDetails;
+import nextstep.infrastructure.auth.MemberDetails;
 import org.springframework.stereotype.Component;
 
 @Component

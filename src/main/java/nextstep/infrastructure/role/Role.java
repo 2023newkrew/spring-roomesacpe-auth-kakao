@@ -1,14 +1,12 @@
-package nextstep.auth.role;
+package nextstep.infrastructure.role;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import nextstep.support.exception.NoSuchRoleException;
 
 import java.util.Arrays;
 
 public enum Role {
-    ADMIN("admin"), USER("user"), GUEST("guest");
+    ADMIN("admin"), USER("user");
     @Getter
     private final String role;
 

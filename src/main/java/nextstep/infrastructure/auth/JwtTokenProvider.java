@@ -1,24 +1,19 @@
-package nextstep.infrastructure;
+package nextstep.infrastructure.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.role.Role;
+import nextstep.infrastructure.role.Role;
 import nextstep.support.exception.NoSuchMemberException;
-import nextstep.support.exception.NoSuchTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
-import static nextstep.auth.role.Role.*;
+import static nextstep.infrastructure.role.Role.*;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
@@ -74,9 +69,6 @@ public class JwtTokenProvider {
         }
         if (role.equals(USER)) {
             return memberRole.equals(ADMIN) || memberRole.equals(USER);
-        }
-        if (role.equals(GUEST)) {
-            return memberRole.equals(ADMIN) || memberRole.equals(USER) || memberRole.equals(GUEST);
         }
         return false;
     }

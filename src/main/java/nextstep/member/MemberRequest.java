@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.auth.role.Role;
+import nextstep.infrastructure.role.Role;
 
 public class MemberRequest {
     private String username;
