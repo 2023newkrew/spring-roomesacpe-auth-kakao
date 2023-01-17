@@ -1,7 +1,7 @@
 package nextstep.config;
 
-import nextstep.auth.JwtTokenProvider;
-import nextstep.auth.LoginMember;
+import nextstep.infrastructure.JwtTokenProvider;
+import nextstep.infrastructure.LoginMember;
 import nextstep.support.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

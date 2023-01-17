@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.auth.LoginMember;
+import nextstep.infrastructure.LoginMember;
 import nextstep.config.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

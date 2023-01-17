@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.infrastructure.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;

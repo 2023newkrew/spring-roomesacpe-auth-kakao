@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.auth.LoginMember;
+import nextstep.infrastructure.LoginMember;
 import nextstep.member.MemberDao;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;

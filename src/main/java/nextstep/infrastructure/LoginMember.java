@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.infrastructure;
 
 public class LoginMember {
     private Long id;
