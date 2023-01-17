@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import nextstep.support.MemberNotFoundException;
 import nextstep.member.MemberDao;
+import nextstep.support.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +19,7 @@ public class AuthService {
         if (memberDao.findByUsername(tokenRequest.getUsername())
                 .orElseThrow(MemberNotFoundException::new)
                 .checkWrongPassword(tokenRequest.getPassword())) {
-            throw new MemberNotFoundException();
+            throw new UnauthorizedException();
         }
     }
 

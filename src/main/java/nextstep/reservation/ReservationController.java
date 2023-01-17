@@ -1,7 +1,11 @@
 package nextstep.reservation;
 
+import nextstep.support.ForbiddenException;
+import nextstep.support.TokenExpirationException;
+import nextstep.support.UnauthorizedException;
 import nextstep.ui.AuthenticationPrincipal;
 import nextstep.login.LoginMember;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +41,4 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
 }

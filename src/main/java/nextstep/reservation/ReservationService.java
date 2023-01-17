@@ -46,7 +46,7 @@ public class ReservationService {
     public void deleteById(Long id, LoginMember loginMember) {
         Reservation reservation = reservationDao.findById(id).orElseThrow(ReservationNotFoundException::new);
         if (!reservation.getName().equals(loginMember.getUsername())) {
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
         reservationDao.deleteById(id);
     }

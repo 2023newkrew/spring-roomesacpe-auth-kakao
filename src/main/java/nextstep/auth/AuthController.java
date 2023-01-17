@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.support.MemberNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +22,6 @@ public class AuthController {
         authService.validatePassword(tokenRequest);
         String token = authService.createToken(tokenRequest.getUsername());
         return ResponseEntity.ok(new TokenResponse(token));
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }

@@ -16,6 +16,18 @@ public class ReservationResponse {
         this.name = name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public static ReservationResponse of(Reservation reservation) {
         return new ReservationResponse(reservation.getId(), reservation.getSchedule(), reservation.getName());
     }
