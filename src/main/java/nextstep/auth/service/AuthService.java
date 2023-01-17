@@ -1,7 +1,7 @@
 package nextstep.auth.service;
 
-import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.util.JwtTokenProvider;
 import nextstep.member.domain.MemberForAuth;
 import nextstep.member.domain.MemberWithId;
 import nextstep.member.repository.MemberRepository;

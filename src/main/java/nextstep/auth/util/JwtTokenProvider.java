@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -7,7 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-public class JwtTokenProvider {
+public final class JwtTokenProvider {
 
     private static final String secretKey = "lXH810veBaPOZAh5WN4cuo9BFRolED9ELuOuUa10lQCBcn0ckL";
     private static final SecretKey key;
@@ -19,6 +19,9 @@ public class JwtTokenProvider {
         parserBuilder = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build();
+    }
+
+    private JwtTokenProvider() {
     }
 
     public static String createToken(String principal) {

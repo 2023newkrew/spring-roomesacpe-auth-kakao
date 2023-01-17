@@ -1,11 +1,11 @@
 package nextstep.auth;
 
+import nextstep.auth.util.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("JwtTokenProvider 학습 테스트")
 class JwtTokenProviderTest {
 
     private static final String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNSIsImlhdCI6MTY3Mzg1OTIwMSwiZXhwIjoxNjczODYyODAxfQ.dBsCm7PImHV5D78C6lt3UYOPbWo2VWklodMvGXYsdZs";
@@ -19,7 +19,7 @@ class JwtTokenProviderTest {
         assertThat(JwtTokenProvider.validateToken(token)).isTrue();
     }
 
-    @DisplayName("토큰에서 member_id를 가져온다.")
+    @DisplayName("토큰에서 memberId를 가져온다.")
     @Test
     void getPrincipal() {
         String token = JwtTokenProvider.createToken("1");
@@ -40,8 +40,6 @@ class JwtTokenProviderTest {
     void validateInvalidToken() {
         assertThat(JwtTokenProvider.validateToken(invalidToken))
                 .isFalse()
-//        assertThatExceptionOfType(JwtException.class)
-//                .isThrownBy(() -> JwtTokenProvider.validateToken(invalidToken))
         ;
     }
 }

@@ -1,6 +1,6 @@
-package nextstep.config;
+package nextstep.global.config;
 
-import nextstep.auth.ExtractPrincipalArgumentResolver;
+import nextstep.global.resolver.ExtractPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

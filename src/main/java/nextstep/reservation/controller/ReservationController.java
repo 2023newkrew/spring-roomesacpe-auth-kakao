@@ -1,6 +1,6 @@
 package nextstep.reservation.controller;
 
-import nextstep.auth.ExtractPrincipal;
+import nextstep.global.config.annotation.ExtractPrincipal;
 import nextstep.reservation.dto.ReservationRequest;
 import nextstep.reservation.entity.Reservation;
 import nextstep.reservation.service.ReservationService;

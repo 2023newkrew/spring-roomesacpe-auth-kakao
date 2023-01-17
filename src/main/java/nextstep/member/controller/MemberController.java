@@ -1,6 +1,6 @@
 package nextstep.member.controller;
 
-import nextstep.auth.ExtractPrincipal;
+import nextstep.global.config.annotation.ExtractPrincipal;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
 import nextstep.member.service.MemberService;
