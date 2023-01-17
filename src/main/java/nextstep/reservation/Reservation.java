@@ -33,4 +33,8 @@ public class Reservation {
     public Member getMember() {
         return member;
     }
+
+    public boolean isCorrectMember(Member member) {
+        return this.member.getId().equals(member.getId()) ;
+    }
 }
