@@ -1,6 +1,5 @@
 package nextstep.member;
 
-import io.restassured.RestAssured;
 import nextstep.auth.AuthUtil;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
@@ -8,50 +7,47 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class MemberE2ETest {
-    @DisplayName("멤버를 생성한다")
+class MemberE2ETest {
+
+    @DisplayName("이미 존재하지 않는 username으로 멤버를 생성할 수 있다.")
     @Test
-    void create() {
-        MemberRequest memberRequest = new MemberRequest("username2", "password", "name", "010-1234-5678");
-        createMember(memberRequest);
+    void test1() {
+        MemberRequest memberRequest = MemberUtil.NOT_EXIST_MEMBER.toDto();
+
+        MemberUtil.createMemberAndGetValidatableResponse(memberRequest)
+                .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("내 정보를 조회한다")
+    @DisplayName("이미 존재하는 username으로는 멤버를 생성할 수 없다.")
     @Test
-    void me() {
+    void test2() {
+        MemberRequest memberRequest = MemberUtil.RESERVATION_EXIST_MEMBER.toDto();
+
+        MemberUtil.createMemberAndGetValidatableResponse(memberRequest)
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("토큰을 발급받은 유저는 자신의 정보를 조회할 수 있다.")
+    @Test
+    void test3() {
         TokenRequest tokenRequest = AuthUtil.RESERVATION_EXIST_USER_TOKEN_REQUEST;
         final TokenResponse tokenResponse = AuthUtil.createToken(tokenRequest);
         final String accessToken = tokenResponse.getAccessToken();
 
-        Member member = getMemberSelfInfo(accessToken);
+        Member member = MemberUtil.getMemberSelfInfo(accessToken);
         assertThat(member.getUsername()).isEqualTo(tokenRequest.getUsername());
     }
 
-    private static void createMember(MemberRequest memberRequest) {
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
-
-    private static Member getMemberSelfInfo(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(Member.class);
+    @DisplayName("토큰이 유효하지 않은 유저는 내 정보를 조회할 수 없다.")
+    @Test
+    void test4() {
+        MemberUtil.getMemberSelfInfoAndGetValidatableResponse("")
+                        .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }

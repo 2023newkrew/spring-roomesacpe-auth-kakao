@@ -30,20 +30,8 @@ public class Member {
     public Member() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
+    public MemberRequest toDto(){
+        return new MemberRequest(this.username, this.password, this.name, this.phone);
     }
 
 
