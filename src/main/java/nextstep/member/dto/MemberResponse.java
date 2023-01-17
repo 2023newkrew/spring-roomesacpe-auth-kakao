@@ -3,23 +3,28 @@ package nextstep.member.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import nextstep.member.Member;
 
-public class MemberResponse extends MemberBaseDto {
-    private final String password;
+public class MemberInfoResponse {
+
+    private final String name;
+    private final String username;
     private final String phone;
 
-    private MemberResponse(Long id, String username, String password, String name, String phone) {
-        super(id, username, name);
-        this.password = password;
+    private MemberInfoResponse(String name, String username, String phone) {
+        this.name = name;
+        this.username = username;
         this.phone = phone;
     }
 
-    public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getUsername(),
-                member.getPassword(), member.getName(), member.getPhone());
+    public static MemberInfoResponse of(Member member) {
+        return new MemberInfoResponse(member.getName(), member.getUsername(), member.getPhone());
     }
 
-    public String getPassword() {
-        return password;
+    public String getName() {
+        return name;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getPhone() {
