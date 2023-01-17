@@ -52,13 +52,13 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return List.of(new SecurityReference("accessToken", authorizationScopes));
+        return List.of(new SecurityReference("authorization", authorizationScopes));
     }
 
     private List<SecurityScheme> apiKey() {
 
         List<SecurityScheme> list = new ArrayList<>();
-        list.add(new ApiKey("accessToken", "Bearer +accessToken", "header"));
+        list.add(new ApiKey("authorization", "Bearer +authorization", "header"));
         return list;
     }
 }
