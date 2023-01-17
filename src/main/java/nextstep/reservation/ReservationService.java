@@ -51,14 +51,14 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, String username) {
+    public void deleteById(Long id, String name) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();
         }
 
-        if(!username.equals(reservation.getName())){
-            throw new AuthorizationException();
+        if(!name.equals(reservation.getName())){
+            throw new AuthorizationException("예약자의 이름과 일치하지 않습니다.");
         }
 
         reservationDao.deleteById(id);
