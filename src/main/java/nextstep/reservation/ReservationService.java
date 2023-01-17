@@ -1,5 +1,7 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
@@ -12,17 +14,20 @@ import java.util.List;
 @Service
 public class ReservationService {
     public final ReservationDao reservationDao;
+    public final MemberDao memberDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
         this.reservationDao = reservationDao;
+        this.memberDao = memberDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(Long memberId, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+        Member member = memberDao.findById(memberId);
         if (schedule == null) {
             throw new NullPointerException();
         }
@@ -34,7 +39,7 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                member
         );
 
         return reservationDao.save(newReservation);
@@ -49,8 +54,11 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long memberId, Long id) {
         Reservation reservation = reservationDao.findById(id);
+        if (!memberId.equals(reservation.getMember().getId())) {
+            throw new RuntimeException();
+        }
         if (reservation == null) {
             throw new NullPointerException();
         }

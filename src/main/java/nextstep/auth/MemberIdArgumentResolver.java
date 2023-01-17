@@ -10,7 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String ACCESS_TOKEN_NAME = "accessToken";
+    private static final String ACCESS_TOKEN_NAME = "authorization";
 
     private final JwtTokenProvider provider;
 
