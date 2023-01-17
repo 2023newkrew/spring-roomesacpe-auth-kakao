@@ -13,6 +13,10 @@ public class MemberRequest {
         this.phone = phone;
     }
 
+    public MemberRequest() {
+
+    }
+
     public String getUsername() {
         return username;
     }
