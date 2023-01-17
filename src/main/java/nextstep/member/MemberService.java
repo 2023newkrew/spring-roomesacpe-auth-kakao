@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.exception.BusinessException;
+import nextstep.exception.CommonErrorCode;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +13,9 @@ public class MemberService {
     }
 
     public Long create(MemberRequest memberRequest) {
+        if (memberDao.findByUsername(memberRequest.getUsername()) != null) {
+            throw new BusinessException(CommonErrorCode.DUPLICATE_ENTITY);
+        }
         return memberDao.save(memberRequest.toEntity());
     }
 
