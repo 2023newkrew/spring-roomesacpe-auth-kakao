@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.support.AuthorizationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,9 +17,9 @@ public class AuthService {
 
     public TokenResponse getToken(TokenRequest request) {
         Member member = memberDao.findByUsername(request.getUsername());
-        if (member.getPassword().equals(request.getPassword())) {
-            return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
+        if (member == null || member.checkWrongPassword(request.getPassword())) {
+            throw new AuthorizationException();
         }
-        return null;
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
     }
 }
