@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import java.util.List;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.AuthorizationException;
@@ -8,13 +9,13 @@ import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-
 @Service
 public class ReservationService {
+
     public final ReservationDao reservationDao;
+
     public final ThemeDao themeDao;
+
     public final ScheduleDao scheduleDao;
 
     public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
@@ -57,7 +58,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if(!username.equals(reservation.getName())){
+        if (!username.equals(reservation.getUsername())) {
             throw new AuthorizationException();
         }
 
