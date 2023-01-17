@@ -1,8 +1,7 @@
 package nextstep.auth;
 
-import nextstep.support.NotCorrectPasswordException;
-import nextstep.support.NotExistEntityException;
-import nextstep.support.NotExistMemberException;
+import nextstep.exception.NotCorrectPasswordException;
+import nextstep.exception.NotExistMemberException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

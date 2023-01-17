@@ -2,8 +2,8 @@ package nextstep.member;
 
 import nextstep.auth.AuthorizationTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.support.InvalidAuthorizationTokenException;
-import nextstep.support.NotExistMemberException;
+import nextstep.exception.InvalidAuthorizationTokenException;
+import nextstep.exception.NotExistMemberException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
