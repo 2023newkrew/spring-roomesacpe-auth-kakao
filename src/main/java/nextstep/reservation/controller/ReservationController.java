@@ -1,6 +1,6 @@
 package nextstep.reservation.controller;
 
-import nextstep.auth.AuthenticationPrincipal;
+import nextstep.auth.ExtractPrincipal;
 import nextstep.reservation.dto.ReservationRequest;
 import nextstep.reservation.entity.Reservation;
 import nextstep.reservation.service.ReservationService;
@@ -23,8 +23,8 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@AuthenticationPrincipal String principal, @RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest.getScheduleId(), Long.parseLong(principal));
+    public ResponseEntity createReservation(@ExtractPrincipal String memberId, @RequestBody ReservationRequest reservationRequest) {
+        Long id = reservationService.create(reservationRequest.getScheduleId(), Long.parseLong(memberId));
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -35,8 +35,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@AuthenticationPrincipal String principal, @PathVariable Long id) {
-        reservationService.delete(id, Long.parseLong(principal));
+    public ResponseEntity deleteReservation(@ExtractPrincipal String memberId, @PathVariable Long id) {
+        reservationService.delete(id, Long.parseLong(memberId));
 
         return ResponseEntity.noContent().build();
     }

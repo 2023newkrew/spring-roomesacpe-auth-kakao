@@ -10,11 +10,8 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private static final String secretKey = "lXH810veBaPOZAh5WN4cuo9BFRolED9ELuOuUa10lQCBcn0ckL";
-
     private static final SecretKey key;
-
     private static final JwtParser parserBuilder;
-
     private static final long validityInMilliseconds = 3_600_000;
 
     static {
@@ -38,6 +35,7 @@ public class JwtTokenProvider {
     }
 
     public static String getPrincipal(String token) {
+
         return parserBuilder
                 .parseClaimsJws(token)
                 .getBody()

@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberResponse {
 
-    private final String username;
-    private final String password;
-    private final String name;
-    private final String phone;
+    private String username;
+    private String password;
+    private String name;
+    private String phone;
 }

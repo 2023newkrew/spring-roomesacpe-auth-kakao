@@ -11,21 +11,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 
 import static org.hamcrest.core.Is.is;
 
-
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/init.sql")
 public class MemberE2ETest {
+
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String NAME = "name";
+    public static final String PHONE = "010-1234-5678";
 
     private MemberRequest memberRequest;
 
     @BeforeEach
     void setUp() {
-        memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
+        memberRequest = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
     }
 
     @DisplayName("멤버를 생성한다")
@@ -50,10 +52,9 @@ public class MemberE2ETest {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("username", is("username"))
-                .body("password", is("password"))
-                .body("name", is("name"))
-                .body("phone", is("010-1234-5678"));
+                .body("username", is(USERNAME))
+                .body("name", is(NAME))
+                .body("phone", is(PHONE));
     }
 
     private String createMemberAndGetToken() {
@@ -65,7 +66,7 @@ public class MemberE2ETest {
                 .then().log().all()
                 .extract();
 
-        AuthRequest authRequest = new AuthRequest("username", "password");
+        AuthRequest authRequest = new AuthRequest(USERNAME, PASSWORD);
         var tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

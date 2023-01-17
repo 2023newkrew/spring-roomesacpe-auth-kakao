@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -25,17 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/init.sql")
 class ReservationE2ETest {
 
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
-    public static final String NAME = "name";
 
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
-    private Long memberId;
 
     private String accessToken;
 
@@ -74,9 +70,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
-
         String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         AuthRequest authRequest = new AuthRequest("username", "password");
         var tokenResponse = RestAssured

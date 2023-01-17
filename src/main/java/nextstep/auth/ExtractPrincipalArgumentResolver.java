@@ -8,12 +8,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Optional;
 
-public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class ExtractPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        // 파라미터 중 @AuthenticationPrincipal이 붙은 경우 동작하게 설정
-        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
+
+        return parameter.hasParameterAnnotation(ExtractPrincipal.class);
     }
 
     @Override

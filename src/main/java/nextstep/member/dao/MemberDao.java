@@ -40,7 +40,6 @@ public class MemberDao {
             ps.setString(3, memberEntity.getName());
             ps.setString(4, memberEntity.getPhone());
             return ps;
-
         }, keyHolder);
 
         return Optional.ofNullable(keyHolder.getKey())
@@ -50,16 +49,19 @@ public class MemberDao {
 
     public MemberEntity findById(Long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public MemberEntity findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
     public MemberEntity findByUsernameAndPassword(String username, String password) {
         String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+
         return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
     }
 }

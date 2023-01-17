@@ -1,6 +1,6 @@
 package nextstep.member.controller;
 
-import nextstep.auth.AuthenticationPrincipal;
+import nextstep.auth.ExtractPrincipal;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
 import nextstep.member.service.MemberService;
@@ -30,8 +30,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal String principal) {
-        MemberResponse memberResponse = memberService.findById(Long.parseLong(principal));
+    public ResponseEntity<MemberResponse> me(@ExtractPrincipal String memberId) {
+        MemberResponse memberResponse = memberService.findById(Long.parseLong(memberId));
 
         return ResponseEntity.ok(memberResponse);
     }

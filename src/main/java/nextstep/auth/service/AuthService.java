@@ -2,10 +2,11 @@ package nextstep.auth.service;
 
 import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.dto.TokenResponse;
-import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberForAuth;
+import nextstep.member.domain.MemberWithId;
 import nextstep.member.repository.MemberRepository;
 import nextstep.support.NotExistEntityException;
+import nextstep.support.UnauthenticatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,13 @@ public class AuthService {
 
     public TokenResponse login(String username, String password) {
         MemberForAuth requestedMember = new MemberForAuth(username, password);
-        requestedMember.encryptPassword();
 
-        Member realMember = memberRepository.findByUsernameAndPassword(requestedMember)
+        MemberWithId realMember = memberRepository.findByUsername(requestedMember.getUsername())
                 .orElseThrow(NotExistEntityException::new);
+        if (!realMember.matchPassword(requestedMember.getPassword())) {
+            throw new UnauthenticatedException();
+        }
 
-        // TODO: 원래는 id를 넣었었는데 도메인으로 변경되며 임시로 username으로 바꾼거라 수정해야함!
-        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(realMember.getUsername())));
+        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(realMember.getId())));
     }
 }

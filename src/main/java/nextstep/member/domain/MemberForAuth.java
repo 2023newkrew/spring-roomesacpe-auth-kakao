@@ -2,23 +2,29 @@ package nextstep.member.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @AllArgsConstructor
 public class MemberForAuth {
 
-    private final String username;
-    private String password;
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean matchPassword(String rawPassword) {
-        return this.password.equals(rawPassword);
+    protected final String username;
+    protected String password;
+
+    public final boolean matchPassword(String rawPassword) {
+
+        return passwordEncoder.matches(rawPassword, this.password);
     }
 
-    public void encryptPassword() {
+    public final void encryptPassword() {
         this.password = encryptPassword(this.password);
     }
 
     private String encryptPassword(String rawPassword) {
-        return "";
+
+        return passwordEncoder.encode(rawPassword);
     }
 }
