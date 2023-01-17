@@ -154,6 +154,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .body(request)
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -182,6 +183,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
