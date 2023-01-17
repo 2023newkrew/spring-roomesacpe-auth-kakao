@@ -1,4 +1,4 @@
-package nextstep.config;
+package nextstep.infrastructure;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

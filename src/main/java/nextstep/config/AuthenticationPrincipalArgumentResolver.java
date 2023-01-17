@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import nextstep.infrastructure.AuthorizationExtractor;
 import nextstep.infrastructure.JwtTokenProvider;
 import nextstep.infrastructure.LoginMember;
 import nextstep.support.AuthorizationException;
