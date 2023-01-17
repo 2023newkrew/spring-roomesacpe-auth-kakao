@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class LoginUtils {
-    public static String loginGuest() {
+    public static String loginUser() {
         TokenRequest request = new TokenRequest("user", "user");
         return login(request);
     }
