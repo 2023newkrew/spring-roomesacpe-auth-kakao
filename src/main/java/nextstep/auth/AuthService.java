@@ -5,7 +5,7 @@ import nextstep.infrastructure.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.MemberMapper;
-import nextstep.support.exception.PasswordNotMatchException;
+import nextstep.support.exception.auth.PasswordNotMatchException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

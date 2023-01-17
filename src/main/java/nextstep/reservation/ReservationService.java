@@ -1,12 +1,10 @@
 package nextstep.reservation;
 
-import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.exception.AuthorizationException;
-import nextstep.support.exception.DuplicateReservationException;
-import nextstep.support.exception.NoSuchReservationException;
-import nextstep.support.exception.NotReservationOwnerException;
+import nextstep.support.exception.api.DuplicateReservationException;
+import nextstep.support.exception.api.NoSuchReservationException;
+import nextstep.support.exception.api.NotReservationOwnerException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import nextstep.infrastructure.role.Role;
-import nextstep.support.exception.NoSuchMemberException;
+import nextstep.support.exception.auth.NoSuchMemberException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

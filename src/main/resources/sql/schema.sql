@@ -42,3 +42,4 @@ CREATE TABLE member
 );
 
 INSERT INTO member VALUES (9999, 'admin', 'admin', 'admin', '010-1234-5678', 'admin');
+INSERT INTO member VALUES (9998, 'user', 'user', 'user', '010-1234-5678', 'user');

@@ -13,6 +13,8 @@ public enum ErrorCode {
     NO_SUCH_TOKEN("토큰이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED),
     NO_SUCH_MEMBER("존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND),
     NO_SUCH_ROLE("존재하지 않는 역할입니다.", HttpStatus.NOT_FOUND),
+    NO_ACCESS_AUTHORITY("존재하지 않는 역할입니다.", HttpStatus.FORBIDDEN),
+
 
 
     // Room Escape Error

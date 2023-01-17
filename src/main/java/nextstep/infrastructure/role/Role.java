@@ -1,7 +1,7 @@
 package nextstep.infrastructure.role;
 
 import lombok.Getter;
-import nextstep.support.exception.NoSuchRoleException;
+import nextstep.support.exception.auth.NoSuchRoleException;
 
 import java.util.Arrays;
 

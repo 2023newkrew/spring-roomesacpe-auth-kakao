@@ -12,12 +12,11 @@ public class MemberController {
     private final MemberService memberService;
     private static final String ACCESS_TOKEN = "accessToken";
 
-
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
 
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();

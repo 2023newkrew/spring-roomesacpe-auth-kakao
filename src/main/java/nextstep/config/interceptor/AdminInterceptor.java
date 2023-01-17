@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import nextstep.infrastructure.role.Role;
 import nextstep.infrastructure.auth.AuthorizationExtractor;
 import nextstep.infrastructure.auth.JwtTokenProvider;
-import nextstep.support.exception.AuthorizationException;
-import nextstep.support.exception.NoSuchTokenException;
+import nextstep.support.exception.auth.AuthorizationException;
+import nextstep.support.exception.auth.NoAccessAuthorityException;
+import nextstep.support.exception.auth.NoSuchTokenException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -36,7 +37,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         }
 
         if(!jwtTokenProvider.validateRole(token, Role.ADMIN)) {
-            throw new AuthorizationException();
+            throw new NoAccessAuthorityException();
         }
 
         return true;

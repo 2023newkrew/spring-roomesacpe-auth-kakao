@@ -7,7 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import nextstep.infrastructure.role.Role;
-import nextstep.support.exception.NoSuchMemberException;
+import nextstep.support.exception.auth.NoSuchMemberException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

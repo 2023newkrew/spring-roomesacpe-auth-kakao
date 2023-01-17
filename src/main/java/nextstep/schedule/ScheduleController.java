@@ -15,7 +15,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
@@ -26,7 +26,7 @@ public class ScheduleController {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/admin")
     public ResponseEntity deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
