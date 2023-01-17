@@ -1,7 +1,7 @@
 package nextstep.theme;
 
 import java.util.List;
-import nextstep.support.NotExistEntityException;
+import nextstep.error.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service

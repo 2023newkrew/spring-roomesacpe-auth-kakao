@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import nextstep.member.Member;
-import nextstep.support.NotExistEntityException;
+import nextstep.error.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.AuthService;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.support.AuthorizationException;
+import nextstep.error.exception.AuthorizationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class LoginInterceptor implements HandlerInterceptor {
