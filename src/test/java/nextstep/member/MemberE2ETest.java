@@ -1,10 +1,13 @@
 package nextstep.member;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -12,26 +15,32 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MemberE2ETest {
+
     @Autowired
-    private  JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     private MemberDao memberDao;
 
     @BeforeEach
-    void setUp () {
+    void setUp() {
         memberDao = new MemberDao(jdbcTemplate);
     }
+
+    private static final String givenUsername = "username";
+
+    private static final String givenPassword = "password";
+
+    private static final String givenName = "name";
+
+    private static final String givenPhone = "010-1234-5678";
 
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(givenUsername, givenPassword, givenName, givenPhone);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -40,14 +49,15 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
+
     @DisplayName("멤버를 조회한다")
     @Test
     public void get() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+        memberDao.save(new Member(givenUsername, givenPassword, givenName, givenPhone));
 
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest(givenUsername, givenPassword))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
@@ -62,7 +72,7 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Member.class);
 
-        Member expectedMember = new Member(1L, "username", "password", "name", "010-1234-5678");
+        Member expectedMember = new Member(1L, givenUsername, givenPassword, givenName, givenPhone);
         assertThat(expectedMember).isEqualTo(actualMember);
     }
 }
