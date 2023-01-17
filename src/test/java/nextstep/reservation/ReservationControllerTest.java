@@ -4,6 +4,8 @@ package nextstep.reservation;
 import io.jsonwebtoken.JwtException;
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.support.exception.NotExistEntityException;
+import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -101,5 +105,49 @@ public class ReservationControllerTest {
                 .log()
                 .all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("권한을 가진 예약만 삭제할 수 있다.")
+    @Test
+    void delete_with_invalid_accessToken_test() {
+        when(jwtTokenProvider.getPrincipal(validAccessToken))
+                .thenReturn("username");
+        doThrow(new UnauthorizedException()).when(reservationService)
+                .deleteById(eq(1L), eq("username"));
+
+        RestAssured
+                .given()
+                .log()
+                .all()
+                .auth()
+                .oauth2(validAccessToken)
+                .when()
+                .delete("/reservations/1")
+                .then()
+                .log()
+                .all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("존재하는 예약만 삭제할 수 있다.")
+    @Test
+    void delete_not_exist_reservation_test() {
+        when(jwtTokenProvider.getPrincipal(validAccessToken))
+                .thenReturn("username");
+        doThrow(new NotExistEntityException()).when(reservationService)
+                .deleteById(eq(1L), eq("username"));
+
+        RestAssured
+                .given()
+                .log()
+                .all()
+                .auth()
+                .oauth2(validAccessToken)
+                .when()
+                .delete("/reservations/1")
+                .then()
+                .log()
+                .all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
