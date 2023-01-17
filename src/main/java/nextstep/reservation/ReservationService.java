@@ -51,7 +51,7 @@ public class ReservationService {
 
     public void delete(Long id, Long memberId) {
         if (!reservationDao.existsByIdAndMemberId(id, memberId)) {
-            return;
+            throw new RuntimeException();
         }
 
         reservationDao.deleteById(id);
