@@ -1,6 +1,5 @@
 package nextstep.auth;
 
-import nextstep.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/login")
 public class LoginController {
 
-    private final MemberService memberService;
+    private final LoginService loginService;
 
-    public LoginController(MemberService memberService) {
-        this.memberService = memberService;
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
     }
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok(memberService.createToken(tokenRequest));
+        return ResponseEntity.ok(loginService.createToken(tokenRequest));
     }
 }
