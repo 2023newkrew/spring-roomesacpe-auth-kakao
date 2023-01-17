@@ -73,16 +73,18 @@ public class AuthE2ETest {
     @DisplayName("잘못된 토큰")
     @Test
     public void invalidToken() {
-        var accessToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TokenRequest(USERNAME, PASSWORD))
-                .when().post("/login/token")
-                .then().log().all()
-                .extract().as(TokenResponse.class).getAccessToken();
-
         RestAssured.given().log().all()
                 .auth().oauth2("invalidtoken")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("토큰 없을 떄")
+    @Test
+    public void nullToken() {
+        RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
