@@ -2,7 +2,6 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static org.assertj.core.api.Assertions.*;
+
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AuthE2ETest {
+class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     private Long memberId;
@@ -32,8 +33,9 @@ public class AuthE2ETest {
 
     @DisplayName("토큰을 생성한다")
     @Test
-    public void create() {
+    void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -43,12 +45,12 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        Assertions.assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
     @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치")
     @Test
-    public void createToken_wrongPassword() {
+    void createToken_wrongPassword() {
         TokenRequest body = new TokenRequest(USERNAME, "wrongPassword");
 
        RestAssured

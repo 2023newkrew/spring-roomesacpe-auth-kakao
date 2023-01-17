@@ -1,13 +1,14 @@
 package nextstep.auth.util;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import java.util.Optional;
 
-public class AuthorizationTokenExtractorTest {
+import static org.assertj.core.api.Assertions.*;
+
+class AuthorizationTokenExtractorTest {
 
     @DisplayName("토큰을 추출한다")
     @Test
@@ -20,7 +21,7 @@ public class AuthorizationTokenExtractorTest {
 
         Optional<String> token = AuthorizationTokenExtractor.extract(request);
 
-        Assertions.assertThat(token).isNotEmpty().get()
+        assertThat(token).isNotEmpty().get()
                 .isEqualTo("token");
     }
 
@@ -35,7 +36,7 @@ public class AuthorizationTokenExtractorTest {
 
         Optional<String> token = AuthorizationTokenExtractor.extract(request);
 
-        Assertions.assertThat(token).isNotEmpty().get()
+        assertThat(token).isNotEmpty().get()
                 .isEqualTo("token1");
     }
 
@@ -46,7 +47,7 @@ public class AuthorizationTokenExtractorTest {
 
         Optional<String> token = AuthorizationTokenExtractor.extract(request);
 
-        Assertions.assertThat(token).isEmpty();
+        assertThat(token).isEmpty();
     }
 
     @DisplayName("토큰 scheme이 Bearer가 아닐 경우 Optional.empty() 반환")
@@ -60,7 +61,7 @@ public class AuthorizationTokenExtractorTest {
 
         Optional<String> token = AuthorizationTokenExtractor.extract(request);
 
-        Assertions.assertThat(token).isEmpty();
+        assertThat(token).isEmpty();
     }
 
 }
