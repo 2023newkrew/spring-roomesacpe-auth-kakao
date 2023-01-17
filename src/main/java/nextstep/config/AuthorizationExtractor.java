@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.config;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

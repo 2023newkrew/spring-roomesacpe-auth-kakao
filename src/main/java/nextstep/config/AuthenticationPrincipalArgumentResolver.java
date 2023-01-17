@@ -4,7 +4,6 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.LoginMember;
 import nextstep.support.AuthorizationException;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -40,8 +39,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     private String extractToken(HttpServletRequest request) {
         try {
-            String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-            return header.split(" ")[1];
+            return AuthorizationExtractor.extract(request);
         } catch (Exception e) {
             throw new AuthorizationException();
         }
