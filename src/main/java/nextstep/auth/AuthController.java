@@ -11,18 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
-    public AuthController(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthController(MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/token")
-    public ResponseEntity login(@RequestBody TokenRequest request) {
-        memberService.validateIsMember(request);
-        String accessToken = jwtTokenProvider.createToken(request.getUsername());
-        return ResponseEntity.ok().body(new TokenResponse(accessToken));
+    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
+        TokenResponse tokenResponse = memberService.generateToken(tokenRequest);
+        return ResponseEntity.ok(tokenResponse);
     }
 }
