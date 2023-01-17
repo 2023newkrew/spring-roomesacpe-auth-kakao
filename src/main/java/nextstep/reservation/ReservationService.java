@@ -1,12 +1,13 @@
 package nextstep.reservation;
 
+import nextstep.exception.AuthorizationException;
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
-import nextstep.auth.JwtTokenProvider;
 
 import java.util.List;
 
@@ -22,14 +23,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, String token) {
-
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        if (!jwtTokenProvider.validateToken(token)) {
-            // TODO: throw exception. Token invalid
-            throw new IllegalArgumentException("토큰 잘못됨");
-        }
-
+    public Long create(ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -57,27 +51,12 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        reservationDao.deleteById(id);
-    }
-
-    public void deleteById(Long id, String token) {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        if (!jwtTokenProvider.validateToken(token)) {
-            // TODO: throw exception. Token invalid
-            System.out.println("invalid token");
-            throw new IllegalArgumentException("토큰 잘못됨");
-        }
-        Reservation reservation = reservationDao.findById(id);
-
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
-
-        if (!reservation.getName().equals(jwtTokenProvider.getPrincipal(token))) {
-            throw new IllegalArgumentException("본인 예약이 아님");
+    public void deleteById(Long id, Member member) {
+        if (!member.getUsername().equals(reservationDao.findById(id).getName())) {
+            throw new AuthorizationException();
         }
 
         reservationDao.deleteById(id);
     }
+
 }
