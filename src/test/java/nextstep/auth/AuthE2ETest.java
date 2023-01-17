@@ -32,7 +32,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("토큰 생성 요청이 성공하면 200 코드와 TokenResponse 객체를 반환")
     @Test
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
@@ -48,12 +48,12 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치")
+    @DisplayName("비밀번호가 불일치해 토큰 생성에 실패하면 400 코드를 반환")
     @Test
     public void createToken_wrongPassword() {
         TokenRequest body = new TokenRequest(USERNAME, "wrongPassword");
 
-       RestAssured
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -62,7 +62,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("토큰 생성에 실패한다 - 유저네임 없음")
+    @DisplayName("유저네임이 존재하지 않아 토큰 생성에 실패하면 400 코드를 반환")
     @Test
     public void createTokenFailure() {
         TokenRequest body = new TokenRequest("notexistname", "wrongPassword");
@@ -75,7 +75,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("테마 목록을 조회한다")
+    @DisplayName("테마 목록 조회 요청에 성공하면 200 코드와 테마 목록을 반환")
     @Test
     public void showThemes() {
         createTheme();
@@ -90,18 +90,15 @@ public class AuthE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
+    @DisplayName("테마 삭제 요청에 성공하면 204 코드 반환")
     @Test
     void delete() {
         Long id = createTheme();
-
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .when().delete("/themes/" + id)
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     public Long createTheme() {

@@ -20,7 +20,7 @@ public class MemberE2ETest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    @DisplayName("멤버를 생성한다")
+    @DisplayName("멤버 생성에 성공하면 201 코드 반환")
     @Test
     public void create() {
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
@@ -33,7 +33,7 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("자기 자신의 정보를 조회")
+    @DisplayName("자기 자신 정보 조회 요청에 성공하면 200 코드와 Member 객체를 반환")
     @Test
     public void findMyInfo() {
         String userName = "username";

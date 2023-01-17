@@ -90,7 +90,7 @@ class ReservationE2ETest {
         );
     }
 
-    @DisplayName("예약을 생성한다")
+    @DisplayName("예약 생성 요청이 성공하면 201 코드 반환")
     @Test
     void create() {
         String userName = "username";
@@ -108,7 +108,7 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("예약을 조회한다")
+    @DisplayName("예약 조회 요청이 성공하면 200 코드와 함께 예약 배열을 반환")
     @Test
     void show() {
         createReservation();
@@ -119,29 +119,28 @@ class ReservationE2ETest {
                 .param("date", DATE)
                 .when().get("/reservations")
                 .then().log().all()
+                .statusCode(HttpStatus.OK.value())
                 .extract();
 
         List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("예약 삭제 요청이 성공하면 204 코드를 반환")
     @Test
     void delete() {
         var reservation = createReservation();
         String userName = "username";
         String token = jwtTokenProvider.createToken(userName);
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("중복 예약을 생성한다")
+    @DisplayName("중복 예약을 생성하면 400 코드 반환")
     @Test
     void createDuplicateReservation() {
         createReservation();
@@ -149,19 +148,17 @@ class ReservationE2ETest {
         String userName = "username";
         String token = jwtTokenProvider.createToken(userName);
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .body(request)
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("예약이 없을 때 예약 목록을 조회한다")
+    @DisplayName("예약이 없을 때 예약 목록을 조회하면 사이즈 0")
     @Test
     void showEmptyReservations() {
         var response = RestAssured
@@ -181,14 +178,12 @@ class ReservationE2ETest {
     void deleteNotExistReservation() {
         String userName = "username";
         String token = jwtTokenProvider.createToken(userName);
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("다른 사람의 예약을 삭제하면 401 코드 반환")
