@@ -31,17 +31,13 @@ class JwtTokenProviderTest {
     @Test
     void validateExpiredToken() {
         assertThat(JwtTokenProvider.validateToken(expiredToken))
-                .isFalse()
-        ;
+                .isFalse();
     }
 
     @DisplayName("올바르지 않은 포맷의 토큰을 검증한다.")
     @Test
     void validateInvalidToken() {
         assertThat(JwtTokenProvider.validateToken(invalidToken))
-                .isFalse()
-//        assertThatExceptionOfType(JwtException.class)
-//                .isThrownBy(() -> JwtTokenProvider.validateToken(invalidToken))
-        ;
+                .isFalse();
     }
 }
