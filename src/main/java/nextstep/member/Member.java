@@ -1,5 +1,8 @@
 package nextstep.member;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor // 테스트 시 Serializable 관련 이슈로 추가
 public class Member {
     private Long id;
     private String username;

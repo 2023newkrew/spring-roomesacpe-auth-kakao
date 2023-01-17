@@ -5,16 +5,20 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
+
+/**
+ * WebMvcConfiguration
+ *
+ */
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
     AuthenticationPrincipalArgumentResolver resolver;
     public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver resolver){
         this.resolver = resolver;
     }
+
     /**
-     * https://www.baeldung.com/spring-mvc-custom-data-binder#1-custom-argument-resolver
-     * <p>
-     * AuthenticationPrincipalArgumentResolver 등록하기
+     * @param resolvers injected by Spring, add custom resolver to this.
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

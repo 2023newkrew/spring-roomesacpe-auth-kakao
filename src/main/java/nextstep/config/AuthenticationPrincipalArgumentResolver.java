@@ -2,6 +2,7 @@ package nextstep.config;
 
 import nextstep.auth.AuthService;
 import nextstep.auth.AuthorizationExtractor;
+import nextstep.auth.LoginMember;
 import nextstep.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -13,6 +14,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * AuthenticationPrincipalArgumentResolver is the class
+ * what would be done when {@code @AuthenticationPrincipal} is attached.
+ * <br>
+ * If header has token, validate and returns LoginMember instance, which contains username of member.
+ */
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
@@ -36,6 +43,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String token = AuthorizationExtractor.extract(httpServletRequest);
         Long id = authService.validateToken(token);
 
-        return memberService.findById(id);
+        return new LoginMember(memberService.findById(id).getUsername());
     }
 }
