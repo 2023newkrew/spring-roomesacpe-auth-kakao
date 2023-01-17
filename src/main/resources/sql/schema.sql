@@ -43,3 +43,9 @@ CREATE TABLE member
 
 INSERT INTO member VALUES (9999, 'admin', 'admin', 'admin', '010-1234-5678', 'admin');
 INSERT INTO member VALUES (9998, 'user', 'user', 'user', '010-1234-5678', 'user');
+INSERT INTO member VALUES (9997, 'anotherUser', 'anotherUser', 'anotherUser', '010-1234-5678', 'user');
+
+INSERT INTO theme VALUES (9999, '테마이름', '테마설명', 22000);
+
+INSERT INTO schedule VALUES (9999, 9999, '2022-08-11', '13:00');
+
