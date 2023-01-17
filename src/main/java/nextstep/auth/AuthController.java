@@ -1,7 +1,7 @@
 package nextstep.auth;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,13 +9,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
+    private AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/login/token")
-    public ResponseEntity login(@RequestBody TokenRequest tokenRequest) {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken(tokenRequest.getUsername());
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new TokenResponse(token));
+    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
+        authService.validatePassword(tokenRequest);
+        String token = authService.createToken(tokenRequest.getUsername());
+        return ResponseEntity.ok(new TokenResponse(token));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity onException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
