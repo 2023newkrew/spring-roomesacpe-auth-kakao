@@ -18,17 +18,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        System.out.println("지나감1");
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String headerValue = AuthorizationExtractor.extract(request);
-        System.out.println("지나감2");
         if (headerValue == null) {
             throw new AuthorizationException();
         }
-        System.out.println("통과?");
         String payload = new JwtTokenProvider().getPrincipal(headerValue);
         if (payload == null) {
-            return null;
+            throw new AuthorizationException();
         }
         return Long.parseLong(payload);
     }

@@ -4,6 +4,7 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
+import nextstep.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
 import nextstep.support.NotExistEntityException;
 import nextstep.theme.Theme;
@@ -30,7 +31,7 @@ public class ReservationService {
     public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
@@ -64,8 +65,10 @@ public class ReservationService {
         if (reservation == null) {
             throw new NotExistEntityException();
         }
-        if (reservation.getName().equals(memberDao.findById(memberId).getName())) {
-            reservationDao.deleteById(id);
+        Member member = memberDao.findById(memberId);
+        if (member == null || reservation.checkWrongOwner(member.getName())) {
+            throw new AuthorizationException();
         }
+        reservationDao.deleteById(id);
     }
 }

@@ -32,4 +32,8 @@ public class Reservation {
     public String getName() {
         return name;
     }
+
+    public boolean checkWrongOwner(String name) {
+        return !this.name.equals(name);
+    }
 }

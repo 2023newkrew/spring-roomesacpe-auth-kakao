@@ -34,18 +34,18 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("멤버 정보 조회")
+    @DisplayName("발급된 토큰으로 유저 정보 열람 요청시 유저 정보가 전달되어야 한다")
     @Test
-    public void me() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
+    public void readMyDataNormally() {
+        MemberRequest memberRequest = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(body)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(memberRequest)
                 .when().post("/members")
                 .then().statusCode(HttpStatus.CREATED.value());
 
-        TokenRequest request = new TokenRequest(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
         String accessToken = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(request)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(tokenRequest)
                 .when().post("/login/token")
                 .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
 
@@ -58,5 +58,16 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.OK.value()).extract().as(Member.class);
 
         assertThat(member.getUsername()).isEqualTo(USERNAME);
+    }
+
+    @DisplayName("토큰이 없이 유저 정보 열람 요청시 예외처리 되어야 한다")
+    @Test
+    public void readMyDataWithoutToken() {
+        RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }

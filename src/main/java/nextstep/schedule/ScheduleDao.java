@@ -55,7 +55,11 @@ public class ScheduleDao {
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

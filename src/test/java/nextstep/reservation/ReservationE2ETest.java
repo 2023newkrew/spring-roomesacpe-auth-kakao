@@ -83,9 +83,9 @@ class ReservationE2ETest {
                 .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
     }
 
-    @DisplayName("예약을 생성한다")
+    @DisplayName("발급된 토큰으로 예약 생성 요청시 생성되어야 한다")
     @Test
-    void create() {
+    void createNormally() {
         var response = RestAssured
                 .given().log().all()
                 .body(request)
@@ -96,6 +96,17 @@ class ReservationE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("토큰이 없이 예약 생성 요청시 예외처리 되어야 한다")
+    @Test
+    void createAbnormally() {
+        RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -115,9 +126,9 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("발급된 토큰을 사용하여 해당 유저가 예약했던 건을 취소하려고 하면 취소되어야 한다")
     @Test
-    void delete() {
+    void deleteNormally() {
         var reservation = createReservation();
 
         var response = RestAssured
@@ -128,6 +139,18 @@ class ReservationE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("토큰이 없이 예약을 취소하려고 하면 예외처리 되어야 한다")
+    @Test
+    void deleteWithoutToken() {
+        var reservation = createReservation();
+
+        RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
