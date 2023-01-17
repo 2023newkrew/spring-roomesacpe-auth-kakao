@@ -46,6 +46,19 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("존재하지 않는 테마로 스케줄을 생성하면 400 코드 반환")
+    @Test
+    public void createSchedule_fail() {
+        ScheduleRequest body = new ScheduleRequest(-1L, "2022-08-11", "13:00");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("스케줄을 조회한다")
     @Test
     public void showSchedules() {
@@ -63,7 +76,7 @@ public class ScheduleE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("스케줄을 삭제한다")
     @Test
     void delete() {
         String location = requestCreateSchedule();
