@@ -3,6 +3,7 @@ package nextstep.auth;
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        Assertions.assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
     @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치")

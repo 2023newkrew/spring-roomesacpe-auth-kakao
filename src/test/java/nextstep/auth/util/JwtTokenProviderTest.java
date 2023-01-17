@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.util;
 
 import nextstep.auth.util.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;

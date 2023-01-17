@@ -1,6 +1,5 @@
-package nextstep.auth;
+package nextstep.auth.util;
 
-import nextstep.auth.util.AuthorizationTokenExtractor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
