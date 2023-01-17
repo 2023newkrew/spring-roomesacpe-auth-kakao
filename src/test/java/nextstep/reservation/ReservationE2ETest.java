@@ -150,6 +150,39 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("다른 사람의 예약을 취소 시도 시 403(Forbidden) 을 반환한다.")
+    @Test
+    void deleteWithoutPermission() {
+        var reservation = createReservation();
+
+        MemberRequest body = new MemberRequest("Diffusername", "password", "name", "010-1234-5678");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("Diffusername", "password"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {

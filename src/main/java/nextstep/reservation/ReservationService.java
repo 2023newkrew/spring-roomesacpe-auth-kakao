@@ -3,8 +3,8 @@ package nextstep.reservation;
 import java.util.List;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.ForbiddenException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -59,7 +59,7 @@ public class ReservationService {
         }
 
         if (!username.equals(reservation.getUsername())) {
-            throw new AuthorizationException();
+            throw new ForbiddenException();
         }
 
         reservationDao.deleteById(id);
