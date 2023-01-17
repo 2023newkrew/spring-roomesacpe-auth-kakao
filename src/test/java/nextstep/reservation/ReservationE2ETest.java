@@ -58,9 +58,17 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        ExtractableResponse<Response> response = removeReservation(1L);
+        ExtractableResponse<Response> response = removeReservation(1L, RESERVATION_EXIST_USER_ACCESS_TOKEN);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("인증되지 않은 사용자는 예약을 삭제할 수 없다")
+    @Test
+    void deleteUnauthenticated() {
+        ExtractableResponse<Response> response = removeReservation(1L, "");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -85,7 +93,7 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
-        var response = removeReservation(10L);
+        var response = removeReservation(10L, RESERVATION_EXIST_USER_ACCESS_TOKEN);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -101,10 +109,10 @@ class ReservationE2ETest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> removeReservation(Long id) {
+    private ExtractableResponse<Response> removeReservation(Long id, String accessToken) {
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(RESERVATION_EXIST_USER_ACCESS_TOKEN)
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/" + id)
                 .then().log().all()
                 .extract();

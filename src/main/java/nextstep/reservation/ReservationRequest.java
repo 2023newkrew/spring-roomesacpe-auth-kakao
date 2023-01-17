@@ -11,7 +11,7 @@ import lombok.Setter;
 public class ReservationRequest {
     private Long scheduleId;
     @Setter
-    private String name;
+    private String username;
 
     public ReservationRequest(Long scheduleId) {
         this.scheduleId = scheduleId;

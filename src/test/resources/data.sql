@@ -8,5 +8,5 @@ INSERT INTO schedule (theme_id, date, time) VALUES (1, '2022-11-11', '12:00');
 INSERT INTO schedule (theme_id, date, time) VALUES (1, '2022-11-11', '12:30');
 INSERT INTO schedule (theme_id, date, time) VALUES (1, '2022-11-11', '13:00');
 
-INSERT INTO reservation (schedule_id, name) VALUES (1, 'reservation_exist_user');
-INSERT INTO reservation (schedule_id, name) VALUES (2, 'reservation_exist_user');
+INSERT INTO reservation (schedule_id, username) VALUES (1, 'reservation_exist_user');
+INSERT INTO reservation (schedule_id, username) VALUES (2, 'reservation_exist_user');
