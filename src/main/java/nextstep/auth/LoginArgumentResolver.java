@@ -9,11 +9,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+    public LoginArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

@@ -6,11 +6,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthInterceptor(JwtTokenProvider jwtTokenProvider) {
+    public LoginInterceptor(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
