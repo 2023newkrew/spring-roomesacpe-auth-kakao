@@ -25,10 +25,8 @@ public class ReservationService {
     }
 
     public Long create(ReservationRequest reservationRequest, Member member) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
-        }
+        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId())
+                .orElseThrow(NotExistEntityException::new);
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
