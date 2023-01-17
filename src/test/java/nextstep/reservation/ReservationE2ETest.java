@@ -1,8 +1,11 @@
 package nextstep.reservation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
@@ -16,21 +19,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ReservationE2ETest {
+
     public static final String DATE = "2022-08-11";
+
     public static final String TIME = "13:00";
+
     public static final String NAME = "name";
 
     private ReservationRequest request;
+
     private Long themeId;
+
     private Long scheduleId;
+
     private Long memberId;
+
     private String accessToken;
 
     @BeforeEach
@@ -84,7 +90,6 @@ class ReservationE2ETest {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
                 .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-
     }
 
     @DisplayName("예약을 생성한다")
@@ -184,6 +189,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
