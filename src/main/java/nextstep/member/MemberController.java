@@ -35,7 +35,8 @@ public class MemberController {
             throw new InvalidAuthorizationTokenException();
         }
         String userName = jwtTokenProvider.getPrincipal(token);
-        return ResponseEntity.ok(memberService.findByUserName(userName));
+        Member member = memberService.findByUserName(userName);
+        return ResponseEntity.ok(member);
     }
 
     @ExceptionHandler(value = {NotExistMemberException.class, InvalidAuthorizationTokenException.class})

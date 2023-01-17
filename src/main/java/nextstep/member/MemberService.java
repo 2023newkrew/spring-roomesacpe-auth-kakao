@@ -20,6 +20,7 @@ public class MemberService {
     }
 
     public Member findByUserName(String userName) {
-        return memberDao.findByUsername(userName).orElseThrow(NotExistMemberException::new);
+        return memberDao.findByUsername(userName)
+                .orElseThrow(NotExistMemberException::new);
     }
 }
