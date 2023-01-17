@@ -27,9 +27,6 @@ public class AuthService {
 
     private void checkInvalidLogin(String username, String password) {
         Member member = memberDao.findByUsername(username);
-        System.out.println(member.getName());
-        System.out.println(member.getUsername());
-        System.out.println(member.getPassword());
         if (member.checkWrongPassword(password)) {
             throw new RuntimeException();
         }

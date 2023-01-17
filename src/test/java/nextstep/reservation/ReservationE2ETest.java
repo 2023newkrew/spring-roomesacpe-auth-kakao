@@ -3,6 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -23,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource(properties = "spring.datasource.url=jdbc:h2:mem:test")
 class ReservationE2ETest {
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
@@ -31,6 +35,7 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+    private String token;
 
     @BeforeEach
     void setUp() {
@@ -58,7 +63,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -68,12 +73,27 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
+
+        TokenRequest tokenBody = new TokenRequest(USERNAME, PASSWORD);
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+
+        assertThat(tokenResponse).isNotNull();
+
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+        token = tokenResponse.getAccessToken();
 
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                USERNAME
         );
     }
 
@@ -82,6 +102,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -98,6 +119,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + token)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -115,6 +137,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -168,6 +191,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
