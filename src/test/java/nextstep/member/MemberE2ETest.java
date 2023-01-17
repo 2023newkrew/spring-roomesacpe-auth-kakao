@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -36,16 +37,9 @@ public class MemberE2ETest {
     @DisplayName("자기 자신의 정보를 조회")
     @Test
     public void findMyInfo() {
-        String userName = "username";
-        MemberRequest memberRequest = new MemberRequest(userName, "password", "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+        createMember();
 
+        String userName = "username";
         String token = jwtTokenProvider.createToken(userName);
 
         Member member = RestAssured
@@ -56,6 +50,50 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Member.class);
+
         assertThat(member.getUsername()).isEqualTo(userName);
+    }
+
+    @DisplayName("자기 자신의 정보를 조회 - 잘못된 토큰인 경우 400 코드 반환")
+    @Test
+    void me_wrongToken() {
+        createMember();
+
+        String userName = "username";
+        String token = jwtTokenProvider.createToken(userName);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "wrongToken")
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("자기 자신의 정보를 조회 - 회원정보가 존재하지 않으면 400 코드 반환")
+    @Test
+    void me_empty() {
+        String userName = "username";
+        String token = jwtTokenProvider.createToken(userName);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "wrongToken")
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void createMember() {
+        MemberRequest memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
     }
 }
