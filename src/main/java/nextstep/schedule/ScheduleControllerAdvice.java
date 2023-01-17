@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice("nextstep.schedule")
 public class ScheduleControllerAdvice {
     @ExceptionHandler(NotExistEntityException.class)
     public ResponseEntity handle() {
