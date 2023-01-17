@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class NotExistEntityException extends RuntimeException {
     public NotExistEntityException() {
-        super();
+        super("존재하지 않는 엔티티");
     }
 
     public NotExistEntityException(String message) {

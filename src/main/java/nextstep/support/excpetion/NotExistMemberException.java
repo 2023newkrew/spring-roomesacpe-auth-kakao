@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class NotExistMemberException extends NotExistEntityException {
     public NotExistMemberException() {
-        super();
+        super("존재하지 않는 멤버입니다.");
     }
 
     public NotExistMemberException(String message) {

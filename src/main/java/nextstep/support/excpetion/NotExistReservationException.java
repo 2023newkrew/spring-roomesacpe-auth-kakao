@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class NotExistReservationException extends NotExistEntityException {
     public NotExistReservationException() {
-        super();
+        super("존재하지 않는 예약입니다.");
     }
 
     public NotExistReservationException(String message) {

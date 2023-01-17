@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class InvalidAuthorizationTokenException extends RuntimeException {
     public InvalidAuthorizationTokenException() {
-        super();
+        super("올바르지 않은 형식의 인증 토큰");
     }
 
     public InvalidAuthorizationTokenException(String message) {

@@ -121,23 +121,23 @@ HTTP/1.1 204
 ## 기능 구현 목록
 
 ### 도메인 & DTO 변경
-- [ ] Reservation 테이블이 member 테이블을 참조(member_id 추가)
-- [ ] Reservation 도메인 변경
-  - [ ] String name 삭제
-  - [ ] Member member 추가
-- [ ] ReservationRequest 객체 변경
-  - [ ] String name 삭제
-- [ ] ReservationResponse 객체 추가
-  - [ ] Member 객체의 필드를 추출해서 만들기
+- [x] Reservation 테이블이 member 테이블을 참조(member_id 추가)
+- [x] Reservation 도메인 변경
+  - [x] String name 삭제
+  - [x] Member member 추가
+- [x] ReservationRequest 객체 변경
+  - [x] String name 삭제
+- [x] ReservationResponse 객체 추가
+  - [x] Member 객체의 필드를 추출해서 만들기
 
 ### 예약하기
-- [ ] 토큰으로 Member 인증하기
-- [ ] Member 정보와 함께 예약 저장하기
+- [x] 토큰으로 Member 인증하기
+- [x] Member 정보와 함께 예약 저장하기
 
 ### 예약 취소
-- [ ] 토큰으로 Member 인증
-- [ ] 취소하려는 예약의 소유자인지 확인
-  - [ ] 아니면 예외 던지기(401 코드)
+- [x] 토큰으로 Member 인증
+- [x] 취소하려는 예약의 소유자인지 확인
+  - [x] 아니면 예외 던지기(401 코드)
 
 ### 토큰 인증 과정 공통 관심사 분리
-- [ ] `HandlerMethodArgumentResolver` 와 어노테이션을 활용
+- [x] `HandlerMethodArgumentResolver` 와 어노테이션을 활용

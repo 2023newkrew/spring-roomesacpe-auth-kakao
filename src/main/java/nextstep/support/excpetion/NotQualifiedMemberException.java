@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class NotQualifiedMemberException extends RuntimeException {
     public NotQualifiedMemberException() {
-        super();
+        super("접근 권한이 없는 멤버입니다.");
     }
 
     public NotQualifiedMemberException(String message) {

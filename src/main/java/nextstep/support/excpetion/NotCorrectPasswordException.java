@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class NotCorrectPasswordException extends RuntimeException {
     public NotCorrectPasswordException() {
-        super();
+        super("패스워드가 일치하지 않습니다.");
     }
 
     public NotCorrectPasswordException(String message) {

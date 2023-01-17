@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.support.NotExistMemberException;
+import nextstep.support.excpetion.NotExistMemberException;
 import org.springframework.stereotype.Service;
 
 @Service

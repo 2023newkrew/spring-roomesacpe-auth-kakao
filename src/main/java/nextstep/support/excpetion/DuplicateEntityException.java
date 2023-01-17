@@ -1,8 +1,8 @@
-package nextstep.support;
+package nextstep.support.excpetion;
 
 public class DuplicateEntityException extends RuntimeException {
     public DuplicateEntityException() {
-        super();
+        super("중복된 엔티티");
     }
 
     public DuplicateEntityException(String message) {

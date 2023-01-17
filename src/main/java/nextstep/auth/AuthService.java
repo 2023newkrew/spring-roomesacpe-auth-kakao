@@ -2,8 +2,8 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.NotCorrectPasswordException;
-import nextstep.support.NotExistMemberException;
+import nextstep.support.excpetion.NotCorrectPasswordException;
+import nextstep.support.excpetion.NotExistMemberException;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -2,6 +2,10 @@ package nextstep.reservation;
 
 import nextstep.member.Member;
 import nextstep.support.*;
+import nextstep.support.excpetion.DuplicateReservationException;
+import nextstep.support.excpetion.InvalidAuthorizationTokenException;
+import nextstep.support.excpetion.NotExistReservationException;
+import nextstep.support.excpetion.NotQualifiedMemberException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
