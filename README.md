@@ -9,5 +9,6 @@
   - [ ] 예외처리 필요
     - [ ] 멤버에 없는 경우
     - [ ] 인증이 안되었을 때
-- [ ] 토큰을 인증하고 유저 정보를 가져오는 ArgumentResolver 생성
-- [ ] WebMvcConfigure 에 resolver 등록
+- [x] 토큰을 인증하고 유저 정보를 가져오는 ArgumentResolver 생성
+- [x] WebMvcConfigure 에 resolver 등록
+- [x] 토큰을 이용하여 본인 정보 조회
