@@ -55,6 +55,16 @@ public class ThemeE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("존재하지 않는 테마를 삭제하면 400 코드 반환")
+    @Test
+    void delete_fail() {
+        var response = RestAssured
+                .given().log().all()
+                .when().delete("/themes/" + -1L)
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     public Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
