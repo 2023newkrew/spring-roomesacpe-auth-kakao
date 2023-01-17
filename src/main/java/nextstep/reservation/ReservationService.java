@@ -51,7 +51,7 @@ public class ReservationService {
 
     public void deleteById(Long id, Member member) {
         Reservation reservation = reservationDao.findById(id).orElseThrow(NotExistEntityException::new);
-        if(!reservation.isCorrectMember(member)) {
+        if(!reservation.checkOwner(member)) {
             throw new NotQualifiedMemberException();
         }
         reservationDao.deleteById(id);

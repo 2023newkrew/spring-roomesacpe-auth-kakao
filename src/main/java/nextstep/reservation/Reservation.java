@@ -34,7 +34,10 @@ public class Reservation {
         return member;
     }
 
-    public boolean isCorrectMember(Member member) {
-        return this.member.getId().equals(member.getId()) ;
+    public boolean checkOwner(Member member) {
+        if (this.member == null || member == null) {
+            return false;
+        }
+        return this.member.equals(member);
     }
 }
