@@ -1,7 +1,8 @@
 package nextstep.auth;
 
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.RoomReservationException;
 import nextstep.member.Member;
-import nextstep.error.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,14 +16,14 @@ public class AuthService {
 
     public String createAccessToken(Member member, String password) {
         if (member.checkWrongPassword(password)) {
-            throw new NotExistEntityException();
+            throw new RoomReservationException(ErrorCode.INVALID_PASSWORD);
         }
         return jwtTokenProvider.createToken(member.getId().toString());
     }
 
     public String getPrincipal(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new RuntimeException();
+            throw new RoomReservationException(ErrorCode.INVALID_TOKEN);
         }
         return jwtTokenProvider.getPrincipal(accessToken);
     }

@@ -1,5 +1,8 @@
 package nextstep.member;
 
+import java.util.Objects;
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.RoomReservationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,10 +18,18 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id);
+        Member member = memberDao.findById(id);
+        if (Objects.isNull(member)) {
+            throw new RoomReservationException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
+        Member member = memberDao.findByUsername(username);
+        if (Objects.isNull(member)) {
+            throw new RoomReservationException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 }

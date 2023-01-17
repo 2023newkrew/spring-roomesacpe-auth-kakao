@@ -1,15 +1,21 @@
 package nextstep.theme;
 
 import java.util.List;
-import nextstep.error.exception.NotExistEntityException;
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.RoomReservationException;
+import nextstep.schedule.Schedule;
+import nextstep.schedule.ScheduleDao;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ThemeService {
     private ThemeDao themeDao;
 
-    public ThemeService(ThemeDao themeDao) {
+    private ScheduleDao scheduleDao;
+
+    public ThemeService(ThemeDao themeDao, ScheduleDao scheduleDao) {
         this.themeDao = themeDao;
+        this.scheduleDao = scheduleDao;
     }
 
     public Long create(ThemeRequest themeRequest) {
@@ -21,9 +27,9 @@ public class ThemeService {
     }
 
     public void delete(Long id) {
-        Theme theme = themeDao.findById(id);
-        if (theme == null) {
-            throw new NotExistEntityException();
+        List<Schedule> schedules = scheduleDao.findByThemeId(id);
+        if (schedules.size() > 0) {
+            throw new RoomReservationException(ErrorCode.THEME_CANT_BE_DELETED);
         }
 
         themeDao.delete(id);

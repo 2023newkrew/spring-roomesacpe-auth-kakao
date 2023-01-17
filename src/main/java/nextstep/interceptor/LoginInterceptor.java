@@ -3,9 +3,10 @@ package nextstep.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.AuthService;
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.RoomReservationException;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.error.exception.AuthorizationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class LoginInterceptor implements HandlerInterceptor {
@@ -22,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = request.getHeader("authorization").split(" ")[1];
         if (accessToken == null) {
-            throw new AuthorizationException();
+            throw new RoomReservationException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
         String principal = authService.getPrincipal(accessToken);
         Member member = memberService.findById(Long.parseLong(principal));
