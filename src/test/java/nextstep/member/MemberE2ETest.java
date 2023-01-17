@@ -58,4 +58,28 @@ public class MemberE2ETest {
                 .extract().as(Member.class);
         assertThat(member.getUsername()).isEqualTo(userName);
     }
+
+    @DisplayName("토큰 없이 자기 자신의 정보를 조회하려하면 401 코드 반환")
+    @Test
+    public void findMyInfoWithOutToken() {
+        String userName = "username";
+        MemberRequest memberRequest = new MemberRequest(userName, "password", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        String token = "notThing";
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
 }

@@ -4,6 +4,7 @@ import nextstep.auth.AuthorizationTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.support.excpetion.InvalidAuthorizationTokenException;
 import nextstep.support.excpetion.NotExistMemberException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +39,13 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findByUserName(userName));
     }
 
-    @ExceptionHandler(value = {NotExistMemberException.class, InvalidAuthorizationTokenException.class})
-    public ResponseEntity handle() {
+    @ExceptionHandler()
+    public ResponseEntity handleBadRequestException(NotExistMemberException ex) {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity handleUnauthorizedException(InvalidAuthorizationTokenException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

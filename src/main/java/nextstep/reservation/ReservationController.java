@@ -6,6 +6,7 @@ import nextstep.support.excpetion.DuplicateReservationException;
 import nextstep.support.excpetion.InvalidAuthorizationTokenException;
 import nextstep.support.excpetion.NotExistReservationException;
 import nextstep.support.excpetion.NotQualifiedMemberException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +42,18 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({NotExistReservationException.class, NotQualifiedMemberException.class, DuplicateReservationException.class, NotQualifiedMemberException.class, InvalidAuthorizationTokenException.class})
-    public ResponseEntity handle() {
+    @ExceptionHandler({NotQualifiedMemberException.class, InvalidAuthorizationTokenException.class})
+    public ResponseEntity handleUnauthorizedException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity handleNotFoundException(NotExistReservationException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity handleBadRequestException(DuplicateReservationException ex) {
         return ResponseEntity.badRequest().build();
     }
 }

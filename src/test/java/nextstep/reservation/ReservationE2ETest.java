@@ -176,7 +176,7 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(0);
     }
 
-    @DisplayName("없는 예약을 삭제한다")
+    @DisplayName("없는 예약을 삭제하면 404 코드 반환")
     @Test
     void deleteNotExistReservation() {
         String userName = "username";
@@ -188,37 +188,35 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("다른 사람의 예약을 삭제하면 예외 발생")
+    @DisplayName("다른 사람의 예약을 삭제하면 401 코드 반환")
     @Test
     void tryDeleteNotMyReservation() {
+        createReservation();
+
         String userName = "someoneelse";
         String token = jwtTokenProvider.createToken(userName);
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                        .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("잘못된 인증 토큰이 들어오면 400 코드 반환")
+    @DisplayName("잘못된 인증 토큰이 들어오면 401 코드 반환")
     @Test
     void test() {
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .body(request)
                 .header("Authorization", "wrongToken")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                        .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> createReservation() {

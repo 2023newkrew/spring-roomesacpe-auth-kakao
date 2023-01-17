@@ -37,7 +37,7 @@ class AuthServiceTest {
 
     @DisplayName("username과 password 일치 확인 후 토큰을 발급해서 반환")
     @Test
-    void create() {
+    void login() {
         TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
 
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
