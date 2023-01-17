@@ -2,6 +2,7 @@ package nextstep.reservation;
 
 import java.net.URI;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import nextstep.annotation.AuthenticationPrincipal;
 import nextstep.member.LoginMember;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
     public final ReservationService reservationService;
-
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
 
     @PostMapping
     public ResponseEntity createReservation(@AuthenticationPrincipal LoginMember loginMember,

@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
 import nextstep.reservation.Reservation;
@@ -10,16 +11,11 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
-    private ScheduleDao scheduleDao;
-    private ThemeDao themeDao;
-    private ReservationDao reservationDao;
-
-    public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao, ReservationDao reservationDao) {
-        this.scheduleDao = scheduleDao;
-        this.themeDao = themeDao;
-        this.reservationDao = reservationDao;
-    }
+    private final ScheduleDao scheduleDao;
+    private final ThemeDao themeDao;
+    private final ReservationDao reservationDao;
 
     public Long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId());

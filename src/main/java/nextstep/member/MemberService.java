@@ -1,17 +1,15 @@
 package nextstep.member;
 
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
-    private MemberDao memberDao;
-
-    public MemberService(MemberDao memberDao) {
-        this.memberDao = memberDao;
-    }
+    private final MemberDao memberDao;
 
     public Long create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());

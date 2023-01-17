@@ -1,16 +1,12 @@
 package nextstep.member;
 
-public class LoginMember {
-    private Long id;
+import lombok.Getter;
 
-    public LoginMember() {
-    }
+@Getter
+public class LoginMember {
+    private final Long id;
 
     public LoginMember(Member member) {
         this.id = member.getId();
-    }
-
-    public Long getId() {
-        return id;
     }
 }

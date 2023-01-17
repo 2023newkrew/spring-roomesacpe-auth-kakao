@@ -1,7 +1,6 @@
 package nextstep.error;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 public enum ErrorCode {
     // 공통 에러
