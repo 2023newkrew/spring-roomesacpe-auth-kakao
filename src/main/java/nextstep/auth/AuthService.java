@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.auth.JwtTokenProvider;
+import nextstep.infrastructure.jwt.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.MemberMapper;

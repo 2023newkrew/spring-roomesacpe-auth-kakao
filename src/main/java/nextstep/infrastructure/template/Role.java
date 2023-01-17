@@ -1,4 +1,4 @@
-package nextstep.infrastructure.role;
+package nextstep.infrastructure.template;
 
 import lombok.Getter;
 import nextstep.support.exception.auth.NoSuchRoleException;

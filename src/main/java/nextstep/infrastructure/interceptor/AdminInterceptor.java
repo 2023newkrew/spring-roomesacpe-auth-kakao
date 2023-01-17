@@ -1,10 +1,11 @@
-package nextstep.config.interceptor;
+package nextstep.infrastructure.interceptor;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.role.Role;
-import nextstep.infrastructure.auth.AuthorizationExtractor;
-import nextstep.infrastructure.auth.JwtTokenProvider;
+import nextstep.infrastructure.template.Role;
+import nextstep.infrastructure.jwt.AuthorizationExtractor;
+import nextstep.infrastructure.jwt.JwtTokenProvider;
 import nextstep.support.exception.auth.AuthorizationException;
+import nextstep.support.exception.auth.NoAccessAuthorityException;
 import nextstep.support.exception.auth.NoSuchTokenException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,13 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 @RequiredArgsConstructor
-public class UserInterceptor implements HandlerInterceptor {
+public class AdminInterceptor implements HandlerInterceptor {
     private static final String ACCESS_TOKEN = "accessToken";
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationExtractor authorizationExtractor;
 
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthorizationExtractor authorizationExtractor;
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)  {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = authorizationExtractor.extract(request);
         request.setAttribute(ACCESS_TOKEN, token);
 
@@ -32,8 +36,8 @@ public class UserInterceptor implements HandlerInterceptor {
             throw new AuthorizationException();
         }
 
-        if (!jwtTokenProvider.validateRole(token, Role.USER)) {
-            throw new AuthorizationException();
+        if(!jwtTokenProvider.validateRole(token, Role.ADMIN)) {
+            throw new NoAccessAuthorityException();
         }
 
         return true;

@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.auth.JwtTokenProvider;
+import nextstep.infrastructure.jwt.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
 @Service

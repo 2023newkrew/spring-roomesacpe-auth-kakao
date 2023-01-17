@@ -1,4 +1,4 @@
-package nextstep.infrastructure.auth;
+package nextstep.infrastructure.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -6,14 +6,14 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.role.Role;
+import nextstep.infrastructure.template.Role;
 import nextstep.support.exception.auth.NoSuchMemberException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static nextstep.infrastructure.role.Role.*;
+import static nextstep.infrastructure.template.Role.*;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component

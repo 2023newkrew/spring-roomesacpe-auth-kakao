@@ -1,8 +1,8 @@
-package nextstep.config.interceptor;
+package nextstep.infrastructure.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.infrastructure.annotation.Login;
-import nextstep.infrastructure.auth.JwtTokenProvider;
+import nextstep.infrastructure.jwt.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

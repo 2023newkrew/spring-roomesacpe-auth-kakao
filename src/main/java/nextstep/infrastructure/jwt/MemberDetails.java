@@ -1,7 +1,7 @@
-package nextstep.infrastructure.auth;
+package nextstep.infrastructure.jwt;
 
 import lombok.*;
-import nextstep.infrastructure.role.Role;
+import nextstep.infrastructure.template.Role;
 
 @Getter
 @Builder

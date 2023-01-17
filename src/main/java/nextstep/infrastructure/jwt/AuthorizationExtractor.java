@@ -1,4 +1,4 @@
-package nextstep.infrastructure.auth;
+package nextstep.infrastructure.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
