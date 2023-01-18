@@ -16,15 +16,15 @@ class AuthE2ETest {
     @Test
     @DisplayName("존재하는 유저는 엑세스 토큰을 발급 받을 수 있다.")
     void test1() {
-        TokenResponse tokenResponse = AuthUtil.createTokenForReservationExistUser();
+        TokenResponse tokenResponse = AuthTestUtil.createTokenForReservationExistUser();
         assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 
     @Test
     @DisplayName("존재하지 않는 유저는 엑세스 토큰을 받을 수 없다.")
     void test2() {
-        TokenRequest tokenRequest = AuthUtil.getNotExistUserTokenRequest();
-        AuthUtil.createTokenAndGetValidatableResponse(tokenRequest)
+        TokenRequest tokenRequest = AuthTestUtil.getNotExistUserTokenRequest();
+        AuthTestUtil.createTokenAndGetValidatableResponse(tokenRequest)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -33,7 +33,7 @@ class AuthE2ETest {
     @NullAndEmptySource
     void test3(String username) {
         TokenRequest tokenRequest = new TokenRequest(username, "");
-        AuthUtil.createTokenAndGetValidatableResponse(tokenRequest)
+        AuthTestUtil.createTokenAndGetValidatableResponse(tokenRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -42,7 +42,7 @@ class AuthE2ETest {
     @NullAndEmptySource
     void test4(String password) {
         TokenRequest tokenRequest = new TokenRequest("username", password);
-        AuthUtil.createTokenAndGetValidatableResponse(tokenRequest)
+        AuthTestUtil.createTokenAndGetValidatableResponse(tokenRequest)
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-public class ReservationUtil {
+public class ReservationTestUtil {
     public static ValidatableResponse createReservation(ReservationRequest reservationRequest, String accessToken) {
         return RestAssured
                 .given().log().all()

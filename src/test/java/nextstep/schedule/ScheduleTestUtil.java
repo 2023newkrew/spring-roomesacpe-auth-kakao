@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-public class ScheduleUtil {
+public class ScheduleTestUtil {
     public static List<Schedule> getSchedules(Long themeId, String date) {
         return requestScheduleAndGetValidatableResponse(themeId, date)
                 .extract()

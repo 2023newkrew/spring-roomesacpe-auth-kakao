@@ -1,9 +1,9 @@
 package nextstep.schedule;
 
-import nextstep.auth.AuthUtil;
+import nextstep.auth.AuthTestUtil;
 import nextstep.auth.TokenResponse;
 import nextstep.member.Member;
-import nextstep.member.MemberUtil;
+import nextstep.member.MemberTestUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,11 +21,11 @@ class ScheduleE2ETest {
     @DisplayName("인증된 사용자는 스케줄을 생성할 수 있다.")
     @Test
     void test1() {
-        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
+        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
 
         ScheduleRequest schedule = new ScheduleRequest(1L, "2022-08-11", "13:00");
-        ScheduleUtil.createScheduleAndGetValidatableResponse(schedule, tokenResponse.getAccessToken())
+        ScheduleTestUtil.createScheduleAndGetValidatableResponse(schedule, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -33,14 +33,14 @@ class ScheduleE2ETest {
     @Test
     void test2() {
         ScheduleRequest schedule = new ScheduleRequest(1L, "2022-08-11", "13:00");
-        ScheduleUtil.createScheduleAndGetValidatableResponse(schedule, "")
+        ScheduleTestUtil.createScheduleAndGetValidatableResponse(schedule, "")
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("인증되지 않은 사용자는 스케줄을 조회할 수 있다.")
     @Test
     void test3() {
-        List<Schedule> schedules = ScheduleUtil.getSchedules(1L, "2022-11-11");
+        List<Schedule> schedules = ScheduleTestUtil.getSchedules(1L, "2022-11-11");
 
         assertThat(schedules).hasSize(6);
     }
@@ -48,17 +48,17 @@ class ScheduleE2ETest {
     @DisplayName("인증된 사용자는 스케줄을 삭제할 수 있다.")
     @Test
     void test4() {
-        Member ReservationExistUser = MemberUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthUtil.createToken(ReservationExistUser);
+        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
 
-        ScheduleUtil.deleteScheduleAndGetValidatableResponse(2L, tokenResponse.getAccessToken())
+        ScheduleTestUtil.deleteScheduleAndGetValidatableResponse(2L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("인증되지 않은 사용자는 스케줄을 삭제할 수 없다.")
     @Test
     void test5() {
-        ScheduleUtil.deleteScheduleAndGetValidatableResponse(2L, "")
+        ScheduleTestUtil.deleteScheduleAndGetValidatableResponse(2L, "")
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
