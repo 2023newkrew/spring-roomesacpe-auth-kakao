@@ -1,4 +1,4 @@
-package nextstep.support.exception;
+package nextstep.common.exception;
 
 public class NoAccessTokenException extends RuntimeException {
     public NoAccessTokenException() {

@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
-import nextstep.support.exception.NoAccessTokenException;
+import nextstep.common.exception.NoAccessTokenException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

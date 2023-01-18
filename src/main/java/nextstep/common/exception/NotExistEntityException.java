@@ -1,4 +1,4 @@
-package nextstep.support.exception;
+package nextstep.common.exception;
 
 public class NotExistEntityException extends RuntimeException {
     public NotExistEntityException() {

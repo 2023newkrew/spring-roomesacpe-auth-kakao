@@ -1,10 +1,9 @@
 package nextstep.member;
 
 import lombok.AllArgsConstructor;
-import nextstep.auth.AuthService;
 import nextstep.member.dto.MemberRequestDto;
 import nextstep.member.dto.MemberResponseDto;
-import nextstep.support.AuthenticationPrincipal;
+import nextstep.common.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

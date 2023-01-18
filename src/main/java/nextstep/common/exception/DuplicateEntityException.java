@@ -1,4 +1,4 @@
-package nextstep.support.exception;
+package nextstep.common.exception;
 
 public class DuplicateEntityException extends RuntimeException {
     public DuplicateEntityException() {

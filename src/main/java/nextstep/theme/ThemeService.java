@@ -1,7 +1,7 @@
 package nextstep.theme;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.support.exception.NotExistEntityException;
+import nextstep.common.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ThemeService {
+
     private final ThemeDao themeDao;
 
     public Long create(ThemeRequest themeRequest) {

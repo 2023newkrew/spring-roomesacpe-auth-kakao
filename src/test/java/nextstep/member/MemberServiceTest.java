@@ -3,7 +3,7 @@ package nextstep.member;
 import java.util.Optional;
 import nextstep.member.dto.MemberRequestDto;
 import nextstep.member.dto.MemberResponseDto;
-import nextstep.support.exception.DuplicateEntityException;
+import nextstep.common.exception.DuplicateEntityException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

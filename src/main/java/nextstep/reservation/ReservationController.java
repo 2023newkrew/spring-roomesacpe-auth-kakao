@@ -2,7 +2,7 @@ package nextstep.reservation;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.reservation.dto.ReservationRequestDto;
-import nextstep.support.AuthenticationPrincipal;
+import nextstep.common.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

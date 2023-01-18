@@ -1,7 +1,7 @@
 package nextstep.schedule;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.support.exception.NotExistEntityException;
+import nextstep.common.exception.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
+
     private final ScheduleDao scheduleDao;
     private final ThemeDao themeDao;
 

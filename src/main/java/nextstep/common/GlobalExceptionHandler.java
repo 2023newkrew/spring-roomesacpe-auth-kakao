@@ -1,10 +1,10 @@
-package nextstep.support;
+package nextstep.common;
 
 import io.jsonwebtoken.JwtException;
-import nextstep.support.exception.DuplicateEntityException;
-import nextstep.support.exception.NoAccessTokenException;
-import nextstep.support.exception.NotExistEntityException;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.common.exception.DuplicateEntityException;
+import nextstep.common.exception.NoAccessTokenException;
+import nextstep.common.exception.NotExistEntityException;
+import nextstep.common.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

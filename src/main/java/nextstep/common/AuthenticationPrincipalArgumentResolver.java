@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.common;
 
 import lombok.AllArgsConstructor;
 import nextstep.auth.JwtTokenProvider;

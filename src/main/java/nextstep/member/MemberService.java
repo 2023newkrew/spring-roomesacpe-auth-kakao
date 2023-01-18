@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.dto.TokenRequestDto;
 import nextstep.member.dto.MemberRequestDto;
 import nextstep.member.dto.MemberResponseDto;
-import nextstep.support.exception.DuplicateEntityException;
-import nextstep.support.exception.NotExistEntityException;
+import nextstep.common.exception.DuplicateEntityException;
+import nextstep.common.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service
