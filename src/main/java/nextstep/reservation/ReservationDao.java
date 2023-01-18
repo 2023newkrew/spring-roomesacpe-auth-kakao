@@ -1,8 +1,11 @@
 package nextstep.reservation;
 
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.RecordNotFoundException;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,7 +17,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
-public class ReservationDao {
+public class ReservationDao implements ReservationRepository {
 
     public final JdbcTemplate jdbcTemplate;
 
@@ -44,6 +47,7 @@ public class ReservationDao {
             )
     );
 
+    @Override
     public Long save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, member_id) VALUES (?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -59,6 +63,7 @@ public class ReservationDao {
         return keyHolder.getKey().longValue();
     }
 
+    @Override
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
                 "from reservation " +
@@ -70,6 +75,7 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
     }
 
+    @Override
     public Reservation findById(Long id) {
         String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
                 "from reservation " +
@@ -84,6 +90,7 @@ public class ReservationDao {
         }
     }
 
+    @Override
     public List<Reservation> findByScheduleId(Long id) {
         String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
                 "from reservation " +
@@ -99,6 +106,7 @@ public class ReservationDao {
         }
     }
 
+    @Override
     public void deleteById(Long id) {
         String sql = "DELETE FROM reservation where id = ?;";
         jdbcTemplate.update(sql, id);

@@ -13,16 +13,18 @@ import java.util.List;
 
 @Service
 public class ReservationService {
-    public final ReservationDao reservationDao;
-    public final MemberDao memberDao;
-    public final ThemeDao themeDao;
-    public final ScheduleDao scheduleDao;
+    private final ReservationDao reservationDao;
+    private final MemberDao memberDao;
+    private final ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+    private final ReservationValidator reservationValidator;
 
     public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
         this.reservationDao = reservationDao;
         this.memberDao = memberDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
+        this.reservationValidator = new ReservationValidator(reservationDao);
     }
 
     public Long create(Long memberId, ReservationRequest reservationRequest) {
@@ -55,13 +57,7 @@ public class ReservationService {
     }
 
     public void deleteById(Long memberId, Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (!memberId.equals(reservation.getMember().getId())) {
-            throw new RuntimeException();
-        }
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
+        reservationValidator.validateForDelete(memberId, id);
 
         reservationDao.deleteById(id);
     }
