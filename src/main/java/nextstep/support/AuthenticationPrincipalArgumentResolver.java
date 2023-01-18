@@ -2,7 +2,7 @@ package nextstep.support;
 
 import lombok.AllArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.infrastructure.AuthorizationExtractor;
+import nextstep.auth.utils.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
