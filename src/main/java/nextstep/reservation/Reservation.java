@@ -23,8 +23,14 @@ public class Reservation {
         this.name = name;
     }
 
-
     public Reservation(Schedule schedule, String name, Long memberId) {
+        this.schedule = schedule;
+        this.name = name;
+        this.memberId = memberId;
+    }
+
+    public Reservation(Long id, Schedule schedule, String name, Long memberId) {
+        this.id = id;
         this.schedule = schedule;
         this.name = name;
         this.memberId = memberId;

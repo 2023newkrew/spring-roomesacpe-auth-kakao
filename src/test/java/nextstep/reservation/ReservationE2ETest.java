@@ -110,6 +110,15 @@ class ReservationE2ETest {
     @Test
     @DisplayName("비로그인 사용자의 예약 생성이 불가하다.")
     void create_fail() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -136,6 +145,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -150,7 +160,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "asdf")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer asdf")
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -194,6 +204,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
