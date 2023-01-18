@@ -12,16 +12,14 @@ import java.util.List;
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    private final MemberService memberService;
     private final AuthService authService;
 
-    public WebMvcConfiguration(MemberService memberService, AuthService authService) {
-        this.memberService = memberService;
+    public WebMvcConfiguration(AuthService authService) {
         this.authService = authService;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new LoginMemberArgumentResolver(authService, memberService));
+        resolvers.add(new LoginMemberArgumentResolver(authService));
     }
 }

@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import nextstep.auth.dto.TokenResponse;
-import nextstep.member.dto.LoginMember;
+import nextstep.common.LoginMember;
 import nextstep.member.Member;
 import nextstep.exception.UnauthorizedAccessException;
 import org.springframework.stereotype.Service;

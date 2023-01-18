@@ -1,8 +1,6 @@
 package nextstep.common;
 
 import nextstep.auth.AuthService;
-import nextstep.member.dto.LoginMember;
-import nextstep.member.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -13,11 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
-    private final MemberService memberService;
 
-    public LoginMemberArgumentResolver(AuthService authService, MemberService memberService) {
+    public LoginMemberArgumentResolver(AuthService authService) {
         this.authService = authService;
-        this.memberService = memberService;
     }
 
     @Override
@@ -30,7 +26,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         try {
             Long id = authService.decodeTokenByRequest(request);
-            return LoginMember.of(memberService.findById(id));
+            return new LoginMember(id);
         } catch (Exception e){
             return null;
         }

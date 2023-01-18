@@ -2,7 +2,7 @@ package nextstep.reservation;
 
 import nextstep.auth.AuthService;
 import nextstep.common.Login;
-import nextstep.member.dto.LoginMember;
+import nextstep.common.LoginMember;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.reservation.dto.ReservationRequest;

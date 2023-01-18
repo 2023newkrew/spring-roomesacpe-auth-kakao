@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import nextstep.common.Login;
-import nextstep.member.dto.LoginMember;
+import nextstep.common.LoginMember;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberCreatedResponse;
 import org.springframework.http.ResponseEntity;
