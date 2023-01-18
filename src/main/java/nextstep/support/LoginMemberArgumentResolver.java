@@ -5,6 +5,7 @@ import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
+import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
+        return parameter.hasParameterAnnotation(LoginMember.class) &&
+                parameter.getParameterType().equals(Member.class);
     }
 
     @Override
