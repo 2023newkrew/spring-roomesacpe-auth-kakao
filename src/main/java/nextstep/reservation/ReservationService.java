@@ -4,8 +4,6 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.theme.Theme;
-import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +12,12 @@ import java.util.List;
 public class ReservationService {
     private final ReservationDao reservationDao;
     private final MemberDao memberDao;
-    private final ThemeDao themeDao;
     private final ScheduleDao scheduleDao;
     private final ReservationValidator reservationValidator;
 
-    public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ScheduleDao scheduleDao) {
         this.reservationDao = reservationDao;
         this.memberDao = memberDao;
-        this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
         this.reservationValidator = new ReservationValidator(reservationDao);
     }
@@ -36,11 +32,6 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
-            throw new NullPointerException();
-        }
-
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
