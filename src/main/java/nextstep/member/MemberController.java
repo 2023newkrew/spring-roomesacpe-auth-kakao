@@ -13,14 +13,15 @@ import java.net.URI;
 @RequestMapping("/members")
 @AllArgsConstructor
 public class MemberController {
+
     private MemberService memberService;
     private AuthService authService;
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
-        Long id = memberService.create(memberRequest);
+    public ResponseEntity createMember(@RequestBody MemberRequestDto memberRequestDto) {
+        Long id = memberService.create(memberRequestDto);
         return ResponseEntity.created(URI.create("/members/" + id))
-                .build();
+            .build();
     }
 
     @GetMapping("/me")

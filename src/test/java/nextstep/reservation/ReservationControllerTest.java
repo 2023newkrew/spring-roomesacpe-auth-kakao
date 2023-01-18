@@ -30,14 +30,14 @@ public class ReservationControllerTest {
     private JwtTokenProvider jwtTokenProvider;
     @MockBean
     private ReservationService reservationService;
-    private ReservationRequest request;
+    private ReservationRequestDto request;
     private Long scheduleId = 1L;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
 
-        request = new ReservationRequest(
+        request = new ReservationRequestDto(
                 scheduleId);
     }
 

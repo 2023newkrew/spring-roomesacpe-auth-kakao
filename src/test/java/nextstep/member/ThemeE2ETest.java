@@ -14,7 +14,7 @@ public class ThemeE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequestDto body = new MemberRequestDto("username", "password", "name", "010-1234-5678");
         RestAssured
                 .given()
                 .log()

@@ -23,8 +23,8 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, String username) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+    public Long create(ReservationRequestDto reservationRequestDto, String username) {
+        Schedule schedule = scheduleDao.findById(reservationRequestDto.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
         }

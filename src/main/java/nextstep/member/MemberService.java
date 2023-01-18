@@ -12,11 +12,11 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public Long create(MemberRequest memberRequest) {
-        if (memberDao.findByUsername(memberRequest.getUsername()) != null) {
+    public Long create(MemberRequestDto memberRequestDto) {
+        if (memberDao.findByUsername(memberRequestDto.getUsername()) != null) {
             throw new DuplicateEntityException("같은 username을 가진 회원이 존재합니다.");
         }
-        return memberDao.save(memberRequest.toEntity());
+        return memberDao.save(memberRequestDto.toEntity());
     }
 
     public Member findById(Long id) {
