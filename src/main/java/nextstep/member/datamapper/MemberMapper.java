@@ -4,6 +4,7 @@ import nextstep.member.domain.Member;
 import nextstep.member.dto.MemberResponse;
 import nextstep.member.entity.MemberEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -13,19 +14,20 @@ public interface MemberMapper {
 
     Member entityToDomain(MemberEntity memberEntity);
 
-    default MemberEntity domainToEntity(Member member) {
-        if (member == null) {
+    @Mapping(target = "id", ignore = true)
+    MemberEntity domainToEntity(Member member);
+
+    default MemberResponse entityToResponseDto(MemberEntity memberEntity) {
+        if (memberEntity == null) {
             return null;
         }
 
-        return new MemberEntity(
-                null,
-                member.getUsername(),
-                member.getPassword(),
-                member.getName(),
-                member.getPhone()
-        );
-    }
+        Long id = memberEntity.getId();
+        String username = memberEntity.getUsername();
+        String password = memberEntity.getPassword();
+        String name = memberEntity.getName();
+        String phone = memberEntity.getPhone();
 
-    MemberResponse entityToResponseDto(MemberEntity memberEntity);
+        return new MemberResponse(id, username, password, name, phone);
+    }
 }

@@ -3,7 +3,7 @@ package nextstep.schedule.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.theme.entity.Theme;
+import nextstep.theme.dto.ThemeResponse;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,7 +13,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class ScheduleResponse {
 
-    private Theme theme;
+    private Long id;
+    private ThemeResponse theme;
     private LocalDate date;
     private LocalTime time;
 }

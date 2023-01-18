@@ -30,9 +30,9 @@ public class ThemeController {
 
     @GetMapping
     public ResponseEntity<List<ThemeResponse>> showThemes() {
-        List<ThemeResponse> results = themeService.findAll();
+        List<ThemeResponse> themes = themeService.findAll();
 
-        return ResponseEntity.ok().body(results);
+        return ResponseEntity.ok().body(themes);
     }
 
     @DeleteMapping("/{id}")

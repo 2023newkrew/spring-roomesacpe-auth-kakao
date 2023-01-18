@@ -10,6 +10,7 @@ import nextstep.schedule.dto.ScheduleResponse;
 @AllArgsConstructor
 public class ReservationResponse {
 
+    private Long id;
     private ScheduleResponse schedule;
     private Long memberId;
 }

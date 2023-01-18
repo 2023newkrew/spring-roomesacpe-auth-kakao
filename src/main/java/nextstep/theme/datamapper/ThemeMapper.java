@@ -10,5 +10,16 @@ public interface ThemeMapper {
 
     ThemeMapper INSTANCE = Mappers.getMapper(ThemeMapper.class);
 
-    ThemeResponse entityToDto(ThemeEntity themeEntity);
+    default ThemeResponse entityToDto(ThemeEntity themeEntity) {
+        if (themeEntity == null) {
+            return null;
+        }
+
+        Long id = themeEntity.getId();
+        String name = themeEntity.getName();
+        String desc = themeEntity.getDesc();
+        int price = themeEntity.getPrice();
+
+        return new ThemeResponse(id, name, desc, price);
+    }
 }

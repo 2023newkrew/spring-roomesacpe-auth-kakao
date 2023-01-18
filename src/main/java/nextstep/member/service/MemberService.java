@@ -21,13 +21,14 @@ public class MemberService {
         Member requestedMember = new Member(username, password, name, phone);
         requestedMember.encryptPassword();
 
-        return memberRepository.save(requestedMember);
+        return memberRepository.save(MemberMapper.INSTANCE.domainToEntity(requestedMember));
     }
 
     public MemberResponse findById(Long id) {
 
         return memberRepository.findById(id)
                 .map(MemberMapper.INSTANCE::entityToResponseDto)
-                .orElse(null);
+                .orElse(null)
+                ;
     }
 }

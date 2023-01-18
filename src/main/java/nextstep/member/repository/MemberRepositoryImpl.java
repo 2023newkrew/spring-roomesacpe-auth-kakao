@@ -1,8 +1,6 @@
 package nextstep.member.repository;
 
 import nextstep.member.dao.MemberDao;
-import nextstep.member.datamapper.MemberMapper;
-import nextstep.member.domain.Member;
 import nextstep.member.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,9 +18,9 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Long save(Member member) {
+    public Long save(MemberEntity memberEntity) {
 
-        return memberDao.save(MemberMapper.INSTANCE.domainToEntity(member));
+        return memberDao.save(memberEntity);
     }
 
     @Override

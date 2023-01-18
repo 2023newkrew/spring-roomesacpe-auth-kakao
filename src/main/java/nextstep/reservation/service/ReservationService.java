@@ -54,7 +54,7 @@ public class ReservationService {
 
     public void delete(Long id, Long memberId) {
         if (!reservationRepository.existsByIdAndMemberId(id, memberId)) {
-            throw new RuntimeException();
+            throw new NotExistEntityException();
         }
 
         reservationRepository.deleteById(id);

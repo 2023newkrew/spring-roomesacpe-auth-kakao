@@ -40,7 +40,8 @@ public class ScheduleService {
 
         return targetSchedules.stream()
                 .map(ScheduleMapper.INSTANCE::entityToDtoResponse)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                ;
     }
 
     public void deleteById(Long id) {

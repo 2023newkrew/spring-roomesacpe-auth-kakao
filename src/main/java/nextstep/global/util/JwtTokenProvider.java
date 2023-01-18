@@ -1,4 +1,4 @@
-package nextstep.auth.util;
+package nextstep.global.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

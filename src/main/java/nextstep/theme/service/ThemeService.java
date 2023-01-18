@@ -30,12 +30,14 @@ public class ThemeService {
 
         return themeRepository.findAll().stream()
                 .map(ThemeMapper.INSTANCE::entityToDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                ;
     }
 
     public void deleteById(Long id) {
         themeRepository.findById(id)
-                .orElseThrow(NotExistEntityException::new);
+                .orElseThrow(NotExistEntityException::new)
+        ;
 
         themeRepository.deleteById(id);
     }

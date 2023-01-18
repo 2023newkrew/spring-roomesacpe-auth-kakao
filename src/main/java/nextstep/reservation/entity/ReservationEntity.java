@@ -2,11 +2,9 @@ package nextstep.reservation.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nextstep.schedule.entity.ScheduleEntity;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ReservationEntity {
 

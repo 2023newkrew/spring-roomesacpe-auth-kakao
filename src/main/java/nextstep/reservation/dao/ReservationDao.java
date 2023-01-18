@@ -49,7 +49,6 @@ public class ReservationDao {
             ps.setLong(1, reservationEntity.getSchedule().getId());
             ps.setLong(2, reservationEntity.getMemberId());
             return ps;
-
         }, keyHolder);
 
         return Optional.ofNullable(keyHolder.getKey())
