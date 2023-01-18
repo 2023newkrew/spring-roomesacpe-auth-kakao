@@ -20,8 +20,4 @@ public class MemberService {
     public Member findByMemberId(Long id) {
         return memberDao.findByMemberId(id);
     }
-
-    public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
-    }
 }
