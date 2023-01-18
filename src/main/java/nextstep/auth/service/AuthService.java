@@ -19,7 +19,7 @@ public class AuthService {
     }
 
     private Member validate(Optional<Member> member) {
-        member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
+        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
     }
 
     public void validateLoginMember(LoginMember loginMember) {
@@ -36,9 +36,8 @@ public class AuthService {
         if (request.getHeader("Authorization") == null) {
             throw new UnauthorizedAccessException("토큰이 존재하지 않습니다");
         }
-        String token = request.getHeader("Authorization").split(" ")[1];
         try {
-            return jwtTokenProvider.getPrincipal(token);
+            return jwtTokenProvider.getPrincipal(request.getHeader("Authorization").split(" ")[1]);
         } catch (IllegalArgumentException e) {
             throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
         }

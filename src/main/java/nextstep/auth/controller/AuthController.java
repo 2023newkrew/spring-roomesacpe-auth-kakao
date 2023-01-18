@@ -1,10 +1,8 @@
 package nextstep.auth.controller;
 
-import java.util.Optional;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.service.AuthService;
-import nextstep.member.Member;
 import nextstep.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,9 +25,8 @@ public class AuthController {
 
     @PostMapping("token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request){
-        Optional<Member> member = memberService.getByNameAndPassword(request.getUsername(), request.getPassword());
-        TokenResponse response  = authService.createToken(member);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authService.createToken(
+                memberService.getByNameAndPassword(request.getUsername(), request.getPassword())));
     }
 
 }

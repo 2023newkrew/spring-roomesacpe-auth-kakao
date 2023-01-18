@@ -2,7 +2,6 @@ package nextstep.member.controller;
 
 import java.net.URI;
 import nextstep.auth.argumentresolver.Login;
-import nextstep.member.Member;
 import nextstep.member.dto.LoginMember;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
@@ -25,14 +24,12 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
-        Long id = memberService.create(memberRequest);
-        return ResponseEntity.created(URI.create("/members/" + id)).build();
+        return ResponseEntity.created(URI.create("/members/" + memberService.create(memberRequest))).build();
     }
 
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> me(@Login LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
-        return ResponseEntity.ok(MemberResponse.of(member));
+        return ResponseEntity.ok(MemberResponse.of(memberService.findById(loginMember.getId())));
     }
 }
 

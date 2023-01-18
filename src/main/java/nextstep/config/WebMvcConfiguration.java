@@ -3,7 +3,6 @@ package nextstep.config;
 import java.util.List;
 import nextstep.auth.argumentresolver.LoginMemberArgumentResolver;
 import nextstep.auth.service.AuthService;
-import nextstep.member.service.MemberService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
