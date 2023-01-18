@@ -1,10 +1,7 @@
 package nextstep.support;
 
 import io.jsonwebtoken.JwtException;
-import nextstep.support.exception.DuplicateEntityException;
-import nextstep.support.exception.NoAccessTokenException;
-import nextstep.support.exception.NotExistEntityException;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +31,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotExistEntityException.class)
     public ResponseEntity<String> notExistEntityExceptionHandler(Exception exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<String> ForbiddenExceptionHandler(Exception exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(exception.getMessage());
     }
 }

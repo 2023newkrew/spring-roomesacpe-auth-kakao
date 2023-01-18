@@ -1,8 +1,10 @@
 package nextstep.reservation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.DuplicateEntityException;
+import nextstep.support.exception.ForbiddenException;
 import nextstep.support.exception.NotExistEntityException;
 import nextstep.support.exception.UnauthorizedException;
 import nextstep.theme.Theme;
@@ -44,7 +46,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException("해당 테마가 존재하지 않습니다.");
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
@@ -58,7 +60,7 @@ public class ReservationService {
         }
         if (!reservation.getName()
                 .equals(username)) {
-            throw new UnauthorizedException("자신의 예약이 아닙니다.");
+            throw new ForbiddenException("자신의 예약이 아닙니다.");
         }
 
         reservationDao.deleteById(id);

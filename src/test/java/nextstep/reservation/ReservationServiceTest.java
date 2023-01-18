@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
+import nextstep.support.exception.ForbiddenException;
 import nextstep.support.exception.NotExistEntityException;
 import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,7 @@ class ReservationServiceTest {
         Reservation reservation = new Reservation(1L, new Schedule(), "differentUsername");
         when(reservationDao.findById(anyLong())).thenReturn(reservation);
         assertThatThrownBy(() -> reservationService.deleteById(1L, "username"))
-                .isInstanceOf(UnauthorizedException.class);
+                .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
