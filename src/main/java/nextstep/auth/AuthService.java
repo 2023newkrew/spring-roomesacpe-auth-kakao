@@ -18,27 +18,27 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    private Long validate(Optional<Member> member) {
-        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다.")).getId();
-    }
-
     public void validateLoginMember(LoginMember loginMember) {
         if (Objects.isNull(loginMember)) {
             throw new UnauthorizedAccessException("인증되지 않은 사용자입니다.");
         }
     }
 
-    public TokenResponse createToken(Optional<Member> member) {
-        Long id = validate(member);
-        String token = jwtTokenProvider.createToken(String.valueOf(id));
+    public TokenResponse createToken(Member member) {
+        String payload = String.valueOf(member.getId());
+        String token = jwtTokenProvider.createToken(payload);
         return new TokenResponse(token);
     }
 
-    public Long decodeTokenByRequest(HttpServletRequest request) {
+
+    public String extractToken(HttpServletRequest request) {
         if (request.getHeader("Authorization") == null) {
             throw new UnauthorizedAccessException("토큰이 존재하지 않습니다");
         }
-        String token = request.getHeader("Authorization").split(" ")[1];
+        return request.getHeader("Authorization").split(" ")[1];
+    }
+
+    public Long decodeToken(String token) {
         try {
             return Long.valueOf(jwtTokenProvider.getPrincipal(token));
         } catch (IllegalArgumentException e) {

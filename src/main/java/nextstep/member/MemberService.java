@@ -14,8 +14,9 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public Optional<Member> getByNameAndPassword(String username, String password) {
-        return this.memberDao.findByUsernameAndPassword(username, password);
+    public Member getByNameAndPassword(String username, String password) {
+        return this.memberDao.findByUsernameAndPassword(username, password)
+                .orElseThrow(() -> new NotExistEntityException("해당하는 정보의 사용자가 존재하지 않습니다."));
     }
 
     public Long create(MemberRequest memberRequest) {
