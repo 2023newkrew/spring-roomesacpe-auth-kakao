@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.auth.TokenRequestDto;
 import nextstep.support.exception.DuplicateEntityException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -28,11 +29,19 @@ public class MemberServiceTest {
     @Test
     @DisplayName("username으로 멤버 찾기 테스트")
     void findByUsernameTest() {
-
         when(memberDao.findByUsername(anyString())).thenReturn(MEMBER);
         MemberResponseDto memberResponseDto = MemberResponseDto.toDto(MEMBER);
         Assertions.assertThat(memberService.findByUsername(MEMBER.getUsername()))
                 .isEqualTo(memberResponseDto);
+    }
+
+    @Test
+    @DisplayName("username과 password로 멤버 찾기 테스트")
+    void findByUsernameAndPasswordTest() {
+        when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(MEMBER);
+        TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
+        Assertions.assertThat(memberService.isValidMember(tokenRequestDto))
+                .isTrue();
     }
 
     @Test
