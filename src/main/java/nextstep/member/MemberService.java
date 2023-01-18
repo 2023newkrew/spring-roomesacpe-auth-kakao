@@ -5,8 +5,6 @@ import nextstep.support.exception.DuplicateEntityException;
 import nextstep.support.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 public class MemberService {
     private MemberDao memberDao;
@@ -35,13 +33,12 @@ public class MemberService {
         }
         return memberResponseDto;
     }
-    public Boolean isValidMember(TokenRequestDto tokenRequestDto) {
-        MemberResponseDto memberResponseDto = null;
+
+    public void validateToken(TokenRequestDto tokenRequestDto) {
         try {
-            memberResponseDto = MemberResponseDto.toDto(memberDao.findByUsernameAndPassword(tokenRequestDto.getUsername(), tokenRequestDto.getPassword()));
+            MemberResponseDto.toDto(memberDao.findByUsernameAndPassword(tokenRequestDto.getUsername(), tokenRequestDto.getPassword()));
         } catch (NullPointerException nullPointerException) {
             throw new NotExistEntityException("유효하지 않은 회원입니다.");
         }
-        return Objects.nonNull(memberResponseDto);
     }
 }
