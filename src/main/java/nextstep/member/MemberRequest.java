@@ -34,6 +34,11 @@ public class MemberRequest {
     }
 
     public Member toEntity() {
-        return new Member(username, password, name, phone);
+        return Member.builder()
+                .username(username)
+                .password(password)
+                .name(name)
+                .phone(phone)
+                .build();
     }
 }
