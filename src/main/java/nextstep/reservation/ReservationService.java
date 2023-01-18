@@ -1,11 +1,12 @@
 package nextstep.reservation;
 
-import nextstep.auth.UnAuthorizationException;
+import nextstep.exception.InaccessibleReservationException;
+import nextstep.exception.UnAuthorizationException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
+import nextstep.exception.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class ReservationService {
         }
         Member me = memberDao.findById(userId);
         if (!reservation.isMyReservation(me)) {
-            throw new UnAuthorizationException();
+            throw new InaccessibleReservationException();
         }
         reservationDao.deleteById(reservationId);
     }

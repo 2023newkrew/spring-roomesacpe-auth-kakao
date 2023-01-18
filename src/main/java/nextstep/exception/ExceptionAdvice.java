@@ -1,6 +1,5 @@
 package nextstep.exception;
 
-import nextstep.auth.UnAuthorizationException;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
