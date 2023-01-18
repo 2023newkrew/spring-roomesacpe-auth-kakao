@@ -17,12 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
-    private String adminAccessToken;
+    private static final long ADMIN_MEMBER_ID = 1L;
+    private static final String ADMIN_PASSWORD = "admin";
 
     @BeforeEach
     void setUp() {
-        TokenRequest tokenRequest = new TokenRequest(1L, "admin");
-        this.adminAccessToken = RestAssured
+        TokenRequest tokenRequest = new TokenRequest(ADMIN_MEMBER_ID, ADMIN_PASSWORD);
+        String adminAccessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
@@ -34,7 +35,7 @@ public class ThemeE2ETest {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given().log().all()
-                .header("Authorization", this.adminAccessToken)
+                .header("Authorization", adminAccessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/admin/themes")

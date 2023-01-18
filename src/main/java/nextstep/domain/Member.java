@@ -1,5 +1,7 @@
 package nextstep.domain;
 
+import nextstep.dto.request.MemberRequest;
+
 public class Member {
     private Long id;
     private String username;
@@ -20,11 +22,11 @@ public class Member {
         this.role = role;
     }
 
-    public Member(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
+    public Member(MemberRequest memberRequest) {
+        this.username = memberRequest.getUsername();
+        this.password = memberRequest.getPassword();
+        this.name = memberRequest.getName();
+        this.phone = memberRequest.getPhone();
         this.role = Role.USER;
     }
 
