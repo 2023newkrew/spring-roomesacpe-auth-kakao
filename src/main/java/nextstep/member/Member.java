@@ -44,6 +44,10 @@ public class Member {
         return phone;
     }
 
+    public String getAuth() {
+        return auth;
+    }
+
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }

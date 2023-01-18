@@ -18,16 +18,16 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index.html");
-    }
-
     @Autowired
     public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver,
                                JwtTokenProvider jwtTokenProvider) {
         this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
         this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index.html");
     }
 
     @Override

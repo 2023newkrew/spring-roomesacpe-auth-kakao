@@ -7,7 +7,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
@@ -17,7 +16,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = AuthorizationExtractor.extractTokenFromRequest();
         if (token == null || jwtTokenProvider.getAuthorization(token).equals("USER")) {
             throw new BusinessException(AuthErrorCode.UNAUTHORIZED);

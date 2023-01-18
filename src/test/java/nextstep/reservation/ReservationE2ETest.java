@@ -35,12 +35,24 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        TokenRequest tokenRequest = new TokenRequest("admin", "pass");
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+        token = tokenResponse.jsonPath().getString("accessToken");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -51,8 +63,9 @@ class ReservationE2ETest {
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -71,16 +84,6 @@ class ReservationE2ETest {
 
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
-        token = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().body().jsonPath().get("accessToken");
 
         request = "{\n" +
                 "    \"scheduleId\": " + scheduleId + "\n" +

@@ -28,6 +28,6 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.INVALID_PASSWORD);
         }
 
-        return new TokenResponse(jwtTokenProvider.createToken(Long.toString(member.getId()), "auth"));
+        return new TokenResponse(jwtTokenProvider.createToken(Long.toString(member.getId()), member.getAuth()));
     }
 }
