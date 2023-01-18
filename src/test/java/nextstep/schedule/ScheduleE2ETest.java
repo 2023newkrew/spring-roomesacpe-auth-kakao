@@ -3,6 +3,7 @@ package nextstep.schedule;
 import io.restassured.RestAssured;
 import nextstep.auth.AuthService;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.common.Role;
 import nextstep.schedule.dto.ScheduleRequest;
 import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +28,7 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        String memberId = "123";
-        accessToken = jwtTokenProvider.createToken(memberId);
+        accessToken = jwtTokenProvider.createToken(2345L, Role.MEMBER);
 
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);

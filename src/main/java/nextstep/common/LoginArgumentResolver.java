@@ -26,8 +26,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         try {
             String token = authService.extractToken(request);
-            Long id = authService.decodeToken(token);
-            return new LoginMember(id);
+            return authService.decodeToken(token);
         } catch (Exception e){
             return null;
         }

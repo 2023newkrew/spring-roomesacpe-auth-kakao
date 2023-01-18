@@ -2,6 +2,7 @@ package nextstep.theme;
 
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.common.Role;
 import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,7 @@ public class ThemeE2ETest {
 
     @BeforeEach
     void setUp() {
-        accessToken = jwtTokenProvider.createToken("234");
+        accessToken = jwtTokenProvider.createToken(123L, Role.MEMBER);
     }
 
     @DisplayName("테마를 생성한다")
