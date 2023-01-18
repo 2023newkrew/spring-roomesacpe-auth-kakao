@@ -1,5 +1,7 @@
 package nextstep.reservation;
 
+import nextstep.exception.AuthErrorCode;
+import nextstep.exception.BusinessException;
 import nextstep.schedule.Schedule;
 
 public class Reservation {
@@ -31,5 +33,11 @@ public class Reservation {
 
     public String getName() {
         return name;
+    }
+
+    public void checkOwnerOnDelete(String username) {
+        if (!this.name.equals(username)) {
+            throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
+        }
     }
 }

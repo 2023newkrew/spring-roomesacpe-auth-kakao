@@ -1,6 +1,5 @@
 package nextstep.reservation;
 
-import nextstep.exception.AuthErrorCode;
 import nextstep.exception.BusinessException;
 import nextstep.exception.CommonErrorCode;
 import nextstep.schedule.Schedule;
@@ -10,7 +9,6 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -52,14 +50,12 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(String memberName, Long id) { // Todo: 별도의 예외코드 및 도메인 객체에서 예외 판단
+    public void deleteById(String memberName, Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
-        if(!Objects.equals(reservation.getName(), memberName)) {
-            throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
-        }
+        reservation.checkOwnerOnDelete(memberName);
 
         reservationDao.deleteById(id);
     }
