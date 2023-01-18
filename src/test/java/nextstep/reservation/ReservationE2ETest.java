@@ -115,7 +115,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 
@@ -162,7 +162,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("다른 권한을 가진 예약을 삭제한다")
@@ -195,7 +195,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -236,7 +236,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/0")
                 .then().log().all()
                 .extract();
 
