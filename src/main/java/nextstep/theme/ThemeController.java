@@ -22,6 +22,7 @@ public class ThemeController {
         this.themeService = themeService;
     }
 
+    // TODO : admin 권한
     @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest.toEntity());
@@ -34,6 +35,7 @@ public class ThemeController {
         return ResponseEntity.ok().body(results);
     }
 
+    // TODO : admin 권한
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);

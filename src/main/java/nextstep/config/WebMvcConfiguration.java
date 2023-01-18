@@ -1,6 +1,7 @@
 package nextstep.config;
 
 import nextstep.auth.AuthService;
+import nextstep.common.AdminInterceptor;
 import nextstep.common.AuthInterceptor;
 import nextstep.common.LoginArgumentResolver;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/members") // 회원가입
                 .excludePathPatterns("/login/token"); // 토큰 발급
+
+        registry.addInterceptor(new AdminInterceptor(authService))
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin"); // 관리자 등록
     }
 
     @Override
