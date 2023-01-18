@@ -12,6 +12,7 @@ import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -94,6 +95,20 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("미로그인 시 예약을 생성할 수 없다.")
+    @Test
+    void createWithNoToken() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
@@ -114,6 +129,24 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
+    @DisplayName("미로그인 시 예약을 조회할 수 없다.")
+    @Test
+    void showWithNoToken() {
+        String accessToken = loginAndGetAccessToken();
+
+        createReservation(accessToken);
+
+        var response = RestAssured
+                .given().log().all()
+                .param("themeId", themeId)
+                .param("date", DATE)
+                .when().get("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
@@ -129,6 +162,22 @@ class ReservationE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("미로그인 시 예약을 삭제할 수 없다.")
+    @Test
+    void deleteWithNoToken() {
+        String accessToken = loginAndGetAccessToken();
+
+        var reservation = createReservation(accessToken);
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")

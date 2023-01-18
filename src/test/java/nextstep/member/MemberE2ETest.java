@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,9 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("특정 멤버를 조회한다.")
+    @DisplayName("내 정보를 조회한다.")
     @Test
-    public void showThemes() {
+    public void getMyInfo() {
         createMember();
 
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
@@ -47,7 +48,7 @@ public class MemberE2ETest {
                 .extract().jsonPath().get("accessToken");
         var response = RestAssured
                 .given().log().all()
-                .header("authorization", "Bearer " + accessToken)
+                .auth().oauth2(accessToken.toString())
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -56,21 +57,19 @@ public class MemberE2ETest {
         assertThat(response.as(Member.class)).isNotNull();
     }
 
-    //
-//    @DisplayName("테마를 삭제한다")
-//    @Test
-//    void delete() {
-//        Long id = createTheme();
-//
-//        var response = RestAssured
-//                .given().log().all()
-//                .when().delete("/themes/" + id)
-//                .then().log().all()
-//                .extract();
-//
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-//    }
-//
+    @DisplayName("로그인을 하지 않고 내 정보 조회는 불가능하다.")
+    @Test
+    public void getMyInfoWithNoToken() {
+        createMember();
+
+        RestAssured
+                .given().log().all()
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
+    }
+
     public Long createMember() {
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         String location = RestAssured
