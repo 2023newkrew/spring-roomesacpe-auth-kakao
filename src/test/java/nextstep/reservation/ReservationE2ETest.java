@@ -84,7 +84,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header("authorization", accessToken)
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -105,7 +105,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
-                .header("authorization", accessToken)
+                .auth().oauth2(accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -123,7 +123,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header("authorization", accessToken)
+                .auth().oauth2(accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -142,6 +142,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(accessToken)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -158,7 +159,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
-                .header("authorization", accessToken)
+                .auth().oauth2(accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -170,8 +171,11 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
+        String accessToken = loginAndGetAccessToken();
+
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -183,7 +187,7 @@ class ReservationE2ETest {
         return RestAssured
                 .given().log().all()
                 .body(request)
-                .header("authorization", accessToken)
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -201,7 +205,7 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().jsonPath().get("accessToken");
 
-        return "Bearer " + accessToken.toString();
+        return accessToken.toString();
     }
 
 }

@@ -1,14 +1,17 @@
 package nextstep.theme;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ThemeRequest {
-    private final String name;
-    private final String desc;
-    private final int price;
+    private String name;
+    private String desc;
+    private int price;
 
     public Theme toEntity() {
         return new Theme(

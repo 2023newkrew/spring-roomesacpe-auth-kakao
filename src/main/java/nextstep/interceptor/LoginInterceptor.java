@@ -21,11 +21,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String accessToken = request.getHeader("authorization").split(" ")[1];
+        String accessToken = request.getHeader("authorization");
         if (accessToken == null) {
             throw new RoomReservationException(ErrorCode.AUTHENTICATION_REQUIRED);
         }
-        String principal = authService.getPrincipal(accessToken);
+        String principal = authService.getPrincipal(accessToken.split(" ")[1]);
         Member member = memberService.findById(Long.parseLong(principal));
         request.setAttribute("member", member);
         return true;
