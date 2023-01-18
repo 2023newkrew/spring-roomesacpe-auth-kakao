@@ -20,11 +20,7 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        Member member = memberDao.findByUsername(tokenRequest.getUsername());
-
-        if(!member.getPassword().equals(tokenRequest.getPassword())){
-            throw new PasswordNotMatchException();
-        }
+        Member member = memberDao.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword());
 
         return TokenResponse.of(jwtTokenProvider.createToken(memberMapper.memberToMemberDetails(member)));
     }

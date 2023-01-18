@@ -58,4 +58,12 @@ public class MemberDao {
                 .findFirst()
                 .orElseThrow(NoSuchMemberException::new);
     }
+
+    public Member findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ? and password = ?;";
+        return jdbcTemplate.query(sql, rowMapper, username, password)
+                .stream()
+                .findFirst()
+                .orElseThrow(NoSuchMemberException::new);
+    }
 }
