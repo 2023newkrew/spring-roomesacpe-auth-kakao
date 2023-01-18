@@ -5,9 +5,9 @@ import javax.validation.constraints.NotNull;
 public class TokenRequest {
 
     @NotNull
-    private String username;
+    private final String username;
     @NotNull
-    private String password;
+    private final String password;
 
     public TokenRequest(String username, String password) {
         this.username = username;
