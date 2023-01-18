@@ -3,21 +3,14 @@ package nextstep.dto.response;
 import nextstep.domain.Member;
 
 public class MemberResponse {
-    private Long id;
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
+    private long id;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
 
     public MemberResponse(Long id, String username, String password, String name, String phone) {
         this.id = id;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public MemberResponse(String username, String password, String name, String phone) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -32,7 +25,7 @@ public class MemberResponse {
         this.phone = member.getPhone();
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -50,9 +43,5 @@ public class MemberResponse {
 
     public String getPhone() {
         return phone;
-    }
-
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
     }
 }

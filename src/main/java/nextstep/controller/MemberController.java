@@ -15,11 +15,9 @@ import java.net.URI;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping

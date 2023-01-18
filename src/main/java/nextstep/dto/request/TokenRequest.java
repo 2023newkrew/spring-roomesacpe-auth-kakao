@@ -1,18 +1,18 @@
 package nextstep.dto.request;
 
 public class TokenRequest {
-    private String username;
+    private long memberId;
     private String password;
 
     public TokenRequest() {}
 
-    public TokenRequest(String username, String password) {
-        this.username = username;
+    public TokenRequest(long memberId, String password) {
+        this.memberId = memberId;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public long getMemberId() {
+        return memberId;
     }
 
     public String getPassword() {

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,7 +28,7 @@ public class ReservationController {
             @AuthenticationPrincipal Member member,
             @RequestBody ReservationRequest reservationRequest
     ) {
-        Long id = reservationService.create(reservationRequest.getScheduleId(), member);
+        Long id = reservationService.create(reservationRequest.getScheduleId(), member.getId());
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -45,7 +46,7 @@ public class ReservationController {
     public ResponseEntity deleteReservation(
             @AuthenticationPrincipal Member member,
             @PathVariable Long id) {
-        reservationService.deleteById(id, member);
+        reservationService.deleteById(id, member.getId());
         return ResponseEntity.noContent().build();
     }
 

@@ -42,7 +42,7 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findById(Long id) {
+    public Member findByMemberId(Long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }

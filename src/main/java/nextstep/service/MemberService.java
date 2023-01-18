@@ -17,11 +17,7 @@ public class MemberService {
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
-        return memberDao.findById(id);
-    }
-
-    public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
+    public Member findByMemberId(Long id) {
+        return memberDao.findByMemberId(id);
     }
 }

@@ -18,17 +18,17 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
+    public String createToken(long memberId, String password) {
+        if (checkInvalidLogin(memberId, password)) {
             throw new AuthorizationException();
         }
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
-        return new TokenResponse(accessToken);
+        String memberIdStr = String.valueOf(memberId);
+        return jwtTokenProvider.createToken(memberIdStr);
     }
 
-    private boolean checkInvalidLogin(String principal, String credentials) {
-        Member member = memberDao.findByUsername(principal);
-        return !member.getUsername().equals(principal) || member.checkWrongPassword(credentials);
+    private boolean checkInvalidLogin(long memberId, String password) {
+        Member member = memberDao.findByMemberId(memberId);
+        return !member.getId().equals(memberId) || member.isInvalidPassword(password);
     }
 }

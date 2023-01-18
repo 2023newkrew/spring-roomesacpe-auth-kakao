@@ -25,7 +25,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(Long scheduleId, Member member) {
+    public Long create(long scheduleId, long memberId) {
         Schedule schedule = scheduleDao.findById(scheduleId);
         if (schedule == null) {
             throw new NullPointerException();
@@ -38,13 +38,13 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                member.getId()
+                memberId
         );
 
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
             throw new NullPointerException();
@@ -53,14 +53,14 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, Member member) {
-        Reservation reservation = reservationDao.findById(id);
+    public void deleteById(long reservationId, long memberId) {
+        Reservation reservation = reservationDao.findById(reservationId);
         if (reservation == null) {
             throw new NullPointerException();
         }
-        if (!reservation.getMemberId().equals(member.getId())) {
+        if (!reservation.getMemberId().equals(memberId)) {
             throw new AuthorizationException();
         }
-        reservationDao.deleteById(id);
+        reservationDao.deleteById(reservationId);
     }
 }
