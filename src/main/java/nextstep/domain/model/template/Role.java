@@ -6,7 +6,9 @@ import nextstep.infra.exception.auth.NoSuchRoleException;
 import java.util.Arrays;
 
 public enum Role {
-    ADMIN("admin"), USER("user");
+    ADMIN("admin"),
+    USER("user");
+
     @Getter
     private final String role;
 
