@@ -48,19 +48,19 @@ public class MemberDao {
     }
 
     public MemberEntity findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone FROM member WHERE id = ?;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public MemberEntity findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone FROM member WHERE username = ?;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
     public MemberEntity findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+        String sql = "SELECT id, username, password, name, phone FROM member WHERE username = ? AND password = ?;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
     }
