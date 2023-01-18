@@ -20,10 +20,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor(jwtTokenProvider, Role.ADMIN))
-                .addPathPatterns("/**/admin/**");
+                .addPathPatterns("/admin/**", "/members");
+
 
         registry.addInterceptor(new LoginInterceptor(jwtTokenProvider, Role.USER))
-                .excludePathPatterns("/**/admin/**", "/login/**");
+                .excludePathPatterns("/admin/**", "/login/**");
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }

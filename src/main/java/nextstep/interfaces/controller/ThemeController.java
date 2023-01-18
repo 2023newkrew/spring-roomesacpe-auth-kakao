@@ -16,15 +16,15 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/themes")
+@RequestMapping("/admin/themes")
 public class ThemeController {
-    private ThemeService themeService;
+    private final ThemeService themeService;
 
     public ThemeController(ThemeService themeService) {
         this.themeService = themeService;
     }
 
-    @PostMapping("/admin")
+    @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
@@ -36,7 +36,7 @@ public class ThemeController {
         return ResponseEntity.ok().body(results);
     }
 
-    @DeleteMapping("/admin/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
 

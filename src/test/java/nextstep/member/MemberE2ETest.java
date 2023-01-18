@@ -30,7 +30,7 @@ public class MemberE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(token)
-                .when().post("/members/admin")
+                .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
@@ -46,7 +46,7 @@ public class MemberE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(token)
-                .when().post("/members/admin")
+                .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }

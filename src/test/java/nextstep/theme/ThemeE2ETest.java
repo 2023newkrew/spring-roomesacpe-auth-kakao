@@ -28,7 +28,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(token)
-                .when().post("/themes/admin")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
@@ -44,7 +44,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(token)
-                .when().post("/themes/admin")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -73,7 +73,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
-                .when().delete("/themes/admin/" + 9999)
+                .when().delete("/admin/themes/" + 9999)
                 .then().log().all()
                 .extract();
 
@@ -88,7 +88,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
-                .when().delete("/themes/admin/" + 9999)
+                .when().delete("/admin/themes/" + 9999)
                 .then().log().all()
                 .extract();
 
