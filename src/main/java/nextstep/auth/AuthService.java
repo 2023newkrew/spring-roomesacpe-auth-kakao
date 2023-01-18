@@ -20,6 +20,6 @@ public class AuthService {
             throw new AuthenticationException();
         }
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString(), null));
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
     }
 }

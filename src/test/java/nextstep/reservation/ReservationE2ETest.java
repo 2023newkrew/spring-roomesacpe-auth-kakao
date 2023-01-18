@@ -84,7 +84,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1"))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -118,7 +118,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1"))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -172,7 +172,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1"))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
