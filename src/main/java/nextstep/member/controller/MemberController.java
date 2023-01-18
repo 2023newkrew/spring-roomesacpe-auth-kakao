@@ -19,14 +19,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity createMember(@Valid @RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @LoginRequired
     @GetMapping("/me")
-    public ResponseEntity me(@AuthPrincipal Member member) {
+    public ResponseEntity<Member> me(@AuthPrincipal Member member) {
         return ResponseEntity.ok(member);
     }
 }

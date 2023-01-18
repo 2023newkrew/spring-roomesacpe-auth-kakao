@@ -1,9 +1,9 @@
 package nextstep.auth.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.service.AuthService;
 import nextstep.auth.model.TokenRequest;
 import nextstep.auth.model.TokenResponse;
+import nextstep.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login/token")
-    public ResponseEntity tokenLogin(@Valid @RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> tokenLogin(@Valid @RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
     }

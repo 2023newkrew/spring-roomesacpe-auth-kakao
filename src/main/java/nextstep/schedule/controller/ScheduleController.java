@@ -20,7 +20,7 @@ public class ScheduleController {
 
     @LoginRequired
     @PostMapping
-    public ResponseEntity createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
+    public ResponseEntity<Void> createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
     }
@@ -32,7 +32,7 @@ public class ScheduleController {
 
     @LoginRequired
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
         return ResponseEntity.noContent().build();
