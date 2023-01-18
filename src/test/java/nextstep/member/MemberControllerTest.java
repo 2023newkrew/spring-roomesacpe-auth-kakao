@@ -13,8 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,7 +42,7 @@ class MemberControllerTest {
         private String password = "password";
         private String name = "name";
         private String phone = "010-1234-5678";
-        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId));
 
         @Test
         @DisplayName("유효한 토큰일 경우 200과 자신의 정보를 응답해야 한다.")

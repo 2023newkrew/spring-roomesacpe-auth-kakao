@@ -14,8 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -41,7 +39,7 @@ class ReservationControllerTest {
     class DeleteReservation {
 
         private Long userId = 1L;
-        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId));
         private Long reservationId = 1L;
 
         @Test

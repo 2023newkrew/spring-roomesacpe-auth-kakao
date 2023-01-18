@@ -4,8 +4,6 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class AuthService {
 
@@ -22,7 +20,7 @@ public class AuthService {
         String password = tokenRequest.getPassword();
         Member member = login(username, password);
 
-        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(member.getId()), new ArrayList<>()));
+        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(member.getId())));
     }
 
     private Member login(String username, String password) {
