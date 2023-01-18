@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
+import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +96,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -142,7 +143,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -158,7 +159,7 @@ class ReservationE2ETest {
 
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("2", List.of("user")))
+                .auth().oauth2(jwtTokenProvider.createToken("2", List.of(Role.USER)))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
@@ -172,7 +173,7 @@ class ReservationE2ETest {
         RestAssured
                 .given().log().all()
                 .body(request)
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -199,7 +200,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -209,7 +210,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
