@@ -5,22 +5,24 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.permission.Authority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring";
+    private final String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
+    public String createToken(String principal, Authority authority) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
+                .claim("Authority", authority.name())
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -29,6 +31,10 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getAuthority(String token){
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("Authority", String.class);
     }
 
     public boolean validateToken(String token) {

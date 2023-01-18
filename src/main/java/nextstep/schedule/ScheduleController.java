@@ -9,7 +9,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/schedules")
 public class ScheduleController {
-    private ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
@@ -22,12 +22,12 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Schedule>> showSchedules(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    public ResponseEntity deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
         return ResponseEntity.noContent().build();

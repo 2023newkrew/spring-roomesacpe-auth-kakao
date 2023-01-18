@@ -1,0 +1,1 @@
+INSERT INTO member values('admin', 'admin', 'Administrator', '', 'ADMIN')

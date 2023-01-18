@@ -1,12 +1,21 @@
 package nextstep.permission;
 
+/**
+ * Authority represents how many controls does the account has.
+ * <br>
+ * Higher the security level is, more control the account has.
+ */
+// Developer comment :
 public enum Authority {
-    ADMIN(100),
-    GUEST(0),
-    USER(50);
+    ADMIN(Authority.ADMIN_LEVEL),
+    GUEST(Authority.GUEST_LEVEL),
+    USER(Authority.USER_LEVEL);
 
-    static final int MAX_SECURITY_LEVEL = 100;
-    static final int MIN_SECURITY_LEVEL = 0;
+    public static final int ADMIN_LEVEL = 100;
+    public static final int USER_LEVEL = 50;
+    public static final int GUEST_LEVEL = 0;
+    public static final int MAX_SECURITY_LEVEL = 100;
+    public static final int MIN_SECURITY_LEVEL = 0;
 
     Authority(int securityLevel){
         if (securityLevel > MAX_SECURITY_LEVEL){

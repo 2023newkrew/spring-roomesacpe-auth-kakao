@@ -28,7 +28,7 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity<Member> me(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
-        Long id = authService.validateToken(token);
+        Long id = authService.getMemberIdFromToken(token);
         Member member = memberService.findById(id);
         return ResponseEntity.ok(member);
     }
