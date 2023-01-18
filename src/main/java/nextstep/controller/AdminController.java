@@ -1,5 +1,6 @@
 package nextstep.controller;
 
+import nextstep.domain.Theme;
 import nextstep.dto.request.ThemeRequest;
 import nextstep.service.ThemeService;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,13 @@ public class AdminController {
 
     @PostMapping("/themes")
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
-        Long id = themeService.create(themeRequest);
+        Theme theme = new Theme(themeRequest);
+        Long id = themeService.create(theme);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
     @DeleteMapping("/themes/{id}")
-    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTheme(@PathVariable long id) {
         themeService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,7 +1,5 @@
 package nextstep.dto.request;
 
-import nextstep.domain.Member;
-
 public class MemberRequest {
     private String username;
     private String password;
@@ -32,9 +30,5 @@ public class MemberRequest {
 
     public String getPhone() {
         return phone;
-    }
-
-    public Member toEntity() {
-        return new Member(username, password, name, phone);
     }
 }

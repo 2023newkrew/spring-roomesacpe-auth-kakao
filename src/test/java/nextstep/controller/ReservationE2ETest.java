@@ -1,4 +1,4 @@
-package nextstep.reservation;
+package nextstep.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

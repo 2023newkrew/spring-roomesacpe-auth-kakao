@@ -53,7 +53,7 @@ public class ReservationDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(long themeId, String date) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
@@ -63,7 +63,7 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
     }
 
-    public Reservation findById(Long id) {
+    public Reservation findById(long id) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
@@ -76,7 +76,7 @@ public class ReservationDao {
         }
     }
 
-    public List<Reservation> findByScheduleId(Long id) {
+    public List<Reservation> findByScheduleId(long id) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
@@ -89,7 +89,7 @@ public class ReservationDao {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         String sql = "DELETE FROM reservation where id = ?;";
         jdbcTemplate.update(sql, id);
     }

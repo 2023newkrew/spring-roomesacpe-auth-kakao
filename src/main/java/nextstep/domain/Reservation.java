@@ -2,8 +2,8 @@ package nextstep.domain;
 
 public class Reservation {
     private Long id;
-    private Schedule schedule;
-    private Long memberId;
+    private final Schedule schedule;
+    private final Long memberId;
 
     public Reservation(Schedule schedule, long memberId) {
         this.schedule = schedule;

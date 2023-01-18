@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 public class AdminHandlerInterceptor implements HandlerInterceptor {
     private final MemberService memberService;
@@ -26,7 +27,7 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
     ) {
         String accessToken = request.getHeader("Authorization");
 
-        if (!jwtTokenProvider.validateToken(accessToken)) {
+        if (Objects.isNull(accessToken) || !jwtTokenProvider.validateToken(accessToken)) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
@@ -34,7 +35,7 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
         long memberId = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
         Member member = memberService.findByMemberId(memberId);
 
-        if (!member.getRole().equals("admin")) {
+        if (!member.isAdmin()) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }

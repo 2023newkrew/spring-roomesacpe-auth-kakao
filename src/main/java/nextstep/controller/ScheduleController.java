@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -20,7 +22,9 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-        Long id = scheduleService.create(scheduleRequest);
+        LocalDate localDate = LocalDate.parse(scheduleRequest.getDate());
+        LocalTime localTime = LocalTime.parse(scheduleRequest.getTime());
+        Long id = scheduleService.create(localDate, localTime, scheduleRequest.getThemeId());
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
     }
 

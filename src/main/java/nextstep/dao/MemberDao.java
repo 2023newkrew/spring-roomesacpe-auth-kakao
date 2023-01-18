@@ -1,6 +1,7 @@
 package nextstep.dao;
 
 import nextstep.domain.Member;
+import nextstep.domain.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -23,7 +24,7 @@ public class MemberDao {
             resultSet.getString("password"),
             resultSet.getString("name"),
             resultSet.getString("phone"),
-            resultSet.getString("role")
+            Role.valueOf(resultSet.getString("role"))
     );
 
     public Long save(Member member) {
@@ -43,7 +44,7 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findByMemberId(Long id) {
+    public Member findByMemberId(long id) {
         String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }

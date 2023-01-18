@@ -1,4 +1,4 @@
-package nextstep.theme;
+package nextstep.controller;
 
 import io.restassured.RestAssured;
 import nextstep.dto.request.ThemeRequest;
