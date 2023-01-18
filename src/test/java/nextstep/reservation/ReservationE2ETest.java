@@ -8,7 +8,6 @@ import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,15 +196,14 @@ class ReservationE2ETest {
 
     @DisplayName("없는 예약을 삭제한다")
     @Test
-    @Disabled("TODO")
     void createNotExistReservation() {
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", null))
                 .when().delete("/reservations/1")
                 .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> createReservation() {
