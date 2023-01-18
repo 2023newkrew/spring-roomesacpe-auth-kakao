@@ -79,8 +79,8 @@ public class ReservationDao {
                 "where reservation.id = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (Exception e) {
-            return null;
+        } catch (DataAccessException e) {
+            throw new RecordNotFoundException(ErrorCode.RESERVATION_NOT_FOUND);
         }
     }
 
