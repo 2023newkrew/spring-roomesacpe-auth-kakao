@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import nextstep.error.exception.FailedRecordSaveException;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,10 +13,11 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Component
-public class ScheduleDao {
-    private JdbcTemplate jdbcTemplate;
+public class ScheduleDao implements ScheduleRepository {
+    private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -33,6 +35,7 @@ public class ScheduleDao {
             resultSet.getTime("schedule.time").toLocalTime()
     );
 
+    @Override
     public Long save(Schedule schedule) {
         String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -46,9 +49,14 @@ public class ScheduleDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Number key = keyHolder.getKey();
+
+        if (Objects.isNull(key)) throw new FailedRecordSaveException();
+
+        return key.longValue();
     }
 
+    @Override
     public Schedule findById(Long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
@@ -58,6 +66,7 @@ public class ScheduleDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    @Override
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
@@ -67,6 +76,7 @@ public class ScheduleDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
+    @Override
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
     }

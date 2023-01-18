@@ -3,12 +3,15 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
+import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,33 +33,23 @@ class ReservationE2ETest {
     private Long scheduleId;
     private Long memberId;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        createTheme();
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        createSchedule();
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        createMember(new MemberRequest("username", "password", "name", "010-1234-5678", "user"));
+
+        request = new ReservationRequest(
+                scheduleId
+        );
+    }
+
+    private void createMember(MemberRequest body) {
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -68,11 +61,34 @@ class ReservationE2ETest {
 
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+    }
 
-        request = new ReservationRequest(
-                scheduleId,
-                "브라운"
-        );
+    private void createSchedule() {
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        var scheduleResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+    }
+
+    private void createTheme() {
+        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        var themeResponse = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(themeRequest)
+                .when().post("/themes")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] themeLocation = themeResponse.header("Location").split("/");
+        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
     }
 
     @DisplayName("예약을 생성한다")
@@ -80,6 +96,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -87,6 +104,19 @@ class ReservationE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("토큰 없이 예약을 생성하면 401 statusCode를 반환한다")
+    @Test
+    void createWithoutToken() {
+        RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
     }
 
     @DisplayName("예약을 조회한다")
@@ -103,7 +133,7 @@ class ReservationE2ETest {
                 .extract();
 
         List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
-        assertThat(reservations.size()).isEqualTo(1);
+        assertThat(reservations).hasSize(1);
     }
 
     @DisplayName("예약을 삭제한다")
@@ -113,6 +143,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -120,20 +151,33 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("본인이 아닌 토큰으로 예약을 삭제하면 403을 반환한다")
+    @Test
+    void deleteWithoutWrongToken() {
+        createMember(new MemberRequest("anotherUser", "password", "name", "010-1234-5678", "user"));
+        var reservation = createReservation();
+
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("2", List.of(Role.USER)))
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
         createReservation();
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .body(request)
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
@@ -148,24 +192,25 @@ class ReservationE2ETest {
                 .extract();
 
         List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
-        assertThat(reservations.size()).isEqualTo(0);
+        assertThat(reservations).isEmpty();
     }
 
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .when().delete("/reservations/1")
                 .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

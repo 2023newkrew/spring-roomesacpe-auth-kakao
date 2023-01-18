@@ -1,60 +1,45 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
+import nextstep.member.MemberRepository;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.theme.Theme;
-import nextstep.theme.ThemeDao;
+import nextstep.schedule.ScheduleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
-    public final ReservationDao reservationDao;
-    public final ThemeDao themeDao;
-    public final ScheduleDao scheduleDao;
+    private final ReservationRepository reservationRepository;
+    private final MemberRepository memberRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final ReservationValidator reservationValidator;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
-        this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
+    public ReservationService(ReservationDao reservationRepository, MemberDao memberRepository, ScheduleDao scheduleRepository) {
+        this.reservationRepository = reservationRepository;
+        this.memberRepository = memberRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.reservationValidator = new ReservationValidator(reservationRepository);
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
-        }
+    public Long create(Long memberId, ReservationRequest reservationRequest) {
+        reservationValidator.validateForCreate(reservationRequest.getScheduleId());
 
-        List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
-        if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
-        }
+        Schedule schedule = scheduleRepository.findById(reservationRequest.getScheduleId());
+        Member member = memberRepository.findById(memberId);
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName()
-        );
-
-        return reservationDao.save(newReservation);
+        return reservationRepository.save(new Reservation(schedule, member));
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
-            throw new NullPointerException();
-        }
-
-        return reservationDao.findAllByThemeIdAndDate(themeId, date);
+        return reservationRepository.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
+    public void deleteById(Long memberId, Long id) {
+        reservationValidator.validateForDelete(memberId, id);
 
-        reservationDao.deleteById(id);
+        reservationRepository.deleteById(id);
     }
 }

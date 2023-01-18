@@ -23,6 +23,12 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
     runtimeOnly 'com.h2database:h2'
+    //swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 test {
     useJUnitPlatform()

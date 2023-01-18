@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import nextstep.error.exception.FailedRecordSaveException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -8,10 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ThemeDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ThemeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,7 +39,11 @@ public class ThemeDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Number key = keyHolder.getKey();
+
+        if (Objects.isNull(key)) throw new FailedRecordSaveException();
+
+        return key.longValue();
     }
 
     public Theme findById(Long id) {
