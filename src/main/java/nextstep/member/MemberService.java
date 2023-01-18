@@ -4,17 +4,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberDao memberDao) {
-        this.memberDao = memberDao;
+        this.memberRepository = memberDao;
     }
 
     public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
+        return memberRepository.save(memberRequest.toEntity());
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id);
+        return memberRepository.findById(id);
     }
 }
