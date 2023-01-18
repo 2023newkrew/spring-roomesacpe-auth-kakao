@@ -58,5 +58,5 @@ public class MemberDao {
                 .findFirst()
                 .orElseThrow(NoSuchMemberException::new);
     }
-    
+
 }

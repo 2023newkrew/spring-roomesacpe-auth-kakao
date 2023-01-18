@@ -8,12 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 @Component
-@RequiredArgsConstructor
 public class AuthorizationExtractor {
     private static final String AUTHORIZATION = "Authorization";
-    public static String BEARER_TYPE = "Bearer";
+    public static final String BEARER_TYPE = "Bearer";
 
-    public String extract(HttpServletRequest request) {
+    public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
@@ -24,7 +23,7 @@ public class AuthorizationExtractor {
         return Strings.EMPTY;
     }
 
-    private boolean isBearerType(String value) {
+    private static boolean isBearerType(String value) {
         return value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase());
     }
 }
