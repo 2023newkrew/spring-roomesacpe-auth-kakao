@@ -20,19 +20,9 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        var bearerToken = request.getHeader("authorization");
+        String accessToken = TokenExtractor.extract(request);
 
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            throw new AuthenticationException(ErrorCode.NO_TOKEN);
-        }
-
-        var accessToken = bearerToken.substring(7);
-
-        if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
-        }
-
-        if (!jwtTokenProvider.getRole(accessToken).equals(Role.ADMIN)) {
+        if (!jwtTokenProvider.validateToken(accessToken) || !jwtTokenProvider.getRole(accessToken).equals(Role.ADMIN)) {
             throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
         }
 

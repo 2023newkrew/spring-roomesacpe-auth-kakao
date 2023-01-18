@@ -12,8 +12,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String ACCESS_TOKEN_NAME = "authorization";
-
     private final JwtTokenProvider provider;
 
     public MemberIdArgumentResolver(JwtTokenProvider provider) {
@@ -38,13 +36,7 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) {
 
-        var bearerToken = webRequest.getHeader(ACCESS_TOKEN_NAME);
-
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            throw new AuthenticationException(ErrorCode.NO_TOKEN);
-        }
-
-        var accessToken = bearerToken.substring(7);
+        String accessToken = TokenExtractor.extract(webRequest);
 
         if (!provider.validateToken(accessToken)) {
             throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
