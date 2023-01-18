@@ -52,7 +52,7 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(String memberName, Long id) {
+    public void deleteById(String memberName, Long id) { // Todo: 별도의 예외코드 및 도메인 객체에서 예외 판단
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);

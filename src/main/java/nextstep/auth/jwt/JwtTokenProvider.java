@@ -11,16 +11,16 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring";
+    private String secretKey = "learning-test-spring"; // Todo: Secret Key 더 복잡?하게, 환경변수나 별도 파일로 분리하기
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(String principal, String auth) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .claim("sub", principal)
+                .claim("auth", auth)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -29,6 +29,10 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getAuthorization(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("auth", String.class);
     }
 
     public boolean validateToken(String token) {

@@ -1,6 +1,7 @@
 package nextstep.config;
 
 import nextstep.auth.AuthorizationInterceptor;
+import nextstep.auth.jwt.JwtTokenProvider;
 import nextstep.auth.principal.AuthenticationPrincipalArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -22,8 +24,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Autowired
-    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver) {
+    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver,
+                               JwtTokenProvider jwtTokenProvider) {
         this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -33,7 +37,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthorizationInterceptor())
+        registry.addInterceptor(new AuthorizationInterceptor(jwtTokenProvider))
                 .addPathPatterns("/admin/**");
     }
 }

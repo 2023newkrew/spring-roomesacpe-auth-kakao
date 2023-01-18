@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberDao memberDao;
-
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -29,6 +28,6 @@ public class AuthService {
             throw new BusinessException(AuthErrorCode.INVALID_PASSWORD);
         }
 
-        return new TokenResponse(jwtTokenProvider.createToken(Long.toString(member.getId())));
+        return new TokenResponse(jwtTokenProvider.createToken(Long.toString(member.getId()), "auth"));
     }
 }

@@ -21,5 +21,6 @@ public class AuthController {
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         return ResponseEntity.ok(authService.createToken(request));
+        // Todo: httpOnly Cookie로 전달하고, 302 Redirect
     }
 }
