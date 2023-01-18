@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import nextstep.dao.ThemeDao;
+import nextstep.domain.Theme;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
