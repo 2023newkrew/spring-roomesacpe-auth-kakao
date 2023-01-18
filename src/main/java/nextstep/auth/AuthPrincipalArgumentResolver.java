@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.core.MethodParameter;
@@ -12,16 +13,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
+@RequiredArgsConstructor
 public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
     public static final String AUTHORIZATION = "Authorization";
-
-    public AuthPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.memberService = memberService;
-    }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

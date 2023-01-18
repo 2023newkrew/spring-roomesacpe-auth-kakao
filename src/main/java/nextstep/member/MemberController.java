@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthPrincipal;
 import nextstep.auth.LoginRequired;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +11,9 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
-    private MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity createMember(@Valid @RequestBody MemberRequest memberRequest) {

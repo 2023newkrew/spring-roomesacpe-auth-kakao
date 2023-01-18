@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.LoginRequired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,12 +17,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/themes")
+@RequiredArgsConstructor
 public class ThemeController {
-    private ThemeService themeService;
-
-    public ThemeController(ThemeService themeService) {
-        this.themeService = themeService;
-    }
+    private final ThemeService themeService;
 
     @LoginRequired
     @PostMapping

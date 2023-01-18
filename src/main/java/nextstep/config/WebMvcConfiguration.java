@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthInterceptor;
 import nextstep.auth.AuthPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
@@ -10,14 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final AuthPrincipalArgumentResolver authPrincipalArgumentResolver;
     private final AuthInterceptor authInterceptor;
-
-    public WebMvcConfiguration(AuthPrincipalArgumentResolver authPrincipalArgumentResolver, AuthInterceptor authInterceptor) {
-        this.authPrincipalArgumentResolver = authPrincipalArgumentResolver;
-        this.authInterceptor = authInterceptor;
-    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
