@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.domain.member.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

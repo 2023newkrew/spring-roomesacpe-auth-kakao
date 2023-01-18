@@ -1,7 +1,7 @@
 package nextstep.auth;
 
-import nextstep.auth.presentation.interceptor.AuthInterceptor;
-import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.presentation.interceptor.AuthInterceptor;
+import nextstep.utils.JwtTokenProvider;
 import nextstep.error.ApplicationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)

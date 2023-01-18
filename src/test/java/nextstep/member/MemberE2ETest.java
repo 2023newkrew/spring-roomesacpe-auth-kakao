@@ -3,6 +3,7 @@ package nextstep.member;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.dto.request.MemberRequest;
 import nextstep.dto.request.TokenRequest;
 import nextstep.dto.response.TokenResponse;
 import org.junit.jupiter.api.Test;

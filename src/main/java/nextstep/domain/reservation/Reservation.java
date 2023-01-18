@@ -1,0 +1,40 @@
+package nextstep.domain.reservation;
+
+import nextstep.domain.schedule.Schedule;
+import nextstep.domain.member.Member;
+
+public class Reservation {
+    private Long id;
+    private Schedule schedule;
+    private String name;
+
+    public Reservation() {
+    }
+
+    public Reservation(Schedule schedule, String name) {
+        this.schedule = schedule;
+        this.name = name;
+    }
+
+    public Reservation(Long id, Schedule schedule, String name) {
+        this.id = id;
+        this.schedule = schedule;
+        this.name = name;
+    }
+
+    public boolean isMine(Member member) {
+        return name.equals(member.getName());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public String getName() {
+        return name;
+    }
+}

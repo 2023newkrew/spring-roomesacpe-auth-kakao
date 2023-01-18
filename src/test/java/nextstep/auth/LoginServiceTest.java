@@ -1,12 +1,12 @@
 package nextstep.auth;
 
-import nextstep.auth.service.LoginService;
-import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.service.LoginService;
+import nextstep.utils.JwtTokenProvider;
 import nextstep.dto.request.TokenRequest;
 import nextstep.dto.response.TokenResponse;
 import nextstep.error.ApplicationException;
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
+import nextstep.domain.member.Member;
+import nextstep.domain.member.MemberDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
