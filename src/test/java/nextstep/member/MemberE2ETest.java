@@ -11,7 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.io.InputStream;
+import java.util.List;
+
 import static nextstep.auth.LoginUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -63,8 +67,20 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract().as(Member.class);
 
-        Assertions.assertThat(member.getUsername()).isEqualTo("user");
-        Assertions.assertThat(member.getPassword()).isEqualTo("user");
+        assertThat(member.getUsername()).isEqualTo("user");
+        assertThat(member.getPassword()).isEqualTo("user");
     }
 
+    @Test
+    @DisplayName("로그인이 되어있지 않아도 멤버 리스트를 볼 수 있다.")
+    public void findAll() {
+        List<?> memberList = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract().as(List.class);
+
+        assertThat(memberList).hasSize(3);
+    }
 }
