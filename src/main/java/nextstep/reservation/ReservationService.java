@@ -1,13 +1,18 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
+import nextstep.support.exception.AuthorizationException;
+import nextstep.support.exception.DuplicateReservationException;
+import nextstep.support.exception.NoSuchReservationException;
+import nextstep.support.exception.NotReservationOwnerException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -21,7 +26,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -29,12 +34,13 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateReservationException();
         }
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                reservationRequest.getName(),
+                memberId
         );
 
         return reservationDao.save(newReservation);
@@ -49,10 +55,15 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Long memberId) {
         Reservation reservation = reservationDao.findById(id);
+
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NoSuchReservationException();
+        }
+
+        if(!Objects.equals(reservation.getMemberId(), memberId)) {
+            throw new NotReservationOwnerException();
         }
 
         reservationDao.deleteById(id);
