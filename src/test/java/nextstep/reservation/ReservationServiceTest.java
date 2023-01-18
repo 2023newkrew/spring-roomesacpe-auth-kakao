@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.exception.InaccessibleReservationException;
 import nextstep.exception.UnAuthorizationException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
@@ -60,7 +61,7 @@ class ReservationServiceTest {
             when(memberDao.findById(any())).thenReturn(other);
 
             assertThatThrownBy(() -> reservationService.deleteById(1L, 1L))
-                    .isInstanceOf(UnAuthorizationException.class);
+                    .isInstanceOf(InaccessibleReservationException.class);
         }
     }
 }

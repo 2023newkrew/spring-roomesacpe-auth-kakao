@@ -18,4 +18,9 @@ public class ExceptionAdvice {
     public ResponseEntity<String> handleUnAuthorizationException() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
     }
+
+    @ExceptionHandler(InaccessibleReservationException.class)
+    public ResponseEntity<String> handleInaccessibleReservationException(){
+        return ResponseEntity.badRequest().body("접근할 수 없는 예약 정보입니다.");
+    }
 }

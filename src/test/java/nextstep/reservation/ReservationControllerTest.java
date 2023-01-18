@@ -1,7 +1,8 @@
 package nextstep.reservation;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.auth.UnAuthorizationException;
+import nextstep.exception.InaccessibleReservationException;
+import nextstep.exception.UnAuthorizationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class ReservationControllerTest {
         @Test
         @DisplayName("유효한 토큰이고, 자신의 예약이 아닐 경우 401을 응답해야 한다.")
         void should_401UnAuthorization_when_notMyReservation() throws Exception {
-            doThrow(UnAuthorizationException.class).when(reservationService).deleteById(userId, reservationId);
+            doThrow(InaccessibleReservationException.class).when(reservationService).deleteById(userId, reservationId);
             mockMvc.perform(delete("/reservations/" + reservationId)
                             .header("authorization", userToken))
                     .andExpect(status().isUnauthorized());
@@ -63,7 +64,7 @@ class ReservationControllerTest {
         @Test
         @DisplayName("유효한 토큰이 아닐 경우 401을 응답해야 한다.")
         void should_401UnAuthorization_when_invalidToken() throws Exception {
-            doThrow(UnAuthorizationException.class).when(reservationService).deleteById(userId, reservationId);
+            doThrow(InaccessibleReservationException.class).when(reservationService).deleteById(userId, reservationId);
             mockMvc.perform(delete("/reservations/" + reservationId)
                             .header("authorization", ""))
                     .andExpect(status().isUnauthorized());
