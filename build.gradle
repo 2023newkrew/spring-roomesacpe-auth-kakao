@@ -27,17 +27,9 @@ dependencies {
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
-    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-
-// https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core
-    implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
-
-// https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
-    implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
-
-
 }
+
 test {
     useJUnitPlatform()
 }

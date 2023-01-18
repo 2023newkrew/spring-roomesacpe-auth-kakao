@@ -7,6 +7,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.Objects;
+
 @Component
 public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -21,12 +23,10 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
 
-        boolean isMemberId = parameter
-                .getParameterAnnotation(MemberId.class) != null;
-
+        MemberId memberId = parameter.getParameterAnnotation(MemberId.class);
         boolean isLong = Long.class.equals(parameter.getParameterType());
 
-        return isMemberId && isLong;
+        return Objects.nonNull(memberId) && isLong;
     }
 
     @Override
@@ -34,20 +34,11 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             MethodParameter parameter,
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
-            WebDataBinderFactory binderFactory) throws Exception {
-
+            WebDataBinderFactory binderFactory) {
         var bearerToken = webRequest.getHeader(ACCESS_TOKEN_NAME);
+        var accessToken = provider.getValidToken(bearerToken);
+        String principal = provider.getPrincipal(accessToken);
 
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
-            throw new AuthenticationException();
-        }
-
-        var accessToken = bearerToken.substring(7);
-
-        if (!provider.validateToken(accessToken)) {
-            throw new AuthenticationException();
-        }
-
-        return Long.parseLong(provider.getPrincipal(accessToken));
+        return Long.parseLong(principal);
     }
 }
