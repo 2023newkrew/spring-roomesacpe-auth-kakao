@@ -17,14 +17,14 @@ public class MemberController {
     private AuthService authService;
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<URI> createMember(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id))
                 .build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest request) {
+    public ResponseEntity<MemberResponseDto> me(HttpServletRequest request) {
         String accessToken = AuthorizationExtractor.extract(request);
         String username = authService.findUsernameByToken(accessToken);
         MemberResponseDto memberDto = memberService.findByUsername(username);

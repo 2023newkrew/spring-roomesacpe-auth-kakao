@@ -56,7 +56,8 @@ public class ReservationService {
         if (reservation == null) {
             throw new NotExistEntityException("예약번호가 유효하지 않습니다.");
         }
-        if (reservation.getName() != username) {
+        if (!reservation.getName()
+                .equals(username)) {
             throw new UnauthorizedException("자신의 예약이 아닙니다.");
         }
 

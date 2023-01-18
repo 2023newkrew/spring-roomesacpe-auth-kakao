@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
-public class MemberDaoTest {
+class MemberDaoTest {
     public static final Member MEMBER = new Member("username", "password", "name", "010-1234-5678");
     @Autowired
     private MemberDao memberDao;

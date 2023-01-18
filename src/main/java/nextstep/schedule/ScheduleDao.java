@@ -28,7 +28,7 @@ public class ScheduleDao {
             resultSet.getTime("schedule.time")
                     .toLocalTime()
     );
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

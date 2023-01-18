@@ -17,7 +17,7 @@ public class ThemeDao {
             resultSet.getString("desc"),
             resultSet.getInt("price")
     );
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ThemeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

@@ -11,7 +11,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class AuthServiceTest {
+class AuthServiceTest {
 
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";

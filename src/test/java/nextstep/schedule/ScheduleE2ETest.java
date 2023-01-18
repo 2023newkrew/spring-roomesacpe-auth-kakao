@@ -59,7 +59,7 @@ public class ScheduleE2ETest {
 
     @DisplayName("스케줄을 생성한다")
     @Test
-    public void createSchedule() {
+    void createSchedule() {
         ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
         RestAssured
                 .given()
@@ -77,7 +77,7 @@ public class ScheduleE2ETest {
 
     @DisplayName("스케줄을 조회한다")
     @Test
-    public void showSchedules() {
+    void showSchedules() {
         requestCreateSchedule();
 
         var response = RestAssured
@@ -95,8 +95,7 @@ public class ScheduleE2ETest {
                 .extract();
 
         assertThat(response.jsonPath()
-                .getList(".")
-                .size()).isEqualTo(1);
+                .getList(".")).hasSize(1);
     }
 
     @DisplayName("예약을 삭제한다")

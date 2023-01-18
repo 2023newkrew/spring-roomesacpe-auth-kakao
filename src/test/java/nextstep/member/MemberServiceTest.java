@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class MemberServiceTest {
+class MemberServiceTest {
     public static final Member MEMBER = Member.builder()
             .id(1L)
             .username("username")

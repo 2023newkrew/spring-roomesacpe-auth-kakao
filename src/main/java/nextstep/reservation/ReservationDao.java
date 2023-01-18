@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -88,7 +89,7 @@ public class ReservationDao {
         try {
             return jdbcTemplate.query(sql, rowMapper, id);
         } catch (Exception e) {
-            return null;
+            return Collections.emptyList();
         }
     }
 

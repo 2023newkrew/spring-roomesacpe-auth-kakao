@@ -15,12 +15,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ReservationControllerTest {
+class ReservationControllerTest {
 
     private final String validAccessToken = "valid_token";
     private final String invalidAccessToken = "invalid_token";
@@ -31,7 +30,7 @@ public class ReservationControllerTest {
     @MockBean
     private ReservationService reservationService;
     private ReservationRequest request;
-    private Long scheduleId = 1L;
+    private final Long scheduleId = 1L;
 
     @BeforeEach
     void setUp() {
@@ -111,8 +110,8 @@ public class ReservationControllerTest {
     void deleteWithInvalidAccessTokenTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
-        doThrow(new UnauthorizedException()).when(reservationService)
-                .deleteById(eq(1L), eq("username"));
+        doThrow(UnauthorizedException.class).when(reservationService)
+                .deleteById(1L, "username");
 
         RestAssured
                 .given()
@@ -133,8 +132,8 @@ public class ReservationControllerTest {
     void deleteNotExistReservationTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
-        doThrow(new NotExistEntityException()).when(reservationService)
-                .deleteById(eq(1L), eq("username"));
+        doThrow(NotExistEntityException.class).when(reservationService)
+                .deleteById(1L, "username");
 
         RestAssured
                 .given()

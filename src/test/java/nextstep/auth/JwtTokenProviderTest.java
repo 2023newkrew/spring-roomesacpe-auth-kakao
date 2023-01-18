@@ -1,7 +1,5 @@
 package nextstep.auth;
 
-import io.jsonwebtoken.JwtException;
-import nextstep.support.exception.NoAccessTokenException;
 import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

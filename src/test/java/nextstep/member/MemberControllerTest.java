@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class MemberControllerTest {
+class MemberControllerTest {
 
     public static final String ACCESS_TOKEN = "token";
     @LocalServerPort

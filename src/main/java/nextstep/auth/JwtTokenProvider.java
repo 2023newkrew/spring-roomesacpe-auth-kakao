@@ -8,37 +8,37 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private final String secretKey = "learning-test-spring";
-    private final Long validityInMilliseconds = 3600000L;
+    private static final String SECRET_KEY = "learning-test-spring";
+    private static final Long VALIDITY_IN_MILLISECONDS = 3600000L;
+
 
     public String createToken(String principal) {
         Claims claims = Jwts.claims()
                 .setSubject(principal);
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + VALIDITY_IN_MILLISECONDS);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
     public String getPrincipal(String token) {
         validateToken(token);
-        String parsedToken = Jwts.parser()
-                .setSigningKey(secretKey)
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
-        return parsedToken;
     }
 
     public void validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token);
 
             if (claims.getBody()

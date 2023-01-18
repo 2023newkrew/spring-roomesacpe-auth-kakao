@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class ReservationServiceTest {
+class ReservationServiceTest {
     @Mock
     ReservationDao reservationDao;
     @InjectMocks

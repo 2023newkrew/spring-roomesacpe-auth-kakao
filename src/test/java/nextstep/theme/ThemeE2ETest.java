@@ -12,10 +12,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
-    public void create() {
+    void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given()
@@ -33,7 +33,7 @@ public class ThemeE2ETest {
 
     @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
+    void showThemes() {
         createTheme();
 
         var response = RestAssured
@@ -49,8 +49,7 @@ public class ThemeE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
         assertThat(response.jsonPath()
-                .getList(".")
-                .size()).isEqualTo(1);
+                .getList(".")).hasSize(1);
     }
 
     @DisplayName("테마를 삭제한다")
