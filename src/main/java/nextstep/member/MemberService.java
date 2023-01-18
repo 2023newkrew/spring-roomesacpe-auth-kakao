@@ -3,6 +3,7 @@ package nextstep.member;
 import nextstep.auth.TokenRequestDto;
 import nextstep.support.exception.DuplicateEntityException;
 import nextstep.support.exception.NotExistEntityException;
+import nextstep.support.exception.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +39,7 @@ public class MemberService {
         try {
             MemberResponseDto.toDto(memberDao.findByUsernameAndPassword(tokenRequestDto.getUsername(), tokenRequestDto.getPassword()));
         } catch (NullPointerException nullPointerException) {
-            throw new NotExistEntityException("유효하지 않은 회원입니다.");
+            throw new UnauthorizedException("유효하지 않은 회원입니다.");
         }
     }
 }

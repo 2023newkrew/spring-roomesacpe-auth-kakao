@@ -3,6 +3,7 @@ package nextstep.member;
 import nextstep.auth.TokenRequestDto;
 import nextstep.support.exception.DuplicateEntityException;
 import nextstep.support.exception.NotExistEntityException;
+import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -50,7 +51,7 @@ public class MemberServiceTest {
     void validateTokenThrowNotExistEntityExceptionTest() {
         when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(null);
         TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
-        assertThatThrownBy(() -> memberService.validateToken(tokenRequestDto)).isInstanceOf(NotExistEntityException.class);
+        assertThatThrownBy(() -> memberService.validateToken(tokenRequestDto)).isInstanceOf(UnauthorizedException.class);
     }
 
     @Test
