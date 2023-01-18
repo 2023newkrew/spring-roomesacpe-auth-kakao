@@ -41,7 +41,7 @@ public class ThemeDao {
     }
 
     public Theme findById(Long id) {
-        String sql = "SELECT id, name, desc, price from theme where id = ?;";
+        String sql = "SELECT id, name, desc, price from theme where id = ? limit 1;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 

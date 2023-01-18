@@ -53,7 +53,8 @@ public class ScheduleDao {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
-                "where schedule.id = ?;";
+                "where schedule.id = ?" +
+                "limit 1;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
