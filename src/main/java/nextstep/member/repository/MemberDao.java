@@ -1,16 +1,17 @@
 package nextstep.member.repository;
 
+import static nextstep.member.repository.MemberJdbcSql.INSERT_INTO_STATEMENT;
+import static nextstep.member.repository.MemberJdbcSql.SELECT_BY_ID_STATEMENT;
+import static nextstep.member.repository.MemberJdbcSql.SELECT_BY_USERNAME_AND_PASSWORD_STATEMENT;
+
+import java.sql.PreparedStatement;
+import java.util.Optional;
 import nextstep.member.Member;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.PreparedStatement;
-import java.util.Optional;
-
-import static nextstep.member.repository.MemberJdbcSql.*;
 
 @Component
 public class MemberDao {

@@ -1,5 +1,7 @@
 package nextstep.theme.controller;
 
+import java.net.URI;
+import java.util.List;
 import nextstep.theme.Theme;
 import nextstep.theme.dto.ThemeRequest;
 import nextstep.theme.service.ThemeService;
@@ -11,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/themes")

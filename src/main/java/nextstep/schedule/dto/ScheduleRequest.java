@@ -1,10 +1,9 @@
 package nextstep.schedule.dto;
 
-import nextstep.schedule.Schedule;
-import nextstep.theme.Theme;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import nextstep.schedule.Schedule;
+import nextstep.theme.Theme;
 
 public class ScheduleRequest {
     private Long themeId;

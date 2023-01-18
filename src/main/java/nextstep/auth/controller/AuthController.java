@@ -1,8 +1,9 @@
 package nextstep.auth.controller;
 
-import nextstep.auth.service.AuthService;
+import java.util.Optional;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.service.AuthService;
 import nextstep.member.Member;
 import nextstep.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/login")

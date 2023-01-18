@@ -1,15 +1,14 @@
 package nextstep.auth.service;
 
-import nextstep.auth.dto.TokenResponse;
-import nextstep.auth.utils.JwtTokenProvider;
-import nextstep.member.dto.LoginMember;
-import nextstep.member.Member;
-import nextstep.exception.UnauthorizedAccessException;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.exception.UnauthorizedAccessException;
+import nextstep.member.Member;
+import nextstep.member.dto.LoginMember;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {

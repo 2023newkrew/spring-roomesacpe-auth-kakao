@@ -1,5 +1,14 @@
 package nextstep.reservation.repository;
 
+import static nextstep.reservation.repository.ReservationJdbcSql.DELETE_BY_ID_STATEMENT;
+import static nextstep.reservation.repository.ReservationJdbcSql.INSERT_INTO_STATEMENT;
+import static nextstep.reservation.repository.ReservationJdbcSql.SELECT_BY_RESERVATION_ID_STATEMENT;
+import static nextstep.reservation.repository.ReservationJdbcSql.SELECT_BY_SCHEDULE_ID_STATEMENT;
+import static nextstep.reservation.repository.ReservationJdbcSql.SELECT_BY_THEME_ID_AND_DATE_STATEMENT;
+
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.List;
 import nextstep.member.Member;
 import nextstep.reservation.Reservation;
 import nextstep.schedule.Schedule;
@@ -9,12 +18,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.util.List;
-
-import static nextstep.reservation.repository.ReservationJdbcSql.*;
 
 @Component
 public class ReservationDao {

@@ -1,12 +1,11 @@
 package nextstep.member.service;
 
+import java.util.Optional;
+import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.repository.MemberDao;
-import nextstep.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class MemberService {

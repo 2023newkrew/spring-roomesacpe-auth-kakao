@@ -1,5 +1,6 @@
 package nextstep.auth.argumentresolver;
 
+import javax.servlet.http.HttpServletRequest;
 import nextstep.auth.service.AuthService;
 import nextstep.member.dto.LoginMember;
 import nextstep.member.service.MemberService;
@@ -8,8 +9,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;

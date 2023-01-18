@@ -1,14 +1,13 @@
 package nextstep.theme.repository;
 
+import java.sql.PreparedStatement;
+import java.util.List;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.PreparedStatement;
-import java.util.List;
 
 @Component
 public class ThemeDao {

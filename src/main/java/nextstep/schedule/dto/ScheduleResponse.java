@@ -1,11 +1,10 @@
 package nextstep.schedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import nextstep.schedule.Schedule;
-import nextstep.theme.Theme;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import nextstep.schedule.Schedule;
+import nextstep.theme.Theme;
 
 public class ScheduleResponse {
     private final Long id;
