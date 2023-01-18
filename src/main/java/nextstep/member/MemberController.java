@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +16,13 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity create(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me() {
-        Long id = 1L;
+    public ResponseEntity read(@AuthenticationPrincipal Long id) {
         Member member = memberService.findById(id);
         return ResponseEntity.ok(member);
     }

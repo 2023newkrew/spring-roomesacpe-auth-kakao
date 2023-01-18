@@ -3,6 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -29,6 +31,7 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
@@ -70,23 +73,40 @@ class ReservationE2ETest {
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         request = new ReservationRequest(
-                scheduleId,
-                "브라운"
+                scheduleId
         );
+
+        TokenRequest request = new TokenRequest("username", "password");
+        accessToken = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(request)
+                .when().post("/login/token")
+                .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
     }
 
-    @DisplayName("예약을 생성한다")
+    @DisplayName("발급된 토큰으로 예약 생성 요청시 생성되어야 한다")
     @Test
-    void create() {
+    void createNormally() {
         var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all().statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("토큰이 없이 예약 생성 요청시 예외처리 되어야 한다")
+    @Test
+    void createAbnormally() {
+        RestAssured
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+                .then().log().all().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -106,18 +126,31 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("발급된 토큰을 사용하여 해당 유저가 예약했던 건을 취소하려고 하면 취소되어야 한다")
     @Test
-    void delete() {
+    void deleteNormally() {
         var reservation = createReservation();
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("토큰이 없이 예약을 취소하려고 하면 예외처리 되어야 한다")
+    @Test
+    void deleteWithoutToken() {
+        var reservation = createReservation();
+
+        RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -127,6 +160,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -156,6 +190,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -167,6 +202,7 @@ class ReservationE2ETest {
         return RestAssured
                 .given().log().all()
                 .body(request)
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
