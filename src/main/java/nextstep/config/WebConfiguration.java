@@ -11,6 +11,7 @@ import java.util.List;
 @Configuration
 @AllArgsConstructor
 public class WebConfiguration implements WebMvcConfigurer {
+
     private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
 
     @Override
