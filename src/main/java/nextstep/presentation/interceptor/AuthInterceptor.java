@@ -22,10 +22,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (Whitelist.contains(request.getMethod(), request.getRequestURI())) {
-            return true;
-        }
-
         String token = extractToken(request);
 
         if (!jwtTokenProvider.validateToken(token)) {
