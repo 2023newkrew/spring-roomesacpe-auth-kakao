@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.dto.request;
 
 public class TokenRequest {
     private String username;

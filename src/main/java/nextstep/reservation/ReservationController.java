@@ -1,5 +1,7 @@
 package nextstep.reservation;
 
+import nextstep.auth.presentation.argumentresolver.AuthenticationPrincipal;
+import nextstep.dto.request.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +31,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
-        reservationService.deleteById(id);
+    public ResponseEntity deleteReservation(@PathVariable Long id, @AuthenticationPrincipal LoginMember loginMember) {
+        reservationService.deleteById(id, loginMember.getId());
 
         return ResponseEntity.noContent().build();
     }

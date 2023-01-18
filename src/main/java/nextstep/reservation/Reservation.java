@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 
 public class Reservation {
@@ -19,6 +20,10 @@ public class Reservation {
         this.id = id;
         this.schedule = schedule;
         this.name = name;
+    }
+
+    public boolean isMine(Member member) {
+        return name.equals(member.getName());
     }
 
     public Long getId() {

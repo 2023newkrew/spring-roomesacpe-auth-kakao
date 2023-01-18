@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.dto.request.TokenRequest;
+import nextstep.dto.response.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;

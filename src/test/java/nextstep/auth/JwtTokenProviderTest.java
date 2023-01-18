@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.utils.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ class JwtTokenProviderTest {
 
     @Test
     void createToken() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("secrey-key", 3600000);
 
         String token = jwtTokenProvider.createToken("1");
 
@@ -19,7 +20,7 @@ class JwtTokenProviderTest {
 
     @Test
     void getPrincipal() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("secrey-key", 3600000);
 
         String token = jwtTokenProvider.createToken("1");
 

@@ -1,0 +1,3 @@
+jwt:
+  secret_key: secret-key
+  validity_in_milliseconds: 3600000
