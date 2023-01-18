@@ -2,7 +2,7 @@ CREATE TABLE reservation
 (
     id          bigint      not null auto_increment,
     schedule_id bigint      not null,
-    username        varchar(40) not null,
+    username    varchar(40) not null,
     primary key (id)
 );
 

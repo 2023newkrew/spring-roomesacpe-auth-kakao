@@ -11,6 +11,8 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+    private static final String[] REQUIRES_AUTHENTICATION_PATHS = {"/reservations/**"};
+
     private final AuthPrincipalArgumentResolver authPrincipalArgumentResolver;
     private final AuthInterceptor authInterceptor;
 
@@ -22,7 +24,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/reservations/**");
+                .addPathPatterns(REQUIRES_AUTHENTICATION_PATHS);
     }
 
     @Override

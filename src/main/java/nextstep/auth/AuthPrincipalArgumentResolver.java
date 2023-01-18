@@ -9,14 +9,12 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Component
 public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    private static final String AUTHORIZATION = "Authorization";
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-    public static final String AUTHORIZATION = "Authorization";
 
     public AuthPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -31,15 +29,9 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = getCredential(request);
+        String authHeader = webRequest.getHeader(AUTHORIZATION);
+        String token = jwtTokenProvider.parseTokenFromHeader(authHeader);
         String principal = jwtTokenProvider.getPrincipal(token);
-
         return memberService.findByUserName(principal);
-    }
-
-    public String getCredential(HttpServletRequest request) {
-        String token = request.getHeader(AUTHORIZATION);
-        return jwtTokenProvider.getCredential(token);
     }
 }

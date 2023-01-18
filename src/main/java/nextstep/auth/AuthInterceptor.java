@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
-    public static final String AUTHORIZATION = "Authorization";
+    private static final String AUTHORIZATION = "Authorization";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -19,12 +19,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader == null) {
-            throw new AuthorizationException();
-        }
-        String credential = jwtTokenProvider.getCredential(authorizationHeader);
-        if (!jwtTokenProvider.validateToken(credential)) {
+        String authHeader = request.getHeader(AUTHORIZATION);
+        String token = jwtTokenProvider.parseTokenFromHeader(authHeader);
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
         return super.preHandle(request, response, handler);
