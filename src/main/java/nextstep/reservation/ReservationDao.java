@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.error.ErrorCode;
+import nextstep.error.exception.FailedRecordSaveException;
 import nextstep.error.exception.RecordNotFoundException;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ReservationDao implements ReservationRepository {
@@ -24,6 +26,12 @@ public class ReservationDao implements ReservationRepository {
     public ReservationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+    String baseSelect = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
+            "from reservation " +
+            "inner join schedule on reservation.schedule_id = schedule.id " +
+            "inner join theme on schedule.theme_id = theme.id " +
+            "inner join member on reservation.member_id = member.id ";
 
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
             resultSet.getLong("reservation.id"),
@@ -59,30 +67,23 @@ public class ReservationDao implements ReservationRepository {
             return ps;
 
         }, keyHolder);
+        Number key = keyHolder.getKey();
 
-        return keyHolder.getKey().longValue();
+        if (Objects.isNull(key)) throw new FailedRecordSaveException();
+
+        return key.longValue();
     }
 
     @Override
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "inner join member on reservation.member_id = member.id " +
-                "where theme.id = ? and schedule.date = ?;";
+        String sql = baseSelect + "where theme.id = ? and schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
     }
 
     @Override
     public Reservation findById(Long id) {
-        String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "inner join member on reservation.member_id = member.id " +
-                "where reservation.id = ?;";
+        String sql = baseSelect + "where reservation.id = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (DataAccessException e) {
@@ -92,12 +93,7 @@ public class ReservationDao implements ReservationRepository {
 
     @Override
     public List<Reservation> findByScheduleId(Long id) {
-        String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "inner join member on reservation.member_id = member.id " +
-                "where schedule.id = ?;";
+        String sql = baseSelect + "where schedule.id = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, id);
     }
