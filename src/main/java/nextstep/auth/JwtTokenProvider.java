@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
-import nextstep.support.exception.NoAccessTokenException;
+import nextstep.support.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -26,32 +26,32 @@ public class JwtTokenProvider {
     }
 
     public String getPrincipal(String token) {
-        String parsedToken = null;
-        try {
-            parsedToken = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-        } catch (JwtException jwtException) {
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            throw new NoAccessTokenException("액세스 토큰이 존재하지 않습니다.");
-        }
+        validateToken(token);
+        String parsedToken = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
         return parsedToken;
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token);
 
-            return !claims.getBody()
+            if (claims.getBody()
                     .getExpiration()
-                    .before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+                    .before(new Date())) {
+                throw new UnauthorizedException("토큰이 만료되었습니다.");
+            }
+        } catch (ExpiredJwtException expiredJwtException) {
+            throw new UnauthorizedException("토큰이 만료되었습니다.");
+        } catch (JwtException jwtException) {
+            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new UnauthorizedException("액세스 토큰이 존재하지 않습니다.");
         }
     }
 }
