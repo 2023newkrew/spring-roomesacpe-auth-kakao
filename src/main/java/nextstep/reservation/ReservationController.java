@@ -39,6 +39,6 @@ public class ReservationController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

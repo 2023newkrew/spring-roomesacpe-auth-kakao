@@ -4,7 +4,7 @@ import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.AuthorizationExcpetion;
-import nextstep.support.exception.DuplicateEntityException;
+import nextstep.support.exception.DuplicateReservationException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateReservationException();
         }
 
         Reservation newReservation = new Reservation(
@@ -59,7 +59,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
         if (member.getId() != memberId) {
-            throw new AuthorizationExcpetion();
+            throw new AuthorizationExcpetion("본인의 예약만 삭제할 수 있습니다.");
         }
         reservationDao.deleteById(id);
     }
