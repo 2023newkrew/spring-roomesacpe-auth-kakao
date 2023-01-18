@@ -22,7 +22,8 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            resultSet.getString("auth")
     );
 
     public Long save(Member member) {
@@ -43,12 +44,12 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, auth from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, auth from member where username = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, username);
         } catch (EmptyResultDataAccessException e) {

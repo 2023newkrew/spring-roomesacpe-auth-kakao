@@ -6,13 +6,15 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private String auth;
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member(Long id, String username, String password, String name, String phone, String auth) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.auth = auth;
     }
 
     public Member(String username, String password, String name, String phone) {
