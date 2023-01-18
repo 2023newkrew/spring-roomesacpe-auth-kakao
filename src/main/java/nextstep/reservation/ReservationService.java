@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.auth.LoginMember;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
@@ -28,13 +29,13 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(ReservationRequest reservationRequest, String username) {
+    public Long create(ReservationRequest reservationRequest, LoginMember loginMember) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
         }
 
-        Member member = memberDao.findByUsername(username);
+        Member member = memberDao.findById(loginMember.getId());
         if (member == null) {
             throw new NullPointerException();
         }
@@ -62,13 +63,13 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, String username) {
+    public void deleteById(Long id, LoginMember loginMember) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();
         }
 
-        if(!Objects.equals(reservation.getMember().getUsername(), username)){
+        if(!Objects.equals(reservation.getMember().getUsername(), loginMember.getUsername())){
             throw new ForbiddenAccessException();
         }
 

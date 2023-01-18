@@ -18,6 +18,11 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
+    public LoginMember findByUsername(String username) {
+        Member member = memberDao.findByUsername(username);
+        return LoginMember.of(member);
+    }
+
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateUsernamePassword(tokenRequest.getUsername(), tokenRequest.getPassword());
 

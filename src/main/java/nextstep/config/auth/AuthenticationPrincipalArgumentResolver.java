@@ -1,21 +1,26 @@
 package nextstep.config.auth;
 
+import nextstep.auth.AuthService;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.support.UnAuthorizedException;
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     public static final String AUTHORIZATION = "Authorization";
-    public static String BEARER_TYPE = "Bearer";
+    public static final String BEARER_TYPE = "Bearer";
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, AuthService authService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.authService = authService;
     }
 
     @Override
@@ -36,7 +41,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new UnAuthorizedException();
         }
 
-        return jwtTokenProvider.getPrincipal(token);
+        String username = jwtTokenProvider.getPrincipal(token);
+        return authService.findByUsername(username);
     }
 
     private String parseTokenFromHeader(String header) {
