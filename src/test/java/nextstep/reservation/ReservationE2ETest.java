@@ -23,7 +23,7 @@ class ReservationE2ETest {
     @Test
     void test1() {
         Member reservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(reservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(reservationExistUser);
         ReservationRequest reservationRequest = new ReservationRequest(6L);
 
         ReservationTestUtil.createReservation(reservationRequest, tokenResponse.getAccessToken())
@@ -50,7 +50,7 @@ class ReservationE2ETest {
     @Test
     void test4() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         List<Reservation> reservations = ReservationTestUtil.getReservations(1L, "2022-11-11", tokenResponse.getAccessToken());
         List<Reservation> notMyReservations = reservations.stream()
@@ -65,7 +65,7 @@ class ReservationE2ETest {
     @Test
     void test6() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         ReservationTestUtil.removeReservation(1L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -82,7 +82,7 @@ class ReservationE2ETest {
     @Test
     void test8() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         ReservationTestUtil.removeReservation(5L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.UNAUTHORIZED.value());

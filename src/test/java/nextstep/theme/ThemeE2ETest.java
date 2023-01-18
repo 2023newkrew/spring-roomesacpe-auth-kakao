@@ -22,7 +22,7 @@ class ThemeE2ETest {
     @Test
     void test1() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         ThemeTestUtil.createThemeAndGetValidatableResponse(ThemeTestUtil.DEFAULT_THEME_REQUEST, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.CREATED.value());
@@ -46,7 +46,7 @@ class ThemeE2ETest {
     @Test
     void test4() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         ThemeTestUtil.deleteThemeAndGetValidatableResponse(1L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());

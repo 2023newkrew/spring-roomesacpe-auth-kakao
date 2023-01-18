@@ -10,19 +10,19 @@ public class AuthTestUtil {
     public static final TokenRequest RESERVATION_EXIST_USER_TOKEN_REQUEST = new TokenRequest(MemberTestUtil.RESERVATION_EXIST_MEMBER_1.getUsername(), MemberTestUtil.RESERVATION_EXIST_MEMBER_1.getPassword());
     public static final TokenRequest RESERVATION_NOT_EXIST_USER_TOKEN_REQUEST = new TokenRequest(MemberTestUtil.RESERVATION_NOT_EXIST_MEMBER.getUsername(), MemberTestUtil.RESERVATION_NOT_EXIST_MEMBER.getPassword());
 
-    public static TokenResponse createTokenForReservationExistUser() {
-        return createToken(RESERVATION_EXIST_USER_TOKEN_REQUEST);
+    public static TokenResponse tokenLoginForReservationExistUser() {
+        return tokenLogin(RESERVATION_EXIST_USER_TOKEN_REQUEST);
     }
 
-    public static TokenResponse createTokenForReservationNotExistUser() {
-        return createToken(RESERVATION_NOT_EXIST_USER_TOKEN_REQUEST);
+    public static TokenResponse tokenLoginForReservationNotExistUser() {
+        return tokenLogin(RESERVATION_NOT_EXIST_USER_TOKEN_REQUEST);
     }
 
-    public static TokenResponse createToken(Member member) {
-        return createToken(new TokenRequest(member.getUsername(), member.getPassword()));
+    public static TokenResponse tokenLogin(Member member) {
+        return tokenLogin(new TokenRequest(member.getUsername(), member.getPassword()));
     }
 
-    public static TokenResponse createToken(TokenRequest tokenRequest) {
+    public static TokenResponse tokenLogin(TokenRequest tokenRequest) {
         return createTokenAndGetValidatableResponse(tokenRequest)
                 .extract().as(TokenResponse.class);
     }

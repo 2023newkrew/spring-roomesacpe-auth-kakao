@@ -22,7 +22,7 @@ class ScheduleE2ETest {
     @Test
     void test1() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         ScheduleRequest schedule = new ScheduleRequest(1L, "2022-08-11", "13:00");
         ScheduleTestUtil.createScheduleAndGetValidatableResponse(schedule, tokenResponse.getAccessToken())
@@ -49,7 +49,7 @@ class ScheduleE2ETest {
     @Test
     void test4() {
         Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.createToken(ReservationExistUser);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
 
         ScheduleTestUtil.deleteScheduleAndGetValidatableResponse(2L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());

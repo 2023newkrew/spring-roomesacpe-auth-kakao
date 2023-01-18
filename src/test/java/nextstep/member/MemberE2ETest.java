@@ -37,7 +37,7 @@ class MemberE2ETest {
     @Test
     void test3() {
         TokenRequest tokenRequest = AuthTestUtil.RESERVATION_EXIST_USER_TOKEN_REQUEST;
-        final TokenResponse tokenResponse = AuthTestUtil.createToken(tokenRequest);
+        final TokenResponse tokenResponse = AuthTestUtil.tokenLogin(tokenRequest);
         final String accessToken = tokenResponse.getAccessToken();
 
         Member member = MemberTestUtil.getMemberSelfInfo(accessToken);

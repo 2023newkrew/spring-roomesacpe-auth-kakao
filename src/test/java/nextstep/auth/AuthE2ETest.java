@@ -16,7 +16,7 @@ class AuthE2ETest {
     @Test
     @DisplayName("존재하는 유저는 엑세스 토큰을 발급 받을 수 있다.")
     void test1() {
-        TokenResponse tokenResponse = AuthTestUtil.createTokenForReservationExistUser();
+        TokenResponse tokenResponse = AuthTestUtil.tokenLoginForReservationExistUser();
         assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 
