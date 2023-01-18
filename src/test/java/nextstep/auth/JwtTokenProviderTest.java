@@ -15,7 +15,7 @@ class JwtTokenProviderTest {
 
         String token = jwtTokenProvider.createToken("1");
 
-        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
+        assertThat(jwtTokenProvider.getPrincipal(token)).isNotNull();
     }
 
     @Test
