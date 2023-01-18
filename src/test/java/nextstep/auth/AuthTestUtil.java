@@ -2,7 +2,9 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
-import nextstep.member.Member;
+import nextstep.auth.model.TokenRequest;
+import nextstep.auth.model.TokenResponse;
+import nextstep.member.model.Member;
 import nextstep.member.MemberTestUtil;
 import org.springframework.http.MediaType;
 

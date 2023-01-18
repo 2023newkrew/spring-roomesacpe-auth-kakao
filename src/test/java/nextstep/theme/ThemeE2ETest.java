@@ -1,9 +1,10 @@
 package nextstep.theme;
 
 import nextstep.auth.AuthTestUtil;
-import nextstep.auth.TokenResponse;
-import nextstep.member.Member;
+import nextstep.auth.model.TokenResponse;
+import nextstep.member.model.Member;
 import nextstep.member.MemberTestUtil;
+import nextstep.theme.model.Theme;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

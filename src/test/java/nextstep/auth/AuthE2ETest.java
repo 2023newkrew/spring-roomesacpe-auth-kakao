@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.auth.model.TokenRequest;
+import nextstep.auth.model.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

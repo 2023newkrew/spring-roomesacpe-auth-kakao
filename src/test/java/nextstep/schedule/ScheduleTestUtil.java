@@ -2,6 +2,8 @@ package nextstep.schedule;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
+import nextstep.schedule.model.Schedule;
+import nextstep.schedule.model.ScheduleRequest;
 import org.springframework.http.MediaType;
 
 import java.util.List;

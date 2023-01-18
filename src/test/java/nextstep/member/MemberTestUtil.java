@@ -3,6 +3,8 @@ package nextstep.member;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import nextstep.member.model.Member;
+import nextstep.member.model.MemberRequest;
 import org.springframework.http.MediaType;
 
 import java.util.List;

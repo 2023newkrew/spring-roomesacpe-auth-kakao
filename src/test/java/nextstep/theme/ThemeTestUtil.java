@@ -2,6 +2,8 @@ package nextstep.theme;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
+import nextstep.theme.model.Theme;
+import nextstep.theme.model.ThemeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

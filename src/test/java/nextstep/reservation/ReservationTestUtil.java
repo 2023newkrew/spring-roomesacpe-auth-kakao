@@ -2,6 +2,8 @@ package nextstep.reservation;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
+import nextstep.reservation.model.Reservation;
+import nextstep.reservation.model.ReservationRequest;
 import org.springframework.http.MediaType;
 
 import java.util.List;

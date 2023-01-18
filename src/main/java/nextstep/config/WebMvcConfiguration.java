@@ -1,8 +1,8 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.AuthInterceptor;
-import nextstep.auth.AuthPrincipalArgumentResolver;
+import nextstep.auth.support.AuthInterceptor;
+import nextstep.auth.support.AuthPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
