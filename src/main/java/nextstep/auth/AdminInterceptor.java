@@ -32,7 +32,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
         }
 
-        if (!jwtTokenProvider.getRoles(accessToken).contains(Role.ADMIN)) {
+        if (!jwtTokenProvider.getRole(accessToken).equals(Role.ADMIN)) {
             throw new AuthenticationException(ErrorCode.INVALID_TOKEN);
         }
 

@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -16,7 +14,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(String principal, List<Role> roles) {
+    public String createToken(String principal, Role role) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -25,7 +23,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("roles", roles.stream().map(Role::getDescription).collect(Collectors.toList()))
+                .claim("role", role.getDescription())
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -34,9 +32,9 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public List<Role> getRoles(String token) {
-        List<String> roles = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
-        return roles.stream().map(Role.map::get).collect(Collectors.toList());
+    public Role getRole(String token) {
+        String role = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class);
+        return Role.map.get(role);
     }
 
     public boolean validateToken(String token) {

@@ -4,8 +4,6 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
@@ -18,6 +16,6 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = authValidator.validateUser(tokenRequest.getUsername(), tokenRequest.getPassword());
-        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString(), List.of(member.getRole())));
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString(), member.getRole()));
     }
 }

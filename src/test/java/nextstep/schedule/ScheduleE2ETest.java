@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -32,7 +30,7 @@ class ScheduleE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.ADMIN)))
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .body(themeRequest)
                 .when().post("admin/themes")
                 .then().log().all()

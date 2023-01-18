@@ -45,7 +45,7 @@ class ReservationE2ETest {
         createSchedule();
 
         createMember(new MemberRequest("username", "password", "name", "010-1234-5678", "user"));
-        token = jwtTokenProvider.createToken("2", List.of(Role.USER));
+        token = jwtTokenProvider.createToken("2", Role.USER);
         request = new ReservationRequest(
                 scheduleId
         );
@@ -84,7 +84,7 @@ class ReservationE2ETest {
         var themeResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.ADMIN)))
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .body(themeRequest)
                 .when().post("admin/themes")
                 .then()
@@ -161,7 +161,7 @@ class ReservationE2ETest {
         var reservation = createReservation();
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.ADMIN)))
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
