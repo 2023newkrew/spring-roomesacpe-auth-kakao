@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import nextstep.auth.util.JwtTokenProvider;
+import nextstep.error.ErrorCode;
 import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
@@ -20,10 +21,9 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(() -> new NotExistEntityException(
-                        "존재하지 않는 멤버입니다 - " + tokenRequest.getUsername()));
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
         if(member.checkWrongPassword(tokenRequest.getPassword())) {
-            throw new NotCorrectPasswordException("잘못된 비밀번호입니다");
+            throw new NotCorrectPasswordException(ErrorCode.UNAUTHORIZED, "잘못된 ID 또는 비밀번호입니다.");
         }
         String accessToken = jwtTokenProvider.createToken(member.getUsername());
         return new TokenResponse(accessToken);

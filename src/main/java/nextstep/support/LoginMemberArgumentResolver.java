@@ -2,6 +2,7 @@ package nextstep.support;
 
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
+import nextstep.error.ErrorCode;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
 import nextstep.member.MemberDao;
@@ -34,14 +35,14 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String token = AuthorizationTokenExtractor.extract(
                 webRequest.getHeader(AuthorizationTokenExtractor.AUTHORIZATION))
-                .orElseThrow(() -> new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다"));
+                .orElseThrow(() -> new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN));
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다 - " + token);
+            throw new InvalidAuthorizationTokenException(ErrorCode.TOKEN_EXPIRED);
         }
 
         String username = jwtTokenProvider.getPrincipal(token);
         return memberDao.findByUsername(username)
-                .orElseThrow(() -> new NotExistEntityException("존재하지 않는 멤버입니다 - " + username));
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
     }
 }

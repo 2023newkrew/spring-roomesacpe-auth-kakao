@@ -2,6 +2,7 @@ package nextstep.member;
 
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
+import nextstep.error.ErrorCode;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +32,9 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity me(HttpServletRequest request) {
         String token = AuthorizationTokenExtractor.extract(request)
-                .orElseThrow(() -> new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다"));
+                .orElseThrow(() -> new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN));
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException("유효하지 않은 토큰입니다 - " + token);
+            throw new InvalidAuthorizationTokenException(ErrorCode.TOKEN_EXPIRED);
         }
         String userName = jwtTokenProvider.getPrincipal(token);
         Member member = memberService.findByUserName(userName);
