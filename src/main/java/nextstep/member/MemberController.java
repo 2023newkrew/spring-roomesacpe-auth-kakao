@@ -25,8 +25,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal String username) {
-        Member member = memberService.findByUsername(username);
+    public ResponseEntity me(@AuthenticationPrincipal Member member) {
         return ResponseEntity.ok(member);
     }
 }
