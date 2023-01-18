@@ -1,14 +1,11 @@
 package nextstep.member;
 
-import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
-import nextstep.error.ErrorCode;
-import nextstep.exception.InvalidAuthorizationTokenException;
+import nextstep.support.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -30,14 +27,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest request) {
-        String token = AuthorizationTokenExtractor.extract(request)
-                .orElseThrow(() -> new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN));
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException(ErrorCode.TOKEN_EXPIRED);
-        }
-        String userName = jwtTokenProvider.getPrincipal(token);
-        Member member = memberService.findByUserName(userName);
+    public ResponseEntity me(@LoginMember Member member) {
         return ResponseEntity.ok(member);
     }
 }
