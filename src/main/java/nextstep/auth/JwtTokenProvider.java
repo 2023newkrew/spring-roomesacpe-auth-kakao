@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -24,7 +25,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("roles", roles)
+                .claim("roles", roles.stream().map(Role::getDescription).collect(Collectors.toList()))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -34,7 +35,8 @@ public class JwtTokenProvider {
     }
 
     public List<Role> getRoles(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
+        List<String> roles = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("roles", List.class);
+        return roles.stream().map(Role.map::get).collect(Collectors.toList());
     }
 
     public boolean validateToken(String token) {

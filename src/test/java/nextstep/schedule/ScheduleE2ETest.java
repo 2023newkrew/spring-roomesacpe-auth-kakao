@@ -1,20 +1,28 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.JwtTokenProvider;
+import nextstep.member.Role;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ScheduleE2ETest {
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     private Long themeId;
 
@@ -24,8 +32,9 @@ class ScheduleE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.ADMIN)))
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

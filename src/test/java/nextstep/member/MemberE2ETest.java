@@ -40,14 +40,14 @@ class MemberE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
+                .auth().oauth2(jwtTokenProvider.createToken("2", List.of(Role.USER)))
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
         Assertions.assertThat(response.as(Member.class)).isEqualTo(
-                new Member(1L, "username", "password", "name", "010-1234-5678", Role.USER)
+                new Member(2L, "username", "password", "name", "010-1234-5678", Role.USER)
         );
     }
 
