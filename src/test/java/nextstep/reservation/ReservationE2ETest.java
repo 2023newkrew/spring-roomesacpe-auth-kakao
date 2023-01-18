@@ -8,6 +8,7 @@ import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,6 +72,15 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest("username2", PASSWORD, "name", "010-1234-5678"))
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
@@ -118,10 +128,12 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
+        var token = createBearerToken(USERNAME, PASSWORD);
         var reservation = createReservation(USERNAME, PASSWORD);
 
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -165,6 +177,21 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("타 사용자가 예약을 삭제할 수 없다.")
+    @Test
+    void deleteByAnotherMember() {
+        var token = createBearerToken("username2", PASSWORD);
+
+        var response = RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();

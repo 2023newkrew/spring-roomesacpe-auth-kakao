@@ -59,7 +59,7 @@ public class MemberE2ETest {
                 .when().log().all()
                 .get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     private void createMember(String username, String password, String name, String phone) {
