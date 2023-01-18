@@ -1,5 +1,8 @@
 package nextstep.auth;
 
+import static nextstep.common.exception.ExceptionMessage.ACCESSTOKEN_IS_NULL;
+import static nextstep.common.exception.ExceptionMessage.INVALID_TOKEN;
+
 import io.jsonwebtoken.*;
 import nextstep.common.exception.NoAccessTokenException;
 import org.springframework.stereotype.Component;
@@ -35,9 +38,9 @@ public class JwtTokenProvider {
                 .getBody()
                 .getSubject();
         } catch (JwtException jwtException) {
-            throw new JwtException("유효하지 않은 토큰입니다.");
+            throw new JwtException(INVALID_TOKEN.getMessage());
         } catch (IllegalArgumentException illegalArgumentException) {
-            throw new NoAccessTokenException("액세스 토큰이 존재하지 않습니다.");
+            throw new NoAccessTokenException(ACCESSTOKEN_IS_NULL.getMessage());
         }
         return parsedToken;
     }

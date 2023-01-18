@@ -1,8 +1,8 @@
 package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
-import nextstep.support.exception.NotExistEntityException;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.common.exception.NotExistEntityException;
+import nextstep.common.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

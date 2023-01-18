@@ -1,5 +1,7 @@
 package nextstep.schedule;
 
+import static nextstep.common.exception.ExceptionMessage.INVALID_THEME_ID;
+
 import lombok.RequiredArgsConstructor;
 import nextstep.common.exception.NotExistEntityException;
 import nextstep.theme.Theme;
@@ -17,7 +19,7 @@ public class ScheduleService {
 
     public Long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId())
-            .orElseThrow(NotExistEntityException::new);
+            .orElseThrow(() -> new NotExistEntityException(INVALID_THEME_ID.getMessage()));
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 

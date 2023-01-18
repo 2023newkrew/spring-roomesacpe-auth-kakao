@@ -1,6 +1,8 @@
 package nextstep.auth.utils;
 
-import nextstep.support.exception.NoAccessTokenException;
+import static nextstep.common.exception.ExceptionMessage.ACCESSTOKEN_IS_NULL;
+
+import nextstep.common.exception.NoAccessTokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
@@ -15,7 +17,7 @@ public class AuthorizationExtractor {
     public static String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         if (!headers.hasMoreElements()) {
-            throw new NoAccessTokenException("액세스 토큰이 존재하지 않습니다.");
+            throw new NoAccessTokenException(ACCESSTOKEN_IS_NULL.getMessage());
         }
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
