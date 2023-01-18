@@ -25,16 +25,11 @@ public class AuthE2ETest {
     void setUp() {
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", MemberRole.NORMAL);
         RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when()
-                .post("/members")
-                .then()
-                .log()
-                .all()
+                .when().post("/members")
+                .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -43,16 +38,11 @@ public class AuthE2ETest {
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         var response = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when()
-                .post("/login/token")
-                .then()
-                .log()
-                .all()
+                .when().post("/login/token")
+                .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
@@ -65,20 +55,13 @@ public class AuthE2ETest {
         createTheme();
 
         var response = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .param("date", "2022-08-11")
-                .when()
-                .get("/themes")
-                .then()
-                .log()
-                .all()
+                .when().get("/themes")
+                .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath()
-                           .getList(".")
-                           .size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
     @DisplayName("테마를 삭제한다")
@@ -87,14 +70,9 @@ public class AuthE2ETest {
         Long id = createTheme();
 
         var response = RestAssured
-                .given()
-                .log()
-                .all()
-                .when()
-                .delete("/themes/" + id)
-                .then()
-                .log()
-                .all()
+                .given().log().all()
+                .when().delete("/themes/" + id)
+                .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -103,19 +81,13 @@ public class AuthE2ETest {
     public Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when()
-                .post("/themes")
-                .then()
-                .log()
-                .all()
+                .when().post("/themes")
+                .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .header("Location");
+                .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
     }
 }

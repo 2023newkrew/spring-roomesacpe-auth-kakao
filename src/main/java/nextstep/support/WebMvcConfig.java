@@ -1,9 +1,11 @@
 package nextstep.support;
 
+import nextstep.auth.AdminInterceptor;
 import nextstep.auth.MemberIdArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -12,23 +14,21 @@ import java.util.List;
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    //private final LoginInterceptor loginInterceptor;
-    //private final RestLoginInterceptor restLoginInterceptor;
     private final MemberIdArgumentResolver memberIdArgumentResolver;
 
-    public WebMvcConfig(MemberIdArgumentResolver memberIdArgumentResolver) {
+    private final AdminInterceptor adminInterceptor;
+
+    public WebMvcConfig(MemberIdArgumentResolver memberIdArgumentResolver, AdminInterceptor adminInterceptor) {
         this.memberIdArgumentResolver = memberIdArgumentResolver;
+        this.adminInterceptor = adminInterceptor;
     }
 
-    //    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//
-//        registry.addInterceptor(loginInterceptor)
-//                .excludePathPatterns("/css/**", "/fonts/**", "/plugin/**", "/scripts/**", "/api/**");
-//
-//        registry.addInterceptor(restLoginInterceptor)
-//                .addPathPatterns("/api/**");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin/**");
+    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {

@@ -24,6 +24,7 @@ class JwtTokenProviderTest {
 
         String token = jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString()));
 
-        assertThat(jwtTokenProvider.getId(token)).isEqualTo(1L);
+        assertThat(jwtTokenProvider.getTokenData(token)
+                           .getId()).isEqualTo(1L);
     }
 }

@@ -25,12 +25,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getId(String token) {
-        return Jwts.parser()
+    public TokenData getTokenData(String token) {
+        Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
-                .getBody()
-                .get("id", Long.class);
+                .getBody();
+
+        return new TokenData(claims.get("id", Long.class), claims.get("role", String.class));
     }
 
     public boolean validateToken(String token) {

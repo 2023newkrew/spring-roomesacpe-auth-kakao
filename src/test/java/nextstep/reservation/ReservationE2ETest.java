@@ -41,63 +41,39 @@ class ReservationE2ETest {
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when()
-                .post("/themes")
-                .then()
-                .log()
-                .all()
+                .when().post("/themes")
+                .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
-        String[]
-                themeLocation =
-                themeResponse.header("Location")
-                        .split("/");
+        String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
         var scheduleResponse = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
-                .when()
-                .post("/schedules")
-                .then()
-                .log()
-                .all()
+                .when().post("/schedules")
+                .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
-        String[]
-                scheduleLocation =
-                scheduleResponse.header("Location")
-                        .split("/");
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", MemberRole.NORMAL);
         var memberResponse = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when()
-                .post("/members")
-                .then()
-                .log()
-                .all()
+                .when().post("/members")
+                .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        String[]
-                memberLocation =
-                memberResponse.header("Location")
-                        .split("/");
+        String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         request = new ReservationRequest(
@@ -109,18 +85,12 @@ class ReservationE2ETest {
     @Test
     void create() {
         var response = RestAssured
-                .given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
+                .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/reservations")
-                .then()
-                .log()
-                .all()
+                .when().post("/reservations")
+                .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -132,22 +102,14 @@ class ReservationE2ETest {
         createReservation();
 
         var response = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
-                .when()
-                .get("/reservations")
-                .then()
-                .log()
-                .all()
+                .when().get("/reservations")
+                .then().log().all()
                 .extract();
 
-        List<Reservation>
-                reservations =
-                response.jsonPath()
-                        .getList(".", Reservation.class);
+        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
         assertThat(reservations.size()).isEqualTo(1);
     }
 
@@ -157,16 +119,10 @@ class ReservationE2ETest {
         var reservation = createReservation();
 
         var response = RestAssured
-                .given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
-                .when()
-                .delete(reservation.header("Location"))
-                .then()
-                .log()
-                .all()
+                .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -178,16 +134,11 @@ class ReservationE2ETest {
         createReservation();
 
         var response = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/reservations")
-                .then()
-                .log()
-                .all()
+                .when().post("/reservations")
+                .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -197,22 +148,14 @@ class ReservationE2ETest {
     @Test
     void showEmptyReservations() {
         var response = RestAssured
-                .given()
-                .log()
-                .all()
+                .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
-                .when()
-                .get("/reservations")
-                .then()
-                .log()
-                .all()
+                .when().get("/reservations")
+                .then().log().all()
                 .extract();
 
-        List<Reservation>
-                reservations =
-                response.jsonPath()
-                        .getList(".", Reservation.class);
+        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
         assertThat(reservations.size()).isEqualTo(0);
     }
 
@@ -220,14 +163,9 @@ class ReservationE2ETest {
     @Test
     void createNotExistReservation() {
         var response = RestAssured
-                .given()
-                .log()
-                .all()
-                .when()
-                .delete("/reservations/1")
-                .then()
-                .log()
-                .all()
+                .given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -235,18 +173,12 @@ class ReservationE2ETest {
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
-                .given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
+                .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/reservations")
-                .then()
-                .log()
-                .all()
+                .when().post("/reservations")
+                .then().log().all()
                 .extract();
     }
 }

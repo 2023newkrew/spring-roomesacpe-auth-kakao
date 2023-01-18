@@ -37,7 +37,8 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory) {
         String bearerToken = webRequest.getHeader(ACCESS_TOKEN_NAME);
         String accessToken = provider.getValidToken(bearerToken);
+        TokenData tokenData = provider.getTokenData(accessToken);
 
-        return provider.getId(accessToken);
+        return tokenData.getId();
     }
 }
