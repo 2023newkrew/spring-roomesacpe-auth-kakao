@@ -1,4 +1,4 @@
-package nextstep.infra.jwt;
+package nextstep.domain.context;
 
 import lombok.*;
 import nextstep.domain.model.template.Role;

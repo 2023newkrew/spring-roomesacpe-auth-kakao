@@ -1,6 +1,6 @@
 package nextstep.domain.mapper;
 
-import nextstep.infra.jwt.MemberDetails;
+import nextstep.domain.context.MemberDetails;
 import nextstep.domain.domain.Member;
 import org.springframework.stereotype.Component;
 
