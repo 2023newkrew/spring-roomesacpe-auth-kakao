@@ -5,14 +5,17 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring"; // Todo: Secret Key 더 복잡?하게, 환경변수나 별도 파일로 분리하기
-    private long validityInMilliseconds = 3600000;
+
+    @Value("${jwt-secret-key}")
+    private String secretKey;
+    private final long validityInMilliseconds = 3600000;
 
     public String createToken(String principal, String auth) {
         Date now = new Date();

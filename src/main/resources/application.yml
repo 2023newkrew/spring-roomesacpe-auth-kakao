@@ -5,6 +5,8 @@ spring:
   h2:
     console:
       enabled: true
+  profiles:
+    include: secret
 logging:
   level:
     root: debug
