@@ -1,8 +1,11 @@
 package nextstep.member;
 
+import nextstep.auth.AuthPrincipal;
+import nextstep.auth.LoginRequired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -15,15 +18,14 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity createMember(@Valid @RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
+    @LoginRequired
     @GetMapping("/me")
-    public ResponseEntity me() {
-        Long id = 1L;
-        Member member = memberService.findById(id);
+    public ResponseEntity me(@AuthPrincipal Member member) {
         return ResponseEntity.ok(member);
     }
 }

@@ -1,22 +1,21 @@
 package nextstep.reservation;
 
+import lombok.*;
+
+import javax.validation.constraints.NotNull;
+
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationRequest {
+    @NotNull
     private Long scheduleId;
-    private String name;
 
-    public ReservationRequest() {
-    }
+    @Setter
+    private String username;
 
-    public ReservationRequest(Long scheduleId, String name) {
+    public ReservationRequest(Long scheduleId) {
         this.scheduleId = scheduleId;
-        this.name = name;
-    }
-
-    public Long getScheduleId() {
-        return scheduleId;
-    }
-
-    public String getName() {
-        return name;
     }
 }

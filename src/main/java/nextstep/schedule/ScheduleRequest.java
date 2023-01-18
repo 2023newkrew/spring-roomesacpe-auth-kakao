@@ -1,13 +1,20 @@
 package nextstep.schedule;
 
+import lombok.*;
 import nextstep.theme.Theme;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Getter
+@ToString
 public class ScheduleRequest {
     private Long themeId;
+    @NotBlank
     private String date;
+
+    @NotBlank
     private String time;
 
     public ScheduleRequest() {
@@ -17,18 +24,6 @@ public class ScheduleRequest {
         this.themeId = themeId;
         this.date = date;
         this.time = time;
-    }
-
-    public Long getThemeId() {
-        return themeId;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     public Schedule toEntity(Theme theme) {

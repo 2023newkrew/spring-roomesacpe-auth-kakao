@@ -1,5 +1,10 @@
 package nextstep.member;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class Member {
     private Long id;
     private String username;
@@ -22,25 +27,13 @@ public class Member {
         this.phone = phone;
     }
 
-    public Long getId() {
-        return id;
+    public Member() {
     }
 
-    public String getUsername() {
-        return username;
+    public MemberRequest toDto(){
+        return new MemberRequest(this.username, this.password, this.name, this.phone);
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
 
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);

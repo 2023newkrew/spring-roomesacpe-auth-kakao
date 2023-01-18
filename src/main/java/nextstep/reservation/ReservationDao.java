@@ -34,17 +34,17 @@ public class ReservationDao {
                     resultSet.getDate("schedule.date").toLocalDate(),
                     resultSet.getTime("schedule.time").toLocalTime()
             ),
-            resultSet.getString("reservation.name")
+            resultSet.getString("reservation.username")
     );
 
     public Long save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";
+        String sql = "INSERT INTO reservation (schedule_id, username) VALUES (?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, reservation.getSchedule().getId());
-            ps.setString(2, reservation.getName());
+            ps.setString(2, reservation.getUsername());
             return ps;
 
         }, keyHolder);
@@ -52,18 +52,18 @@ public class ReservationDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.name, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+    public List<Reservation> findAllByThemeIdAndDateAndUsername(Long themeId, String date, String username) {
+        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.username, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
-                "where theme.id = ? and schedule.date = ?;";
+                "where theme.id = ? and schedule.date = ? and reservation.username = ?";
 
-        return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
+        return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date), username);
     }
 
     public Reservation findById(Long id) {
-        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.name, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.username, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
@@ -76,7 +76,7 @@ public class ReservationDao {
     }
 
     public List<Reservation> findByScheduleId(Long id) {
-        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.name, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT reservation.id, reservation.schedule_id, reservation.username, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +

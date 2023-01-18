@@ -1,9 +1,20 @@
 package nextstep.member;
 
+import lombok.Getter;
+import lombok.ToString;
+
+import javax.validation.constraints.NotBlank;
+
+@Getter
+@ToString
 public class MemberRequest {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
+    @NotBlank
     private String name;
+    @NotBlank
     private String phone;
 
     public MemberRequest(String username, String password, String name, String phone) {
@@ -11,22 +22,6 @@ public class MemberRequest {
         this.password = password;
         this.name = name;
         this.phone = phone;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
     }
 
     public Member toEntity() {
