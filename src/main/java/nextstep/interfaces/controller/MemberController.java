@@ -2,6 +2,7 @@ package nextstep.interfaces.controller;
 
 import nextstep.domain.domain.Member;
 import nextstep.domain.model.request.MemberRequest;
+import nextstep.domain.model.template.annotation.Login;
 import nextstep.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,6 @@ import java.net.URI;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private static final String ACCESS_TOKEN = "accessToken";
-
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
@@ -26,8 +25,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Member> me(HttpServletRequest request) {
-        Member member = memberService.findByToken(String.valueOf(request.getAttribute(ACCESS_TOKEN)));
+    public ResponseEntity<Member> me(@Login Long memberId) {
+        Member member = memberService.findById(memberId);
         return ResponseEntity.ok(member);
     }
 }

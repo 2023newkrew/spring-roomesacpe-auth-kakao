@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberDao memberDao;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public Long create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());
@@ -21,11 +20,4 @@ public class MemberService {
         return memberDao.findById(id);
     }
 
-    public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
-    }
-
-    public Member findByToken(String token){
-        return findById(jwtTokenProvider.getPrincipal(token).getId());
-    }
 }
