@@ -1,0 +1,1 @@
+INSERT INTO member (username, password, name, phone, role) VALUES ('admin', 'admin', '관리자', '010-0000-0000', 'admin');

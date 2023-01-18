@@ -15,6 +15,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
     public Member(String username, String password, String name, String phone) {
@@ -22,6 +23,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = "user";
     }
 
     public Long getId() {
