@@ -3,6 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -78,9 +79,11 @@ class ReservationE2ETest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        String token = jwtTokenProvider.createToken("username");
         var response = RestAssured
-                .given().log().all()
-                .body(request)
+                .given().header("authorization", "Bearer " + token).log().all()
+                .body(scheduleId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -106,18 +109,36 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("자신의 예약을 삭제한다")
     @Test
-    void delete() {
+    void deleteMyReservation() {
         var reservation = createReservation();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        String token = jwtTokenProvider.createToken("username");
 
         var response = RestAssured
-                .given().log().all()
+                .given().header("authorization", "Bearer " + token).log().all()
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("타인의 예약을 삭제한다")
+    @Test
+    void deleteYourReservation() {
+        var reservation = createReservation();
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        String token = jwtTokenProvider.createToken("otto");
+
+        var response = RestAssured
+                .given().header("authorization", "Bearer " + token).log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -164,9 +185,11 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> createReservation() {
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        String token = jwtTokenProvider.createToken("username");
         return RestAssured
-                .given().log().all()
-                .body(request)
+                .given().header("authorization", "Bearer " + token).log().all()
+                .body(scheduleId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
