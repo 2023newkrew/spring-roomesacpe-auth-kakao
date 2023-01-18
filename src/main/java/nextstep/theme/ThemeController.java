@@ -22,19 +22,20 @@ public class ThemeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
+    public ResponseEntity<ThemeResponse> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
-        return ResponseEntity.created(URI.create("/themes/" + id)).build();
+        ThemeResponse res = new ThemeResponse(id, themeRequest.getName(), themeRequest.getDesc(), themeRequest.getPrice());
+        return ResponseEntity.created(URI.create("/themes/").resolve(id.toString())).body(res);
     }
 
     @GetMapping
-    public ResponseEntity<List<Theme>> showThemes() {
+    public ResponseEntity showThemes() {
         List<Theme> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
+    public ResponseEntity deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
 
         return ResponseEntity.noContent().build();
