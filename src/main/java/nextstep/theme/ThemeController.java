@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +15,6 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/themes")
 public class ThemeController {
     private ThemeService themeService;
 
@@ -21,22 +22,39 @@ public class ThemeController {
         this.themeService = themeService;
     }
 
-    @PostMapping
+    @PostMapping("/admin/themes")
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
-    @GetMapping
+//    @PostMapping("/themes")
+//    public String createThemeWithoutAdmin(@RequestBody ThemeRequest themeRequest) {
+//        return "redirect:/admin/themes";
+//    }
+
+    @GetMapping("/themes")
     public ResponseEntity<List<Theme>> showThemes() {
         List<Theme> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("admin/themes/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+//    @DeleteMapping("themes/{id}")
+//    public String deleteThemeWithoutAdmin(@PathVariable Long id) {
+//        return "redirect:/admin/themes/{id}";
+//    }
+
+    @GetMapping("/redirect")
+    public ResponseEntity<?> redirect() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/"));
+        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 }

@@ -20,8 +20,12 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = AuthorizationExtractor.extract(request);
+        if (accessToken == null){
+            throw new AuthorizationException();
+        }
+
         Authority authority = Authority.valueOf(jwtTokenProvider.getAuthority(accessToken));
-        if (!authority.equals(Authority.ADMIN)){
+        if (!Authority.ADMIN.equals(authority)){
             throw new AuthorizationException();
         }
         return super.preHandle(request, response, handler);
