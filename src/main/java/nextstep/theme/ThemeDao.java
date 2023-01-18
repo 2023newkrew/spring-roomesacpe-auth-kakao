@@ -51,7 +51,7 @@ public class ThemeDao {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM reservation where id = ?;";
+        String sql = "DELETE FROM theme where id = ?;";
         jdbcTemplate.update(sql, id);
     }
 }
