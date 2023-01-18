@@ -16,11 +16,6 @@ import java.util.List;
 public class ReservationDao {
 
     public final JdbcTemplate jdbcTemplate;
-
-    public ReservationDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
             resultSet.getLong("reservation.id"),
             new Schedule(
@@ -31,11 +26,17 @@ public class ReservationDao {
                             resultSet.getString("theme.desc"),
                             resultSet.getInt("theme.price")
                     ),
-                    resultSet.getDate("schedule.date").toLocalDate(),
-                    resultSet.getTime("schedule.time").toLocalTime()
+                    resultSet.getDate("schedule.date")
+                            .toLocalDate(),
+                    resultSet.getTime("schedule.time")
+                            .toLocalTime()
             ),
             resultSet.getString("reservation.name")
     );
+
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Long save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";
@@ -43,13 +44,15 @@ public class ReservationDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, reservation.getSchedule().getId());
+            ps.setLong(1, reservation.getSchedule()
+                    .getId());
             ps.setString(2, reservation.getName());
             return ps;
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKey()
+                .longValue();
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {

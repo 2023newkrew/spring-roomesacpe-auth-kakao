@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,11 +12,6 @@ import java.sql.PreparedStatement;
 @Component
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
-
-    public MemberDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
             resultSet.getLong("id"),
             resultSet.getString("username"),
@@ -23,6 +19,10 @@ public class MemberDao {
             resultSet.getString("name"),
             resultSet.getString("phone")
     );
+
+    public MemberDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
@@ -38,7 +38,8 @@ public class MemberDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKey()
+                .longValue();
     }
 
     public Member findById(Long id) {
@@ -48,6 +49,23 @@ public class MemberDao {
 
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        Member member = null;
+        try {
+            member = jdbcTemplate.queryForObject(sql, rowMapper, username);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return member;
+    }
+
+    public Member findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+        Member member = null;
+        try {
+            member = jdbcTemplate.queryForObject(sql, rowMapper, username, password);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return member;
     }
 }
