@@ -35,7 +35,7 @@ public class MemberService {
         return memberResponseDto;
     }
 
-    public void validateToken(TokenRequestDto tokenRequestDto) {
+    public void validateIdAndPassword(TokenRequestDto tokenRequestDto) {
         try {
             MemberResponseDto.toDto(memberDao.findByUsernameAndPassword(tokenRequestDto.getUsername(), tokenRequestDto.getPassword()));
         } catch (NullPointerException nullPointerException) {

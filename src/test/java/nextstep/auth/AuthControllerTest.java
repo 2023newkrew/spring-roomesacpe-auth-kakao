@@ -2,7 +2,6 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberService;
-import nextstep.support.exception.NotExistEntityException;
 import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +57,7 @@ public class AuthControllerTest {
         TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1");
 
         doThrow(UnauthorizedException.class).when(memberService)
-                .validateToken(any(TokenRequestDto.class));
+                .validateIdAndPassword(any(TokenRequestDto.class));
 
         RestAssured.given()
                 .log()
