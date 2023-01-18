@@ -5,8 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +27,8 @@ class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
+    private static final String ADMIN_USERNAME = "testadmin";
+    private static final String ADMIN_PASSWORD = "0000";
 
     private ReservationRequest request;
     private Long themeId;
@@ -38,22 +38,9 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", Role.ADMIN);
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
         accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")

@@ -21,25 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Sql("/truncate.sql")
 public class ScheduleE2ETest {
+    private static final String ADMIN_USERNAME = "testadmin";
+    private static final String ADMIN_PASSWORD = "0000";
 
     private Long themeId;
     private String accessToken;
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", Role.ADMIN);
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
         accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
