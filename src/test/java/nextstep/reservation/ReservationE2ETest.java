@@ -41,7 +41,7 @@ class ReservationE2ETest {
 
         createSchedule();
 
-        createMember(new MemberRequest("username", "password", "name", "010-1234-5678"));
+        createMember(new MemberRequest("username", "password", "name", "010-1234-5678", "user"));
 
         request = new ReservationRequest(
                 scheduleId
@@ -95,7 +95,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -142,7 +142,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -153,12 +153,12 @@ class ReservationE2ETest {
     @DisplayName("본인이 아닌 토큰으로 예약을 삭제하면 403을 반환한다")
     @Test
     void deleteWithoutWrongToken() {
-        createMember(new MemberRequest("anotherUser", "password", "name", "010-1234-5678"));
+        createMember(new MemberRequest("anotherUser", "password", "name", "010-1234-5678", "user"));
         var reservation = createReservation();
 
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("2", null))
+                .auth().oauth2(jwtTokenProvider.createToken("2", List.of("user")))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
@@ -172,7 +172,7 @@ class ReservationE2ETest {
         RestAssured
                 .given().log().all()
                 .body(request)
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -199,7 +199,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -209,7 +209,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("user")))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

@@ -13,6 +13,7 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private Role role;
 
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);

@@ -4,6 +4,7 @@ import nextstep.error.ErrorCode;
 import nextstep.error.exception.FailedRecordSaveException;
 import nextstep.error.exception.RecordNotFoundException;
 import nextstep.member.Member;
+import nextstep.member.Role;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +28,7 @@ public class ReservationDao implements ReservationRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    String baseSelect = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
+    String baseSelect = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone, member.role " +
             "from reservation " +
             "inner join schedule on reservation.schedule_id = schedule.id " +
             "inner join theme on schedule.theme_id = theme.id " +
@@ -51,7 +52,8 @@ public class ReservationDao implements ReservationRepository {
                     resultSet.getString("member.username"),
                     resultSet.getString("member.password"),
                     resultSet.getString("member.name"),
-                    resultSet.getString("member.phone")
+                    resultSet.getString("member.phone"),
+                    Role.map.get(resultSet.getString("member.role"))
             )
     );
 

@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.List;
+
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class MemberE2ETest {
@@ -20,7 +22,7 @@ class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     void create() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "user");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -38,14 +40,14 @@ class MemberE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(jwtTokenProvider.createToken("1", null))
+                .auth().oauth2(jwtTokenProvider.createToken("1", List.of("role")))
                 .when().get("/members/me")
-                .then()
+                .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
         Assertions.assertThat(response.as(Member.class)).isEqualTo(
-                new Member(1L, "username", "password", "name", "010-1234-5678")
+                new Member(1L, "username", "password", "name", "010-1234-5678", Role.USER)
         );
     }
 
@@ -61,7 +63,7 @@ class MemberE2ETest {
     }
 
     private void createMember() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "user");
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
