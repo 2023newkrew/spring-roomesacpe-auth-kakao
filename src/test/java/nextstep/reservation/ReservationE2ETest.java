@@ -13,11 +13,9 @@ import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
@@ -37,8 +35,6 @@ class ReservationE2ETest {
     private String accessToken;
     private ReservationRequest request;
     private Long themeId;
-    private Long scheduleId;
-    private Long memberId;
 
     @BeforeEach
     void setUp() {
@@ -64,10 +60,11 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        request = new ReservationRequest(scheduleId);
 
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
-        var memberResponse = RestAssured
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -76,8 +73,6 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
         accessToken = RestAssured
@@ -88,9 +83,6 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class).getAccessToken();
-
-
-        request = new ReservationRequest(scheduleId);
     }
 
     @DisplayName("예약을 생성한다")
@@ -173,8 +165,9 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("예약 삭제시 인증 정보가 없으면 에러가 발생한다")
     @Test
-    void 예약을_삭제할_때_accessToken이_없으면_에러가_발생해야한다() {
+    void createUnauthorizedReservation() {
         var reservation = createReservation();
 
         var response = RestAssured
@@ -186,8 +179,9 @@ class ReservationE2ETest {
     }
 
 
+    @DisplayName("예약 삭제시 자신의 예약이 아닐 경우 에러가 발생한다")
     @Test
-    void 자신의_예약이_아닐_경우_에러가_발생해야한다() {
+    void deleteOthersReservation() {
         var reservation = createReservation();
 
         MemberRequest body = new MemberRequest("Sienna", PASSWORD, NAME, PHONE);
