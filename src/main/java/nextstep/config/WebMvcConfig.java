@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import nextstep.presentation.interceptor.AdminInterceptor;
 import nextstep.utils.JwtTokenProvider;
 import nextstep.presentation.argumentresolver.AuthenticationPrincipalArgumentResolver;
 import nextstep.presentation.interceptor.AuthInterceptor;
@@ -35,6 +36,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public AdminInterceptor adminInterceptor() {
+        return new AdminInterceptor(jwtTokenProvider);
+    }
+
+    @Bean
     public AuthenticationPrincipalArgumentResolver authArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
     }
@@ -43,7 +49,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor())
                 .order(1)
-                .addPathPatterns("/members/me", "/reservations/**");
+                .addPathPatterns("/admin/**", "/members/me", "/reservations/**");
+
+        registry.addInterceptor(adminInterceptor())
+                .order(2)
+                .addPathPatterns("/admin/**");
     }
 
     @Override
