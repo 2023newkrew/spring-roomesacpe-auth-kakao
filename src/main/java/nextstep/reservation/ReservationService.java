@@ -12,7 +12,6 @@ import nextstep.schedule.ScheduleDao;
 import nextstep.common.exception.DuplicateEntityException;
 import nextstep.common.exception.NotExistEntityException;
 import nextstep.common.exception.UnauthorizedException;
-import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 

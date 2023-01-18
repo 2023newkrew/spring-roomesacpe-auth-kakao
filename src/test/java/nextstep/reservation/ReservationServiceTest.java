@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import java.util.Optional;
 import nextstep.schedule.Schedule;
 import nextstep.common.exception.NotExistEntityException;
 import nextstep.common.exception.UnauthorizedException;
@@ -24,7 +25,7 @@ public class ReservationServiceTest {
     @Test
     @DisplayName("존재하지 않는 예약 삭제 불가 테스트")
     void deleteNotExistReservationTest() {
-        when(reservationDao.findById(anyLong())).thenReturn(null);
+        when(reservationDao.findById(anyLong())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> reservationService.deleteById(1L, "username"))
                 .isInstanceOf(NotExistEntityException.class);
     }
@@ -33,7 +34,7 @@ public class ReservationServiceTest {
     @DisplayName("권한이 없는 예약 삭제 불가 테스트")
     void deleteUnauthorizedReservationTest() {
         Reservation reservation = new Reservation(1L, new Schedule(), "differentUsername");
-        when(reservationDao.findById(anyLong())).thenReturn(reservation);
+        when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         assertThatThrownBy(() -> reservationService.deleteById(1L, "username"))
                 .isInstanceOf(UnauthorizedException.class);
     }
@@ -42,7 +43,7 @@ public class ReservationServiceTest {
     @DisplayName("삭제 성공 테스트")
     void deleteTest() {
         Reservation reservation = new Reservation(1L, new Schedule(), "username");
-        when(reservationDao.findById(anyLong())).thenReturn(reservation);
+        when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         assertThatCode(() -> reservationService.deleteById(1L, "username")).doesNotThrowAnyException();
     }
 }

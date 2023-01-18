@@ -2,6 +2,7 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.AuthService;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.member.dto.MemberResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,8 @@ public class MemberControllerTest {
     private AuthService authService;
     @MockBean
     private MemberService memberService;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
@@ -36,6 +39,7 @@ public class MemberControllerTest {
         MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678");
         when(authService.findUsernameByToken(anyString())).thenReturn("username");
         when(memberService.findByUsername("username")).thenReturn(memberResponseDto);
+        when(jwtTokenProvider.getPrincipal(ACCESS_TOKEN)).thenReturn("username");
 
         RestAssured.given()
                 .log()

@@ -79,7 +79,7 @@ public class ReservationDao {
             reservation = jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (Exception e) {
         } finally {
-            return Optional.ofNullable(reservation);
+            return Optional.of(reservation);
         }
     }
 
