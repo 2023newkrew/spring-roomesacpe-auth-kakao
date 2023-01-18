@@ -103,10 +103,6 @@ public class ReservationDao implements ReservationRepository {
     @Override
     public void deleteById(Long id) {
         String sql = "DELETE FROM reservation where id = ?;";
-        try {
-            jdbcTemplate.update(sql, id);
-        } catch (DataAccessException e) {
-            throw new RecordNotFoundException(ErrorCode.RESERVATION_NOT_FOUND);
-        }
+        jdbcTemplate.update(sql, id);
     }
 }
