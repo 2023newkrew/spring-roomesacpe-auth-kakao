@@ -3,19 +3,21 @@ package nextstep.schedule;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class ScheduleService {
-    private ScheduleDao scheduleDao;
-    private ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+    private final ThemeDao themeDao;
 
     public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao) {
         this.scheduleDao = scheduleDao;
         this.themeDao = themeDao;
     }
 
+    @Transactional
     public Long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId());
         return scheduleDao.save(scheduleRequest.toEntity(theme));

@@ -41,13 +41,14 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
+    }
+
+    public boolean isExistingMemberName(String name) {
+        String sql = "SELECT count(*) from member where name = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, name);
+        return count > 0;
     }
 }
