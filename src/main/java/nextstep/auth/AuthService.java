@@ -31,7 +31,6 @@ public class AuthService {
     public TokenResponse createToken(Optional<Member> member) {
         Long id = validate(member);
         String token = jwtTokenProvider.createToken(String.valueOf(id));
-        System.out.println("?????"+token);
         return new TokenResponse(token);
     }
 
