@@ -16,16 +16,20 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    private void validatePassword(TokenRequest tokenRequest) {
-        Member member = memberDao.findByUsername(tokenRequest.getUsername())
+    private Member findByUsername(String username) {
+        Member member = memberDao.findByUsername(username)
                 .orElseThrow(MemberNotFoundException::new);
-        if (member.checkWrongPassword(tokenRequest.getPassword())) {
+        return member;
+    }
+    private void validatePassword(Member member, String password) {
+        if (member.checkWrongPassword(password)) {
             throw new UnauthorizedException();
         }
     }
 
     public String createToken(TokenRequest tokenRequest) {
-        validatePassword(tokenRequest);
+        Member member = findByUsername(tokenRequest.getUsername());
+        validatePassword(member, tokenRequest.getPassword());
         return TOKEN_PROVIDER.createToken(tokenRequest.getUsername());
     }
 
