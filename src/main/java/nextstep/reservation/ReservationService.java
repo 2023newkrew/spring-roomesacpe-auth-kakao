@@ -30,7 +30,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException(ErrorCode.DUPLICATE_SCHEDULE);
+            throw new DuplicateEntityException(ErrorCode.DUPLICATE_RESERVATION);
         }
 
         Reservation newReservation = new Reservation(schedule, member);
