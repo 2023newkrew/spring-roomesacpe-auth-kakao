@@ -13,7 +13,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${jwt-secret-key}")
+    @Value("${jwt-secret-key:aEdGbPAF9uZgU5jo6lis2xfJI53sgwgVFKGrEpcaBug=}")
     private String secretKey;
     private final long validityInMilliseconds = 3600000;
 
