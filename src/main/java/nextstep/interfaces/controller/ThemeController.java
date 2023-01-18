@@ -2,6 +2,7 @@ package nextstep.interfaces.controller;
 
 import nextstep.domain.domain.Theme;
 import nextstep.domain.model.request.ThemeRequest;
+import nextstep.domain.model.template.annotation.NoAuth;
 import nextstep.service.ThemeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,7 @@ public class ThemeController {
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
+    @NoAuth
     @GetMapping
     public ResponseEntity<List<Theme>> showThemes() {
         List<Theme> results = themeService.findAll();

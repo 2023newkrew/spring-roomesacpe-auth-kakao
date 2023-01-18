@@ -10,12 +10,13 @@ import nextstep.infra.exception.auth.NoAccessAuthorityException;
 import nextstep.infra.exception.auth.NoSuchTokenException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Handler;
 
-@Component
 @RequiredArgsConstructor
 public class LoginInterceptor implements HandlerInterceptor {
     private static final String ACCESS_TOKEN = "accessToken";
@@ -66,7 +67,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 
     private boolean hasNoAuth(Object handler) {
-        return !ObjectUtils.isEmpty(handler.getClass().getAnnotation(NoAuth.class));
+        return !ObjectUtils.isEmpty(((HandlerMethod) handler).getMethod().getAnnotation(NoAuth.class));
     }
 
 }
