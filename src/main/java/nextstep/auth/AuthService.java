@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.support.MemberNotFoundException;
 import nextstep.support.UnauthorizedException;
@@ -15,16 +16,17 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public void validatePassword(TokenRequest tokenRequest) {
-        if (memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(MemberNotFoundException::new)
-                .checkWrongPassword(tokenRequest.getPassword())) {
+    private void validatePassword(TokenRequest tokenRequest) {
+        Member member = memberDao.findByUsername(tokenRequest.getUsername())
+                .orElseThrow(MemberNotFoundException::new);
+        if (member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new UnauthorizedException();
         }
     }
 
-    public String createToken(String username) {
-        return TOKEN_PROVIDER.createToken(username);
+    public String createToken(TokenRequest tokenRequest) {
+        validatePassword(tokenRequest);
+        return TOKEN_PROVIDER.createToken(tokenRequest.getUsername());
     }
 
 }
