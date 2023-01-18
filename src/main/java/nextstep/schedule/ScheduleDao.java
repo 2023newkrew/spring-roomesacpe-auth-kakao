@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import nextstep.error.exception.FailedRecordSaveException;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ScheduleDao implements ScheduleRepository {
@@ -47,7 +49,11 @@ public class ScheduleDao implements ScheduleRepository {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Number key = keyHolder.getKey();
+
+        if (Objects.isNull(key)) throw new FailedRecordSaveException();
+
+        return key.longValue();
     }
 
     @Override
