@@ -1,8 +1,8 @@
 package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.infrastructure.jwt.JwtTokenProvider;
-import nextstep.infrastructure.jwt.MemberDetails;
+import nextstep.infra.jwt.JwtTokenProvider;
+import nextstep.infra.jwt.MemberDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

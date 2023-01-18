@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.domain.model.request.TokenRequest;
+import nextstep.domain.model.response.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

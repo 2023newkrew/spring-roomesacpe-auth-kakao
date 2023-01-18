@@ -1,13 +1,14 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
+import nextstep.domain.domain.Member;
+import nextstep.domain.model.request.MemberRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import static nextstep.auth.LoginUtils.*;

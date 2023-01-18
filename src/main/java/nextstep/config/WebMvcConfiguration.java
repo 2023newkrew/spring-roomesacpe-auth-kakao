@@ -1,9 +1,9 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.infrastructure.interceptor.AdminInterceptor;
-import nextstep.infrastructure.interceptor.LoginArgumentResolver;
-import nextstep.infrastructure.interceptor.UserInterceptor;
+import nextstep.interfaces.interceptor.AdminInterceptor;
+import nextstep.interfaces.interceptor.LoginArgumentResolver;
+import nextstep.interfaces.interceptor.UserInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

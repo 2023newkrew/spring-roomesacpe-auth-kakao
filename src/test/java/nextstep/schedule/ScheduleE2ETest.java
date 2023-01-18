@@ -1,20 +1,12 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
-import nextstep.auth.LoginUtils;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
-import nextstep.theme.ThemeRequest;
-import org.junit.jupiter.api.BeforeEach;
+import nextstep.domain.model.request.ScheduleRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import static nextstep.auth.LoginUtils.*;
