@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberRole;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String USERNAME = "username";
     public static final String NAME = "name";
-    public static final String TOKEN = new JwtTokenProvider().createToken(USERNAME);
+    public static final String TOKEN = new JwtTokenProvider().createToken(USERNAME, MemberRole.USER);
 
     private ReservationRequest request;
     private Long themeId;
@@ -151,7 +152,7 @@ class ReservationE2ETest {
     void deleteYourReservation() {
         var reservation = createReservation();
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String otherToken = jwtTokenProvider.createToken("otto");
+        String otherToken = jwtTokenProvider.createToken("otto", MemberRole.USER);
 
         var response = RestAssured
                 .given().header("authorization", "Bearer " + otherToken).log().all()

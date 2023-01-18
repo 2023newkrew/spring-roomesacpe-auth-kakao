@@ -37,7 +37,7 @@ public class MemberE2ETest {
     public void me() {
         create();
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken(USERNAME);
+        String token = jwtTokenProvider.createToken(USERNAME, MemberRole.USER);
         RestAssured
                 .given().header("authorization", "Bearer " + token).log().all()
                 .when().get("/members/me")
