@@ -49,10 +49,4 @@ public class ReservationController {
         reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().build();
-    }
 }

@@ -1,6 +1,5 @@
 package nextstep.member;
 
-import nextstep.auth.AuthService;
 import nextstep.auth.AuthenticationPrincipal;
 import nextstep.auth.AuthorizationExtractor;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +12,9 @@ import java.net.URI;
 @RequestMapping("/members")
 public class MemberController {
     private MemberService memberService;
-    private AuthService authService;
 
-    public MemberController(MemberService memberService, AuthService authService) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.authService = authService;
     }
 
     @PostMapping
