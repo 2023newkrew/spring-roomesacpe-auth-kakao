@@ -5,13 +5,14 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
-
 import java.util.Date;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
+
     private String secretKey = "learning-test-spring";
+
     private long validityInMilliseconds = 3600000;
 
     public String createToken(String principal) {
@@ -27,7 +28,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
+    public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
