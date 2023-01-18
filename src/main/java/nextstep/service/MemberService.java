@@ -6,6 +6,7 @@ import nextstep.dto.request.MemberRequest;
 import nextstep.error.ApplicationException;
 import nextstep.domain.member.MemberDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static nextstep.error.ErrorType.MEMBER_NOT_FOUND;
 
@@ -14,10 +15,12 @@ import static nextstep.error.ErrorType.MEMBER_NOT_FOUND;
 public class MemberService {
     private final MemberDao memberDao;
 
+    @Transactional
     public Long create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());
     }
 
+    @Transactional(readOnly = true)
     public Member findById(Long id) {
         Member member = memberDao.findById(id);
         if (member == null) {

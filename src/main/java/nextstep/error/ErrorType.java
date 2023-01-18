@@ -10,6 +10,7 @@ public enum ErrorType {
     SCHEDULE_NOT_FOUND(HttpStatus.BAD_REQUEST.value()),
     DUPLICATE_THEME(HttpStatus.BAD_REQUEST.value()),
     DUPLICATE_RESERVATION(HttpStatus.BAD_REQUEST.value()),
+    INVALID_PASSWORD_ERROR(HttpStatus.BAD_REQUEST.value()),
     UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED.value()),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value()),
     ;

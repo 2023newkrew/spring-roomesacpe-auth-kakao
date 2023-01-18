@@ -8,6 +8,7 @@ import nextstep.domain.schedule.Schedule;
 import nextstep.domain.reservation.ReservationDao;
 import nextstep.dto.request.ReservationRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,19 +23,21 @@ public class ReservationService {
     private final ScheduleService scheduleService;
     private final ThemeService themeService;
 
+    @Transactional
     public Long create(ReservationRequest reservationRequest) {
         Schedule schedule = scheduleService.findById(reservationRequest.getScheduleId());
         checkIfExistsByScheduleId(reservationRequest.getScheduleId());
 
-        Reservation newReservation = new Reservation(schedule, reservationRequest.getName());
-        return reservationDao.save(newReservation);
+        return reservationDao.save(new Reservation(schedule, reservationRequest.getMemberId()));
     }
 
+    @Transactional(readOnly = true)
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         themeService.checkExistsByThemeId(themeId);
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
+    @Transactional
     public void deleteById(Long reservationId, Long memberId) {
         Reservation reservation = findByReservationId(reservationId);
         Member member = memberService.findById(memberId);

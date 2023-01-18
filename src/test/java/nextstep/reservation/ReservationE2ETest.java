@@ -47,26 +47,12 @@ class ReservationE2ETest {
     @BeforeEach
     void setUp() {
         MemberRequest memberRequest = new MemberRequest("username", "password", "브라운", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
+        var memberResponse = createMember(memberRequest);
 
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
-        var loginResponse = given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TokenRequest(memberRequest.getUsername(), memberRequest.getPassword()))
-                .when()
-                .post("/login/token")
-                .then()
-                .extract()
-                .as(new TypeRef<TokenResponse>() {});
+        var loginResponse = login(new TokenRequest(memberRequest.getUsername(), memberRequest.getPassword()));
         token = loginResponse.getAccessToken();
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
@@ -97,7 +83,7 @@ class ReservationE2ETest {
 
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                memberId
         );
     }
 
@@ -152,17 +138,19 @@ class ReservationE2ETest {
     @DisplayName("자신의 예약이 아닌 경우 예약 취소가 불가능하다.")
     @Test
     void failToDelete() {
+        MemberRequest memberRequest = new MemberRequest("eddie", "1234", "에디", "010-1234-5678");
         var reservation = createReservation();
-        String wrongToken = jwtTokenProvider.createToken("2");
+        var memberResponse = createMember(memberRequest);
+        var loginResponse = login(new TokenRequest(memberRequest.getUsername(), memberRequest.getPassword()));
 
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + wrongToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.getAccessToken())
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -173,6 +161,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .body(request)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -202,11 +191,35 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private TokenResponse login(TokenRequest tokenRequest) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when()
+                .post("/login/token")
+                .then()
+                .extract()
+                .as(new TypeRef<TokenResponse>() {});
+    }
+
+    private ExtractableResponse<Response> createMember(MemberRequest memberRequest) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
     }
 
     private ExtractableResponse<Response> createReservation() {
