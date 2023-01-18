@@ -8,8 +8,8 @@ import java.util.List;
 
 @Service
 public class ScheduleService {
-    private ScheduleDao scheduleDao;
-    private ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+    private final ThemeDao themeDao;
 
     public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao) {
         this.scheduleDao = scheduleDao;
@@ -27,5 +27,9 @@ public class ScheduleService {
 
     public void deleteById(Long id) {
         scheduleDao.deleteById(id);
+    }
+
+    public Schedule findById(Long scheduleId) {
+        return scheduleDao.findById(scheduleId);
     }
 }

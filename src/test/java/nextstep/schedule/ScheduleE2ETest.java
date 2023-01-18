@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import java.util.List;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,62 +12,64 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.Constant.THEME_NAME;
+import static nextstep.Constant.THEME_DESCRIPTION;
+import static nextstep.Constant.THEME_PRICE;
+import static nextstep.Constant.DATE;
+import static nextstep.Constant.TIME;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ScheduleE2ETest {
-
+class ScheduleE2ETest {
     private Long themeId;
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
+        String location = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(themeRequest)
                 .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = response.header("Location").split("/");
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        String[] themeLocation = location.split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
     }
 
     @DisplayName("스케줄을 생성한다")
     @Test
-    public void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+    void createSchedule() {
+        String location = getCreatedScheduleLocation();
+        int scheduleId = Integer.parseInt(location.split("/")[2]);
+        assertThat(scheduleId).isPositive();
     }
 
-    @DisplayName("스케줄을 조회한다")
+    @DisplayName("스케줄 목록을 조회한다")
     @Test
-    public void showSchedules() {
-        requestCreateSchedule();
+    void showSchedules() {
+        String location = getCreatedScheduleLocation();
+        int scheduleId = Integer.parseInt(location.split("/")[2]);
 
         var response = RestAssured
-                .given().log().all()
-                .param("themeId", themeId)
-                .param("date", "2022-08-11")
+                .given().param("themeId", themeId)
+                .param("date", DATE)
                 .when().get("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .then().statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+        List<Schedule> schedules = response.jsonPath().getList(".", Schedule.class);
+        assertThat(schedules).hasSize(1);
+
+        Schedule schedule = schedules.get(0);
+        assertThat(schedule.getTheme().getId()).isEqualTo(themeId);
+        assertThat(schedule.getId()).isEqualTo(scheduleId);
+        assertThat(schedule.getDate()).isEqualTo(DATE);
+        assertThat(schedule.getTime()).isEqualTo(TIME);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("스케줄을 삭제한다")
     @Test
-    void delete() {
-        String location = requestCreateSchedule();
+    void deleteSchedule() {
+        String location = getCreatedScheduleLocation();
 
         var response = RestAssured
                 .given().log().all()
@@ -77,16 +80,12 @@ public class ScheduleE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+    public String getCreatedScheduleLocation() {
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(scheduleRequest)
                 .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .header("Location");
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
     }
 }

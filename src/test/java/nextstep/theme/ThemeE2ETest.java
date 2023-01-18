@@ -9,18 +9,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.Constant.THEME_NAME;
+import static nextstep.Constant.THEME_DESCRIPTION;
+import static nextstep.Constant.THEME_PRICE;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
-    public void create() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+    void createThemeTest() {
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(themeRequest)
                 .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -28,22 +31,21 @@ public class ThemeE2ETest {
 
     @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
+    void showThemes() {
         createTheme();
 
         var response = RestAssured
                 .given().log().all()
-                .param("date", "2022-08-11")
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList(".")).hasSize(1);
     }
 
     @DisplayName("테마를 삭제한다")
     @Test
-    void delete() {
+    void deleteTheme() {
         Long id = createTheme();
 
         var response = RestAssured
@@ -56,14 +58,11 @@ public class ThemeE2ETest {
     }
 
     public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
         String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(themeRequest)
                 .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
+                .then().statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
     }

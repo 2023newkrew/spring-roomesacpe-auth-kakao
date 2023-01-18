@@ -34,7 +34,6 @@ public class ThemeDao {
             ps.setString(2, theme.getDesc());
             ps.setInt(3, theme.getPrice());
             return ps;
-
         }, keyHolder);
 
         return keyHolder.getKey().longValue();

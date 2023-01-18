@@ -21,21 +21,18 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
-            resultSet.getLong("reservation.id"),
-            new Schedule(
-                    resultSet.getLong("schedule.id"),
-                    new Theme(
-                            resultSet.getLong("theme.id"),
-                            resultSet.getString("theme.name"),
-                            resultSet.getString("theme.desc"),
-                            resultSet.getInt("theme.price")
-                    ),
-                    resultSet.getDate("schedule.date").toLocalDate(),
-                    resultSet.getTime("schedule.time").toLocalTime()
-            ),
-            resultSet.getString("reservation.name")
-    );
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> Reservation.builder()
+                    .id(resultSet.getLong("reservation.id"))
+                    .schedule(Schedule.builder()
+                        .id(resultSet.getLong("schedule.id"))
+                        .theme(Theme.builder()
+                            .id(resultSet.getLong("theme.id"))
+                            .name(resultSet.getString("theme.name"))
+                            .desc(resultSet.getString("theme.desc"))
+                            .price(resultSet.getInt("theme.price")).build())
+                        .date(resultSet.getDate("schedule.date").toLocalDate())
+                        .time(resultSet.getTime("schedule.time").toLocalTime()).build())
+                    .name(resultSet.getString("reservation.name")).build();
 
     public Long save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";
@@ -81,11 +78,10 @@ public class ReservationDao {
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
-
         try {
             return jdbcTemplate.query(sql, rowMapper, id);
         } catch (Exception e) {
-            return null;
+            return List.of();
         }
     }
 
