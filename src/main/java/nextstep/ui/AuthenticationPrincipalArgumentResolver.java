@@ -1,9 +1,7 @@
 package nextstep.ui;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.login.LoginMember;
 import nextstep.login.LoginService;
-import nextstep.member.Member;
 import nextstep.support.TokenExpirationException;
 import nextstep.support.UnauthorizedException;
 import org.springframework.core.MethodParameter;
@@ -41,8 +39,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!jwtTokenProvider.validateToken(token)) throw new TokenExpirationException();
 
         String username = jwtTokenProvider.getPrincipal(token);
-        Member member = loginService.findByUsername(username);
-        return LoginMember.of(member);
+        return loginService.findByUsername(username);
     }
 
 }

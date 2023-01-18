@@ -1,6 +1,5 @@
 package nextstep.login;
 
-import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.support.MemberNotFoundException;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,10 @@ public class LoginService {
         this.memberDao = memberDao;
     }
 
-    public Member findByUsername(String username) {
-        return memberDao.findByUsername(username).orElseThrow(MemberNotFoundException::new);
+    public LoginMember findByUsername(String username) {
+        return LoginMember.of(
+                memberDao.findByUsername(username)
+                        .orElseThrow(MemberNotFoundException::new)
+        );
     }
 }
