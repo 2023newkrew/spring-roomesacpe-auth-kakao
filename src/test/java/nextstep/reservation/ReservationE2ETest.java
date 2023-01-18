@@ -88,7 +88,7 @@ class ReservationE2ETest {
 
     @DisplayName("예약을 생성한다")
     @Test
-    void create() {
+    void createReservationTest() {
         RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, BEARER_TYPE + accessToken)
@@ -146,7 +146,7 @@ class ReservationE2ETest {
 
     @DisplayName("다른 사람의 예약을 삭제한다")
     @Test
-    void delete_other_person() {
+    void deleteReservationForbidden() {
         var reservation = createReservation();
         String OTHER_USER_NAME = "Other";
 
@@ -178,7 +178,7 @@ class ReservationE2ETest {
 
     @DisplayName("로그인 없이 예약을 삭제한다")
     @Test
-    void delete_without_login() {
+    void deleteReservationUnauthorized() {
         var reservation = createReservation();
 
         var response = RestAssured
@@ -192,7 +192,7 @@ class ReservationE2ETest {
 
     @DisplayName("중복 예약을 생성한다")
     @Test
-    void createDuplicateReservation() {
+    void createDuplicatedReservation() {
         createReservation();
 
         var response = RestAssured
@@ -225,14 +225,13 @@ class ReservationE2ETest {
 
     @DisplayName("없는 예약을 삭제한다")
     @Test
-    void createNotExistReservation() {
+    void deleteNotExistingReservation() {
         var response = RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
-
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 

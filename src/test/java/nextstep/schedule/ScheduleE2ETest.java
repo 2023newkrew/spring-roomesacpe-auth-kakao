@@ -66,9 +66,9 @@ class ScheduleE2ETest {
         assertThat(schedule.getTime()).isEqualTo(TIME);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("스케줄을 삭제한다")
     @Test
-    void delete() {
+    void deleteSchedule() {
         String location = getCreatedScheduleLocation();
 
         var response = RestAssured
