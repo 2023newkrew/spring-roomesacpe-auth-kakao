@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
@@ -16,5 +16,9 @@ public class MemberService {
 
     public Member findById(Long id) {
         return memberDao.findById(id);
+    }
+
+    public Member findByUsername(String username) {
+        return memberDao.findByUsername(username);
     }
 }
