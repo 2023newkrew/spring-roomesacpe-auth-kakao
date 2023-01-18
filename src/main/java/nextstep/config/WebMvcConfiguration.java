@@ -17,12 +17,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns("/login/**", "/members", "/h2-console/**");
-        WebMvcConfigurer.super.addInterceptors(registry);
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(loginArgumentResolver);
-        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 }
