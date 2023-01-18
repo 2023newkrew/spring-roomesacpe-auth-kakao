@@ -1,6 +1,6 @@
 package nextstep.support;
 
-public class ReservationNotFoundException extends IllegalArgumentException {
+public class ReservationNotFoundException extends NotFoundException {
     public ReservationNotFoundException() {
     }
 

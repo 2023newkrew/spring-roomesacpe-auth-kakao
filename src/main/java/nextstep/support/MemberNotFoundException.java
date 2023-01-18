@@ -1,6 +1,6 @@
 package nextstep.support;
 
-public class MemberNotFoundException extends IllegalArgumentException {
+public class MemberNotFoundException extends NotFoundException {
     public MemberNotFoundException() {
     }
 

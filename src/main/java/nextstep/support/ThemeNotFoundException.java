@@ -1,6 +1,6 @@
 package nextstep.support;
 
-public class ThemeNotFoundException extends IllegalArgumentException {
+public class ThemeNotFoundException extends NotFoundException {
     public ThemeNotFoundException() {
     }
 

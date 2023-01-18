@@ -13,19 +13,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-    @ExceptionHandler({MemberNotFoundException.class, ReservationNotFoundException.class, ScheduleNotFoundException.class, ThemeNotFoundException.class})
-    public ResponseEntity NotFoundException(Exception e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity NotFoundException(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity ForbiddenException(Exception e) {
+    public ResponseEntity ForbiddenException(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(DuplicateReservationException.class)
-    public ResponseEntity UnprocessableEntityException(Exception e) {
+    public ResponseEntity UnprocessableEntityException(DuplicateReservationException e) {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity Exception(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getStackTrace());
     }
 
 }
