@@ -20,7 +20,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal LoginMember loginMember) {
-        Long id = reservationService.create(reservationRequest, loginMember);
+        Long id = reservationService.create(reservationRequest, loginMember.getId());
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
