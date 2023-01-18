@@ -5,6 +5,7 @@ import nextstep.error.ErrorCode;
 public class RoomEscapeException extends RuntimeException {
 
     private ErrorCode errorCode;
+    private String message;
 
     public RoomEscapeException() {
         super();
@@ -16,13 +17,15 @@ public class RoomEscapeException extends RuntimeException {
     }
 
     public RoomEscapeException(ErrorCode errorCode, String message) {
-        super(message);
+        super();
         this.errorCode = errorCode;
+        this.message = message;
     }
 
     public RoomEscapeException(ErrorCode errorCode, String message, Throwable cause) {
-        super(message, cause);
+        super(cause);
         this.errorCode = errorCode;
+        this.message = message;
     }
 
     public RoomEscapeException(ErrorCode errorCode, Throwable cause) {
@@ -32,6 +35,11 @@ public class RoomEscapeException extends RuntimeException {
 
     public ErrorCode getErrorCode() {
         return errorCode;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 }
 
