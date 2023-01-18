@@ -1,7 +1,10 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
+import nextstep.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
@@ -11,11 +14,13 @@ import java.util.List;
 
 @Service
 public class ReservationService {
+    public final MemberDao memberDao;
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService( MemberDao memberDao, ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+        this.memberDao = memberDao;
         this.reservationDao = reservationDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
@@ -49,12 +54,15 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
+    public void deleteById(Long reservationId, Long memberId) {
+        Member member = memberDao.findById(memberId);
+        Reservation reservation = reservationDao.findById(reservationId);
         if (reservation == null) {
             throw new NullPointerException();
         }
-
-        reservationDao.deleteById(id);
+        if(!member.getName().equals(reservation.getName())){
+            throw new AuthorizationException();
+        }
+        reservationDao.deleteById(reservationId);
     }
 }
