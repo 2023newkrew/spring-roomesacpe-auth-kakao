@@ -3,6 +3,7 @@ package nextstep.support.resolver;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberService;
 import nextstep.support.annotation.AuthorizationPrincipal;
+import nextstep.support.exception.AuthorizationExcpetion;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -24,9 +25,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String token = webRequest.getHeader("Authorization").replace("Bearer ", "");
-        assert jwtTokenProvider.validateToken(token);
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        String token = webRequest.getHeader("Authorization");
+        if (token != null) {
+            token = token.replace("Bearer ", "");
+        }
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthorizationExcpetion("계정을 인증할 수 없습니다.");
+        }
         return memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
     }
 }
