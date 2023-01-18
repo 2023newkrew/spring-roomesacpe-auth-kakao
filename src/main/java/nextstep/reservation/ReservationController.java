@@ -24,10 +24,10 @@ public class ReservationController {
             @RequestBody ReservationRequest reservationRequest,
             @AuthenticationPrincipal Member memberResponse
     ) {
-        Long id = reservationService.create(reservationRequest);
         if (!reservationRequest.getName().equals(memberResponse.getUsername())) {
             throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
         }
+        Long id = reservationService.create(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
