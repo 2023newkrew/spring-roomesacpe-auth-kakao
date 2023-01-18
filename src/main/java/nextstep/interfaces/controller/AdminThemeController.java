@@ -1,9 +1,7 @@
 package nextstep.interfaces.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.domain.model.request.ScheduleRequest;
 import nextstep.domain.model.request.ThemeRequest;
-import nextstep.service.ScheduleService;
 import nextstep.service.ThemeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +11,7 @@ import java.net.URI;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/themes")
-public class AdminController {
+public class AdminThemeController {
     private final ThemeService themeService;
     @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
