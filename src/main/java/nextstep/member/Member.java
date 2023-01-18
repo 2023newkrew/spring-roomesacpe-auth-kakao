@@ -1,11 +1,14 @@
 package nextstep.member;
 
+import nextstep.common.Role;
+
 public class Member {
     private Long id;
     private final String username;
     private final String password;
     private final String name;
     private final String phone;
+    private Role role;
 
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
@@ -13,6 +16,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = Role.MEMBER;
     }
 
     public Member(String username, String password, String name, String phone) {
@@ -20,6 +24,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = Role.MEMBER;
     }
 
     public Long getId() {
@@ -42,4 +47,7 @@ public class Member {
         return phone;
     }
 
+    public Role getRole() {
+        return role;
+    }
 }
