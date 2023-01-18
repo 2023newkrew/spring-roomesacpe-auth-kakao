@@ -57,4 +57,15 @@ public class MemberDao {
         }
         return member;
     }
+
+    public Member findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+        Member member = null;
+        try {
+            member = jdbcTemplate.queryForObject(sql, rowMapper, username, password);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return member;
+    }
 }
