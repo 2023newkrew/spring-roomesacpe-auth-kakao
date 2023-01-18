@@ -27,7 +27,7 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(Long authId, ReservationRequest reservationRequest) {
+    public Long create(Long userId, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -38,7 +38,7 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Member member = memberDao.findById(authId);
+        Member member = memberDao.findById(userId);
         Reservation newReservation = new Reservation(
                 schedule,
                 member.getName()
@@ -56,12 +56,12 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long authId, Long reservationId) {
+    public void deleteById(Long userId, Long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId);
         if (reservation == null) {
             throw new NullPointerException();
         }
-        Member me = memberDao.findById(authId);
+        Member me = memberDao.findById(userId);
         if (!reservation.isMyReservation(me)) {
             throw new UnAuthorizationException();
         }

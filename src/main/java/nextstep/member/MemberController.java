@@ -23,8 +23,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal Long authId) {
-        Member member = memberService.findById(authId);
+    public ResponseEntity me(@AuthenticationPrincipal Long userId) {
+        Member member = memberService.findById(userId);
         return ResponseEntity.ok().body(member);
     }
 }
