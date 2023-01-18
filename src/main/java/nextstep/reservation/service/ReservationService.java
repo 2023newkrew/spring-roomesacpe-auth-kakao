@@ -1,24 +1,28 @@
 package nextstep.reservation.service;
 
-import nextstep.reservation.dao.ReservationDao;
-import nextstep.reservation.entity.Reservation;
+import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.repository.ReservationRepository;
 import nextstep.schedule.dao.ScheduleDao;
 import nextstep.schedule.entity.Schedule;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.dao.ThemeDao;
 import nextstep.theme.entity.Theme;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ReservationService {
-    public final ReservationDao reservationDao;
-    public final ThemeDao themeDao;
-    public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
-        this.reservationDao = reservationDao;
+    private final ReservationRepository reservationRepository;
+    private final ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+
+    @Autowired
+    public ReservationService(ReservationRepository reservationRepository, ThemeDao themeDao, ScheduleDao scheduleDao) {
+        this.reservationRepository = reservationRepository;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
     }
@@ -26,21 +30,20 @@ public class ReservationService {
     public Long create(Long scheduleId, Long memberId) {
         Schedule schedule = scheduleDao.findById(scheduleId);
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
-        List<Reservation> reservation = reservationDao.findByScheduleId(scheduleId);
+        List<Reservation> reservation = reservationRepository.findByScheduleId(scheduleId);
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
 
         Reservation newReservation = new Reservation(
-                null,
                 schedule,
                 memberId
         );
 
-        return reservationDao.save(newReservation);
+        return reservationRepository.save(newReservation);
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
@@ -49,14 +52,14 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        return reservationDao.findAllByThemeIdAndDate(themeId, date);
+        return reservationRepository.findAllByThemeIdAndDate(themeId, date);
     }
 
     public void delete(Long id, Long memberId) {
-        if (!reservationDao.existsByIdAndMemberId(id, memberId)) {
+        if (!reservationRepository.existsByIdAndMemberId(id, memberId)) {
             throw new RuntimeException();
         }
 
-        reservationDao.deleteById(id);
+        reservationRepository.deleteById(id);
     }
 }

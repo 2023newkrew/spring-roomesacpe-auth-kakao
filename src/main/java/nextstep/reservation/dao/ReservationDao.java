@@ -1,6 +1,6 @@
 package nextstep.reservation.dao;
 
-import nextstep.reservation.entity.Reservation;
+import nextstep.reservation.entity.ReservationEntity;
 import nextstep.schedule.entity.Schedule;
 import nextstep.theme.entity.Theme;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +13,13 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReservationDao {
 
     public final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
+    private final RowMapper<ReservationEntity> rowMapper = (resultSet, rowNum) -> new ReservationEntity(
             resultSet.getLong("reservation.id"),
             new Schedule(
                     resultSet.getLong("schedule.id"),
@@ -39,69 +40,63 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Reservation reservation) {
+    public Long save(ReservationEntity reservationEntity) {
         String sql = "INSERT INTO reservation (schedule_id, member_id) VALUES (?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, reservation.getSchedule().getId());
-            ps.setLong(2, reservation.getMemberId());
+            ps.setLong(1, reservationEntity.getSchedule().getId());
+            ps.setLong(2, reservationEntity.getMemberId());
             return ps;
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey())
+                .map(Number::longValue)
+                .orElse(-1L)
+                ;
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<ReservationEntity> findAllByThemeIdAndDate(Long themeId, String date) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "where theme.id = ? and schedule.date = ?;";
+                "FROM reservation " +
+                "INNER JOIN schedule ON reservation.schedule_id = schedule.id " +
+                "INNER JOIN theme ON schedule.theme_id = theme.id " +
+                "WHERE theme.id = ? AND schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
     }
 
-    public Reservation findById(Long id) {
+    public ReservationEntity findById(Long id) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "where reservation.id = ?;";
-        try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (Exception e) {
-            return null;
-        }
+                "FROM reservation " +
+                "INNER JOIN schedule ON reservation.schedule_id = schedule.id " +
+                "INNER JOIN theme ON schedule.theme_id = theme.id " +
+                "WHERE reservation.id = ?;";
+
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public List<Reservation> findByScheduleId(Long id) {
+    public List<ReservationEntity> findByScheduleId(Long id) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "where schedule.id = ?;";
+                "FROM reservation " +
+                "INNER JOIN schedule ON reservation.schedule_id = schedule.id " +
+                "INNER JOIN theme ON schedule.theme_id = theme.id " +
+                "WHERE schedule.id = ?;";
 
-        try {
-            return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
-            return null;
-        }
+        return jdbcTemplate.query(sql, rowMapper, id);
     }
 
     public boolean existsByIdAndMemberId(Long id, Long memberId) {
         String sql = "SELECT * FROM reservation WHERE id = ? AND member_id = ?";
-        try {
-            return !jdbcTemplate.queryForList(sql, id, memberId).isEmpty();
-        } catch (Exception e) {
-            return false;
-        }
+
+        return !jdbcTemplate.queryForList(sql, id, memberId).isEmpty();
     }
 
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM reservation where id = ?;";
-        jdbcTemplate.update(sql, id);
+    public int deleteById(Long id) {
+        String sql = "DELETE FROM reservation WHERE id = ?;";
+
+        return jdbcTemplate.update(sql, id);
     }
 }

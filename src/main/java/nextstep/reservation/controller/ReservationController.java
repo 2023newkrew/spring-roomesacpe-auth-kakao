@@ -1,8 +1,8 @@
 package nextstep.reservation.controller;
 
 import nextstep.global.config.annotation.ExtractPrincipal;
+import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.dto.ReservationRequest;
-import nextstep.reservation.entity.Reservation;
 import nextstep.reservation.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +25,14 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity createReservation(@ExtractPrincipal String memberId, @RequestBody ReservationRequest reservationRequest) {
         Long id = reservationService.create(reservationRequest.getScheduleId(), Long.parseLong(memberId));
+
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
     public ResponseEntity<List<Reservation>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
+
         return ResponseEntity.ok().body(results);
     }
 
