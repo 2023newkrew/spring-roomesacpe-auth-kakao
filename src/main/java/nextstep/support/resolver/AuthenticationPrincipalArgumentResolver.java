@@ -1,5 +1,6 @@
 package nextstep.support.resolver;
 
+import nextstep.auth.JwtTokenConfig;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberService;
 import nextstep.support.annotation.AuthorizationPrincipal;
@@ -28,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = webRequest.getHeader("Authorization");
         if (token != null) {
-            token = token.replace("Bearer ", "");
+            token = token.replace(JwtTokenConfig.TOKEN_CLASS, "");
         }
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationExcpetion("계정을 인증할 수 없습니다.");

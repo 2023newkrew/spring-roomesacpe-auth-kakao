@@ -3,6 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.JwtTokenConfig;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
@@ -97,7 +98,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -145,7 +146,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -160,7 +161,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer asdf")
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + "dummytokenstring!")
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -204,7 +205,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -215,7 +216,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
