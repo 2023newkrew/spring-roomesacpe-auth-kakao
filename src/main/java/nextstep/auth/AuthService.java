@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.InvalidTokenRequestException;
+import nextstep.support.InvalidLoginException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,10 +18,10 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(InvalidTokenRequestException::new);
+                .orElseThrow(InvalidLoginException::new);
 
         if (member.checkWrongPassword(tokenRequest.getPassword())) {
-            throw new InvalidTokenRequestException();
+            throw new InvalidLoginException();
         }
 
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
