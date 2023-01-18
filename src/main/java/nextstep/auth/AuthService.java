@@ -29,6 +29,6 @@ public class AuthService {
         if (member == null) {
             return true;
         }
-        return !member.getPassword().equals(credentials);
+        return member.checkWrongPassword(credentials);
     }
 }
