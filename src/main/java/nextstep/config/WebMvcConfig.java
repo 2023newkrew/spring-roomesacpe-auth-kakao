@@ -49,7 +49,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor())
                 .order(1)
-                .addPathPatterns("/admin/**", "/members/me", "/reservations/**");
+                .addPathPatterns("/admin/**", "/members/**", "/reservations/**");
 
         registry.addInterceptor(adminInterceptor())
                 .order(2)
