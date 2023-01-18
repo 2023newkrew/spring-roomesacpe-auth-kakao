@@ -1,6 +1,5 @@
 package nextstep.schedule;
 
-import nextstep.exception.NotExistEntityException;
 import nextstep.theme.Theme;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

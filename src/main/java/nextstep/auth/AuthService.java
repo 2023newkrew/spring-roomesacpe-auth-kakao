@@ -2,10 +2,10 @@ package nextstep.auth;
 
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
+import nextstep.exception.NotCorrectPasswordException;
 import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.exception.NotCorrectPasswordException;
 import org.springframework.stereotype.Service;
 
 @Service
