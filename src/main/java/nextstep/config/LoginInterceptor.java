@@ -17,7 +17,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         String accessToken = request.getHeader("authorization");
 
         if(accessToken == null){
@@ -28,6 +28,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new RoomEscapeException(ErrorCode.INVALID_TOKEN);
         }
 
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
     }
 }
