@@ -18,7 +18,7 @@ public class RoleInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = AuthorizationExtractor.extract(request).orElseThrow(AuthenticationException::new);
+        String token = AuthorizationExtractor.extract(request).orElseThrow(() -> new AuthenticationException("Log in required."));
         if (!tokenProvider.validateToken(token)) {
             throw new AuthenticationException("Token invalid.");
         }

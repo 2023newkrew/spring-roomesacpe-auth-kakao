@@ -31,9 +31,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = AuthorizationExtractor.extract(request).orElseThrow(AuthenticationException::new);
+        String token = AuthorizationExtractor.extract(request).orElseThrow(() -> new AuthenticationException("Log in required."));
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthenticationException();
+            throw new AuthenticationException("Token invalid.");
         }
         Member loggedInMember = memberService.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)));
         if (loggedInMember == null) {
