@@ -6,6 +6,7 @@ public class Reservation {
     private Long id;
     private Schedule schedule;
     private String name;
+    private Long memberId;
 
     public Reservation() {
     }
@@ -21,6 +22,13 @@ public class Reservation {
         this.name = name;
     }
 
+    public Reservation(Long id, Schedule schedule, String name, Long memberId) {
+        this.id = id;
+        this.schedule = schedule;
+        this.name = name;
+        this.memberId = memberId;
+    }
+
     public Long getId() {
         return id;
     }
@@ -31,5 +39,9 @@ public class Reservation {
 
     public String getName() {
         return name;
+    }
+
+    public Long getMemberId() {
+        return memberId;
     }
 }

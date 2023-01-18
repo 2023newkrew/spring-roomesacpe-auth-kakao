@@ -3,6 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,6 +27,8 @@ class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
 
     private ReservationRequest request;
     private Long themeId;
@@ -56,7 +61,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -78,11 +83,15 @@ class ReservationE2ETest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
+        String token = createBearerToken(USERNAME, PASSWORD);
+
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/reservations")
+                .when().log().all()
+                .post("/reservations")
                 .then().log().all()
                 .extract();
 
@@ -92,7 +101,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
-        createReservation();
+        createReservation(USERNAME, PASSWORD);
 
         var response = RestAssured
                 .given().log().all()
@@ -109,7 +118,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        var reservation = createReservation();
+        var reservation = createReservation(USERNAME, PASSWORD);
 
         var response = RestAssured
                 .given().log().all()
@@ -123,7 +132,7 @@ class ReservationE2ETest {
     @DisplayName("중복 예약을 생성한다")
     @Test
     void createDuplicateReservation() {
-        createReservation();
+        createReservation(USERNAME, PASSWORD);
 
         var response = RestAssured
                 .given().log().all()
@@ -163,13 +172,31 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> createReservation() {
+    private ExtractableResponse<Response> createReservation(String username, String password) {
+        String token = createBearerToken(username, password);
+
         return RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private String createBearerToken(String username, String password) {
+        TokenRequest request = new TokenRequest(username, password);
+
+        TokenResponse response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().log().all()
+                .post("/login/token")
+                .then().log().all()
+                .extract()
+                .as(TokenResponse.class);
+
+        return "Bearer " + response.getAccessToken();
     }
 }
