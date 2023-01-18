@@ -35,3 +35,4 @@ public class MemberController {
         return ResponseEntity.ok(MemberResponse.of(member));
     }
 }
+

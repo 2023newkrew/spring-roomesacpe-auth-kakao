@@ -1,5 +1,7 @@
 package nextstep.member.dto;
 
+import java.util.Objects;
+
 public abstract class MemberBaseDto {
 
     private final Long id;
@@ -24,4 +26,21 @@ public abstract class MemberBaseDto {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MemberBaseDto that = (MemberBaseDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username)
+                && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, name);
+    }
 }

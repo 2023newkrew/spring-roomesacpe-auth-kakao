@@ -3,9 +3,15 @@ package nextstep.auth.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import nextstep.member.Member;
+import nextstep.member.dto.LoginMember;
 import org.springframework.beans.factory.annotation.Value;
 
 public class JwtTokenProvider {
@@ -16,8 +22,12 @@ public class JwtTokenProvider {
     @Value("${validity-in-milli-seconds}")
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(Member member) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("username", member.getUsername());
+        parameters.put("name", member.getName());
+        parameters.put("id", member.getId());
+        Claims claims = Jwts.claims(parameters);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -29,8 +39,10 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public LoginMember getPrincipal(String token) {
+        Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return new LoginMember(body.get("id", Long.class), body.get("username", String.class),
+                body.get("name", String.class));
     }
 
     public boolean validateToken(String token) {
