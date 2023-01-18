@@ -51,9 +51,4 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
-    public boolean isMember(String username, String password) {
-        String sql = "SELECT count(*) from member where username = ? and password = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
-        return count > 0;
-    }
 }

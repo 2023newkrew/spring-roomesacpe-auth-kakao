@@ -1,8 +1,10 @@
 package nextstep.config;
 
 import nextstep.auth.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,19 +14,20 @@ import java.util.List;
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver) {
-        this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
+    public WebMvcConfiguration(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/reservations/**");
+        registry.addInterceptor(new LoginInterceptor(jwtTokenProvider, HttpMethod.POST)).addPathPatterns("/reservations/**");
+        registry.addInterceptor(new LoginInterceptor(jwtTokenProvider, HttpMethod.DELETE)).addPathPatterns("/reservations/**");
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authenticationPrincipalArgumentResolver);
+        resolvers.add(new AuthenticationPrincipalArgumentResolver(jwtTokenProvider));
     }
 }
