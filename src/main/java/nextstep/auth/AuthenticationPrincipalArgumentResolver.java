@@ -39,6 +39,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (loggedInMember == null) {
             throw new NotExistEntityException();
         }
-        return loggedInMember;
+        return LoggedInMember.from(loggedInMember);
     }
 }
