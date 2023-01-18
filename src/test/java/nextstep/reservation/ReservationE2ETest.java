@@ -31,7 +31,6 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
-
     private String accessToken;
 
     @BeforeEach
@@ -86,7 +85,7 @@ class ReservationE2ETest {
 
         request = new ReservationRequest(
                 scheduleId,
-                "username"
+                "name"
         );
     }
 
@@ -140,13 +139,13 @@ class ReservationE2ETest {
     @DisplayName("다른 사람의 예약을 삭제한다")
     @Test
     void deleteOtherPeopleReservationExceptionTest() {
-        var reservationRequest = new ReservationRequest(1L, "otherName");
+        var reservation = createReservation(request);
 
-        var reservation = createReservation(reservationRequest);
+        var newPersonToken = createNewPersonToken();
 
         var response = RestAssured
                 .given().log().all()
-                .header("authorization", "Bearer " + accessToken)
+                .header("authorization", "Bearer " + newPersonToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -206,5 +205,29 @@ class ReservationE2ETest {
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private String createNewPersonToken() {
+
+        MemberRequest body = new MemberRequest("username2", "password", "name", "010-1234-5678");
+        var memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("username2", "password"))
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        return tokenResponse.body().as(TokenResponse.class).getAccessToken();
     }
 }
