@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/themes")
@@ -28,15 +29,14 @@ public class ThemeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Theme>> showThemes() {
-        List<Theme> results = themeService.findAll();
+    public ResponseEntity<List<ThemeResponse>> showThemes() {
+        List<ThemeResponse> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 }

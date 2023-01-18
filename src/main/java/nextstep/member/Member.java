@@ -45,4 +45,5 @@ public class Member {
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }
+    
 }
