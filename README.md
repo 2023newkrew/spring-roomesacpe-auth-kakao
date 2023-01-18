@@ -27,3 +27,7 @@
 
 **내 정보 조회**
 ![LookUpInfo.png](LookUpInfo.png)
+
+
+### TestCase
+* 토큰을 이용하여 유저 정보를 가져올 수 있다.

@@ -35,9 +35,7 @@ public class MemberDao {
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
             return ps;
-
         }, keyHolder);
-
         return keyHolder.getKey().longValue();
     }
 
