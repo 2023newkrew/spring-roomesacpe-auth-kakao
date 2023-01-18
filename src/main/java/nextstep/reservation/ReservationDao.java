@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,17 +35,25 @@ public class ReservationDao {
                     resultSet.getDate("schedule.date").toLocalDate(),
                     resultSet.getTime("schedule.time").toLocalTime()
             ),
+            new Member(
+                resultSet.getLong("member.id"),
+                resultSet.getString("member.username"),
+                resultSet.getString("member.password"),
+                resultSet.getString("member.name"),
+                resultSet.getString("member.phone")
+            ),
             resultSet.getString("reservation.name")
     );
 
     public Long save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";
+        String sql = "INSERT INTO reservation (schedule_id, member_id, name) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, reservation.getSchedule().getId());
-            ps.setString(2, reservation.getName());
+            ps.setLong(2, reservation.getSchedule().getId());
+            ps.setString(3, reservation.getName());
             return ps;
 
         }, keyHolder);
@@ -57,6 +66,7 @@ public class ReservationDao {
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
+                "inner join member on reservation.member_id = member.id " +
                 "where theme.id = ? and schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
@@ -67,6 +77,7 @@ public class ReservationDao {
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
+                "inner join member on reservation.member_id = member.id " +
                 "where reservation.id = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -80,6 +91,7 @@ public class ReservationDao {
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
+                "inner join member on reservation.member_id = member.id " +
                 "where schedule.id = ?;";
 
         try {

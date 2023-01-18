@@ -1,5 +1,7 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
@@ -17,15 +19,23 @@ public class ReservationService {
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public final MemberDao memberDao;
+
+    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao, MemberDao memberDao) {
         this.reservationDao = reservationDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
+        this.memberDao = memberDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, String username) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
+            throw new NullPointerException();
+        }
+
+        Member member = memberDao.findByUsername(username);
+        if (member == null) {
             throw new NullPointerException();
         }
 
@@ -36,6 +46,7 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
+                member,
                 reservationRequest.getName()
         );
 
@@ -57,7 +68,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if(!Objects.equals(reservation.getName(), username)){
+        if(!Objects.equals(reservation.getMember().getUsername(), username)){
             throw new ForbiddenAccessException();
         }
 
