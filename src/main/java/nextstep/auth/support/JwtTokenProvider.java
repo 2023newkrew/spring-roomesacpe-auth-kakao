@@ -48,6 +48,14 @@ public class JwtTokenProvider {
         }
     }
 
+    public boolean validateAuthorizationHeader(String authorizationHeader){
+        if (authorizationHeader == null) {
+            return false;
+        }
+        String credential = getCredential(authorizationHeader);
+        return validateToken(credential);
+    }
+
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);

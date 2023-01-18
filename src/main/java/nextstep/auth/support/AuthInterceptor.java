@@ -19,21 +19,28 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        LoginRequired loginRequired = handlerMethod.getMethod().getAnnotation(LoginRequired.class);
-
-        if(Objects.isNull(loginRequired)){
+        if (!isLoginRequiredMethod(handler)){
             return true;
         }
 
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader == null) {
+        if(!isValidAuthorizationHeader(request)){
             throw new AuthorizationException();
         }
-        String credential = jwtTokenProvider.getCredential(authorizationHeader);
-        if (!jwtTokenProvider.validateToken(credential)) {
-            throw new AuthorizationException();
-        }
+
         return super.preHandle(request, response, handler);
+    }
+
+    private boolean isValidAuthorizationHeader(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+        return jwtTokenProvider.validateAuthorizationHeader(authorizationHeader);
+    }
+
+    private static boolean isLoginRequiredMethod(Object handler) {
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        LoginRequired loginRequired = handlerMethod.getMethod()
+                .getAnnotation(LoginRequired.class);
+
+        return !Objects.isNull(loginRequired);
     }
 }
