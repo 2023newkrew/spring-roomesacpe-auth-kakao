@@ -5,6 +5,7 @@ import nextstep.domain.domain.Theme;
 import nextstep.repository.ThemeDao;
 import nextstep.domain.model.request.ThemeRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,14 +17,17 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
+    @Transactional
     public Long create(ThemeRequest themeRequest) {
         return themeDao.save(themeRequest.toEntity());
     }
 
+    @Transactional(readOnly = true)
     public List<Theme> findAll() {
         return themeDao.findAll();
     }
 
+    @Transactional
     public void delete(Long id) {
         Theme theme = themeDao.findById(id);
         if (theme == null) {

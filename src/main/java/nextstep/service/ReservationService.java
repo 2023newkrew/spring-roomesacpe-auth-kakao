@@ -11,6 +11,7 @@ import nextstep.infra.exception.api.NotReservationOwnerException;
 import nextstep.domain.domain.Theme;
 import nextstep.repository.ThemeDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +28,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
+    @Transactional
     public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
@@ -47,6 +49,7 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
+    @Transactional(readOnly = true)
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
@@ -56,6 +59,7 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
+    @Transactional
     public void deleteById(Long id, Long memberId) {
         Reservation reservation = reservationDao.findById(id);
 
