@@ -1,7 +1,7 @@
 package nextstep.schedule.dao;
 
 import nextstep.schedule.entity.ScheduleEntity;
-import nextstep.theme.entity.Theme;
+import nextstep.theme.entity.ThemeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,7 +22,7 @@ public class ScheduleDao {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<ScheduleEntity> rowMapper = (resultSet, rowNum) -> new ScheduleEntity(
             resultSet.getLong("schedule.id"),
-            new Theme(
+            new ThemeEntity(
                     resultSet.getLong("theme.id"),
                     resultSet.getString("theme.name"),
                     resultSet.getString("theme.desc"),

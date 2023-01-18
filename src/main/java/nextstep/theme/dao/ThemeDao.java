@@ -1,6 +1,6 @@
 package nextstep.theme.dao;
 
-import nextstep.theme.entity.Theme;
+import nextstep.theme.entity.ThemeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,11 +10,12 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ThemeDao {
 
-    private final RowMapper<Theme> rowMapper = (resultSet, rowNum) -> new Theme(
+    private final RowMapper<ThemeEntity> rowMapper = (resultSet, rowNum) -> new ThemeEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getString("desc"),
@@ -27,34 +28,39 @@ public class ThemeDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Theme theme) {
+    public Long save(ThemeEntity themeEntity) {
         String sql = "INSERT INTO theme (name, desc, price) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, theme.getName());
-            ps.setString(2, theme.getDesc());
-            ps.setInt(3, theme.getPrice());
+            ps.setString(1, themeEntity.getName());
+            ps.setString(2, themeEntity.getDesc());
+            ps.setInt(3, themeEntity.getPrice());
             return ps;
-
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey())
+                .map(Number::longValue)
+                .orElse(-1L)
+                ;
     }
 
-    public Theme findById(Long id) {
+    public ThemeEntity findById(Long id) {
         String sql = "SELECT id, name, desc, price FROM theme WHERE id = ?;";
+
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public List<Theme> findAll() {
+    public List<ThemeEntity> findAll() {
         String sql = "SELECT id, name, desc, price FROM theme;";
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void delete(Long id) {
+    public int deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?;";
-        jdbcTemplate.update(sql, id);
+
+        return jdbcTemplate.update(sql, id);
     }
 }

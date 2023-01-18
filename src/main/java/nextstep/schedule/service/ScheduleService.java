@@ -6,8 +6,8 @@ import nextstep.schedule.dto.ScheduleResponse;
 import nextstep.schedule.entity.ScheduleEntity;
 import nextstep.schedule.repository.ScheduleRepository;
 import nextstep.support.NotExistEntityException;
-import nextstep.theme.dao.ThemeDao;
-import nextstep.theme.entity.Theme;
+import nextstep.theme.entity.ThemeEntity;
+import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,18 +20,19 @@ import java.util.stream.Collectors;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final ThemeDao themeDao;
+    private final ThemeRepository themeRepository;
 
     @Autowired
-    public ScheduleService(ScheduleRepository scheduleRepository, ThemeDao themeDao) {
+    public ScheduleService(ScheduleRepository scheduleRepository, ThemeRepository themeRepository) {
         this.scheduleRepository = scheduleRepository;
-        this.themeDao = themeDao;
+        this.themeRepository = themeRepository;
     }
 
     public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
+        ThemeEntity targetTheme = themeRepository.findById(scheduleRequest.getThemeId())
+                .orElseThrow(NotExistEntityException::new);
 
-        return scheduleRepository.save(ScheduleEntity.of(theme, LocalDate.parse(scheduleRequest.getDate()), LocalTime.parse(scheduleRequest.getTime())));
+        return scheduleRepository.save(ScheduleEntity.of(targetTheme, LocalDate.parse(scheduleRequest.getDate()), LocalTime.parse(scheduleRequest.getTime())));
     }
 
     public List<ScheduleResponse> findByThemeIdAndDate(Long themeId, String date) {

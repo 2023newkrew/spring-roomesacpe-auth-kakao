@@ -2,7 +2,7 @@ package nextstep.reservation.dao;
 
 import nextstep.reservation.entity.ReservationEntity;
 import nextstep.schedule.entity.ScheduleEntity;
-import nextstep.theme.entity.Theme;
+import nextstep.theme.entity.ThemeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,7 +23,7 @@ public class ReservationDao {
             resultSet.getLong("reservation.id"),
             new ScheduleEntity(
                     resultSet.getLong("schedule.id"),
-                    new Theme(
+                    new ThemeEntity(
                             resultSet.getLong("theme.id"),
                             resultSet.getString("theme.name"),
                             resultSet.getString("theme.desc"),

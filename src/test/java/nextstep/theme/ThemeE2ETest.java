@@ -40,6 +40,7 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
+
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
@@ -67,6 +68,7 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
+
         return Long.parseLong(location.split("/")[2]);
     }
 }

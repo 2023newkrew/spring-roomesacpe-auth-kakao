@@ -1,7 +1,7 @@
 package nextstep.theme;
 
 import nextstep.theme.dao.ThemeDao;
-import nextstep.theme.entity.Theme;
+import nextstep.theme.entity.ThemeEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -18,7 +18,7 @@ public class ThemeDaoTest {
     @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-        Long id = themeDao.save(new Theme(null, "테마 이름", "테마 설명", 22_000));
+        Long id = themeDao.save(ThemeEntity.of("테마 이름", "테마 설명", 22_000));
         assertThat(id).isNotNull();
     }
 }
