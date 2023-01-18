@@ -22,9 +22,9 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity createReservation(
             @RequestBody ReservationRequest reservationRequest,
-            @AuthenticationPrincipal Member memberResponse
+            @AuthenticationPrincipal Member member
     ) {
-        if (!reservationRequest.getName().equals(memberResponse.getUsername())) {
+        if (!reservationRequest.getName().equals(member.getUsername())) {
             throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
         }
         Long id = reservationService.create(reservationRequest);
@@ -39,11 +39,11 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReservation(
-            @AuthenticationPrincipal Member memberResponse,
+            @AuthenticationPrincipal Member member,
             @PathVariable Long id
     ) {
         Reservation reservation = reservationService.findById(id);
-        if (!reservation.getName().equals(memberResponse.getUsername())) {
+        if (!reservation.getName().equals(member.getUsername())) {
             throw new ReservationForbiddenException("예약당사자만 예약을 삭제할 수 있습니다.");
         }
         reservationService.deleteById(id);
