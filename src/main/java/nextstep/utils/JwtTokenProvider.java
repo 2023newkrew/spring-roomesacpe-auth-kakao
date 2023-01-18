@@ -24,13 +24,14 @@ public class JwtTokenProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(String principal) {
+    public String createToken(String principal, String role) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
+                .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)

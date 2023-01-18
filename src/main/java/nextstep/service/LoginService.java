@@ -28,7 +28,7 @@ public class LoginService {
             throw new ApplicationException(INVALID_PASSWORD_ERROR);
         }
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
+        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString(), member.getRole().name()));
     }
 
     private Member findByUsername(String username) {
