@@ -37,7 +37,7 @@ public class Reservation {
 
     public void checkOwnerOnDelete(String username) {
         if (!this.name.equals(username)) {
-            throw new BusinessException(AuthErrorCode.UNAUTHORIZED);
+            throw new BusinessException(AuthErrorCode.UNAUTHORIZED_DELETE);
         }
     }
 }

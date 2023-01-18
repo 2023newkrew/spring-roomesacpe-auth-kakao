@@ -25,7 +25,7 @@ public class ReservationService {
     public Long create(String memberName, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+            throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
