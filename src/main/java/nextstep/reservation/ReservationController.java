@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.reservation.dto.ReservationRequestDto;
 import nextstep.support.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
@@ -10,26 +11,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
     public final ReservationService reservationService;
-
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
 
     @PostMapping
     public ResponseEntity createReservation(@RequestBody ReservationRequestDto reservationRequestDto, @AuthenticationPrincipal String username) {
         Long id = reservationService.create(reservationRequestDto, username);
         return ResponseEntity.created(URI.create("/reservations/" + id))
-                .build();
+            .build();
     }
 
     @GetMapping
     public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
         return ResponseEntity.ok()
-                .body(results);
+            .body(results);
     }
 
     @DeleteMapping("/{id}")
@@ -37,6 +35,6 @@ public class ReservationController {
         reservationService.deleteById(id, username);
 
         return ResponseEntity.noContent()
-                .build();
+            .build();
     }
 }

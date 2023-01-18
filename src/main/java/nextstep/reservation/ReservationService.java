@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.reservation.dto.ReservationRequestDto;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
@@ -13,16 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
-
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
-        this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
-    }
 
     public Long create(ReservationRequestDto reservationRequestDto, String username) {
         Schedule schedule = scheduleDao.findById(reservationRequestDto.getScheduleId());
@@ -52,11 +48,9 @@ public class ReservationService {
     }
 
     public void deleteById(Long id, String username) {
-        Reservation reservation = reservationDao.findById(id);
+        Reservation reservation = reservationDao.findById(id)
+            .orElseThrow(() -> new NotExistEntityException("예약번호가 유효하지 않습니다."));
 
-        if (reservation == null) {
-            throw new NotExistEntityException("예약번호가 유효하지 않습니다.");
-        }
         if (reservation.getName() != username) {
             throw new UnauthorizedException("자신의 예약이 아닙니다.");
         }
