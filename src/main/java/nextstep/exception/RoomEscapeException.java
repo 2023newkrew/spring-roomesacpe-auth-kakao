@@ -15,27 +15,14 @@ public class RoomEscapeException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
-    public RoomEscapeException(String message) {
-        super(message);
-    }
-
     public RoomEscapeException(ErrorCode errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
     }
 
-
-    public RoomEscapeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public RoomEscapeException(ErrorCode errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
-    }
-
-    public RoomEscapeException(Throwable cause) {
-        super(cause);
     }
 
     public RoomEscapeException(ErrorCode errorCode, Throwable cause) {
