@@ -3,7 +3,7 @@ package nextstep.member.service;
 import nextstep.member.Member;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.repository.MemberDao;
-import nextstep.support.NotExistEntityException;
+import nextstep.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

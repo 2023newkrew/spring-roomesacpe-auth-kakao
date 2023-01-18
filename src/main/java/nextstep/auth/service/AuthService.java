@@ -4,7 +4,7 @@ import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.utils.JwtTokenProvider;
 import nextstep.member.dto.LoginMember;
 import nextstep.member.Member;
-import nextstep.support.UnauthorizedAccessException;
+import nextstep.exception.UnauthorizedAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;

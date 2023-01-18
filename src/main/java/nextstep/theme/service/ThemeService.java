@@ -1,6 +1,6 @@
 package nextstep.theme.service;
 
-import nextstep.support.NotExistEntityException;
+import nextstep.exception.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.dto.ThemeRequest;
 import nextstep.theme.repository.ThemeDao;
