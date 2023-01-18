@@ -99,11 +99,7 @@ public class ReservationDao implements ReservationRepository {
                 "inner join member on reservation.member_id = member.id " +
                 "where schedule.id = ?;";
 
-        try {
-            return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
-            return null;
-        }
+        return jdbcTemplate.query(sql, rowMapper, id);
     }
 
     @Override

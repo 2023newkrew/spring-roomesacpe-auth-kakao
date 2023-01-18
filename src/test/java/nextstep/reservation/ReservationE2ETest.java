@@ -167,19 +167,17 @@ class ReservationE2ETest {
 
     @DisplayName("중복 예약을 생성한다")
     @Test
-    @Disabled("TODO")
     void createDuplicateReservation() {
         createReservation();
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .body(request)
+                .auth().oauth2(jwtTokenProvider.createToken("1", null))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
