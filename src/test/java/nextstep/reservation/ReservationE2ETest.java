@@ -39,25 +39,8 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
-        var themeResponse = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(themeRequest)
-                .when().post("/themes")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(scheduleRequest)
-                .when().post("/schedules")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-
-        MemberRequest memberRequestBody = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
+        MemberRequest memberRequestBody = MemberRequest.builder()
+                .username(USERNAME).password(PASSWORD).name(NAME).phone(PHONE).build();
 
         RestAssured
                 .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(memberRequestBody)
@@ -75,6 +58,28 @@ class ReservationE2ETest {
 
         accessToken = tokenResponse.getAccessToken();
 
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
+        var themeResponse = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
+                .body(themeRequest)
+                .when().post("/themes")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] themeLocation = themeResponse.header("Location").split("/");
+        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        var scheduleResponse = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+
         reservationRequest = new ReservationRequest(
                 scheduleId,
                 USERNAME
@@ -84,16 +89,14 @@ class ReservationE2ETest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     @DisplayName("토큰 정보가 없으면 예약을 할 수 없다")
@@ -116,6 +119,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -146,38 +150,30 @@ class ReservationE2ETest {
         var reservation = createReservation();
         String OTHER_USER_NAME = "Other";
 
-        MemberRequest memberRequestBody = new MemberRequest(OTHER_USER_NAME, PASSWORD, NAME, PHONE);
+        MemberRequest memberRequestBody = MemberRequest.builder()
+                .username(OTHER_USER_NAME).password(PASSWORD).name(NAME).phone(PHONE).build();
 
         RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequestBody)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(memberRequestBody)
                 .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
+                .then().statusCode(HttpStatus.CREATED.value());
 
-        TokenRequest body = new TokenRequest(OTHER_USER_NAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(OTHER_USER_NAME, PASSWORD);
 
         TokenResponse tokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(tokenRequest)
                 .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .then().statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class);
 
         String otherPersonAccessToken = tokenResponse.getAccessToken();
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, BEARER_TYPE + otherPersonAccessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("로그인 없이 예약을 삭제한다")
@@ -218,6 +214,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
