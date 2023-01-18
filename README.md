@@ -10,7 +10,4 @@
 - [x] `HandlerMethodArgumentResolver`를 활용한다.
 
 ---
-ㅎ
-
-
 
