@@ -5,12 +5,14 @@ public class MemberRequest {
     private String password;
     private String name;
     private String phone;
+    private MemberRole role;
 
-    public MemberRequest(String username, String password, String name, String phone) {
+    public MemberRequest(String username, String password, String name, String phone, MemberRole role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
     public MemberRequest() {
@@ -33,7 +35,11 @@ public class MemberRequest {
         return phone;
     }
 
+    public MemberRole getRole() {
+        return role;
+    }
+
     public Member toEntity() {
-        return new Member(username, password, name, phone);
+        return new Member(username, password, name, phone, role);
     }
 }

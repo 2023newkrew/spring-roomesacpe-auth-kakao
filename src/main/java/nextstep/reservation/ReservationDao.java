@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.member.Member;
+import nextstep.member.MemberRole;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,15 +33,18 @@ public class ReservationDao {
                             resultSet.getString("theme.desc"),
                             resultSet.getInt("theme.price")
                     ),
-                    resultSet.getDate("schedule.date").toLocalDate(),
-                    resultSet.getTime("schedule.time").toLocalTime()
+                    resultSet.getDate("schedule.date")
+                            .toLocalDate(),
+                    resultSet.getTime("schedule.time")
+                            .toLocalTime()
             ),
             new Member(
                     resultSet.getLong("member.id"),
                     resultSet.getString("member.username"),
                     resultSet.getString("member.password"),
                     resultSet.getString("member.name"),
-                    resultSet.getString("member.phone")
+                    resultSet.getString("member.phone"),
+                    MemberRole.valueOf(resultSet.getString("member.role"))
             )
     );
 
@@ -50,51 +54,68 @@ public class ReservationDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, reservation.getSchedule().getId());
-            ps.setLong(2, reservation.getMember().getId());
+            ps.setLong(
+                    1,
+                    reservation.getSchedule()
+                            .getId()
+            );
+            ps.setLong(
+                    2,
+                    reservation.getMember()
+                            .getId()
+            );
             return ps;
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKey()
+                .longValue();
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "inner join member on reservation.member_id = member.id " +
-                "where theme.id = ? and schedule.date = ?;";
+        String
+                sql =
+                "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone, member.role " +
+                        "from reservation " +
+                        "inner join schedule on reservation.schedule_id = schedule.id " +
+                        "inner join theme on schedule.theme_id = theme.id " +
+                        "inner join member on reservation.member_id = member.id " +
+                        "where theme.id = ? and schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
     }
 
     public Reservation findById(Long id) {
-        String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "inner join member on reservation.member_id = member.id " +
-                "where reservation.id = ?;";
+        String
+                sql =
+                "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone, member.role " +
+                        "from reservation " +
+                        "inner join schedule on reservation.schedule_id = schedule.id " +
+                        "inner join theme on schedule.theme_id = theme.id " +
+                        "inner join member on reservation.member_id = member.id " +
+                        "where reservation.id = ?;";
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }
 
     public List<Reservation> findByScheduleId(Long id) {
-        String sql = "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone " +
-                "from reservation " +
-                "inner join schedule on reservation.schedule_id = schedule.id " +
-                "inner join theme on schedule.theme_id = theme.id " +
-                "inner join member on reservation.member_id = member.id " +
-                "where schedule.id = ?;";
+        String
+                sql =
+                "SELECT reservation.id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price, member.id, member.username, member.password, member.name, member.phone, member.role " +
+                        "from reservation " +
+                        "inner join schedule on reservation.schedule_id = schedule.id " +
+                        "inner join theme on schedule.theme_id = theme.id " +
+                        "inner join member on reservation.member_id = member.id " +
+                        "where schedule.id = ?;";
 
         try {
             return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }
