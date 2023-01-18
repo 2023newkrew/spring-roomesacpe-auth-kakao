@@ -19,7 +19,7 @@ public class ScheduleE2ETest {
     @Test
     @DisplayName("스케줄을 생성한다")
     public void createSchedule() {
-        token = loginUser();
+        token = loginAdmin();
 
         ScheduleRequest body = new ScheduleRequest(9999L, "2022-08-15", "13:00");
         RestAssured
@@ -27,7 +27,7 @@ public class ScheduleE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(token)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -36,12 +36,11 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 조회한다")
     public void showSchedules() {
         token = loginUser();
-        requestCreateSchedule();
 
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", 9999L)
-                .param("date", "2022-08-15")
+                .param("date", "2022-08-11")
                 .auth().oauth2(token)
                 .when().get("/schedules")
                 .then().log().all()
@@ -54,13 +53,13 @@ public class ScheduleE2ETest {
     @Test
     @DisplayName("스케줄을 삭제한다")
     void delete() {
-        token = loginUser();
+        token = loginAdmin();
         String location = requestCreateSchedule();
 
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
-                .when().delete(location)
+                .when().delete("/admin" + location)
                 .then().log().all()
                 .extract();
 
@@ -74,7 +73,7 @@ public class ScheduleE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(token)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()

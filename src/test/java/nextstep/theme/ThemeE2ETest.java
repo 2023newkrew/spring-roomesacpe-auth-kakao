@@ -58,7 +58,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .param("date", "2022-08-11")
                 .auth().oauth2(token)
-                .when().get("/admin/themes")
+                .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
