@@ -21,10 +21,9 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
 
         String token = header.substring("Bearer ".length());
         if (!jwtTokenProvider.validateToken(token)) throw new TokenExpirationException();
-
-        if (!jwtTokenProvider.getRole(token).equals(MemberRole.ADMIN)) throw new ForbiddenException();
+        if (!jwtTokenProvider.getRole(token).equals(MemberRole.ADMIN.toString())) throw new ForbiddenException();
 
         return super.preHandle(request, response, handler);
     }
-    
+
 }

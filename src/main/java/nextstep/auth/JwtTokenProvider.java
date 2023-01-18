@@ -8,12 +8,13 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+    private static final String AUTHORITIES_KEY = "role";
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
     public String createToken(String principal, MemberRole role) {
         Claims claims = Jwts.claims().setSubject(principal);
-        claims.put("role", role);
+        claims.put(AUTHORITIES_KEY, role);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -29,8 +30,8 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public MemberRole getRole(String token) {
-        return (MemberRole) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role");
+    public String getRole(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get(AUTHORITIES_KEY).toString();
     }
 
     public boolean validateToken(String token) {
