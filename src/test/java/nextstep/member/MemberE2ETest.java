@@ -1,9 +1,9 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
+import nextstep.dto.request.MemberRequest;
 import nextstep.dto.request.TokenRequest;
 import nextstep.dto.response.TokenResponse;
-import nextstep.dto.request.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)

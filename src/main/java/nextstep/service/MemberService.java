@@ -1,8 +1,8 @@
 package nextstep.service;
 
-import nextstep.dto.request.MemberRequest;
-import nextstep.domain.Member;
 import nextstep.dao.MemberDao;
+import nextstep.domain.Member;
+import nextstep.dto.request.MemberRequest;
 import org.springframework.stereotype.Service;
 
 @Service

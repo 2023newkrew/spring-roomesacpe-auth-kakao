@@ -1,8 +1,8 @@
 package nextstep.support.resolver;
 
-import nextstep.support.util.JwtTokenProvider;
 import nextstep.service.MemberService;
 import nextstep.support.annotation.AuthenticationPrincipal;
+import nextstep.support.util.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

@@ -1,9 +1,8 @@
 package nextstep.controller;
 
-import nextstep.support.util.JwtTokenProvider;
+import nextstep.domain.Member;
 import nextstep.dto.request.MemberRequest;
 import nextstep.dto.response.MemberResponse;
-import nextstep.domain.Member;
 import nextstep.service.MemberService;
 import nextstep.support.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;

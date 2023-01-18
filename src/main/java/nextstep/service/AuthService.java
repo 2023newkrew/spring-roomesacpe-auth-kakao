@@ -1,11 +1,9 @@
 package nextstep.service;
 
-import nextstep.support.util.JwtTokenProvider;
-import nextstep.dto.request.TokenRequest;
-import nextstep.dto.response.TokenResponse;
-import nextstep.domain.Member;
 import nextstep.dao.MemberDao;
+import nextstep.domain.Member;
 import nextstep.support.exception.AuthorizationException;
+import nextstep.support.util.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
 @Service

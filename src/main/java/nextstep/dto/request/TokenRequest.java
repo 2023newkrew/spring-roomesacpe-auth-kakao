@@ -4,7 +4,8 @@ public class TokenRequest {
     private long memberId;
     private String password;
 
-    public TokenRequest() {}
+    public TokenRequest() {
+    }
 
     public TokenRequest(long memberId, String password) {
         this.memberId = memberId;

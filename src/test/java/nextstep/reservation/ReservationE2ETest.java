@@ -3,16 +3,10 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.dto.request.TokenRequest;
-import nextstep.dto.response.MemberResponse;
-import nextstep.dto.response.TokenResponse;
 import nextstep.domain.Reservation;
-import nextstep.dto.request.ReservationRequest;
+import nextstep.dto.request.*;
 import nextstep.dto.response.ReservationResponse;
-import nextstep.domain.Member;
-import nextstep.dto.request.MemberRequest;
-import nextstep.dto.request.ScheduleRequest;
-import nextstep.dto.request.ThemeRequest;
+import nextstep.dto.response.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,15 +33,27 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+    private String adminAccessToken;
 
     @BeforeEach
     void setUp() {
+        TokenRequest adminTokenRequest = new TokenRequest(ADMIN_MEMBER_ID, ADMIN_PASSWORD);
+        this.adminAccessToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .header("Authorization", this.adminAccessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
