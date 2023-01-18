@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 @Component
 public class MemberDao {
@@ -59,4 +60,8 @@ public class MemberDao {
                 .orElseThrow(NoSuchMemberException::new);
     }
 
+    public List<Member> findAll() {
+        String sql = "SELECT id, username, password, name, phone, role from member;";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
 }

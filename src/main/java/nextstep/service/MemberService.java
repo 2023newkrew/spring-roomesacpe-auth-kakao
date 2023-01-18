@@ -8,6 +8,9 @@ import nextstep.repository.MemberDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -23,4 +26,7 @@ public class MemberService {
         return memberDao.findById(id);
     }
 
+    public List<Member> findAll() {
+        return memberDao.findAll();
+    }
 }

@@ -21,7 +21,7 @@ import java.util.logging.Handler;
 public class LoginInterceptor implements HandlerInterceptor {
     private static final String ACCESS_TOKEN = "accessToken";
     private static final String TOKEN_TYPE = "tokenType";
-    public static final String BEARER_TYPE = "Bearer";
+    private static final String BEARER_TYPE = "Bearer";
 
     private final JwtTokenProvider jwtTokenProvider;
     private final Role role;
@@ -64,7 +64,6 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new NoSuchTokenException();
         }
     }
-
 
     private boolean hasNoAuth(Object handler) {
         return !ObjectUtils.isEmpty(((HandlerMethod) handler).getMethod().getAnnotation(NoAuth.class));
