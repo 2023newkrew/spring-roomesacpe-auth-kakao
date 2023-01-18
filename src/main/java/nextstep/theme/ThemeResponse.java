@@ -1,18 +1,25 @@
 package nextstep.theme;
 
-public class ThemeRequest {
+public class ThemeResponse {
 
+    private Long id;
     private String name;
     private String desc;
     private int price;
 
-    private ThemeRequest() {
-    }
-
-    public ThemeRequest(String name, String desc, int price) {
+    public ThemeResponse(Long id, String name, String desc, int price) {
+        this.id = id;
         this.name = name;
         this.desc = desc;
         this.price = price;
+    }
+
+    public static ThemeResponse of(Theme theme) {
+        return new ThemeResponse(theme.getId(), theme.getName(), theme.getDesc(), theme.getPrice());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -25,13 +32,5 @@ public class ThemeRequest {
 
     public int getPrice() {
         return price;
-    }
-
-    public Theme toEntity() {
-        return new Theme(
-                this.name,
-                this.desc,
-                this.price
-        );
     }
 }
