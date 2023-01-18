@@ -2,8 +2,8 @@ package nextstep.reservation;
 
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.support.AuthorizationException;
-import nextstep.support.ForbiddenAccessException;
+import nextstep.exception.AuthorizationException;
+import nextstep.exception.ForbiddenAccessException;
 import nextstep.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-
     public final ReservationService reservationService;
     public final MemberService memberService;
 
@@ -24,7 +23,8 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<URI> createReservation(@AuthenticationPrincipal String token, @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<URI> createReservation(@AuthenticationPrincipal String token,
+                                                 @RequestBody ReservationRequest reservationRequest) {
         if (token == null) {
             throw new AuthorizationException();
         }

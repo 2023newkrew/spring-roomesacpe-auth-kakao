@@ -27,8 +27,8 @@ public class ScheduleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Schedule> showScheduleById(@RequestParam Long scheduleId) {
-        return ResponseEntity.ok().body(scheduleService.findById(scheduleId));
+    public ResponseEntity<Schedule> showScheduleById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(scheduleService.findById(id));
     }
 
     @DeleteMapping("/{id}")

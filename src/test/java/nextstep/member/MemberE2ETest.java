@@ -23,10 +23,14 @@ import static nextstep.Constant.BEARER_TYPE;
 class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
-    void create() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
+    void createMember() {
+        MemberRequest memberRequest = MemberRequest.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .name(NAME)
+                .phone(PHONE).build();
         RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(body)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(memberRequest)
                 .when().post("/members")
                 .then().statusCode(HttpStatus.CREATED.value())
                 .header("Location", "/members/1");
@@ -35,10 +39,10 @@ class MemberE2ETest {
     @DisplayName("토큰 정보로 회원 정보를 조회한다")
     @Test
     void findMemberByToken() {
-        create();
+        createMember();
 
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        String accessToken = getToken(body);
+        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
+        String accessToken = getToken(tokenRequest);
 
         MemberResponse memberResponse = RestAssured
                 .given().contentType(MediaType.APPLICATION_JSON_VALUE)

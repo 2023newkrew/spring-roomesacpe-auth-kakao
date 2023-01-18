@@ -5,17 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import static nextstep.Constant.THEME_DESCRIPTION;
+import static nextstep.Constant.THEME_NAME;
+import static nextstep.Constant.THEME_PRICE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
-public class ThemeDaoTest {
+class ThemeDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-        Long id = themeDao.save(new Theme("테마 이름", "테마 설명", 22_000));
+        Theme theme = Theme.builder().name(THEME_NAME).desc(THEME_DESCRIPTION).price(THEME_PRICE).build();
+        Long id = themeDao.save(theme);
         assertThat(id).isNotNull();
     }
 }

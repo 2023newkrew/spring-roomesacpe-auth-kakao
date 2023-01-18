@@ -1,16 +1,12 @@
 package nextstep.auth;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenResponse {
-    public String accessToken;
-
-    public TokenResponse() {
-    }
-
-    public TokenResponse(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
+    private String accessToken;
 }

@@ -18,12 +18,12 @@ import static nextstep.Constant.THEME_PRICE;
 class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
-    void create() {
-        ThemeRequest body = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
+    void createThemeTest() {
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(themeRequest)
                 .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -45,7 +45,7 @@ class ThemeE2ETest {
 
     @DisplayName("테마를 삭제한다")
     @Test
-    void delete() {
+    void deleteTheme() {
         Long id = createTheme();
 
         var response = RestAssured
@@ -58,14 +58,11 @@ class ThemeE2ETest {
     }
 
     public Long createTheme() {
-        ThemeRequest body = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
         String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(themeRequest)
                 .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
+                .then().statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
     }
