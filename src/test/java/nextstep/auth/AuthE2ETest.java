@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +39,7 @@ public class AuthE2ETest {
     @Test
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var response = RestAssured
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -54,7 +56,7 @@ public class AuthE2ETest {
     public void showThemes() {
         createTheme();
 
-        var response = RestAssured
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
                 .when().get("/themes")
@@ -69,7 +71,7 @@ public class AuthE2ETest {
     void delete() {
         Long id = createTheme();
 
-        var response = RestAssured
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/themes/" + id)
                 .then().log().all()

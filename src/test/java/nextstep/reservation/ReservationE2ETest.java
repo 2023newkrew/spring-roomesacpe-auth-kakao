@@ -36,7 +36,7 @@ class ReservationE2ETest {
     @BeforeEach
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
+        ExtractableResponse<Response>  themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
@@ -48,7 +48,7 @@ class ReservationE2ETest {
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
+        ExtractableResponse<Response>  scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
@@ -60,7 +60,7 @@ class ReservationE2ETest {
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
+        ExtractableResponse<Response>  memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -88,7 +88,7 @@ class ReservationE2ETest {
                 .when().post("/login/token")
                 .then().log().all().extract().as(TokenResponse.class).getAccessToken();
 
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .body(request)
@@ -103,7 +103,7 @@ class ReservationE2ETest {
     @DisplayName("비로그인 사용자는 예약이 불가능하다.")
     @Test
     void create_Exception() {
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .auth().oauth2("")
                 .body(request)
@@ -120,7 +120,7 @@ class ReservationE2ETest {
     void show() {
         createReservation();
 
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
@@ -135,9 +135,9 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        var reservation = createReservation();
+        ExtractableResponse<Response>  reservation = createReservation();
 
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
@@ -151,7 +151,7 @@ class ReservationE2ETest {
     void createDuplicateReservation() {
         createReservation();
 
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -165,7 +165,7 @@ class ReservationE2ETest {
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
     @Test
     void showEmptyReservations() {
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
@@ -180,7 +180,7 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()

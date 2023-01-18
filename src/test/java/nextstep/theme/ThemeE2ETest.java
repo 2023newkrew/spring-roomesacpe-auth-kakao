@@ -1,6 +1,8 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +34,7 @@ public class ThemeE2ETest {
     public void showThemes() {
         createTheme();
 
-        var response = RestAssured
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
                 .when().get("/themes")
@@ -47,7 +49,7 @@ public class ThemeE2ETest {
     void delete() {
         Long id = createTheme();
 
-        var response = RestAssured
+        ExtractableResponse<Response>  response = RestAssured
                 .given().log().all()
                 .when().delete("/themes/" + id)
                 .then().log().all()
