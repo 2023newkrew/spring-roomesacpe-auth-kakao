@@ -2,8 +2,10 @@ package nextstep.auth.service;
 
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.util.JwtTokenProvider;
+import nextstep.member.datamapper.MemberMapper;
+import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberForAuth;
-import nextstep.member.domain.MemberWithId;
+import nextstep.member.entity.MemberEntity;
 import nextstep.member.repository.MemberRepository;
 import nextstep.support.NotExistEntityException;
 import nextstep.support.UnauthenticatedException;
@@ -23,12 +25,13 @@ public class AuthService {
     public TokenResponse login(String username, String password) {
         MemberForAuth requestedMember = new MemberForAuth(username, password);
 
-        MemberWithId realMember = memberRepository.findByUsername(requestedMember.getUsername())
+        MemberEntity existMember = memberRepository.findByUsername(requestedMember.getUsername())
                 .orElseThrow(NotExistEntityException::new);
-        if (!realMember.matchPassword(requestedMember.getPassword())) {
+        Member existMemberDomain = MemberMapper.INSTANCE.entityToDomain(existMember);
+        if (!existMemberDomain.matchPassword(requestedMember.getPassword())) {
             throw new UnauthenticatedException();
         }
 
-        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(realMember.getId())));
+        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(existMember.getId())));
     }
 }

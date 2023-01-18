@@ -27,7 +27,7 @@ public class MemberService {
     public MemberResponse findById(Long id) {
 
         return memberRepository.findById(id)
-                .map(MemberMapper.INSTANCE::domainToResponseDto)
+                .map(MemberMapper.INSTANCE::entityToResponseDto)
                 .orElse(null);
     }
 }
