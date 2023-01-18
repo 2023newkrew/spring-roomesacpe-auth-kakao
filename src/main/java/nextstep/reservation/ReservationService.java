@@ -1,13 +1,15 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
+import nextstep.exception.*;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -21,7 +23,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, Member member) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -29,12 +31,13 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new RoomEscapeException(ErrorCode.DUPLICATE_RESERVATION);
         }
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                reservationRequest.getName(),
+                member.getId()
         );
 
         return reservationDao.save(newReservation);
@@ -49,12 +52,26 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
+    public void deleteReservation(Long id, Member member) {
+        Reservation reservation = getReservationOrThrowException(id);
+        checkOwner(reservation, member);
 
         reservationDao.deleteById(id);
+    }
+
+    private Reservation getReservationOrThrowException(Long reservationId){
+        Reservation reservation = reservationDao.findById(reservationId);
+
+        if (reservation == null) {
+            throw new RoomEscapeException(ErrorCode.NO_SUCH_RESERVATION);
+        }
+
+        return reservation;
+    }
+
+    private void checkOwner(Reservation reservation, Member member){
+        if(!Objects.equals(member.getId(), reservation.getMemberId())) {
+            throw new RoomEscapeException(ErrorCode.NOT_RESERVATION_OWNER);
+        }
     }
 }

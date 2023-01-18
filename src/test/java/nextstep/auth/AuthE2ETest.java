@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.exception.ErrorCode;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
+    private String token;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +49,45 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
+    @DisplayName("회원이 아닌 유저가 토큰 생성을 시도한다.")
+    @Test
+    public void createTokenUnExistMember(){
+        TokenRequest body = new TokenRequest("AnotherUsername", "AnotherPassword");
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(body)
+            .when().post("/login/token")
+            .then().log().all()
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("비밀번호가 틀린 경우")
+    @Test
+    public void createTokenWithInvalidPassword(){
+        TokenRequest body = new TokenRequest(USERNAME, "WrongPassword");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 작업을 시도한다.")
+    @Test
+    public void userInvalidToken(){
+      RestAssured
+            .given().log().all()
+            .auth().oauth2(token+"invalidString")
+            .param("date", "2022-08-11")
+            .when().get("/themes")
+            .then().log().all()
+            .statusCode(ErrorCode.INVALID_TOKEN.getHttpStatus().value())
+            .extract();
+    }
+
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
@@ -55,6 +95,7 @@ public class AuthE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .param("date", "2022-08-11")
                 .when().get("/themes")
                 .then().log().all()
@@ -70,6 +111,7 @@ public class AuthE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/themes/" + id)
                 .then().log().all()
                 .extract();
@@ -79,9 +121,21 @@ public class AuthE2ETest {
 
     public Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
+
+        token = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
                 .when().post("/themes")
                 .then().log().all()
