@@ -5,12 +5,11 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nextstep.support.AuthorizationException;
-import org.springframework.stereotype.Component;
+import nextstep.interfaces.AuthorizationException;
 
 import java.util.Date;
 
-@Component
+
 public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;

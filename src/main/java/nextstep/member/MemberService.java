@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.support.AuthorizationException;
+import nextstep.interfaces.AuthorizationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 

@@ -4,7 +4,7 @@ import nextstep.infrastructure.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
-import nextstep.support.AuthorizationException;
+import nextstep.interfaces.AuthorizationException;
 
 @Service
 public class AuthService {

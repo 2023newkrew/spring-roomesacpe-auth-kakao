@@ -1,5 +1,8 @@
-package nextstep.config;
+package nextstep.configurations;
 
+import nextstep.infrastructure.AuthenticationPrincipalArgumentResolver;
+import nextstep.infrastructure.JwtTokenProvider;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -8,10 +11,14 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
-    AuthenticationPrincipalArgumentResolver resolver;
 
-    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver resolver) {
-        this.resolver = resolver;
+    @Bean
+    public JwtTokenProvider jwtTokenProvider(){
+        return new JwtTokenProvider();
+    }
+    @Bean
+    public AuthenticationPrincipalArgumentResolver resolver(){
+        return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider());
     }
 
     /**
@@ -21,6 +28,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(resolver);
+        resolvers.add(resolver());
     }
 }

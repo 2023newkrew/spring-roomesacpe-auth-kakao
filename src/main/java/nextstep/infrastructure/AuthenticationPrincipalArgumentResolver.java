@@ -1,11 +1,7 @@
-package nextstep.config;
+package nextstep.infrastructure;
 
-import nextstep.infrastructure.AuthorizationExtractor;
-import nextstep.infrastructure.JwtTokenProvider;
-import nextstep.infrastructure.LoginMember;
-import nextstep.support.AuthorizationException;
+import nextstep.interfaces.AuthorizationException;
 import org.springframework.core.MethodParameter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +9,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Component
+
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -35,7 +31,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         jwtTokenProvider.validateToken(token);
         String principal = jwtTokenProvider.getPrincipal(token);
 
-        return LoginMember.from(principal);
+        return UserContextHolder.from(principal);
     }
 
     private String extractToken(HttpServletRequest request) {

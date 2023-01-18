@@ -1,7 +1,7 @@
 package nextstep.member;
 
-import nextstep.infrastructure.LoginMember;
-import nextstep.config.AuthenticationPrincipal;
+import nextstep.infrastructure.UserContextHolder;
+import nextstep.infrastructure.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +24,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Member> me(@AuthenticationPrincipal LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
+    public ResponseEntity<Member> me(@AuthenticationPrincipal UserContextHolder userContextHolder) {
+        Member member = memberService.findById(userContextHolder.getId());
         return ResponseEntity.ok(member);
     }
 }

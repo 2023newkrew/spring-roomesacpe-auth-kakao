@@ -9,7 +9,7 @@ import nextstep.support.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
-import nextstep.support.AuthorizationException;
+import nextstep.interfaces.AuthorizationException;
 
 import java.util.List;
 

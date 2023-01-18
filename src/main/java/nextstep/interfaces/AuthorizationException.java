@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.interfaces;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
