@@ -13,7 +13,8 @@ public enum ErrorCode {
     PASSWORD_NOT_MATCH("비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
     NO_SUCH_MEMBER("존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND),
     NO_SUCH_THEME("없는 테마입니다.", HttpStatus.NOT_FOUND),
-    NO_SUCH_RESERVATION("없는 예약입니다.", HttpStatus.NOT_FOUND);
+    NO_SUCH_RESERVATION("없는 예약입니다.", HttpStatus.NOT_FOUND),
+    INVALID_TOKEN("유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED);
 
     private final String message;
     private final HttpStatus httpStatus;

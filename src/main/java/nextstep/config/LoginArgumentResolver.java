@@ -35,8 +35,8 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         String token = request.getHeader(TOKEN_KEY);
         Member member = memberDao.findByUsername(jwtTokenProvider.getPrincipal(token.substring(BEARER.length())));
 
-        if (request.getHeader(TOKEN_KEY).isBlank() || ObjectUtils.isEmpty(member)) {
-            throw new RoomEscapeException(ErrorCode.NOT_AUTHENTICATED);
+        if (ObjectUtils.isEmpty(member)) {
+            throw new RoomEscapeException(ErrorCode.NO_SUCH_MEMBER);
         }
 
         return member;

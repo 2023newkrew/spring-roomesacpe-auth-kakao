@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.exception.ErrorCode;
 import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +73,19 @@ public class AuthE2ETest {
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 작업을 시도한다.")
+    @Test
+    public void userInvalidToken(){
+      RestAssured
+            .given().log().all()
+            .auth().oauth2(token+"invalidString")
+            .param("date", "2022-08-11")
+            .when().get("/themes")
+            .then().log().all()
+            .statusCode(ErrorCode.INVALID_TOKEN.getHttpStatus().value())
+            .extract();
     }
 
     @DisplayName("테마 목록을 조회한다")
