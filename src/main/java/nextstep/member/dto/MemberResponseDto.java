@@ -1,8 +1,9 @@
-package nextstep.member;
+package nextstep.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import nextstep.member.Member;
 
 @Getter
 @EqualsAndHashCode

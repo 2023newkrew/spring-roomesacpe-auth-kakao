@@ -1,4 +1,4 @@
-package nextstep.reservation;
+package nextstep.reservation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

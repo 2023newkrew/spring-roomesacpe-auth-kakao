@@ -1,11 +1,15 @@
 package nextstep.member;
 
+import nextstep.auth.dto.TokenRequestDto;
+import nextstep.member.dto.MemberRequestDto;
+import nextstep.member.dto.MemberResponseDto;
 import nextstep.support.exception.DuplicateEntityException;
 import nextstep.support.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
+
     private MemberDao memberDao;
 
     public MemberService(MemberDao memberDao) {
@@ -17,10 +21,6 @@ public class MemberService {
             throw new DuplicateEntityException("같은 username을 가진 회원이 존재합니다.");
         }
         return memberDao.save(memberRequestDto.toEntity());
-    }
-
-    public Member findById(Long id) {
-        return memberDao.findById(id);
     }
 
     public MemberResponseDto findByUsername(String username) {

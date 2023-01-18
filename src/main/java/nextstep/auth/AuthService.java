@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.dto.TokenRequestDto;
 import org.springframework.stereotype.Service;
 
 @Service

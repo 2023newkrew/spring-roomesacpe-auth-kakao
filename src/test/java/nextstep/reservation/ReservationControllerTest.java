@@ -4,6 +4,7 @@ package nextstep.reservation;
 import io.jsonwebtoken.JwtException;
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.reservation.dto.ReservationRequestDto;
 import nextstep.support.exception.NotExistEntityException;
 import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,8 @@
 package nextstep.member;
 
+import java.util.Optional;
+import nextstep.member.dto.MemberRequestDto;
+import nextstep.member.dto.MemberResponseDto;
 import nextstep.support.exception.DuplicateEntityException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -39,9 +42,9 @@ public class MemberServiceTest {
     @DisplayName("member 생성 시 username 중복처리 테스트")
     void createDuplicateMemberTest() {
 
-        MemberRequest memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
-        when(memberDao.findByUsername(anyString())).thenReturn(MEMBER);
-        Assertions.assertThatCode(() -> memberService.create(memberRequest))
+        MemberRequestDto memberRequestDto = new MemberRequestDto("username", "password", "name", "010-1234-5678");
+        when(memberDao.findByUsername(anyString())).thenReturn(Optional.of(MEMBER));
+        Assertions.assertThatCode(() -> memberService.create(memberRequestDto))
                 .isInstanceOf(DuplicateEntityException.class);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.reservation.dto.ReservationRequestDto;
 import nextstep.support.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

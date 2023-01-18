@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.dto.TokenRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

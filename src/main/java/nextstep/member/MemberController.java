@@ -2,11 +2,12 @@ package nextstep.member;
 
 import lombok.AllArgsConstructor;
 import nextstep.auth.AuthService;
-import nextstep.infrastructure.AuthorizationExtractor;
+import nextstep.member.dto.MemberRequestDto;
+import nextstep.member.dto.MemberResponseDto;
+import nextstep.support.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -25,9 +26,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest request) {
-        String accessToken = AuthorizationExtractor.extract(request);
-        String username = authService.findUsernameByToken(accessToken);
+    public ResponseEntity me(@AuthenticationPrincipal String username) {
         MemberResponseDto memberDto = memberService.findByUsername(username);
         return ResponseEntity.ok(memberDto);
     }

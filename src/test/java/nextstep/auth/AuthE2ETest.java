@@ -1,7 +1,9 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.member.MemberRequest;
+import nextstep.auth.dto.TokenRequestDto;
+import nextstep.auth.dto.TokenResponseDto;
+import nextstep.member.dto.MemberRequestDto;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +24,7 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequestDto body = new MemberRequestDto(USERNAME, PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given()
                 .log()

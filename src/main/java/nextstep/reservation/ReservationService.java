@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.reservation.dto.ReservationRequestDto;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.DuplicateEntityException;

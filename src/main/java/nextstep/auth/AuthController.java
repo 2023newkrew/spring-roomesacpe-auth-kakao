@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.dto.TokenRequestDto;
+import nextstep.auth.dto.TokenResponseDto;
 import nextstep.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +18,10 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
-        memberService.findByUsername(tokenRequestDto.getUsername());
+        memberService.validateUsernameAndPassword(tokenRequestDto);
         String token = authService.login(tokenRequestDto);
         return ResponseEntity.ok()
-                .body(new TokenResponseDto(token));
+            .body(new TokenResponseDto(token));
     }
 
 }
