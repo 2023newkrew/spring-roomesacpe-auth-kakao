@@ -1,7 +1,7 @@
 package nextstep.config;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.domain.model.template.Role;
+import nextstep.domain.model.template.enumeration.Role;
 import nextstep.infra.jwt.JwtTokenProvider;
 import nextstep.interfaces.interceptor.LoginArgumentResolver;
 import nextstep.interfaces.interceptor.LoginInterceptor;

@@ -7,14 +7,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import nextstep.domain.context.MemberDetails;
-import nextstep.domain.model.template.Role;
+import nextstep.domain.model.template.enumeration.Role;
 import nextstep.infra.exception.auth.NoSuchMemberException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static nextstep.domain.model.template.Role.*;
+import static nextstep.domain.model.template.enumeration.Role.*;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component

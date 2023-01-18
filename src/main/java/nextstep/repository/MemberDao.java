@@ -1,7 +1,7 @@
 package nextstep.repository;
 
 import nextstep.domain.domain.Member;
-import nextstep.domain.model.template.Role;
+import nextstep.domain.model.template.enumeration.Role;
 import nextstep.infra.exception.auth.NoSuchMemberException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

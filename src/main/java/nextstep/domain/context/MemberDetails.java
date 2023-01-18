@@ -1,7 +1,7 @@
 package nextstep.domain.context;
 
 import lombok.*;
-import nextstep.domain.model.template.Role;
+import nextstep.domain.model.template.enumeration.Role;
 
 @Getter
 @Builder

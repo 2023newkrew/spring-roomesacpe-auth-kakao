@@ -1,7 +1,7 @@
 package nextstep.domain.model.request;
 
 import nextstep.domain.domain.Member;
-import nextstep.domain.model.template.Role;
+import nextstep.domain.model.template.enumeration.Role;
 
 public class MemberRequest {
     private String username;

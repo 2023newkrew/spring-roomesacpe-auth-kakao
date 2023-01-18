@@ -1,4 +1,4 @@
-package nextstep.domain.model.template;
+package nextstep.domain.model.template.enumeration;
 
 import lombok.Getter;
 import nextstep.infra.exception.auth.NoSuchRoleException;
