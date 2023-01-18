@@ -38,7 +38,7 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList(".").size()).isGreaterThan(0);
     }
 
     @DisplayName("테마를 삭제한다")

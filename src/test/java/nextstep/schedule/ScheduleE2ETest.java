@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScheduleE2ETest {
 
-    private Long themeId;
+    private static Long themeId;
 
     @BeforeEach
     void setUp() {
@@ -78,7 +78,7 @@ public class ScheduleE2ETest {
     }
 
     public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

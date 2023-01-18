@@ -83,7 +83,7 @@ class ReservationE2ETest {
                 .extract().body().jsonPath().get("accessToken");
 
         request = "{\n" +
-                "    \"scheduleId\": 1\n" +
+                "    \"scheduleId\": " + scheduleId + "\n" +
                 "}";
     }
 
