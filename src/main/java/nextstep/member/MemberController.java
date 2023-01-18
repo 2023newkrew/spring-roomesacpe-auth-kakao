@@ -16,7 +16,6 @@ import java.net.URI;
 public class MemberController {
 
     private MemberService memberService;
-    private AuthService authService;
 
     @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequestDto memberRequestDto) {

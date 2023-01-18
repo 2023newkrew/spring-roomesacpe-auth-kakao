@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,19 +12,17 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 
 @Component
+@RequiredArgsConstructor
 public class MemberDao {
+
     public final JdbcTemplate jdbcTemplate;
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
-            resultSet.getString("username"),
-            resultSet.getString("password"),
-            resultSet.getString("name"),
-            resultSet.getString("phone")
+        resultSet.getLong("id"),
+        resultSet.getString("username"),
+        resultSet.getString("password"),
+        resultSet.getString("name"),
+        resultSet.getString("phone")
     );
-
-    public MemberDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
@@ -39,22 +39,28 @@ public class MemberDao {
         }, keyHolder);
 
         return keyHolder.getKey()
-                .longValue();
+            .longValue();
     }
 
-    public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public Member findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         Member member = null;
         try {
             member = jdbcTemplate.queryForObject(sql, rowMapper, username);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Optional.empty();
         }
-        return member;
+        return Optional.of(member);
+    }
+
+    public Optional<Member> findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id, username, password, name, phone from member where username = ? AND password = ?;";
+        Member member = null;
+        try {
+            member = jdbcTemplate.queryForObject(sql, rowMapper, username, password);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+        return Optional.of(member);
     }
 }

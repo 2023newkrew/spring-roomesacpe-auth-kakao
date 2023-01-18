@@ -32,7 +32,7 @@ public class MemberServiceTest {
     @DisplayName("username으로 멤버 찾기 테스트")
     void findByUsernameTest() {
 
-        when(memberDao.findByUsername(anyString())).thenReturn(MEMBER);
+        when(memberDao.findByUsername(anyString())).thenReturn(Optional.of(MEMBER));
         MemberResponseDto memberResponseDto = MemberResponseDto.toDto(MEMBER);
         Assertions.assertThat(memberService.findByUsername(MEMBER.getUsername()))
                 .isEqualTo(memberResponseDto);
