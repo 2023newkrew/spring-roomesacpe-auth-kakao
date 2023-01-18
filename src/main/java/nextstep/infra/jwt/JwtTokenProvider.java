@@ -22,10 +22,10 @@ public class JwtTokenProvider {
     private static final String MEMBER_DETAIL = "memberDetail";
     private final ObjectMapper objectMapper;
     @Value("${auth.secretKey}")
-    private String secretKey = "default";
+    private String secretKey;
 
     @Value("${auth.validityInMilliseconds}")
-    private long validityInMilliseconds = 10000L;
+    private long validityInMilliseconds;
 
     public String createToken(MemberDetails memberDetails) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(memberDetails.getId()));
