@@ -22,7 +22,8 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            resultSet.getString("role")
     );
 
     public Long save(Member member) {
@@ -43,12 +44,12 @@ public class MemberDao {
     }
 
     public Member findByMemberId(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 }
