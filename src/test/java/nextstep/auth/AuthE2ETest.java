@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.error.ErrorCode;
 import nextstep.member.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -48,21 +50,22 @@ class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치")
+    @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치, 401 코드 반환")
     @Test
     void createToken_wrongPassword() {
         TokenRequest body = new TokenRequest(USERNAME, "wrongPassword");
 
-       RestAssured
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
+                .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
     }
 
-    @DisplayName("토큰 생성에 실패한다 - 유저네임 없음")
+    @DisplayName("토큰 생성에 실패한다 - 유저네임에 해당하는 멤버 없음, 404 코드 반환")
     @Test
     public void createTokenFailure() {
         TokenRequest body = new TokenRequest("notexistname", "wrongPassword");
@@ -72,6 +75,7 @@ class AuthE2ETest {
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(ErrorCode.MEMBER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.MEMBER_NOT_FOUND.getCode()));
     }
 }

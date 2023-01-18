@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -54,14 +56,15 @@ class ThemeE2ETest {
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("존재하지 않는 테마를 삭제하면 400 코드 반환")
+    @DisplayName("존재하지 않는 테마를 삭제하면 404 코드 반환")
     @Test
     void delete_fail() {
         var response = RestAssured
                 .given().log().all()
                 .when().delete("/themes/" + -1L)
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(ErrorCode.THEME_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.THEME_NOT_FOUND.getCode()));
     }
 
     private Long createTheme() {

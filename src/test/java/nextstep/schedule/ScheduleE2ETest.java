@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.error.ErrorCode;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -46,7 +48,7 @@ class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("존재하지 않는 테마로 스케줄을 생성하면 400 코드 반환")
+    @DisplayName("존재하지 않는 테마로 스케줄을 생성하면 404 코드 반환")
     @Test
     void createSchedule_fail() {
         ScheduleRequest body = new ScheduleRequest(-1L, "2022-08-11", "13:00");
@@ -56,7 +58,8 @@ class ScheduleE2ETest {
                 .body(body)
                 .when().post("/schedules")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(ErrorCode.THEME_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.THEME_NOT_FOUND.getCode()));
     }
 
     @DisplayName("스케줄을 조회한다")

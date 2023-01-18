@@ -3,6 +3,7 @@ package nextstep.member;
 import io.restassured.RestAssured;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
+import nextstep.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -54,33 +56,33 @@ class MemberE2ETest {
         assertThat(member.getUsername()).isEqualTo(userName);
     }
 
-    @DisplayName("자기 자신의 정보를 조회 - 잘못된 토큰인 경우 400 코드 반환")
+    @DisplayName("자기 자신의 정보를 조회 - 유효하지 않은 토큰인 경우 401 코드 반환")
     @Test
     void me_wrongToken() {
-        createMember();
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "wrongToken")
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(ErrorCode.INVALID_TOKEN.getStatus())
+                .body("code", is(ErrorCode.INVALID_TOKEN.getCode()));
+    }
 
+    @DisplayName("자기 자신의 정보를 조회 - username에 대한 멤버를 찾을 수 없는 경우 404 코드 반환")
+    @Test
+    void me_notFound() {
         String userName = "username";
         String token = jwtTokenProvider.createToken(userName);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "wrongToken")
+                .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("자기 자신의 정보를 조회 - 회원정보가 존재하지 않으면 400 코드 반환")
-    @Test
-    void me_empty() {
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "wrongToken")
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(ErrorCode.MEMBER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.MEMBER_NOT_FOUND.getCode()));
     }
 
     private void createMember() {
