@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dto.MemberRequest;
-import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.dto.ReservationRequest;
+import nextstep.reservation.dto.ReservationResponse;
 import nextstep.schedule.dto.ScheduleRequest;
 import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -132,7 +132,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
+        List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
         assertThat(reservations.size()).isEqualTo(1);
     }
 
@@ -180,7 +180,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        List<Reservation> reservations = response.jsonPath().getList(".", Reservation.class);
+        List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
         assertThat(reservations.size()).isEqualTo(0);
     }
 

@@ -1,15 +1,13 @@
 package nextstep.reservation.repository;
 
 import nextstep.reservation.dao.ReservationDao;
-import nextstep.reservation.datamapper.ReservationMapper;
-import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.entity.ReservationEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class ReservationRepositoryImpl implements ReservationRepository {
@@ -22,32 +20,29 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public Long save(Reservation reservation) {
+    public Long save(ReservationEntity reservationEntity) {
 
-        return reservationDao.save(ReservationMapper.INSTANCE.domainToEntity(reservation));
+        return reservationDao.save(reservationEntity);
     }
 
     @Override
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<ReservationEntity> findAllByThemeIdAndDate(Long themeId, String date) {
 
         return Optional.ofNullable(reservationDao.findAllByThemeIdAndDate(themeId, date))
-                .map(item -> item.stream().map(ReservationMapper.INSTANCE::entityToDomain).collect(Collectors.toList()))
                 .orElse(new ArrayList<>())
                 ;
     }
 
     @Override
-    public Optional<Reservation> findById(Long id) {
+    public Optional<ReservationEntity> findById(Long id) {
 
-        return Optional.ofNullable(reservationDao.findById(id))
-                .map(ReservationMapper.INSTANCE::entityToDomain);
+        return Optional.ofNullable(reservationDao.findById(id));
     }
 
     @Override
-    public List<Reservation> findByScheduleId(Long scheduleId) {
+    public List<ReservationEntity> findByScheduleId(Long scheduleId) {
 
         return Optional.ofNullable(reservationDao.findByScheduleId(scheduleId))
-                .map(item -> item.stream().map(ReservationMapper.INSTANCE::entityToDomain).collect(Collectors.toList()))
                 .orElse(new ArrayList<>())
                 ;
     }

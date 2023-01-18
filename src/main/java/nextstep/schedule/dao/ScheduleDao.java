@@ -1,6 +1,6 @@
 package nextstep.schedule.dao;
 
-import nextstep.schedule.entity.Schedule;
+import nextstep.schedule.entity.ScheduleEntity;
 import nextstep.theme.entity.Theme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,11 +14,13 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ScheduleDao {
 
-    private final RowMapper<Schedule> rowMapper = (resultSet, rowNum) -> new Schedule(
+    private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<ScheduleEntity> rowMapper = (resultSet, rowNum) -> new ScheduleEntity(
             resultSet.getLong("schedule.id"),
             new Theme(
                     resultSet.getLong("theme.id"),
@@ -29,30 +31,31 @@ public class ScheduleDao {
             resultSet.getDate("schedule.date").toLocalDate(),
             resultSet.getTime("schedule.time").toLocalTime()
     );
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Schedule schedule) {
+    public Long save(ScheduleEntity scheduleEntity) {
         String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, schedule.getTheme().getId());
-            ps.setDate(2, Date.valueOf(schedule.getDate()));
-            ps.setTime(3, Time.valueOf(schedule.getTime()));
+            ps.setLong(1, scheduleEntity.getTheme().getId());
+            ps.setDate(2, Date.valueOf(scheduleEntity.getDate()));
+            ps.setTime(3, Time.valueOf(scheduleEntity.getTime()));
             return ps;
-
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey())
+                .map(Number::longValue)
+                .orElse(-1L)
+                ;
     }
 
-    public Schedule findById(Long id) {
+    public ScheduleEntity findById(Long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "FROM schedule " +
                 "INNER JOIN theme ON schedule.theme_id = theme.id " +
@@ -61,7 +64,7 @@ public class ScheduleDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
+    public List<ScheduleEntity> findByThemeIdAndDate(Long themeId, String date) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "FROM schedule " +
                 "INNER JOIN theme ON schedule.theme_id = theme.id " +
@@ -70,8 +73,15 @@ public class ScheduleDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM schedule WHERE id = ?;", id);
+    public boolean existsById(Long id) {
+        String sql = "SELECT * FROM schedule WHERE id = ?";
+
+        return !jdbcTemplate.queryForList(sql, id).isEmpty();
+    }
+
+    public int deleteById(Long id) {
+
+        return jdbcTemplate.update("DELETE FROM schedule WHERE id = ?;", id);
     }
 
 }

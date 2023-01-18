@@ -1,19 +1,19 @@
 package nextstep.reservation.repository;
 
-import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.entity.ReservationEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ReservationRepository {
 
-    Long save(Reservation reservation);
+    Long save(ReservationEntity reservationEntity);
 
-    List<Reservation> findAllByThemeIdAndDate(Long themeId, String date);
+    List<ReservationEntity> findAllByThemeIdAndDate(Long themeId, String date);
 
-    Optional<Reservation> findById(Long id);
+    Optional<ReservationEntity> findById(Long id);
 
-    List<Reservation> findByScheduleId(Long scheduleId);
+    List<ReservationEntity> findByScheduleId(Long scheduleId);
 
     boolean existsByIdAndMemberId(Long id, Long memberId);
 
