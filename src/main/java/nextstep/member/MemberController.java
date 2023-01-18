@@ -23,8 +23,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<LoginMember> me(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(loginMember);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(MemberResponse.of(loginMember));
     }
 
 }
