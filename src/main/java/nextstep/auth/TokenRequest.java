@@ -9,9 +9,6 @@ public class TokenRequest {
     @NotNull
     private String password;
 
-    private TokenRequest() {
-    }
-
     public TokenRequest(String username, String password) {
         this.username = username;
         this.password = password;
