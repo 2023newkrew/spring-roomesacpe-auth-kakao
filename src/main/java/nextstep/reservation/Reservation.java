@@ -21,7 +21,7 @@ public class Reservation {
         this(null, schedule, name, memberId);
     }
 
-    public boolean isNotMine(Long memberId) {
+    public boolean isMine(Long memberId) {
         return Objects.equals(this.memberId, memberId);
     }
 }

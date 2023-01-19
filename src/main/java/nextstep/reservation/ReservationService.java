@@ -1,7 +1,6 @@
 package nextstep.reservation;
 
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
@@ -55,7 +54,7 @@ public class ReservationService {
         if (reservation == null) {
             throw new RoomReservationException(ErrorCode.RESERVATION_NOT_FOUND);
         }
-        if (reservation.isNotMine(memberId)) {
+        if (!reservation.isMine(memberId)) {
             throw new RoomReservationException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
