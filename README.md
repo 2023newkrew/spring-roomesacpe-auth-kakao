@@ -141,3 +141,12 @@ HTTP/1.1 204
 
 ### 토큰 인증 과정 공통 관심사 분리
 - [x] `HandlerMethodArgumentResolver` 와 어노테이션을 활용
+
+---
+
+### 리팩토링 목록
+- [ ] AuthServiceTest 접근 제어자 수정
+- [ ] AuthorizationTokenExtractorTest 메서드명 카멜 케이스로 수정
+- [ ] 토큰 암호화 시 id값 포함하고 인증할 때 토큰의 id를 활용해서 member 정보 조회 
+- [ ] MemberController 사용하지 않는 코드 제거 
+- [ ] 예외 로그 출력
