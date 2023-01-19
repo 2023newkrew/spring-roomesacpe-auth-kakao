@@ -2,6 +2,8 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 
+import java.util.Objects;
+
 public class LoginMember {
     private final Long id;
     private final String username;
@@ -15,6 +17,10 @@ public class LoginMember {
 
     public static LoginMember of(Member member, Role role) {
         return new LoginMember(member.getId(), member.getUsername(), role);
+    }
+
+    public boolean hasEditPermissionOf(Long memberId) {
+        return this.role == Role.ADMIN || Objects.equals(this.id, memberId);
     }
 
     public Long getId() {

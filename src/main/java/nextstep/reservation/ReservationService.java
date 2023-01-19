@@ -12,7 +12,6 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -69,7 +68,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if(!Objects.equals(reservation.getMember().getUsername(), loginMember.getUsername())){
+        if(loginMember.hasEditPermissionOf(reservation.getMember().getId())){
             throw new ForbiddenAccessException();
         }
 

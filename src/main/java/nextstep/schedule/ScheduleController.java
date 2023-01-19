@@ -25,11 +25,4 @@ public class ScheduleController {
     public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
-        scheduleService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
-    }
 }

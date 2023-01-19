@@ -66,6 +66,11 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
+    public TokenResponse createAdminToken() {
+        String accessToken = jwtTokenProvider.createToken("admin", Role.ADMIN);
+        return new TokenResponse(accessToken);
+    }
+
     private void validateUsernamePassword(String username, String password) throws UnAuthorizedException {
         Member member = memberDao.findByUsername(username);
 
