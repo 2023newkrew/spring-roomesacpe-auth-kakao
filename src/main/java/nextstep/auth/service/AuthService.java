@@ -42,4 +42,10 @@ public class AuthService {
     private Member validate(Optional<Member> member) {
         return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
     }
+
+    public void validateId(Long expectedId, Long actualId) {
+        if(!expectedId.equals(actualId)){
+            throw new UnauthorizedAccessException("Id 정보가 일치하지 않습니다");
+        }
+    }
 }
