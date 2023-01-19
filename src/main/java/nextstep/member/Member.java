@@ -8,9 +8,6 @@ public class Member {
     private String phone;
     private Role role;
 
-    public Member() {
-    }
-
     public Member(Long id, String username, String password, String name, String phone, Role role) {
         this.id = id;
         this.username = username;
