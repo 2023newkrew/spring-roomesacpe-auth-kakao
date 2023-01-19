@@ -18,6 +18,12 @@
 - 토큰을 이용한 인증 프로세스에 대해 이해가 어려운 경우 페어와 함께 추가학습을 진행한다.
 - HandlerMethodArgumentResolver를 활용한다.
 
-## 미구현 내역
-- ErrorCode, ExceptionHandler
-- 각 레이어별 test
+## 3단계 구현
+- [x] ErrorCode, ExceptionHandler
+- [ ] 각 레이어별 test 세분화 
+- [ ] 관리자 역할을 추가한다.
+- [ ] 일반 멤버와 관리자 멤버를 구분한다.
+- [ ]  관리리자 기능을 보호한다.
+  - [ ] 관리자 관련 기능 API는 /admin 붙이고 interceptor로 검증한다.
+  - [ ] 관리자 관련 기능 API는 authorization 헤더를 이용하여 인증과 인가를 진행한다.
+  - [ ] 관리자를 등록하도록 하기보다는 애플리케이션이 동작할 때 관리자는 추가될 수 있도록 한다.
