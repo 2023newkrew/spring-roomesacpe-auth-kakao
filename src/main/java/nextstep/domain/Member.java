@@ -1,5 +1,7 @@
 package nextstep.domain;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 public class Member {
     private Long id;
     private String username;
@@ -57,6 +59,6 @@ public class Member {
     }
 
     public boolean isNotAdmin() {
-        return this.role.equals(Role.ADMIN);
+        return !this.role.equals(Role.ADMIN);
     }
 }
