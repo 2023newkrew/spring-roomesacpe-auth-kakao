@@ -29,7 +29,7 @@ public class ScheduleService {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(long id) {
+    public void cancel(long id) {
         scheduleDao.deleteById(id);
     }
 }

@@ -53,7 +53,7 @@ class ReservationServiceTest {
             when(memberDao.findById(anyLong())).thenReturn(Optional.of(me));
             doNothing().when(reservationDao).deleteById(anyLong());
 
-            assertDoesNotThrow(() -> reservationService.deleteById(1L, 1L));
+            assertDoesNotThrow(() -> reservationService.cancle(1L, 1L));
         }
 
         @Test
@@ -62,7 +62,7 @@ class ReservationServiceTest {
             when(reservationDao.findById(anyLong())).thenReturn(Optional.of(myReservation));
             when(memberDao.findById(anyLong())).thenReturn(Optional.of(other));
 
-            assertThatThrownBy(() -> reservationService.deleteById(1L, 1L))
+            assertThatThrownBy(() -> reservationService.cancle(1L, 1L))
                     .isInstanceOf(BusinessException.class)
                     .hasMessage(DELETE_FAILED_WHEN_NOT_MY_RESERVATION.getMessage());
         }

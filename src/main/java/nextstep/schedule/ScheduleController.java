@@ -29,7 +29,7 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReservation(@PathVariable long id) {
-        scheduleService.deleteById(id);
+        scheduleService.cancel(id);
 
         return ResponseEntity.noContent().build();
     }
