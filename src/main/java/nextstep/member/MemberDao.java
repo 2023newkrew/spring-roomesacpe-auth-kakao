@@ -25,7 +25,7 @@ public class MemberDao {
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, HASH('SHA3-512', ?), ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -50,10 +50,10 @@ public class MemberDao {
         }
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+    public Member findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = HASH('SHA3-512', ?);";
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, username);
+            return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
         } catch (Exception e) {
             return null;
         }
