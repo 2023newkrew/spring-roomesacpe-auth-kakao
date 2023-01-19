@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +52,7 @@ class MemberControllerTest {
         void should_successfully_when_validToken() throws Exception {
             when(memberService.findById(userId)).thenReturn(new Member(userId, username, password, name, phone));
             mockMvc.perform(get("/members/me")
-                            .header("authorization", userToken))
+                            .header(AUTHORIZATION, userToken))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(userId))
                     .andExpect(jsonPath("$.username").value(username))
@@ -65,7 +66,7 @@ class MemberControllerTest {
         void should_401UnAuthorization_when_invalidToken() throws Exception {
             when(memberService.findById(userId)).thenReturn(new Member(userId, username, password, name, phone));
             mockMvc.perform(get("/members/me")
-                            .header("authorization", ""))
+                            .header(AUTHORIZATION, ""))
                     .andExpect(status().isUnauthorized());
         }
     }

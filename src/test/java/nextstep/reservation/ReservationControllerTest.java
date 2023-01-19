@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -50,7 +51,7 @@ class ReservationControllerTest {
         void should_successfully_when_validRequest() throws Exception {
             doNothing().when(reservationService).deleteById(userId, reservationId);
             mockMvc.perform(delete("/reservations/" + reservationId)
-                            .header("authorization", userToken))
+                            .header(AUTHORIZATION, userToken))
                     .andExpect(status().isNoContent());
         }
 
@@ -62,7 +63,7 @@ class ReservationControllerTest {
                     .deleteById(userId, reservationId);
 
             mockMvc.perform(delete("/reservations/" + reservationId)
-                            .header("authorization", userToken))
+                            .header(AUTHORIZATION, userToken))
                     .andExpect(status().isUnauthorized());
         }
 
@@ -72,9 +73,9 @@ class ReservationControllerTest {
             doThrow(new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE))
                     .when(reservationService)
                     .deleteById(userId, reservationId);
-            
+
             mockMvc.perform(delete("/reservations/" + reservationId)
-                            .header("authorization", ""))
+                            .header(AUTHORIZATION, ""))
                     .andExpect(status().isUnauthorized());
         }
     }

@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("authorization");
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (isTokenNotExist(authorizationHeader)) {
             throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
         }
