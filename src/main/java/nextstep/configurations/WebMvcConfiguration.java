@@ -26,10 +26,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor).order(1)
                 .addPathPatterns("/member/me", "/reservations");
-//        registry.addInterceptor(adminInterceptor).order(2)
-//                .addPathPatterns("/member/me", "/reservations");
-        // 3단계 진행에서 관리자 설정 시 테스트 및 인터셉터 대상 폴더 수정 예정
-        // .addPathPatterns("/member/me", "/reservations", "/themes", "/schedules");
+        registry.addInterceptor(adminInterceptor).order(2)
+                .addPathPatterns("/admin/**");
     }
 
     @Override
