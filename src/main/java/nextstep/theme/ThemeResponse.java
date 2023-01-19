@@ -16,6 +16,22 @@ public class ThemeResponse {
         this.price = price;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
     public static ThemeResponse of(Theme theme) {
         return new ThemeResponse(theme.getId(), theme.getName(), theme.getDesc(), theme.getPrice());
     }
