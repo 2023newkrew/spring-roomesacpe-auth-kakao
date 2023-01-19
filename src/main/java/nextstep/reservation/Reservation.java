@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 
 public class Reservation {
@@ -31,5 +32,9 @@ public class Reservation {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isReservationMember(Member member) {
+        return this.name.equals(member.getName());
     }
 }
