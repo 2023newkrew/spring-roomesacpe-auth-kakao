@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.member.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,10 +27,11 @@ class AuthServiceTest {
     void loginTest() {
         // given
         TokenRequestDto tokenRequestDto = new TokenRequestDto(USERNAME, PASSWORD);
+        Member member = new Member("username1", "password1", "name1", "010-1234-5678");
 
         when(jwtTokenProvider.createToken(tokenRequestDto.getUsername())).thenReturn(TOKEN);
 
-        assertThat(authService.login(tokenRequestDto)).isEqualTo(TOKEN);
+        assertThat(authService.login(member, tokenRequestDto)).isEqualTo(TOKEN);
     }
 
     @Test
