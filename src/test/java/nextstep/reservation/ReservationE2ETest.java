@@ -32,9 +32,11 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+    private String token;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
 
     @BeforeEach
     void setUp() {
@@ -43,7 +45,7 @@ class ReservationE2ETest {
         createSchedule();
 
         createMember(new MemberRequest("username", "password", "name", "010-1234-5678", "user"));
-
+        token = jwtTokenProvider.createToken("2", Role.USER);
         request = new ReservationRequest(
                 scheduleId
         );
@@ -82,8 +84,9 @@ class ReservationE2ETest {
         var themeResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("admin/themes")
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -96,7 +99,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
+                .auth().oauth2(token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -126,6 +129,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -143,7 +147,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
+                .auth().oauth2(token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -156,10 +160,9 @@ class ReservationE2ETest {
     void deleteWithoutWrongToken() {
         createMember(new MemberRequest("anotherUser", "password", "name", "010-1234-5678", "user"));
         var reservation = createReservation();
-
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("2", List.of(Role.USER)))
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
@@ -173,7 +176,7 @@ class ReservationE2ETest {
         RestAssured
                 .given().log().all()
                 .body(request)
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -185,6 +188,7 @@ class ReservationE2ETest {
     void showEmptyReservations() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -200,7 +204,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
+                .auth().oauth2(token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -210,7 +214,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1", List.of(Role.USER)))
+                .auth().oauth2(token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

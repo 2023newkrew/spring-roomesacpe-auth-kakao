@@ -1,8 +1,11 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.auth.JwtTokenProvider;
+import nextstep.member.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,17 +16,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ThemeE2ETest {
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @DisplayName("테마를 생성한다")
     @Test
     void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("ADMIN 토큰 없이 테마를 생성한다")
+    @Test
+    void createWithUser() {
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.USER))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -48,11 +70,25 @@ class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
+                .when().delete("admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("ADMIN 토큰 없이 테마를 삭제한다")
+    @Test
+    void deleteWithUser() {
+        Long id = createTheme();
+
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.USER))
+                .when().delete("admin/themes/" + id)
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     Long createTheme() {
@@ -60,8 +96,9 @@ class ThemeE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(jwtTokenProvider.createToken("1", Role.ADMIN))
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

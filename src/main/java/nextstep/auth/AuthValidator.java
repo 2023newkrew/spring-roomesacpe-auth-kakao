@@ -12,12 +12,12 @@ public class AuthValidator {
         this.memberRepository = memberRepository;
     }
 
-    public Long validateUser(String username, String password) {
+    public Member validateUser(String username, String password) {
         Member member = memberRepository.findByUsername(username);
         if (member.checkWrongPassword(password)) {
             throw new AuthenticationException(ErrorCode.INVALID_USERNAME_PASSWORD);
         }
 
-        return member.getId();
+        return member;
     }
 }
