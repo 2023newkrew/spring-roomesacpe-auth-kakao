@@ -14,9 +14,14 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private Authority authority;
 
-    public Member(String username, String password, String name, String phone) {
-        this(null, username, password, name, phone);
+    static public Member ofUser(String username, String password, String name, String phone) {
+        return new Member(null, username, password, name, phone, Authority.USER);
+    }
+
+    static public Member ofAdmin(String username, String password, String name, String phone) {
+        return new Member(null, username, password, name, phone, Authority.ADMIN);
     }
 
     public boolean checkWrongPassword(String password) {
