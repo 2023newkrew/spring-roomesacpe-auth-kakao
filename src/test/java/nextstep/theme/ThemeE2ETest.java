@@ -42,7 +42,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
-                .when().post("/admin/themes")
+                .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -70,7 +70,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .when().delete("/admin/themes/" + id)
+                .when().delete("/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -84,7 +84,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
-                .when().post("/admin/themes")
+                .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

@@ -1,6 +1,7 @@
 package nextstep.theme;
 
-import nextstep.reservation.ReservationRequest;
+import nextstep.auth.Authorization;
+import nextstep.auth.AuthorizationLevel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,5 +27,20 @@ public class ThemeController {
     public ResponseEntity<List<Theme>> showThemes() {
         List<Theme> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
+    }
+
+    @PostMapping
+    @Authorization(level = AuthorizationLevel.ADMIN)
+    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
+        Long id = themeService.create(themeRequest);
+        return ResponseEntity.created(URI.create("/themes/" + id)).build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Authorization(level = AuthorizationLevel.ADMIN)
+    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
+        themeService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

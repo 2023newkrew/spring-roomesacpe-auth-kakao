@@ -40,7 +40,7 @@ public class ScheduleE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(themeRequest)
-                .when().post("/admin/themes")
+                .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -57,7 +57,7 @@ public class ScheduleE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
-                .when().post("/admin/schedules")
+                .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -87,7 +87,7 @@ public class ScheduleE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .when().delete("/admin" + location)
+                .when().delete(location)
                 .then().log().all()
                 .extract();
 
@@ -101,7 +101,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/admin" + location)
+                .when().delete(location)
                 .then().log().all()
                 .extract();
 
@@ -127,7 +127,7 @@ public class ScheduleE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
-                .when().delete("/admin" + location)
+                .when().delete(location)
                 .then().log().all()
                 .extract();
 
@@ -141,7 +141,7 @@ public class ScheduleE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
-                .when().post("/admin/schedules")
+                .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()

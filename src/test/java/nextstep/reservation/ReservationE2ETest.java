@@ -52,7 +52,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(themeRequest)
-                .when().post("/admin/themes")
+                .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -65,7 +65,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(scheduleRequest)
-                .when().post("/admin/schedules")
+                .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
