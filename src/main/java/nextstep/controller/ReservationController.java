@@ -27,12 +27,12 @@ public class ReservationController {
             @AuthenticationPrincipal Member member,
             @RequestBody ReservationRequest reservationRequest
     ) {
-        Long id = reservationService.create(reservationRequest.getScheduleId(), member.getId());
+        long id = reservationService.create(reservationRequest.getScheduleId(), member.getId());
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity readReservations(@RequestParam long themeId, @RequestParam String date) {
         List<ReservationResponse> results = reservationService
                 .findAllByThemeIdAndDate(themeId, date)
                 .stream()
@@ -44,7 +44,7 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReservation(
             @AuthenticationPrincipal Member member,
-            @PathVariable Long id) {
+            @PathVariable long id) {
         reservationService.deleteById(id, member.getId());
         return ResponseEntity.noContent().build();
     }

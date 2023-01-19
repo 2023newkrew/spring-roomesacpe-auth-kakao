@@ -16,7 +16,7 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
+    public long create(ThemeRequest themeRequest) {
         return themeDao.save(themeRequest.toEntity());
     }
 
@@ -24,7 +24,7 @@ public class ThemeService {
         return themeDao.findAll();
     }
 
-    public void delete(Long id) {
+    public void delete(long id) {
         Theme theme = themeDao.findById(id);
         if (theme == null) {
             throw new NotExistEntityException();
