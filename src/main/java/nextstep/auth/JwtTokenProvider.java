@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
+import nextstep.auth.role.Role;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,7 @@ JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(String principal, List<String> roles) {
+    public String createToken(String principal, List<Role> roles) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);

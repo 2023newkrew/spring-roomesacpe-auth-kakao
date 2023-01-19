@@ -16,8 +16,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.Cookie;
-import java.util.ArrayList;
+import java.util.List;
 
+import static nextstep.auth.role.Role.ROLE_USER;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -44,7 +45,7 @@ class ReservationControllerTest {
     class DeleteReservation {
 
         private long userId = 1L;
-        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), List.of(ROLE_USER));
         private long reservationId = 1L;
 
         @Test

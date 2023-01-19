@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.role.Role;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
@@ -7,6 +8,10 @@ import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static nextstep.member.Member.ADMIN_USERNAME;
 
 @Service
 public class AuthService {
@@ -24,7 +29,18 @@ public class AuthService {
         String password = tokenRequest.getPassword();
         Member member = login(username, password);
 
-        return jwtTokenProvider.createToken(String.valueOf(member.getId()), new ArrayList<>());
+        List<Role> roles = getRoles(username);
+
+        return jwtTokenProvider.createToken(String.valueOf(member.getId()), roles);
+    }
+
+    private static List<Role> getRoles(String username) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_USER);
+        if (Objects.equals(username, ADMIN_USERNAME)) {
+            roles.add(Role.ROLE_ADMIN);
+        }
+        return roles;
     }
 
     private Member login(String username, String password) {

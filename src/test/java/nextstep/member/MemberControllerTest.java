@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.Cookie;
-import java.util.ArrayList;
+import java.util.List;
 
+import static nextstep.auth.role.Role.ROLE_USER;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,7 +47,7 @@ class MemberControllerTest {
         private String password = "password";
         private String name = "name";
         private String phone = "010-1234-5678";
-        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), List.of(ROLE_USER));
 
         @Test
         @DisplayName("유효한 토큰일 경우 200과 자신의 정보를 응답해야 한다.")
