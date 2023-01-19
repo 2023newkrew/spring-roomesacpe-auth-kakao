@@ -35,6 +35,7 @@ class JwtTokenProviderTest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("username 멤버의 토큰을 생성하고 유효한 토큰인지 확인")
     @Test
     void createToken() {
         String token = jwtTokenProvider.createToken("username");
@@ -42,12 +43,13 @@ class JwtTokenProviderTest {
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
 
+    @DisplayName("username 멤버의 토큰을 생성하고 파싱하여 올바른 데이터가 들어오는지 확인")
     @Test
     void getPrincipal() {
         String token = jwtTokenProvider.createToken("username");
 
         assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("username");
-        assertThat(jwtTokenProvider.getMemberId(token)).isEqualTo(1l);
+        assertThat(jwtTokenProvider.getMemberId(token)).isEqualTo(2l);
 
     }
 }

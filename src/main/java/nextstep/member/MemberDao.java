@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.support.excpetion.NotExistMemberException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,7 +24,8 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public Long save(Member member) {
@@ -44,19 +46,19 @@ public class MemberDao {
     }
 
     public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException exception) {
             return Optional.empty();
         }
     }
 
     public Optional<Member> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException exception) {
             return Optional.empty();
         }
     }
