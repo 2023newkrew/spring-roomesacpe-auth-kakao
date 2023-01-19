@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.doNothing;
@@ -43,7 +44,7 @@ class ReservationControllerTest {
     class DeleteReservation {
 
         private long userId = 1L;
-        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
         private long reservationId = 1L;
 
         @Test
@@ -51,7 +52,7 @@ class ReservationControllerTest {
         void should_successfully_when_validRequest() throws Exception {
             doNothing().when(reservationService).cancle(userId, reservationId);
             mockMvc.perform(delete("/reservations/" + reservationId)
-                            .header(AUTHORIZATION, userToken))
+                            .cookie(new Cookie(JwtTokenProvider.ACCESS_TOKEN, userToken)))
                     .andExpect(status().isNoContent());
         }
 
@@ -63,7 +64,7 @@ class ReservationControllerTest {
                     .cancle(userId, reservationId);
 
             mockMvc.perform(delete("/reservations/" + reservationId)
-                            .header(AUTHORIZATION, userToken))
+                            .cookie(new Cookie(JwtTokenProvider.ACCESS_TOKEN, userToken)))
                     .andExpect(status().isUnauthorized());
         }
 

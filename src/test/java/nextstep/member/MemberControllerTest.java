@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.servlet.http.Cookie;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.when;
@@ -45,14 +46,14 @@ class MemberControllerTest {
         private String password = "password";
         private String name = "name";
         private String phone = "010-1234-5678";
-        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
 
         @Test
         @DisplayName("유효한 토큰일 경우 200과 자신의 정보를 응답해야 한다.")
         void should_successfully_when_validToken() throws Exception {
             when(memberService.findById(userId)).thenReturn(new Member(userId, username, password, name, phone));
             mockMvc.perform(get("/members/me")
-                            .header(AUTHORIZATION, userToken))
+                            .cookie(new Cookie(JwtTokenProvider.ACCESS_TOKEN, userToken)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(userId))
                     .andExpect(jsonPath("$.username").value(username))

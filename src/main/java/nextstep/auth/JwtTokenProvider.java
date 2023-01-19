@@ -4,20 +4,20 @@ import io.jsonwebtoken.*;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class
 JwtTokenProvider {
 
     public static final String ACCESS_TOKEN = "accessJWT";
-
-    private static final String TOKEN_PREFIX = "Bearer";
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
@@ -57,15 +57,16 @@ JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isTokenNotExist(authorizationHeader)) {
+        if (request.getCookies() == null) {
             throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
         }
-        return authorizationHeader.split(" ")[1];
-    }
-
-    private static boolean isTokenNotExist(String authorizationHeader) {
-        return authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX + " ");
+        Optional<Cookie> accessToken = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(ACCESS_TOKEN))
+                .findFirst();
+        if (accessToken.isEmpty()) {
+            throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
+        }
+        return accessToken.get().getValue();
     }
 
     public long getValidityInMilliseconds() {
