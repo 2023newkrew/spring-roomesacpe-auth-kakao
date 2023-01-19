@@ -55,7 +55,7 @@ public class ReservationService {
         if (reservation == null) {
             throw new RoomReservationException(ErrorCode.RESERVATION_NOT_FOUND);
         }
-        if (!Objects.equals(reservation.getMemberId(), memberId)) {
+        if (reservation.isNotMine(memberId)) {
             throw new RoomReservationException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 

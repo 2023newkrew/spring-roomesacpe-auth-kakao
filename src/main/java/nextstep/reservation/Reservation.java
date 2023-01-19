@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +19,9 @@ public class Reservation {
 
     public Reservation(Schedule schedule, String name, Long memberId) {
         this(null, schedule, name, memberId);
+    }
+
+    public boolean isNotMine(Long memberId) {
+        return Objects.equals(this.memberId, memberId);
     }
 }
