@@ -12,8 +12,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @ExceptionHandler(NotExistEntityException.class)
-    public ResponseEntity<Void> onNotExistEntityException(NotExistEntityException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Void> onNotExistEntityException(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 

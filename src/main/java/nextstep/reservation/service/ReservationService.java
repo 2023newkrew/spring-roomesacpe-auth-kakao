@@ -2,7 +2,7 @@ package nextstep.reservation.service;
 
 import java.util.List;
 import nextstep.exception.DuplicateEntityException;
-import nextstep.exception.NotExistEntityException;
+import nextstep.exception.NotFoundException;
 import nextstep.exception.UnauthorizedAccessException;
 import nextstep.member.Member;
 import nextstep.reservation.Reservation;
@@ -75,7 +75,7 @@ public class ReservationService {
     public Reservation findById(Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NotExistEntityException("해당 아이디의 예약이 존재하지 않습니다.");
+            throw new NotFoundException("해당 아이디의 예약이 존재하지 않습니다.");
         }
         return reservation;
     }

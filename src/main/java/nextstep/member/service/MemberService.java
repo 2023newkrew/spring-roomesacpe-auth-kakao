@@ -1,7 +1,7 @@
 package nextstep.member.service;
 
 import java.util.Optional;
-import nextstep.exception.NotExistEntityException;
+import nextstep.exception.NotFoundException;
 import nextstep.member.Member;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.repository.MemberDao;
@@ -24,6 +24,6 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id).orElseThrow( () -> new NotExistEntityException("존재하지 않는 아이디 입니다."));
+        return memberDao.findById(id).orElseThrow( () -> new NotFoundException("존재하지 않는 아이디 입니다."));
     }
 }
