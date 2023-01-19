@@ -1,9 +1,6 @@
 package nextstep.ui;
 
-import nextstep.auth.JwtTokenProvider;
 import nextstep.login.LoginService;
-import nextstep.support.TokenExpirationException;
-import nextstep.support.UnauthorizedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -29,16 +26,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
-
-        String header = httpServletRequest.getHeader("authorization");
-        if (header == null) throw new UnauthorizedException();
-
-        String token = header.substring("Bearer ".length());
-        if (!jwtTokenProvider.validateToken(token)) throw new TokenExpirationException();
-
-        String username = jwtTokenProvider.getPrincipal(token);
+        HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
+        String username = (String) request.getAttribute("username");
         return loginService.findByUsername(username);
     }
 
