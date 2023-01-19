@@ -28,7 +28,8 @@ public class AuthService {
     }
 
     private Member login(String username, String password) {
-        Member member = memberDao.findByUsername(username);
+        Member member = memberDao.findByUsername(username)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         if (member.isWrongPassword(password)) {
             throw new BusinessException(ErrorCode.LOGIN_FAILED_WRONG_USERNAME_PASSWORD);
         }

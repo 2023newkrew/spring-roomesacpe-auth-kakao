@@ -12,6 +12,7 @@ public enum ErrorCode {
     TOKEN_NOT_EXIST("토큰이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_AVAILABLE("토큰이 유효하지 않습니다.", HttpStatus.UNAUTHORIZED),
     LOGIN_FAILED_WRONG_USERNAME_PASSWORD("아이디 혹은 비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
+    MEMBER_ALREADY_EXIST_BY_USERNAME("해당 username을 가진 유저가 이미 존재합니다..", HttpStatus.CONFLICT),
     ;
 
     private final String message;

@@ -14,7 +14,14 @@ public class MemberService {
     }
 
     public long create(MemberRequest memberRequest) {
+        if (isAlreadyExistMember(memberRequest.getUsername())) {
+            throw new BusinessException(ErrorCode.MEMBER_ALREADY_EXIST_BY_USERNAME);
+        }
         return memberDao.save(memberRequest.toEntity());
+    }
+
+    private boolean isAlreadyExistMember(String username) {
+        return memberDao.findByUsername(username).isPresent();
     }
 
     public Member findById(long id) {
