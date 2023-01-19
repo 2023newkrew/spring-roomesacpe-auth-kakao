@@ -1,4 +1,4 @@
-package nextstep.auth.utils;
+package nextstep.auth;
 
 import static nextstep.common.exception.ExceptionMessage.ACCESSTOKEN_IS_NULL;
 
@@ -6,7 +6,9 @@ import nextstep.common.exception.NoAccessTokenException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthorizationExtractor {
 
     public static final String AUTHORIZATION = "Authorization";
@@ -14,7 +16,7 @@ public class AuthorizationExtractor {
         AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
     public static String BEARER_TYPE = "Bearer";
 
-    public static String extract(HttpServletRequest request) {
+    public String extract(HttpServletRequest request) {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         if (!headers.hasMoreElements()) {
             throw new NoAccessTokenException(ACCESSTOKEN_IS_NULL.getMessage());
