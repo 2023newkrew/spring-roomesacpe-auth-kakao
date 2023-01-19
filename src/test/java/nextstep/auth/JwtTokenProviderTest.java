@@ -22,7 +22,7 @@ class JwtTokenProviderTest {
 
     @Test
     @DisplayName("관리자 토큰 생성 테스트")
-    void createAdminTokenTest(){
+    void createAdminTokenTest() {
         String adminToken = JWT_TOKEN_PROVIDER.createAdminToken("adminName");
         assertThatCode(() -> JWT_TOKEN_PROVIDER.validateToken(adminToken)).doesNotThrowAnyException();
         assertThat(JWT_TOKEN_PROVIDER.getPrincipal(adminToken)).isEqualTo("adminName");
