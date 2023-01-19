@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.UnAuthorizedException;
+import nextstep.support.exception.UnAuthorizedException;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;

@@ -1,7 +1,7 @@
 package nextstep.config;
 
-import nextstep.support.ForbiddenAccessException;
-import nextstep.support.UnAuthorizedException;
+import nextstep.support.exception.ForbiddenAccessException;
+import nextstep.support.exception.UnAuthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

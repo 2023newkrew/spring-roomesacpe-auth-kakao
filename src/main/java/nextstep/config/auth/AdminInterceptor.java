@@ -3,7 +3,7 @@ package nextstep.config.auth;
 import nextstep.auth.AuthService;
 import nextstep.auth.LoginMember;
 import nextstep.auth.Role;
-import nextstep.support.ForbiddenAccessException;
+import nextstep.support.exception.ForbiddenAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
