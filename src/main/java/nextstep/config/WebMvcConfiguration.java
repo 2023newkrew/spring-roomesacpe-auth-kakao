@@ -3,6 +3,7 @@ package nextstep.config;
 import nextstep.auth.AuthenticationPrincipalArgumentResolver;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.interceptor.AdminInterceptor;
+import nextstep.auth.interceptor.UserInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -26,6 +27,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new UserInterceptor(jwtTokenProvider)).addPathPatterns("/admin/**", "/reservations/**");
         registry.addInterceptor(new AdminInterceptor(jwtTokenProvider)).addPathPatterns("/admin/**");
     }
 

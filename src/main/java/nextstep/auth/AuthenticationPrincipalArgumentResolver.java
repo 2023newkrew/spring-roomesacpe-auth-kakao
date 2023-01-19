@@ -29,10 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = jwtTokenProvider.resolveToken(request);
-        if (jwtTokenProvider.validateToken(token)) {
-            return tryGetMyIdBy(token);
-        }
-        throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
+        return tryGetMyIdBy(token);
     }
 
     private long tryGetMyIdBy(String token) {
