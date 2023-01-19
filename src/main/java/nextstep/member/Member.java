@@ -2,6 +2,8 @@ package nextstep.member;
 
 public class Member {
 
+    public static final String ADMIN_USERNAME = "admin";
+
     private long id;
     private String username;
     private String password;
