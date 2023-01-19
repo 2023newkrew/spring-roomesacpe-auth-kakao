@@ -34,3 +34,8 @@ CREATE TABLE member
     role     varchar(20) not null,
     primary key (id)
 );
+
+alter table reservation
+    add constraint fk_reservation_to_member
+        foreign key (name)
+            references member(name)

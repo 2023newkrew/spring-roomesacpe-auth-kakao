@@ -1,5 +1,6 @@
 package nextstep.support;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,5 +17,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({DuplicateEntityException.class, NotExistEntityException.class, DuplicateNameException.class})
     public ResponseEntity<String> handleDuplicateEntityException(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDataIntegrityViolationException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("규칙에 알맞게 요청해주세요");
     }
 }
