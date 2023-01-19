@@ -28,9 +28,9 @@ public class AuthService {
         String token = parseTokenFromHeader(header);
         validateToken(token);
 
-        String username = jwtTokenProvider.getPrincipal(token);
+        Long id = Long.valueOf(jwtTokenProvider.getPrincipal(token));
         Role role = jwtTokenProvider.getRole(token);
-        Member member = memberDao.findByUsername(username);
+        Member member = memberDao.findById(id);
         return LoginMember.of(member, role);
     }
 
@@ -67,7 +67,7 @@ public class AuthService {
     }
 
     public TokenResponse createAdminToken() {
-        String accessToken = jwtTokenProvider.createToken("admin", Role.ADMIN);
+        String accessToken = jwtTokenProvider.createToken("0", Role.ADMIN);
         return new TokenResponse(accessToken);
     }
 
