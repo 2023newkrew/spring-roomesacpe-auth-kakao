@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import nextstep.auth.dto.TokenRequestDto;
 import nextstep.auth.dto.TokenResponseDto;
 import nextstep.member.dto.MemberRequestDto;
-import nextstep.theme.ThemeRequest;
+import nextstep.theme.dto.ThemeRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -102,7 +102,7 @@ public class AuthE2ETest {
     }
 
     public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequestDto body = new ThemeRequestDto("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given()
                 .log()

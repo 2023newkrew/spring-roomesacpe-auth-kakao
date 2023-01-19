@@ -1,11 +1,12 @@
-package nextstep.theme;
+package nextstep.theme.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nextstep.theme.Theme;
 
 @Getter
 @AllArgsConstructor
-public class ThemeRequest {
+public class ThemeRequestDto {
 
     private String name;
     private String desc;

@@ -1,7 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
-import nextstep.theme.ThemeRequest;
+import nextstep.schedule.dto.ScheduleRequestDto;
+import nextstep.theme.dto.ThemeRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class ScheduleE2ETest {
     private Long themeId;
 
     public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleRequestDto body = new ScheduleRequestDto(1L, "2022-08-11", "13:00");
         return RestAssured
                 .given()
                 .log()
@@ -38,13 +39,13 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequestDto themeRequestDto = new ThemeRequestDto("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given()
                 .log()
                 .all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
+                .body(themeRequestDto)
                 .when()
                 .post("/themes")
                 .then()
@@ -60,7 +61,7 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 생성한다")
     @Test
     public void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        ScheduleRequestDto body = new ScheduleRequestDto(themeId, "2022-08-11", "13:00");
         RestAssured
                 .given()
                 .log()

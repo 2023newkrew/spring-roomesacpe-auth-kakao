@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import lombok.AllArgsConstructor;
+import nextstep.schedule.dto.ScheduleRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-        Long id = scheduleService.create(scheduleRequest);
+    public ResponseEntity createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
+        Long id = scheduleService.create(scheduleRequestDto);
         return ResponseEntity.created(URI.create("/schedules/" + id))
                 .build();
     }

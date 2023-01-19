@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.theme.dto.ThemeRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,8 @@ public class ThemeController {
     private final ThemeService themeService;
 
     @PostMapping
-    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
-        Long id = themeService.create(themeRequest);
+    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequestDto themeRequestDto) {
+        Long id = themeService.create(themeRequestDto);
         return ResponseEntity.created(URI.create("/themes/" + id))
                 .build();
     }

@@ -1,8 +1,9 @@
-package nextstep.schedule;
+package nextstep.schedule.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleRequest {
+public class ScheduleRequestDto {
     private Long themeId;
     private String date;
     private String time;

@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.theme.dto.ThemeRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,7 @@ public class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequestDto body = new ThemeRequestDto("테마이름", "테마설명", 22000);
         RestAssured
                 .given()
                 .log()
@@ -73,7 +74,7 @@ public class ThemeE2ETest {
     }
 
     public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequestDto body = new ThemeRequestDto("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given()
                 .log()

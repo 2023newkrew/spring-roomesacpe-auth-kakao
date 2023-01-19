@@ -4,6 +4,7 @@ import static nextstep.common.exception.ExceptionMessage.INVALID_THEME_ID;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.common.exception.NotExistEntityException;
+import nextstep.schedule.dto.ScheduleRequestDto;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,10 @@ public class ScheduleService {
     private final ScheduleDao scheduleDao;
     private final ThemeDao themeDao;
 
-    public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId())
+    public Long create(ScheduleRequestDto scheduleRequestDto) {
+        Theme theme = themeDao.findById(scheduleRequestDto.getThemeId())
             .orElseThrow(() -> new NotExistEntityException(INVALID_THEME_ID.getMessage()));
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
+        return scheduleDao.save(scheduleRequestDto.toEntity(theme));
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
