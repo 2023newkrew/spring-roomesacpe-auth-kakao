@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import nextstep.auth.UnAuthorizationException;
+import nextstep.exception.BusinessException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
@@ -12,6 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static nextstep.exception.ErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,8 +49,8 @@ class ReservationServiceTest {
         @Test
         @DisplayName("내가 예약한 예약정보는 취소할 수 있다.")
         void should_successfully_when_myReservation() {
-            when(reservationDao.findById(any())).thenReturn(myReservation);
-            when(memberDao.findById(any())).thenReturn(me);
+            when(reservationDao.findById(any())).thenReturn(Optional.of(myReservation));
+            when(memberDao.findById(any())).thenReturn(Optional.of(me));
             doNothing().when(reservationDao).deleteById(any());
 
             assertDoesNotThrow(() -> reservationService.deleteById(1L, 1L));
@@ -56,11 +59,12 @@ class ReservationServiceTest {
         @Test
         @DisplayName("내가 예약한 예약정보는 다른 사람이 취소할 수 없다.")
         void should_throwException_when_otherReservation() {
-            when(reservationDao.findById(any())).thenReturn(myReservation);
-            when(memberDao.findById(any())).thenReturn(other);
+            when(reservationDao.findById(any())).thenReturn(Optional.of(myReservation));
+            when(memberDao.findById(any())).thenReturn(Optional.of(other));
 
             assertThatThrownBy(() -> reservationService.deleteById(1L, 1L))
-                    .isInstanceOf(UnAuthorizationException.class);
+                    .isInstanceOf(BusinessException.class)
+                    .hasMessage(DELETE_FAILED_WHEN_NOT_MY_RESERVATION.getMessage());
         }
     }
 }
