@@ -1,5 +1,7 @@
 package nextstep.reservation;
 
+import nextstep.auth.LoginMember;
+import nextstep.config.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +18,10 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
+    // 기존 소스에서 @AuthenticationPrincipal annotation을 통해 요청에 대한 검증을 포함
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest);
+    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal LoginMember member) {
+        Long id = reservationService.create(reservationRequest, member.getMemberId());
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -28,9 +31,10 @@ public class ReservationController {
         return ResponseEntity.ok().body(results);
     }
 
+    // 기존 소스에서 @AuthenticationPrincipal annotation을 통해 요청에 대한 검증을 포함
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
-        reservationService.deleteById(id);
+    public ResponseEntity deleteReservation(@PathVariable Long id, @AuthenticationPrincipal LoginMember member) {
+        reservationService.deleteById(id, member.getMemberId());
 
         return ResponseEntity.noContent().build();
     }
