@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class AuthService {
     private Member login(String username, String password) {
         Member member = memberDao.findByUsername(username);
         if (member.isWrongPassword(password)) {
-            throw new AuthenticationException();
+            throw new BusinessException(ErrorCode.LOGIN_FAILED_WRONG_USERNAME_PASSWORD);
         }
         return member;
     }
