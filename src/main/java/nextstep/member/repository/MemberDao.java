@@ -21,13 +21,13 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
-            resultSet.getString("username"),
-            resultSet.getString("password"),
-            resultSet.getString("name"),
-            resultSet.getString("phone")
-    );
+    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> Member.giveId(Member.builder()
+            .username(resultSet.getString("username"))
+            .phone(resultSet.getString("phone"))
+            .password(resultSet.getString("password"))
+            .name(resultSet.getString("name"))
+            .build(), resultSet.getLong("id"));
+
 
     public Long save(Member member) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -50,6 +50,7 @@ public class MemberDao {
     }
 
     public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        return jdbcTemplate.query(SELECT_BY_USERNAME_AND_PASSWORD_STATEMENT, rowMapper, username, password).stream().findAny();
+        return jdbcTemplate.query(SELECT_BY_USERNAME_AND_PASSWORD_STATEMENT, rowMapper, username, password).stream()
+                .findAny();
     }
 }

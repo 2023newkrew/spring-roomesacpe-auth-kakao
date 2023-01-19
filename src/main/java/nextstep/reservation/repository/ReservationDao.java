@@ -41,12 +41,14 @@ public class ReservationDao {
                     resultSet.getDate("schedule.date").toLocalDate(),
                     resultSet.getTime("schedule.time").toLocalTime()
             ),
-            new Member(resultSet.getLong("member.id"),
-                    resultSet.getString("member.username"),
-                    resultSet.getString("member.password"),
-                    resultSet.getString("member.name"),
-                    resultSet.getString("member.phone"))
+            Member.giveId(Member.builder()
+                    .username(resultSet.getString("username"))
+                    .phone(resultSet.getString("phone"))
+                    .password(resultSet.getString("password"))
+                    .name(resultSet.getString("name"))
+                    .build(), resultSet.getLong("id"))
     );
+
 
     public Long save(Reservation reservation) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
