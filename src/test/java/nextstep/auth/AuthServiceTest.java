@@ -29,6 +29,7 @@ public class AuthServiceTest {
     void 비밀번호가_일치하지_않으면_오류가_발생한다() {
         TokenRequest tokenRequest = new TokenRequest("username", "invalidPassword");
         MemberResponse memberResponse = new MemberResponse(
+                1L,
                 "username",
                 "password",
                 "name",
@@ -43,6 +44,7 @@ public class AuthServiceTest {
     void 비밀번호가_일치하면_토큰이_반환된다() {
         TokenRequest tokenRequest = new TokenRequest("username", "password");
         MemberResponse memberResponse = new MemberResponse(
+                1L,
                 "username",
                 "password",
                 "name",
