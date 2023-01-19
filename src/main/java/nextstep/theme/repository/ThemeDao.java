@@ -22,12 +22,12 @@ public class ThemeDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Theme> rowMapper = (resultSet, rowNum) -> new Theme(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getString("desc"),
-            resultSet.getInt("price")
-    );
+    private final RowMapper<Theme> rowMapper = (resultSet, rowNum) -> Theme.giveId(Theme.builder()
+                    .desc(resultSet.getString("desc"))
+                    .name(resultSet.getString("name"))
+                    .price(resultSet.getInt("price"))
+                    .build()
+            , resultSet.getLong("id"));
 
     public Long save(Theme theme) {
 

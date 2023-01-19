@@ -32,12 +32,13 @@ public class ReservationDao {
             resultSet.getLong("reservation.id"),
             new Schedule(
                     resultSet.getLong("schedule.id"),
-                    new Theme(
-                            resultSet.getLong("theme.id"),
-                            resultSet.getString("theme.name"),
-                            resultSet.getString("theme.desc"),
-                            resultSet.getInt("theme.price")
-                    ),
+                    Theme.giveId(Theme.builder()
+                            .name(resultSet.getString("theme.name"))
+                            .price(resultSet.getInt("theme.price"))
+                            .desc("theme.desc")
+                            .build(),
+                            resultSet.getLong("theme.id"))
+                    ,
                     resultSet.getDate("schedule.date").toLocalDate(),
                     resultSet.getTime("schedule.time").toLocalTime()
             ),

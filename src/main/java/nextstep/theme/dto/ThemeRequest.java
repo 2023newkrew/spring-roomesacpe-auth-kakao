@@ -3,9 +3,9 @@ package nextstep.theme.dto;
 import nextstep.theme.Theme;
 
 public class ThemeRequest {
-    private String name;
-    private String desc;
-    private int price;
+    private final String name;
+    private final String desc;
+    private final int price;
 
     public ThemeRequest(String name, String desc, int price) {
         this.name = name;
@@ -26,10 +26,10 @@ public class ThemeRequest {
     }
 
     public Theme toEntity() {
-        return new Theme(
-                this.name,
-                this.desc,
-                this.price
-        );
+        return Theme.builder()
+                .name(name)
+                .desc(desc)
+                .price(price)
+                .build();
     }
 }
