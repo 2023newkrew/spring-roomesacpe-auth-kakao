@@ -33,15 +33,14 @@ public class ReservationService {
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
-        System.out.println(reservation);
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                member
-        );
+        Reservation newReservation = Reservation.builder()
+                .schedule(schedule)
+                .member(member)
+                .build();
 
         return reservationDao.save(newReservation);
     }

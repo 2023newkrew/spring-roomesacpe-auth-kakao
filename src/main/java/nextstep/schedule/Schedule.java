@@ -20,19 +20,13 @@ public class Schedule {
         return new ScheduleBuilder();
     }
 
-    private Schedule(ScheduleBuilder builder) {
-        this.theme = builder.theme;
-        this.date = builder.date;
-        this.time = builder.time;
-    }
-
 
     public static class ScheduleBuilder {
 
         private Theme theme;
+
         private LocalDate date;
         private LocalTime time;
-
         public ScheduleBuilder theme(Theme theme) {
             this.theme = theme;
             return this;
@@ -67,8 +61,8 @@ public class Schedule {
             }
         }
 
-    }
 
+    }
     public Long getId() {
         return id;
     }
@@ -83,5 +77,11 @@ public class Schedule {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    private Schedule(ScheduleBuilder builder) {
+        this.theme = builder.theme;
+        this.date = builder.date;
+        this.time = builder.time;
     }
 }

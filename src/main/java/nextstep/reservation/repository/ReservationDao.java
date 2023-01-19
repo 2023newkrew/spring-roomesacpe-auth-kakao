@@ -28,26 +28,27 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
-            resultSet.getLong("reservation.id"),
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> Reservation.giveId(
+            Reservation.builder().schedule(
+                    Schedule.giveId(Schedule.builder()
+                            .time(resultSet.getTime("schedule.time").toLocalTime())
+                            .date(resultSet.getDate("schedule.date").toLocalDate())
+                            .theme(Theme.giveId(Theme.builder()
+                                    .name(resultSet.getString("theme.name"))
+                                    .price(resultSet.getInt("theme.price"))
+                                    .desc("theme.desc")
+                                    .build(), resultSet.getLong("theme.id"))
+                            ).build(), resultSet.getLong("schedule.id"))
+            ).member(
+                    Member.giveId(Member.builder()
+                                    .username(resultSet.getString("username"))
+                                    .phone(resultSet.getString("phone"))
+                                    .password(resultSet.getString("password"))
+                                    .name(resultSet.getString("name"))
+                                    .build()
+                            , resultSet.getLong("id"))
 
-            Schedule.giveId(Schedule.builder()
-                    .time(resultSet.getTime("schedule.time").toLocalTime())
-                    .date(resultSet.getDate("schedule.date").toLocalDate())
-                    .theme(Theme.giveId(Theme.builder()
-                            .name(resultSet.getString("theme.name"))
-                            .price(resultSet.getInt("theme.price"))
-                            .desc("theme.desc")
-                            .build(), resultSet.getLong("theme.id"))
-                    ).build(), resultSet.getLong("schedule.id")),
-
-            Member.giveId(Member.builder()
-                            .username(resultSet.getString("username"))
-                            .phone(resultSet.getString("phone"))
-                            .password(resultSet.getString("password"))
-                            .name(resultSet.getString("name"))
-                            .build()
-                    , resultSet.getLong("id"))
+            ).build(), resultSet.getLong("reservation.id")
     );
 
 
