@@ -41,8 +41,8 @@
   - [x] 비밀번호 스키마 변경 (varbinary 512)
   - [x] sha2(password, 512) 함수 적용 - h2 에서는 hash('sha3-512', password)
   - [x] 인증시 id 와 암호화된 pw 로 조회하여 확인
-- [ ] token validation 후 예외처리 추가
-- [ ] member 생성시 중복 판단 기준 생각해보기
+- [x] token validation 후 예외처리 추가
+- [ ] member 생성시 중복 판단 기준 생각해보기리
 - [ ] reservation 에서 member 를 식별하는 필드를 memberId 로 변경할지 고민해보기
   - 이렇게 하면 멤버의 식별에 있어서도 유일하게 식별 가능하고, 확인 로직 등도 단순해짐
 
