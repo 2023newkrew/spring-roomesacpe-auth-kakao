@@ -18,10 +18,6 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    private Member validate(Optional<Member> member) {
-        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
-    }
-
     public void validateLoginMember(LoginMember loginMember) {
         if (Objects.isNull(loginMember)) {
             throw new UnauthorizedAccessException("인증되지 않은 사용자입니다.");
@@ -43,4 +39,7 @@ public class AuthService {
         }
     }
 
+    private Member validate(Optional<Member> member) {
+        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
+    }
 }
