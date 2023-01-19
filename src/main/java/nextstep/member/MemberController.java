@@ -26,7 +26,7 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity me(@LoginMember Member member) {
-        return ResponseEntity.ok(memberService.findByUserName(member.getUsername()));
+        return ResponseEntity.ok(memberService.findById(member.getId()));
     }
 
     @ExceptionHandler()

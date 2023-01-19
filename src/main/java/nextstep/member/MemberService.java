@@ -16,10 +16,8 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id);
+        return memberDao.findById(id)
+                .orElseThrow(NotExistMemberException::new);
     }
 
-    public Member findByUserName(String userName) {
-        return memberDao.findByUsername(userName).orElseThrow(NotExistMemberException::new);
-    }
 }

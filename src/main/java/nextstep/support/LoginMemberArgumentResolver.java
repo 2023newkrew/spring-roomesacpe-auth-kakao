@@ -38,7 +38,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new InvalidAuthorizationTokenException();
         }
 
-        return memberDao.findByUsername(jwtTokenProvider.getPrincipal(token))
+        return memberDao.findById(jwtTokenProvider.getMemberId(token))
                 .orElseThrow(NotExistMemberException::new);
     }
 }

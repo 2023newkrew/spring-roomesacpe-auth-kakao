@@ -23,7 +23,7 @@ public class AuthService {
         if(member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new NotCorrectPasswordException();
         }
-        String accessToken = jwtTokenProvider.createToken(member.getUsername());
+        String accessToken = jwtTokenProvider.createToken(member.getUsername(), member.getId());
         return new TokenResponse(accessToken);
     }
 }
