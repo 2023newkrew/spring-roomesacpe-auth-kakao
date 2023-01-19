@@ -27,7 +27,9 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String USERNAME = "username";
     public static final String NAME = "name";
+    public static final String ADMIN = "admin";
     public static final String TOKEN = new JwtTokenProvider().createToken(USERNAME);
+    public static final String ADMIN_TOKEN = new JwtTokenProvider().createToken(ADMIN);
 
     private ReservationRequest request;
     private Long themeId;
@@ -38,27 +40,15 @@ class ReservationE2ETest {
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
-                .given().log().all()
+                .given().header("authorization", "Bearer " + ADMIN_TOKEN).log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
         MemberRequest body = new MemberRequest(USERNAME, "password", NAME, "010-1234-5678", MemberRole.USER);
         var memberResponse = RestAssured
@@ -78,6 +68,18 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
+
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        var scheduleResponse = RestAssured
+                .given().header("authorization", "Bearer " + TOKEN).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
@@ -122,7 +124,7 @@ class ReservationE2ETest {
         createReservation();
 
         var response = RestAssured
-                .given().log().all()
+                .given().header("authorization", "Bearer " + TOKEN).log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -183,7 +185,7 @@ class ReservationE2ETest {
     @Test
     void showEmptyReservations() {
         var response = RestAssured
-                .given().log().all()
+                .given().header("authorization", "Bearer " + TOKEN).log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
