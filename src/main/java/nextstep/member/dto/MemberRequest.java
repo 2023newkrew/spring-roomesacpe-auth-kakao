@@ -1,29 +1,18 @@
-package nextstep.member;
+package nextstep.member.dto;
 
-public class Member {
-    private Long id;
+import nextstep.member.Member;
+
+public class MemberRequest {
     private final String username;
     private final String password;
     private final String name;
     private final String phone;
 
-    public Member(Long id, String username, String password, String name, String phone) {
-        this.id = id;
+    public MemberRequest(String username, String password, String name, String phone) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
-    }
-
-    public Member(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getUsername() {
@@ -42,4 +31,7 @@ public class Member {
         return phone;
     }
 
+    public Member toEntity() {
+        return new Member(username, password, name, phone);
+    }
 }
