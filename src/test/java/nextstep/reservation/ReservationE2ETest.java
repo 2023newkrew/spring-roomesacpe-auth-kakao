@@ -132,6 +132,21 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("관리자 권한의 경우 예약을 임의로 생성할 수 있다.")
+    @Test
+    void createWithAdminAuth() {
+        ReservationAdminRequest adminRequest = new ReservationAdminRequest(request.getScheduleId(), memberId);
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(adminToken)
+                .body(adminRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
 
     @DisplayName("예약을 조회한다")
     @Test
@@ -168,6 +183,20 @@ class ReservationE2ETest {
     @DisplayName("권한없는 예약을 삭제한다")
     @Test
     void deleteWithNoAuth() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("관리자는 어떤 예약이던 삭제할 수 있다.")
+    @Test
+    void deleteWithAdminAuth() {
         var reservation = createReservation();
 
         var response = RestAssured

@@ -65,4 +65,12 @@ public class ReservationService {
         }
         reservationDao.deleteById(id);
     }
+    public void deleteByIdAdmin(Long id) {
+        Reservation reservation = reservationDao.findById(id);
+        if (reservation == null) {
+            throw new NullPointerException();
+        }
+        reservationDao.deleteById(id);
+    }
+
 }
