@@ -1,6 +1,7 @@
 package nextstep.member;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,6 +39,11 @@ public class MemberDao {
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    public List<Member> findAll() {
+        String sql = "SELECT id, username, password, name, phone, authority from member";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Member findById(Long id) {

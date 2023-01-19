@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
@@ -13,6 +14,10 @@ public class MemberService {
 
     public Long create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());
+    }
+
+    public List<Member> findAll() {
+        return memberDao.findAll();
     }
 
     public Member findById(Long id) {
