@@ -1,1 +1,1 @@
-INSERT INTO member (username, password, name, phone, role) VALUES ("admin", "0000", "jay", "ADMIN");
+INSERT INTO member (username, password, name, phone, role) VALUES ('admin', HASH('SHA3-512', '0000'), 'jay', '010-5555-5555','ADMIN');

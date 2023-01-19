@@ -29,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
-        String payload = jwtTokenProvider.getPrincipal(token);
+        String payload = jwtTokenProvider.getMemberId(token);
         if (payload == null) {
             throw new AuthorizationException();
         }
