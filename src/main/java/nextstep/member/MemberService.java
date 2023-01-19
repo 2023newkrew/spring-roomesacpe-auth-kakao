@@ -15,7 +15,8 @@ public class MemberService {
     }
 
     public Long create(MemberRequest memberRequest) {
-        if (memberDao.findByUsername(memberRequest.getUsername()) != null) {
+        if (memberDao.findByUsername(memberRequest.getUsername())
+                .isPresent()) {
             throw new DuplicateEntityException("같은 username을 가진 회원이 존재합니다.");
         }
         return memberDao.save(memberRequest.toEntity());
@@ -26,13 +27,10 @@ public class MemberService {
     }
 
     public MemberResponseDto findByUsername(String username) {
-        MemberResponseDto memberResponseDto = null;
-        try {
-            memberResponseDto = MemberResponseDto.toDto(memberDao.findByUsername(username));
-        } catch (NullPointerException nullPointerException) {
-            throw new NotExistEntityException("존재하지 않는 회원입니다.");
-        }
-        return memberResponseDto;
+        Member foundMember = memberDao.findByUsername(username)
+                .orElseThrow(() -> new NotExistEntityException("존재하지 않는 회원입니다."));
+
+        return MemberResponseDto.toDto(foundMember);
     }
 
     public void validateIdAndPassword(TokenRequestDto tokenRequestDto) {

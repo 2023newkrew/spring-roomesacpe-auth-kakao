@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
-import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MemberDao {
@@ -50,15 +50,15 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
         String sql = "SELECT * from member where username = ?;";
         Member member = null;
         try {
             member = jdbcTemplate.queryForObject(sql, rowMapper, username);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return Optional.empty();
         }
-        return member;
+        return Optional.ofNullable(member);
     }
 
     public Member findByUsernameAndPassword(String username, String password) {

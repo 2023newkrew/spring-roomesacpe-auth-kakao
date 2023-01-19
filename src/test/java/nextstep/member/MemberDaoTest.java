@@ -41,7 +41,7 @@ class MemberDaoTest {
     @DisplayName("username으로 멤버 조회 테스트")
     void findByUsernameTest(){
         Long saveMemberId = memberDao.save(MEMBER);
-        assertThat(memberDao.findByUsername(MEMBER.getUsername())
+        assertThat(memberDao.findByUsername(MEMBER.getUsername()).get()
                 .getId())
                 .isEqualTo(saveMemberId);
     }
