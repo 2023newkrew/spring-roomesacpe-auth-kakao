@@ -13,8 +13,9 @@ public class MemberResponseDto {
     private String password;
     private String name;
     private String phone;
+    private Role role;
 
     public static MemberResponseDto toDto(Member member) {
-        return new MemberResponseDto(member.getId(), member.getUsername(), member.getPassword(), member.getName(), member.getPhone());
+        return new MemberResponseDto(member.getId(), member.getUsername(), member.getPassword(), member.getName(), member.getPhone(), member.getRole());
     }
 }
