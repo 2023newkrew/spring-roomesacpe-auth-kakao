@@ -52,13 +52,14 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public String getRole(String token) {
+    public Boolean isAdmin(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role")
-                .toString();
+                .toString()
+                .equals(Role.ADMIN.name());
     }
 
     public void validateToken(String token) {

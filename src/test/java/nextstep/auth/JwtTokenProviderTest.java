@@ -1,6 +1,5 @@
 package nextstep.auth;
 
-import nextstep.member.Role;
 import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ class JwtTokenProviderTest {
         String token = JWT_TOKEN_PROVIDER.createToken("username");
         assertThatCode(() -> JWT_TOKEN_PROVIDER.validateToken(token)).doesNotThrowAnyException();
         assertThat(JWT_TOKEN_PROVIDER.getPrincipal(token)).isEqualTo("username");
-        assertThat(JWT_TOKEN_PROVIDER.getRole(token)).isEqualTo(Role.USER.name());
+        assertThat(JWT_TOKEN_PROVIDER.isAdmin(token)).isFalse();
     }
 
     @Test
@@ -27,7 +26,7 @@ class JwtTokenProviderTest {
         String adminToken = JWT_TOKEN_PROVIDER.createAdminToken("adminName");
         assertThatCode(() -> JWT_TOKEN_PROVIDER.validateToken(adminToken)).doesNotThrowAnyException();
         assertThat(JWT_TOKEN_PROVIDER.getPrincipal(adminToken)).isEqualTo("adminName");
-        assertThat(JWT_TOKEN_PROVIDER.getRole(adminToken)).isEqualTo(Role.ADMIN.name());
+        assertThat(JWT_TOKEN_PROVIDER.isAdmin(adminToken)).isTrue();
     }
 
     @Test
