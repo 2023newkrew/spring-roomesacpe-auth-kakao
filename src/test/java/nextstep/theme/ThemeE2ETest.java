@@ -5,10 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static nextstep.admin.AdminE2ETest.createAdminToken;
 import static nextstep.admin.AdminE2ETest.createThemeWithAdminAuthority;
 import static org.assertj.core.api.Assertions.assertThat;
 

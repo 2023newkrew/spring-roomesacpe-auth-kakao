@@ -3,10 +3,8 @@ package nextstep.admin;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.reservation.ReservationE2ETest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +14,8 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static nextstep.DataLoader.ADMIN_MEMBER;
 import static nextstep.auth.AuthE2ETest.createMemberToken;
-import static nextstep.reservation.ReservationE2ETest.*;
+import static nextstep.reservation.ReservationE2ETest.DATE;
+import static nextstep.reservation.ReservationE2ETest.TIME;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)

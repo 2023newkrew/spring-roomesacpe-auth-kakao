@@ -18,7 +18,8 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
-import static nextstep.admin.AdminE2ETest.*;
+import static nextstep.admin.AdminE2ETest.createScheduleWithAdminAuthority;
+import static nextstep.admin.AdminE2ETest.createThemeWithAdminAuthority;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
