@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.member.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,13 +21,14 @@ public class AuthE2ETest {
     @Test
     public void create() {
         //given
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        createMember(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
 
         //when
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -34,5 +36,34 @@ public class AuthE2ETest {
 
         //then
         assertThat(response.as(TokenResponse.class)).isNotNull();
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 멤버로 토큰 생성을 요청하면 실패한다.")
+    void createTokenFail() {
+        //given
+        TokenRequest tokenRequest = new TokenRequest("???", "????");
+
+        //when
+        //then
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void createMember(String username, String password) {
+        MemberRequest memberRequest = new MemberRequest(username, password, "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
     }
 }

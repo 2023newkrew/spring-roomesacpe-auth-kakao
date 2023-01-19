@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.support.exception.MemberException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,10 +16,12 @@ public class MemberService {
     }
 
     public Member findById(Long id) {
-        return memberDao.findById(id);
+        return memberDao.findById(id)
+                .orElseThrow(() -> new MemberException("멤버 정보를 찾을 수 없습니다."));
     }
 
     public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
+        return memberDao.findByUsername(username)
+                .orElseThrow(() -> new MemberException("멤버 정보를 찾을 수 없습니다."));
     }
 }

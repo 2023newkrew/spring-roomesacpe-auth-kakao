@@ -1,11 +1,9 @@
 package nextstep.auth;
 
 
+import nextstep.support.exception.AuthorizationExcpetion;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login/token")
@@ -21,5 +19,10 @@ public class AuthController {
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok(tokenResponse);
+    }
+
+    @ExceptionHandler(AuthorizationExcpetion.class)
+    public ResponseEntity onException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
