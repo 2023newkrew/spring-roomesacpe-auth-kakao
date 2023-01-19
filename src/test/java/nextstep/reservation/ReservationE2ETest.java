@@ -3,12 +3,14 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,13 +30,28 @@ class ReservationE2ETest {
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
-    private Long memberId;
+    private String token;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
 
     @BeforeEach
     void setUp() {
+
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        token = jwtTokenProvider.createToken("username");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
                 .when().post("/themes")
@@ -46,7 +63,7 @@ class ReservationE2ETest {
 
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
         var scheduleResponse = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
                 .when().post("/schedules")
@@ -55,23 +72,9 @@ class ReservationE2ETest {
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                "username"
         );
     }
 
@@ -79,7 +82,7 @@ class ReservationE2ETest {
     @Test
     void create() {
         var response = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -95,7 +98,7 @@ class ReservationE2ETest {
         createReservation();
 
         var response = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -109,14 +112,14 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        var reservation = createReservation();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete(reservation.header("Location"))
+        ExtractableResponse<Response> request = createReservation();
+        System.out.println(token);
+        ExtractableResponse<Response> response = RestAssured
+                .given().auth().oauth2(token).log().all()
+                .when().delete(request.header("Location"))
                 .then().log().all()
                 .extract();
-
+        System.out.println(request.header("Location"));
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
@@ -126,7 +129,7 @@ class ReservationE2ETest {
         createReservation();
 
         var response = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -140,7 +143,7 @@ class ReservationE2ETest {
     @Test
     void showEmptyReservations() {
         var response = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -155,7 +158,7 @@ class ReservationE2ETest {
     @Test
     void createNotExistReservation() {
         var response = RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -165,7 +168,7 @@ class ReservationE2ETest {
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
-                .given().log().all()
+                .given().auth().oauth2(token).log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

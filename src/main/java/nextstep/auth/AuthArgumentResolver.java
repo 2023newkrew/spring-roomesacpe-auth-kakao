@@ -18,7 +18,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticatedId.class);
+        return parameter.hasParameterAnnotation(AuthenticatedUsername.class);
     }
 
     @Override
@@ -27,6 +27,5 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest nativeRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String token = (String) nativeRequest.getAttribute("accessToken");
         return jwtTokenProvider.getPrincipal(token);
-
     }
 }

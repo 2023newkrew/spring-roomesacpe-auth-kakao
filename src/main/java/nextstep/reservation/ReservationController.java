@@ -1,8 +1,7 @@
 package nextstep.reservation;
 
-import nextstep.auth.AuthenticatedId;
+import nextstep.auth.AuthenticatedUsername;
 import nextstep.exceptions.exception.ReservationForbiddenException;
-import nextstep.member.MemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +21,10 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity createReservation(
             @RequestBody ReservationRequest reservationRequest,
-            @AuthenticatedId MemberResponse memberResponse
+            @AuthenticatedUsername String username
     ) {
         Long id = reservationService.create(reservationRequest);
-        if (!reservationRequest.getName().equals(memberResponse.getUsername())) {
+        if (!reservationRequest.getName().equals(username)) {
             throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
         }
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
@@ -40,13 +39,13 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReservation(
             @PathVariable Long id,
-            @AuthenticatedId MemberResponse memberResponse
+            @AuthenticatedUsername String username
     ) {
-        reservationService.deleteById(id);
         Reservation reservation = reservationService.findById(id);
-        if (!reservation.getName().equals(memberResponse.getUsername())) {
+        if (!reservation.getName().equals(username)) {
             throw new ReservationForbiddenException("예약당사자만 예약을 삭제할 수 있습니다.");
         }
+        reservationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
