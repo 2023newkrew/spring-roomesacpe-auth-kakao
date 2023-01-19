@@ -1,12 +1,16 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
+import nextstep.support.excpetion.DuplicateReservationException;
+import nextstep.support.excpetion.NotExistReservationException;
+import nextstep.support.excpetion.NotQualifiedMemberException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,7 +25,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, Member member) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -29,13 +33,10 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateReservationException();
         }
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName()
-        );
+        Reservation newReservation = new Reservation(schedule, member);
 
         return reservationDao.save(newReservation);
     }
@@ -49,12 +50,11 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
+    public void deleteById(Long id, Member member) {
+        Reservation reservation = reservationDao.findById(id).orElseThrow(NotExistReservationException::new);
+        if(!reservation.isCorrectMember(member)) {
+            throw new NotQualifiedMemberException();
         }
-
         reservationDao.deleteById(id);
     }
 }
