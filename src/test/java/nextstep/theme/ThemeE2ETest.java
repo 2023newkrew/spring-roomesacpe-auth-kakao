@@ -77,6 +77,46 @@ public class ThemeE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("토큰 없이 테마를 삭제하면 예외가 발생한다.")
+    @Test
+    void deleteNoToken() {
+        Long location = createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete("/themes/" + location)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("유저 권한으로 테마를 삭제하면 예외가 발생한다.")
+    @Test
+    void deleteNoAdmin() {
+        TokenRequest tokenRequest = new TokenRequest("test", "pass");
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+        String userToken = tokenResponse.jsonPath().getString("accessToken");
+
+        Long location = createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken)
+                .when().delete("/themes/" + location)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
