@@ -4,23 +4,14 @@ import java.util.Objects;
 
 public class Theme {
     private Long id;
-    private String name;
-    private String desc;
-    private int price;
+    private final String name;
+    private final String desc;
+    private final int price;
 
-    public Theme() {
-    }
-
-    private Theme(String name, String desc, int price) {
-        this.name = name;
-        this.desc = desc;
-        this.price = price;
-    }
     public static Theme giveId(Theme theme, Long id){
         theme.id = id;
         return theme;
     }
-
     public static ThemeBuilder builder() {
         return new ThemeBuilder();
     }
@@ -28,9 +19,9 @@ public class Theme {
     public static class ThemeBuilder {
 
         private String name;
+
         private String desc;
         private Integer price;
-
         public ThemeBuilder name(String name) {
             this.name = name;
             return this;
@@ -66,8 +57,8 @@ public class Theme {
 
         }
 
-    }
 
+    }
     public Long getId() {
         return id;
     }
@@ -82,5 +73,11 @@ public class Theme {
 
     public int getPrice() {
         return price;
+    }
+
+    private Theme(String name, String desc, int price) {
+        this.name = name;
+        this.desc = desc;
+        this.price = price;
     }
 }
