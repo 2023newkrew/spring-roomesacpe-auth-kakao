@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,13 +10,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
-    public void create() {
+    void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
@@ -28,7 +30,7 @@ public class ThemeE2ETest {
 
     @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
+    void showThemes() {
         createTheme();
 
         var response = RestAssured
@@ -38,7 +40,8 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+
+        assertThat(response.jsonPath().getList(".")).hasSize(1);
     }
 
     @DisplayName("테마를 삭제한다")
@@ -50,13 +53,23 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .when().delete("/themes/" + id)
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
+    @DisplayName("존재하지 않는 테마를 삭제하면 404 코드 반환")
+    @Test
+    void delete_fail() {
+        var response = RestAssured
+                .given().log().all()
+                .when().delete("/themes/" + -1L)
+                .then().log().all()
+                .statusCode(ErrorCode.THEME_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.THEME_NOT_FOUND.getCode()));
+    }
+
+    private Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -65,6 +78,7 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
+
         return Long.parseLong(location.split("/")[2]);
     }
 }

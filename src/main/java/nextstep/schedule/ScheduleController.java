@@ -2,6 +2,7 @@ package nextstep.schedule;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -18,7 +19,8 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
-        return ResponseEntity.created(URI.create("/schedules/" + id)).build();
+        URI uri = UriComponentsBuilder.fromUriString("/schedules/{id}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping

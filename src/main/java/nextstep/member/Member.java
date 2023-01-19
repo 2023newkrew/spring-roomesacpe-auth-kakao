@@ -1,11 +1,16 @@
 package nextstep.member;
 
+import java.util.Objects;
+
 public class Member {
     private Long id;
     private String username;
     private String password;
     private String name;
     private String phone;
+
+    public Member() {
+    }
 
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
@@ -44,5 +49,18 @@ public class Member {
 
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id) && Objects.equals(username, member.username) && Objects.equals(password, member.password) && Objects.equals(name, member.name) && Objects.equals(phone, member.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, name, phone);
     }
 }

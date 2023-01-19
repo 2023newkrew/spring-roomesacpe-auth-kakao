@@ -1,7 +1,10 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
+import nextstep.support.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -17,9 +20,10 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).build();
+    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest, @LoginMember Member member) {
+        Long id = reservationService.create(reservationRequest, member);
+        URI uri = UriComponentsBuilder.fromUriString("/reservations/{id}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping
@@ -29,14 +33,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
-        reservationService.deleteById(id);
-
+    public ResponseEntity deleteReservation(@PathVariable Long id, @LoginMember Member member) {
+        reservationService.deleteById(id, member);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
     }
 }
