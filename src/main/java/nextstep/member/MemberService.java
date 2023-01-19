@@ -45,7 +45,6 @@ public class MemberService {
         return new TokenResponse(token);
     }
 
-    @Transactional
     public void validateIsMember(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
