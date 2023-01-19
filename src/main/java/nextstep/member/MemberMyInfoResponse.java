@@ -1,15 +1,13 @@
 package nextstep.member;
 
-public class Member {
+public class MemberMyInfoResponse {
     private Long id;
     private String username;
     private String password;
     private String name;
     private String phone;
 
-    public Member() {}
-
-    public Member(Long id, String username, String password, String name, String phone) {
+    public MemberMyInfoResponse(Long id, String username, String password, String name, String phone) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -17,11 +15,8 @@ public class Member {
         this.phone = phone;
     }
 
-    public Member(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
+    public static MemberMyInfoResponse fromEntity(Member member) {
+        return new MemberMyInfoResponse(member.getId(), member.getUsername(), member.getPassword(), member.getName(), member.getPhone());
     }
 
     public Long getId() {
@@ -42,9 +37,5 @@ public class Member {
 
     public String getPhone() {
         return phone;
-    }
-
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
     }
 }

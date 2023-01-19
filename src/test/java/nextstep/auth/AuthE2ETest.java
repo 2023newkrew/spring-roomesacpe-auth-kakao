@@ -48,6 +48,34 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
+    @DisplayName("내 정보를 조회한다")
+    @Test
+    public void showMyInfo() {
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest(USERNAME, PASSWORD))
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        String accessToken = tokenResponse.body().as(TokenResponse.class).getAccessToken();
+
+        var myInfoResponse = RestAssured
+                .given().log().all()
+                .header("authorization", "Bearer " + accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        assertThat((String) myInfoResponse.jsonPath().get("username")).isEqualTo(USERNAME);
+        assertThat((String) myInfoResponse.jsonPath().get("password")).isEqualTo(PASSWORD);
+        assertThat((String) myInfoResponse.jsonPath().get("name")).isEqualTo("name");
+        assertThat((String) myInfoResponse.jsonPath().get("phone")).isEqualTo("010-1234-5678");
+    }
+
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
