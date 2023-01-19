@@ -62,7 +62,12 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateUsernamePassword(tokenRequest.getUsername(), tokenRequest.getPassword());
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), Role.USER);
+        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+        if (member == null) {
+            throw new UnAuthorizedException();
+        }
+
+        String accessToken = jwtTokenProvider.createToken(member.getId().toString(), Role.USER);
         return new TokenResponse(accessToken);
     }
 

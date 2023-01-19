@@ -37,7 +37,6 @@ public class AdminController {
 
     @DeleteMapping("/reservations/{id}")
     public ResponseEntity deleteReservation(@LoginUser LoginMember loginMember, @PathVariable Long id) {
-
         reservationService.deleteById(id, loginMember);
         return ResponseEntity.noContent().build();
     }
@@ -54,8 +53,8 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    @DeleteMapping("schedules/{id}")
+    public ResponseEntity deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
         return ResponseEntity.noContent().build();
