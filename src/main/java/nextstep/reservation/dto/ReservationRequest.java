@@ -6,10 +6,9 @@ public class ReservationRequest {
     private final Long scheduleId;
     private final Long memberId;
 
-    public ReservationRequest(Long scheduleId, Long memberId) {
-        validate();
-        this.scheduleId = scheduleId;
-        this.memberId = memberId;
+    public static ReservationRequest createReservationRequest(Long scheduleId, Long memberId){
+        validate(scheduleId, memberId);
+        return new ReservationRequest(scheduleId, memberId);
     }
 
     public Long getScheduleId() {
@@ -20,22 +19,26 @@ public class ReservationRequest {
         return memberId;
     }
 
-    private void validate() {
-        validateScheduleId();
-        validateMemberId();
+
+    private ReservationRequest(Long scheduleId, Long memberId) {
+        this.scheduleId = scheduleId;
+        this.memberId = memberId;
     }
 
-    private void validateScheduleId() {
-        if (Objects.isNull(this.scheduleId)) {
-            throw new IllegalArgumentException("scheduleId는 null 일수 없습니다.");
+    private static void validate(Long scheduleId, Long memberId) {
+        validateScheduleId(scheduleId, "scheduleId는 null 일수 없습니다.");
+        validateMemberId(memberId, "memberId는 null 일수 없습니다.");
+    }
+
+    private static void validateScheduleId(Long scheduleId, String s) {
+        if (Objects.isNull(scheduleId)) {
+            throw new IllegalArgumentException(s);
         }
     }
 
-    private void validateMemberId() {
-        if (Objects.isNull(this.memberId)) {
-            throw new IllegalArgumentException("memberId는 null 일수 없습니다.");
+    private static void validateMemberId(Long scheduleId, String s) {
+        if (Objects.isNull(scheduleId)) {
+            throw new IllegalArgumentException(s);
         }
-
     }
-
 }

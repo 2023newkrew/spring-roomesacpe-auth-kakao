@@ -94,16 +94,16 @@ class ReservationE2ETest {
                 .extract().as(TokenResponse.class).getAccessToken();
 
 
-        request = new ReservationRequest(
+        request = ReservationRequest.createReservationRequest(
                 scheduleId,
                 memberId
         );
     }
 
-//    @BeforeEach
-//    void tearDown() {
-//        jdbcTemplate.update("DELETE FROM reservation");
-//    }
+    @BeforeEach
+    void tearDown() {
+        jdbcTemplate.update("DELETE FROM reservation");
+    }
 
     @DisplayName("예약을 생성한다")
     @Test
@@ -153,7 +153,7 @@ class ReservationE2ETest {
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-        ReservationRequest reservationRequest = new ReservationRequest(scheduleId, memberId);
+        ReservationRequest reservationRequest = ReservationRequest.createReservationRequest(scheduleId, memberId);
         createReservation(reservationRequest);
 
         var response = RestAssured
@@ -276,6 +276,9 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> createReservation() {
+        System.out.println("#################");
+        System.out.println(request.getScheduleId());
+        System.out.println("#################");
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
