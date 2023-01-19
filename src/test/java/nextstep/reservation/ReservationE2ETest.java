@@ -148,6 +148,21 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("권한이 없는 경우 예약을 생성하지 못한다.")
+    @Test
+    void createWithNoAuth() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
