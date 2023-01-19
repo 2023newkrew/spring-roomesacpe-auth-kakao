@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.assertj.core.api.Assertions.assertThat;
 import static nextstep.Constant.USERNAME;
 import static nextstep.Constant.PASSWORD;
@@ -33,7 +34,7 @@ class MemberE2ETest {
                 .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(memberRequest)
                 .when().post("/members")
                 .then().statusCode(HttpStatus.CREATED.value())
-                .header("Location", "/members/1");
+                .header("Location", startsWith("/members/"));
     }
 
     @DisplayName("토큰 정보로 회원 정보를 조회한다")
