@@ -15,6 +15,8 @@ import java.util.List;
 public class
 JwtTokenProvider {
 
+    public static final String ACCESS_TOKEN = "accessJWT";
+
     private static final String TOKEN_PREFIX = "Bearer";
 
     @Value("${security.jwt.token.secret-key}")
@@ -64,5 +66,9 @@ JwtTokenProvider {
 
     private static boolean isTokenNotExist(String authorizationHeader) {
         return authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX + " ");
+    }
+
+    public long getValidityInMilliseconds() {
+        return validityInMilliseconds;
     }
 }

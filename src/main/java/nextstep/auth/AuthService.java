@@ -19,12 +19,12 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
+    public String createToken(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
         Member member = login(username, password);
 
-        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(member.getId()), new ArrayList<>()));
+        return jwtTokenProvider.createToken(String.valueOf(member.getId()), new ArrayList<>());
     }
 
     private Member login(String username, String password) {

@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -18,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
+import static nextstep.auth.JwtTokenProvider.ACCESS_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -86,7 +86,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+                .getCookie(ACCESS_TOKEN);
 
         var response = RestAssured
                 .given().log().all()
@@ -143,7 +143,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+                .getCookie(ACCESS_TOKEN);
 
         var response = RestAssured
                 .given().log().all()
@@ -165,7 +165,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+                .getCookie(ACCESS_TOKEN);
 
         var response = RestAssured
                 .given().log().all()
@@ -203,7 +203,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+                .getCookie(ACCESS_TOKEN);
 
         var response = RestAssured
                 .given().log().all()
@@ -222,7 +222,7 @@ class ReservationE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+                .getCookie(ACCESS_TOKEN);
 
         return RestAssured
                 .given().log().all()

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.auth.JwtTokenProvider.ACCESS_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -43,10 +44,10 @@ public class AuthE2ETest {
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(response.cookie(ACCESS_TOKEN)).isNotNull();
     }
 
     @DisplayName("테마 목록을 조회한다")
