@@ -1,40 +1,41 @@
 package nextstep.reservation;
 
+import java.util.List;
+import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import nextstep.error.ErrorCode;
+import nextstep.error.exception.RoomReservationException;
+import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
-        this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
-    }
+    public final MemberDao memberDao;
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new RoomReservationException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new RoomReservationException(ErrorCode.DUPLICATE_RESERVATION);
         }
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                reservationRequest.getName(),
+                memberId
         );
 
         return reservationDao.save(newReservation);
@@ -43,16 +44,19 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new RoomReservationException(ErrorCode.THEME_NOT_FOUND);
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Long memberId) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new RoomReservationException(ErrorCode.RESERVATION_NOT_FOUND);
+        }
+        if (reservation.isNotMine(memberId)) {
+            throw new RoomReservationException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
         reservationDao.deleteById(id);
