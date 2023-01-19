@@ -54,7 +54,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);

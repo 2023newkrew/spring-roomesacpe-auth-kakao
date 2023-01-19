@@ -27,9 +27,9 @@ CREATE TABLE schedule
 CREATE TABLE member
 (
     id       bigint      not null auto_increment,
-    username varchar(20) not null,
+    username varchar(20) not null unique,
     password varbinary(512) not null,
     name     varchar(20) not null,
-    phone    varchar(20) not null,
+    phone    varchar(20) not null unique,
     primary key (id)
 );
