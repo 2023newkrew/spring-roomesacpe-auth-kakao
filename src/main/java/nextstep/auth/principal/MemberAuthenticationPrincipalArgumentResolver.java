@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Component
 public class MemberAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private static final String Bearer = "Bearer ";
+public static final String Bearer = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
