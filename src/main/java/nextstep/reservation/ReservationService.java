@@ -30,15 +30,16 @@ public class ReservationService {
 
     public Long create(ReservationRequest reservationRequest, String authorization) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-        throw new NullPointerException();
-        }
 
+        if (schedule == null) {
+            throw new NullPointerException();
+        }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
+
         String accessToken = authorization.substring(Bearer.length());
         String username = jwtTokenProvider.getPrincipal(accessToken);
 

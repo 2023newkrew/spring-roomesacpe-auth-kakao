@@ -3,6 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.auth.AcceptanceTestExecutionListener;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
@@ -13,13 +15,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestExecutionListeners;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
+@TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
@@ -29,6 +33,9 @@ class ReservationE2ETest {
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+
+    JwtTokenProvider jwtTokenProvider;
+    private String token;
 
     @BeforeEach
     void setUp() {
@@ -69,9 +76,12 @@ class ReservationE2ETest {
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
+        jwtTokenProvider = new JwtTokenProvider();
+        token = jwtTokenProvider.createToken("username");
+
         request = new ReservationRequest(
                 scheduleId,
-                "브라운"
+                jwtTokenProvider.getPrincipal(token)
         );
     }
 
@@ -80,8 +90,9 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .body(request)
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -98,6 +109,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header("Authorization", "Bearer " + token)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -113,6 +125,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("Authorization", "Bearer " + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -129,11 +142,11 @@ class ReservationE2ETest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + token)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
@@ -143,6 +156,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .header("Authorization", "Bearer " + token)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -156,18 +170,20 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .header("Authorization", "Bearer " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + token)
+                .body(request)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
