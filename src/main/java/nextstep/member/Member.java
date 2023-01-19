@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.permission.Authority;
+import nextstep.auth.Authority;
 
 @NoArgsConstructor // 테스트 시 Serializable 관련 이슈로 추가
 @AllArgsConstructor

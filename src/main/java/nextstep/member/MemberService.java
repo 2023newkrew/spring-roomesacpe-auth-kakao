@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.permission.Authority;
+import nextstep.auth.Authority;
 import org.springframework.stereotype.Service;
 
 @Service

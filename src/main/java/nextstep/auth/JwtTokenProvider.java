@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nextstep.permission.Authority;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

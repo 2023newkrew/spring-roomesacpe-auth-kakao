@@ -2,7 +2,7 @@ package nextstep.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nextstep.permission.Authority;
+import nextstep.auth.Authority;
 
 @Getter
 @AllArgsConstructor

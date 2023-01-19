@@ -2,7 +2,7 @@ package nextstep.config;
 
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.permission.Authority;
+import nextstep.auth.Authority;
 import nextstep.support.AuthorizationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

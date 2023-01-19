@@ -1,6 +1,5 @@
 package nextstep.auth;
 
-import nextstep.permission.Authority;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package nextstep.permission;
+package nextstep.auth;
 
 /**
  * Authority represents how many controls does the account has.

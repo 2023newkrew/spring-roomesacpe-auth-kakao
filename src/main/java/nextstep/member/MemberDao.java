@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.permission.Authority;
+import nextstep.auth.Authority;
 import nextstep.support.DuplicateEntityException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
