@@ -9,6 +9,7 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static nextstep.auth.principal.MemberAuthenticationPrincipalArgumentResolver.Bearer;
 
@@ -57,10 +58,17 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String authorization) {
+        String accessToken = authorization.substring(Bearer.length());
+        String username = jwtTokenProvider.getPrincipal(accessToken);
+
         Reservation reservation = reservationDao.findById(id);
+
         if (reservation == null) {
             throw new NullPointerException();
+        }
+       if (!Objects.equals(reservation.getName(), username)){
+            throw new IllegalArgumentException("삭제 권한이 없습니다");
         }
 
         reservationDao.deleteById(id);
