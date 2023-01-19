@@ -8,9 +8,9 @@ import nextstep.auth.Role;
 @Getter
 public class Member {
     private Long id;
-    private Role role;
     private String username;
     private String password;
+    private Role role;
     private String name;
     private String phone;
 

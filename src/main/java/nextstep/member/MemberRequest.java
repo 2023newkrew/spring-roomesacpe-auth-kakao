@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.auth.Role;
 
 @Getter
 @Builder
@@ -20,6 +21,7 @@ public class MemberRequest {
         return Member.builder()
                 .username(username)
                 .password(password)
+                .role(Role.USER)
                 .name(name)
                 .phone(phone)
                 .build();

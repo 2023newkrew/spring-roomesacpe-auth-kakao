@@ -25,7 +25,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
+    public String getPrincipal(String token) throws JwtException, IllegalArgumentException {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 

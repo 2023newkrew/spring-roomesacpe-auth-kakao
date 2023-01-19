@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.auth.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,20 +21,22 @@ public class MemberDao {
             .id(resultSet.getLong("id"))
             .username(resultSet.getString("username"))
             .password(resultSet.getString("password"))
+            .role(Role.valueOf(resultSet.getString("role")))
             .name(resultSet.getString("name"))
             .phone(resultSet.getString("phone"))
             .build();
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, role, name, phone) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, member.getUsername());
             ps.setString(2, member.getPassword());
-            ps.setString(3, member.getName());
-            ps.setString(4, member.getPhone());
+            ps.setString(3, member.getRole().name());
+            ps.setString(4, member.getName());
+            ps.setString(5, member.getPhone());
             return ps;
 
         }, keyHolder);
@@ -42,12 +45,12 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, role, name, phone from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, role, name, phone from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
