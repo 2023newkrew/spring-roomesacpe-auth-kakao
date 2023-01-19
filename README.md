@@ -11,6 +11,10 @@
   - [x] DB 스키마에 Unique 제약 조건을 추가한다
   - [x] Service Layer에서 DB에 넣기 전 확인 절차를 거친다
 
+### 리팩터링 중점 사안
+- [x] 인터셉터 조건 단순화
+- [ ] 유저 검증 시, username/password Query를 통한 validation
+
 ### API 설계
 #### [토큰 발급] POST /login/token
 ```
