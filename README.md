@@ -13,6 +13,11 @@
 - 어노테이션 이름은 AuthorizationPrincipal입니다.
 - WebMvcConfigurer를 구현해서 리졸버를 등록했습니다.
 
+## 예외처리 방법
+- 각 도메인별로 발생할 수 있는 예외 클래스를 만들었고 각 클래스는 RoomEscapeException을 상속하도록 했습니다.
+- 발생하는 (예외의 메시지, HTTP 상태코드)를 RoomEscapeExceptionCode 공용체에 선언했습니다.
+- GlobalExceptionHandler를 통해 발생하는 RoomEscapeException을 처리하도록 했습니다.
+
 ## 프로젝트 구조 (전체 파일)
 - auth
   - AuthController
@@ -49,13 +54,16 @@
   - annotation
     - AuthorizationPrincipal
   - exception
-    - AuthorizationException
-    - ReservationException
-    - ScheduleException
-    - ThemeException
+    - RoomEscapeException
+      - AuthorizationException
+      - ReservationException
+      - ScheduleException
+      - ThemeException
+    - RoomEscapeExceptionCode
   - resolver
     - AuthenticationPrincipalArgumentResolver
   - WebMvcCustomConfigurer
+  - GlobalExceptionHandler
 
 ## 미션 수행하면서 수정/생성한 파일
 - auth
