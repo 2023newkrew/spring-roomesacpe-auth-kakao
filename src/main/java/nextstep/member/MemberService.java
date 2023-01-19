@@ -33,10 +33,8 @@ public class MemberService {
         return MemberResponseDto.toDto(foundMember);
     }
 
-    public void validateIdAndPassword(TokenRequestDto tokenRequestDto) {
-        try {
-            MemberResponseDto.toDto(memberDao.findByUsernameAndPassword(tokenRequestDto.getUsername(), tokenRequestDto.getPassword()));
-        } catch (NullPointerException nullPointerException) {
+    public void validatePassword(Member member,TokenRequestDto tokenRequestDto) {
+        if (member.checkWrongPassword(tokenRequestDto.getPassword())) {
             throw new UnauthorizedException("유효하지 않은 회원입니다.");
         }
     }

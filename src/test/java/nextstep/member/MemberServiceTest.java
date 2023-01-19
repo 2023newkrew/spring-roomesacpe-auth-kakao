@@ -43,7 +43,7 @@ class MemberServiceTest {
     void validateTokenTest() {
         when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(MEMBER);
         TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
-        memberService.validateIdAndPassword(tokenRequestDto);
+        memberService.validatePassword(MEMBER, tokenRequestDto);
         assertThatNoException();
     }
 
@@ -52,7 +52,7 @@ class MemberServiceTest {
     void validateTokenThrowNotExistEntityExceptionTest() {
         when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(null);
         TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
-        assertThatThrownBy(() -> memberService.validateIdAndPassword(tokenRequestDto)).isInstanceOf(UnauthorizedException.class);
+        assertThatThrownBy(() -> memberService.validatePassword(MEMBER, tokenRequestDto)).isInstanceOf(UnauthorizedException.class);
     }
 
     @Test

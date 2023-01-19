@@ -22,7 +22,21 @@ public class Member {
         this.role = Role.USER;
     }
 
+    public static Member of(MemberResponseDto memberResponseDto) {
+        return Member.builder()
+                .id(memberResponseDto.getId())
+                .username(memberResponseDto.getUsername())
+                .password(memberResponseDto.getPassword())
+                .phone(memberResponseDto.getPhone())
+                .role(memberResponseDto.getRole())
+                .build();
+    }
+
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
+    }
+
+    public boolean checkAdmin(){
+        return this.role.equals(Role.ADMIN);
     }
 }
