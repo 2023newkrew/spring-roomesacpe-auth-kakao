@@ -68,7 +68,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if(loginMember.hasEditPermissionOf(reservation.getMember().getId())){
+        if(!loginMember.hasEditPermissionOf(reservation.getMember().getId())){
             throw new ForbiddenAccessException();
         }
 
