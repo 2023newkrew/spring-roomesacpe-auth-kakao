@@ -1,7 +1,5 @@
 package nextstep.auth;
 
-import nextstep.support.AuthorizationException;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
