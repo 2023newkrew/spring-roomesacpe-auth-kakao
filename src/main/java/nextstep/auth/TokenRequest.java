@@ -1,8 +1,13 @@
 package nextstep.auth;
 
+import javax.validation.constraints.NotNull;
+
 public class TokenRequest {
-    private String username;
-    private String password;
+
+    @NotNull
+    private final String username;
+    @NotNull
+    private final String password;
 
     public TokenRequest(String username, String password) {
         this.username = username;

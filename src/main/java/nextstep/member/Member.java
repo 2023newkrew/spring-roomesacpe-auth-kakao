@@ -1,6 +1,7 @@
 package nextstep.member;
 
 public class Member {
+
     private Long id;
     private String username;
     private String password;
@@ -42,7 +43,7 @@ public class Member {
         return phone;
     }
 
-    public boolean checkWrongPassword(String password) {
+    public boolean isWrongPassword(String password) {
         return !this.password.equals(password);
     }
 }

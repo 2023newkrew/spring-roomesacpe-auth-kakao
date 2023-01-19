@@ -16,11 +16,6 @@ import java.util.List;
 public class ReservationDao {
 
     public final JdbcTemplate jdbcTemplate;
-
-    public ReservationDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
             resultSet.getLong("reservation.id"),
             new Schedule(
@@ -36,6 +31,10 @@ public class ReservationDao {
             ),
             resultSet.getString("reservation.name")
     );
+
+    public ReservationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Long save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";

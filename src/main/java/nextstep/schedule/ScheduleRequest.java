@@ -6,12 +6,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ScheduleRequest {
+
     private Long themeId;
     private String date;
     private String time;
-
-    public ScheduleRequest() {
-    }
 
     public ScheduleRequest(Long themeId, String date, String time) {
         this.themeId = themeId;
