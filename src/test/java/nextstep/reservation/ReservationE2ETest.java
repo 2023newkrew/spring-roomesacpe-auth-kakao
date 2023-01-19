@@ -100,11 +100,6 @@ class ReservationE2ETest {
         );
     }
 
-    @BeforeEach
-    void tearDown() {
-        jdbcTemplate.update("DELETE FROM reservation");
-    }
-
     @DisplayName("예약을 생성한다")
     @Test
     void create() {

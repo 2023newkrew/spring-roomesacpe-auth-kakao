@@ -1,5 +1,10 @@
 package nextstep.theme.repository;
 
+import static nextstep.theme.repository.ThemeJdbcSql.DELETE_BY_ID_STATEMENT;
+import static nextstep.theme.repository.ThemeJdbcSql.INSERT_INTO_STATEMENT;
+import static nextstep.theme.repository.ThemeJdbcSql.SELECT_ALL_STATEMENT;
+import static nextstep.theme.repository.ThemeJdbcSql.SELECT_INTO_BY_ID;
+
 import java.sql.PreparedStatement;
 import java.util.List;
 import nextstep.theme.Theme;
@@ -11,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ThemeDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ThemeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -25,11 +30,11 @@ public class ThemeDao {
     );
 
     public Long save(Theme theme) {
-        String sql = "INSERT INTO theme (name, desc, price) VALUES (?, ?, ?);";
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(INSERT_INTO_STATEMENT, new String[]{"id"});
             ps.setString(1, theme.getName());
             ps.setString(2, theme.getDesc());
             ps.setInt(3, theme.getPrice());
@@ -37,21 +42,18 @@ public class ThemeDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKeyAs(Long.class);
     }
 
     public Theme findById(Long id) {
-        String sql = "SELECT id, name, desc, price from theme where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(SELECT_INTO_BY_ID, rowMapper, id);
     }
 
     public List<Theme> findAll() {
-        String sql = "SELECT id, name, desc, price from theme;";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(SELECT_ALL_STATEMENT, rowMapper);
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM reservation where id = ?;";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(DELETE_BY_ID_STATEMENT, id);
     }
 }
