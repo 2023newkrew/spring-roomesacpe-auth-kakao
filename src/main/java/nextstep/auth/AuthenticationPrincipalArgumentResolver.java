@@ -1,7 +1,5 @@
-package nextstep.config;
+package nextstep.auth;
 
-import nextstep.auth.AuthorizationExtractor;
-import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import nextstep.member.MemberDao;

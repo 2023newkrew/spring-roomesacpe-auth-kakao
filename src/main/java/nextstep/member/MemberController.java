@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.config.AuthenticationPrincipal;
+import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +16,13 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<Member> me(@AuthenticationPrincipal Member member) {
         return ResponseEntity.ok().body(member);
     }
 

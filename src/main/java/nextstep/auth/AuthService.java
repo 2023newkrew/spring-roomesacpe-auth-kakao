@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,8 +22,7 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
 
         if (!checkPassword(tokenRequest)) {
-            // TODO: throw exception
-            return null;
+            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
         }
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
         return new TokenResponse(accessToken);
