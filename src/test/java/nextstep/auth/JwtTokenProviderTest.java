@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.auth.jwt.JwtTokenProvider;
+import nextstep.framework.auth.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

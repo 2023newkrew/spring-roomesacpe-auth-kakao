@@ -1,7 +1,9 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.member.MemberRequest;
+import nextstep.publics.login.TokenRequest;
+import nextstep.publics.login.TokenResponse;
+import nextstep.publics.member.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
