@@ -104,6 +104,20 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("토큰없이 예약을 생성한다")
+    @Test
+    void createReservationWithoutToken() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
@@ -160,6 +174,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -189,11 +204,26 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("토큰없이 예약을 삭제한다")
+    @Test
+    void deleteReservationWithoutToken() {
+        createReservation(request);
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> createReservation(ReservationRequest request) {
