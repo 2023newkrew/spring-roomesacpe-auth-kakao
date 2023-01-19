@@ -1,15 +1,20 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
 @Component
 public class
 JwtTokenProvider {
+
+    private static final String TOKEN_PREFIX = "Bearer";
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
@@ -46,5 +51,17 @@ JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("authorization");
+        if (isTokenNotExist(authorizationHeader)) {
+            throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
+        }
+        return authorizationHeader.split(" ")[1];
+    }
+
+    private static boolean isTokenNotExist(String authorizationHeader) {
+        return authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX);
     }
 }

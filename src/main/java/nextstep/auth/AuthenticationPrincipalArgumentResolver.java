@@ -28,12 +28,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authorizationHeader = request.getHeader("authorization");
-        if (authorizationHeader == null || authorizationHeader.length() < "Bearer ".length()) {
-            throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
-        }
-        String token = authorizationHeader.substring("Bearer ".length());
-
+        String token = jwtTokenProvider.resolveToken(request);
         if (jwtTokenProvider.validateToken(token)) {
             return Long.valueOf(jwtTokenProvider.getPrincipal(token));
         }
