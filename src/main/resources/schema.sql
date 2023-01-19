@@ -50,6 +50,7 @@ CREATE TABLE schedule
     password    : MEMBER의 Password
     name        : MEMBER의 실명
     phone       : MEMBER의 phone 번호
+    Role        : 0 ADMIN, 1 USER
 
  */
 
@@ -60,5 +61,6 @@ CREATE TABLE member
     password varchar(20) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
+    role     tinyint     not null,
     primary key (id)
 );

@@ -7,13 +7,14 @@ import static nextstep.member.repository.MemberJdbcSql.SELECT_BY_USERNAME_AND_PA
 import java.sql.PreparedStatement;
 import java.util.Optional;
 import nextstep.member.Member;
+import nextstep.member.MemberRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
 
@@ -26,8 +27,8 @@ public class MemberDao {
             .phone(resultSet.getString("phone"))
             .password(resultSet.getString("password"))
             .name(resultSet.getString("name"))
+            .role(MemberRole.findRole(resultSet.getInt("role")))
             .build(), resultSet.getLong("id"));
-
 
     public Long save(Member member) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -38,6 +39,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setInt(5, member.getRole().getValue());
             return ps;
 
         }, keyHolder);

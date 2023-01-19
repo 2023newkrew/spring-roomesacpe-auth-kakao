@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.auth.utils.JwtTokenProvider;
 import nextstep.member.Member;
+import nextstep.member.MemberRole;
 import nextstep.member.dto.LoginMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,6 @@ class JwtTokenProviderTest {
                                 .phone("123123")
                                 .build(),
                         1L));
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo(new LoginMember(1L, "123", "789"));
+        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo(new LoginMember(1L, "123", "789", MemberRole.USER));
     }
 }

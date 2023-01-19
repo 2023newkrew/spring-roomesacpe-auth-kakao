@@ -1,17 +1,20 @@
 package nextstep.member.dto;
 
 import java.util.Objects;
+import nextstep.member.MemberRole;
 
 public abstract class MemberBaseDto {
 
     private final Long id;
     private final String username;
     private final String name;
+    private final MemberRole role;
 
-    public MemberBaseDto(Long id, String username, String name) {
+    public MemberBaseDto(Long id, String username, String name, MemberRole role) {
         this.id = id;
         this.username = username;
         this.name = name;
+        this.role = role;
     }
 
     public Long getId() {
@@ -24,6 +27,10 @@ public abstract class MemberBaseDto {
 
     public String getName() {
         return name;
+    }
+
+    public MemberRole getRole() {
+        return role;
     }
 
     @Override

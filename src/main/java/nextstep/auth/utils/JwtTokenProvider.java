@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import nextstep.member.Member;
+import nextstep.member.MemberRole;
 import nextstep.member.dto.LoginMember;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -40,7 +41,7 @@ public class JwtTokenProvider {
     public LoginMember getPrincipal(String token) {
         Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         return new LoginMember(body.get("id", Long.class), body.get("username", String.class),
-                body.get("name", String.class));
+                body.get("name", String.class), body.get("role", MemberRole.class));
     }
 
     public boolean validateToken(String token) {
