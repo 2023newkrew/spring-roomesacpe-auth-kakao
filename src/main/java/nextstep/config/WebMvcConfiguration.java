@@ -8,8 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 /**
- * WebMvcConfiguration
- *
+ * WebMvcConfiguration configures what to do in specific situation.
  */
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {

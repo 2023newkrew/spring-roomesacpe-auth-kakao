@@ -10,6 +10,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * AdminIntercepter is the interceptor that handles requests which requires admin authority.
+ */
 @Component
 public class AdminInterceptor extends HandlerInterceptorAdapter {
     JwtTokenProvider jwtTokenProvider;
