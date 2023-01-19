@@ -17,7 +17,8 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public MemberDao(JdbcTemplate jdbcTemplate) {
@@ -25,7 +26,7 @@ public class MemberDao {
     }
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -34,6 +35,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setString(5, member.getRole().name());
             return ps;
 
         }, keyHolder);
@@ -42,17 +44,12 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
-    }
-
     public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ? and password = ?;";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username, password));
     }
 }

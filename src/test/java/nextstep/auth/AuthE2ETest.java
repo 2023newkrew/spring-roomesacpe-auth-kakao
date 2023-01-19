@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
