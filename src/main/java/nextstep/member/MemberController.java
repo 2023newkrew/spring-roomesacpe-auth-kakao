@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.auth.LoginMember;
+import nextstep.config.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +28,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Member> me(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        Long id = authService.getMemberIdFromToken(token);
-        Member member = memberService.findById(id);
+    public ResponseEntity<Member> me(@AuthenticationPrincipal LoginMember loginMember) {
+        Member member = memberService.findById(loginMember.getMemberId());
         return ResponseEntity.ok(member);
     }
 }

@@ -19,7 +19,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/admin/schedules")
-    public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+    public ResponseEntity<Void> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
     }
@@ -28,7 +28,7 @@ public class ScheduleController {
      * If "/admin"  path is not attached, redirect to "/admin/**"
      */
     @PostMapping("/schedules")
-    public ResponseEntity createScheduleWithoutAdmin(@RequestBody ScheduleRequest scheduleRequest){
+    public ResponseEntity<Void> createScheduleWithoutAdmin(@RequestBody ScheduleRequest scheduleRequest){
         return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
                 .location(URI.create("/admin/schedules")).build();
     }
@@ -39,7 +39,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/admin/schedules/{id}")
-    public ResponseEntity<?> deleteSchedule(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
         return ResponseEntity.noContent().build();
@@ -49,7 +49,7 @@ public class ScheduleController {
      * If "/admin"  path is not attached, redirect to "/admin/**"
      */
     @DeleteMapping("/schedules/{id}")
-    public ResponseEntity deleteScheduleWithoutAdmin(@PathVariable Long id){
+    public ResponseEntity<Void> deleteScheduleWithoutAdmin(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
                 .location(URI.create("/admin/schedules/"+id)).build();
     }

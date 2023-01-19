@@ -20,27 +20,27 @@ public class ReservationController {
 
     // 기존 소스에서 @AuthenticationPrincipal annotation을 통해 요청에 대한 검증을 포함
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal LoginMember member) {
+    public ResponseEntity<Void> createReservation(@RequestBody ReservationRequest reservationRequest, @AuthenticationPrincipal LoginMember member) {
         Long id = reservationService.create(reservationRequest, member.getMemberId());
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Reservation>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
         return ResponseEntity.ok().body(results);
     }
 
     // 기존 소스에서 @AuthenticationPrincipal annotation을 통해 요청에 대한 검증을 포함
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id, @AuthenticationPrincipal LoginMember member) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthenticationPrincipal LoginMember member) {
         reservationService.deleteById(id, member.getMemberId());
 
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
+    public ResponseEntity<Void> onException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
 }
