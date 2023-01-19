@@ -31,6 +31,6 @@ CREATE TABLE member
     password varbinary(512) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null unique,
-    role     varchar(10) not null,
+    role     enum('ADMIN', 'USER') not null,
     primary key (id)
 );

@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,22 +24,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
-    public static final String NAME = "name";
 
     private ReservationRequest request;
     private Long themeId;
-    private Long scheduleId;
-    private Long memberId;
     private String accessToken;
 
     @BeforeEach
     void setUp() {
+        TokenRequest tokenRequest = new TokenRequest("admin", "0000");
+        accessToken = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(tokenRequest)
+                .when().post("/login/token")
+                .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .auth().oauth2(accessToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -57,30 +60,9 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
-        request = new ReservationRequest(
-                scheduleId
-        );
-
-        TokenRequest request = new TokenRequest("username", "password");
-        accessToken = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(request)
-                .when().post("/login/token")
-                .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
+        request = new ReservationRequest(scheduleId);
     }
 
     @DisplayName("발급된 토큰으로 예약 생성 요청시 생성되어야 한다")

@@ -6,12 +6,12 @@ public class Member {
     private String password;
     private String name;
     private String phone;
-    private String role;
+    private Role role;
 
     public Member() {
     }
 
-    public Member(Long id, String username, String password, String name, String phone, String role) {
+    public Member(Long id, String username, String password, String name, String phone, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -21,7 +21,7 @@ public class Member {
     }
 
     public static Member asUserRole(String username, String password, String name, String phone) {
-        return new Member(null, username, password, name, phone, "USER");
+        return new Member(null, username, password, name, phone, Role.USER);
     }
 
     public Long getId() {
@@ -44,7 +44,7 @@ public class Member {
         return phone;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }
