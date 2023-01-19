@@ -1,7 +1,6 @@
 package nextstep.reservation;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.auth.UnAuthorizationException;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
@@ -70,7 +69,10 @@ class ReservationControllerTest {
         @Test
         @DisplayName("유효한 토큰이 아닐 경우 401을 응답해야 한다.")
         void should_401UnAuthorization_when_invalidToken() throws Exception {
-            doThrow(UnAuthorizationException.class).when(reservationService).deleteById(userId, reservationId);
+            doThrow(new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE))
+                    .when(reservationService)
+                    .deleteById(userId, reservationId);
+            
             mockMvc.perform(delete("/reservations/" + reservationId)
                             .header("authorization", ""))
                     .andExpect(status().isUnauthorized());
