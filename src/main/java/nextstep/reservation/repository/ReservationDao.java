@@ -30,24 +30,24 @@ public class ReservationDao {
 
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
             resultSet.getLong("reservation.id"),
-            new Schedule(
-                    resultSet.getLong("schedule.id"),
-                    Theme.giveId(Theme.builder()
+
+            Schedule.giveId(Schedule.builder()
+                    .time(resultSet.getTime("schedule.time").toLocalTime())
+                    .date(resultSet.getDate("schedule.date").toLocalDate())
+                    .theme(Theme.giveId(Theme.builder()
                             .name(resultSet.getString("theme.name"))
                             .price(resultSet.getInt("theme.price"))
                             .desc("theme.desc")
-                            .build(),
-                            resultSet.getLong("theme.id"))
-                    ,
-                    resultSet.getDate("schedule.date").toLocalDate(),
-                    resultSet.getTime("schedule.time").toLocalTime()
-            ),
+                            .build(), resultSet.getLong("theme.id"))
+                    ).build(), resultSet.getLong("schedule.id")),
+
             Member.giveId(Member.builder()
-                    .username(resultSet.getString("username"))
-                    .phone(resultSet.getString("phone"))
-                    .password(resultSet.getString("password"))
-                    .name(resultSet.getString("name"))
-                    .build(), resultSet.getLong("id"))
+                            .username(resultSet.getString("username"))
+                            .phone(resultSet.getString("phone"))
+                            .password(resultSet.getString("password"))
+                            .name(resultSet.getString("name"))
+                            .build()
+                    , resultSet.getLong("id"))
     );
 
 

@@ -28,14 +28,16 @@ public class ScheduleDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Schedule> rowMapper = (resultSet, rowNum) -> new Schedule(
-            resultSet.getLong("schedule.id"),
-            Theme.giveId(Theme.builder().name(resultSet.getString("theme.name"))
-                    .price(resultSet.getInt("theme.price"))
-                    .desc("theme.desc").build(), resultSet.getLong("theme.id")),
-            resultSet.getDate("schedule.date").toLocalDate(),
-            resultSet.getTime("schedule.time").toLocalTime()
-    );
+    private final RowMapper<Schedule> rowMapper = (resultSet, rowNum) -> Schedule.giveId(Schedule.builder().theme(
+                    Theme.giveId(Theme.builder()
+                            .name(resultSet.getString("theme.name"))
+                            .price(resultSet.getInt("theme.price"))
+                            .desc("theme.desc").build()
+                            , resultSet.getLong("theme.id")))
+            .time(resultSet.getTime("schedule.time").toLocalTime())
+            .date(resultSet.getDate("schedule.date").toLocalDate())
+            .build()
+            , resultSet.getLong("schedule.id"));
 
 
     public Long save(Schedule schedule) {

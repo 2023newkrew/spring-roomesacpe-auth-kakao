@@ -2,6 +2,7 @@ package nextstep.schedule;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 import nextstep.theme.Theme;
 
 public class Schedule {
@@ -10,17 +11,62 @@ public class Schedule {
     private final LocalDate date;
     private final LocalTime time;
 
-    public Schedule(Long id, Theme theme, LocalDate date, LocalTime time) {
-        this.id = id;
-        this.theme = theme;
-        this.date = date;
-        this.time = time;
+    public static Schedule giveId(Schedule schedule, Long id) {
+        schedule.id = id;
+        return schedule;
     }
 
-    public Schedule(Theme theme, LocalDate date, LocalTime time) {
-        this.theme = theme;
-        this.date = date;
-        this.time = time;
+    public static ScheduleBuilder builder() {
+        return new ScheduleBuilder();
+    }
+
+    private Schedule(ScheduleBuilder builder) {
+        this.theme = builder.theme;
+        this.date = builder.date;
+        this.time = builder.time;
+    }
+
+
+    public static class ScheduleBuilder {
+
+        private Theme theme;
+        private LocalDate date;
+        private LocalTime time;
+
+        public ScheduleBuilder theme(Theme theme) {
+            this.theme = theme;
+            return this;
+        }
+
+        public ScheduleBuilder date(LocalDate date) {
+            this.date = date;
+            return this;
+        }
+
+        public ScheduleBuilder time(LocalTime time) {
+            this.time = time;
+            return this;
+        }
+
+        public Schedule build() {
+            validate();
+            return new Schedule(this);
+        }
+
+        private void validate() {
+            if (Objects.isNull(theme)) {
+                throw new IllegalArgumentException("theme는 null일 수 없습니다.");
+            }
+
+            if (Objects.isNull(date)) {
+                throw new IllegalArgumentException("date는 null일 수 없습니다.");
+            }
+
+            if (Objects.isNull(time)) {
+                throw new IllegalArgumentException("time은 null일 수 없습니다.");
+            }
+        }
+
     }
 
     public Long getId() {
