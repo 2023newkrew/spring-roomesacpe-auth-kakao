@@ -1,15 +1,17 @@
-package nextstep.theme;
+package nextstep.admin;
 
-public class ThemeRequest {
+import nextstep.theme.Theme;
+
+public class AdminThemeRequest {
 
     private String name;
     private String desc;
     private int price;
 
-    private ThemeRequest() {
+    private AdminThemeRequest() {
     }
 
-    public ThemeRequest(String name, String desc, int price) {
+    public AdminThemeRequest(String name, String desc, int price) {
         this.name = name;
         this.desc = desc;
         this.price = price;

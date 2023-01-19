@@ -16,21 +16,8 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
-    public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-        long id = scheduleService.create(scheduleRequest);
-        return ResponseEntity.created(URI.create("/schedules/" + id)).build();
-    }
-
     @GetMapping
     public ResponseEntity<List<Schedule>> showReservations(@RequestParam long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable long id) {
-        scheduleService.delete(id);
-
-        return ResponseEntity.noContent().build();
     }
 }

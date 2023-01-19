@@ -1,5 +1,6 @@
-package nextstep.schedule;
+package nextstep.admin;
 
+import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 
 import java.time.LocalDate;

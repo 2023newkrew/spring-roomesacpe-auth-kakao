@@ -15,18 +15,7 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public long create(ThemeRequest themeRequest) {
-        return themeDao.save(themeRequest.toEntity());
-    }
-
     public List<Theme> findAll() {
         return themeDao.findAll();
-    }
-
-    public void delete(long id) {
-        themeDao.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
-
-        themeDao.delete(id);
     }
 }
