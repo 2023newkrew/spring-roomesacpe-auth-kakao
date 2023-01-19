@@ -1,7 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
-import nextstep.theme.ThemeRequest;
+import nextstep.schedule.dto.ScheduleRequest;
+import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
