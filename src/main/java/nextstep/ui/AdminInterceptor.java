@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.AuthorizationException;
+import nextstep.exception.ForbiddenAccessException;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,11 @@ public class AdminInterceptor implements HandlerInterceptor {
             throw new AuthorizationException();
         }
         tokenProvider.validate(token);
+
         Member member = memberService.findByToken(token);
-        return member.isAdmin();
+        if (!member.isAdmin()) {
+            throw new ForbiddenAccessException();
+        }
+        return true;
     }
 }

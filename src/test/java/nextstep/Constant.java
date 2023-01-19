@@ -8,6 +8,10 @@ public class Constant {
     public static final String NAME = "name";
     public static final String PHONE = "010-1234-5678";
 
+    public static final String ADMIN_USERNAME = "KYNE";
+    public static final String ADMIN_PASSWORD = "PASSWORD";
+
+
     public final static String THEME_NAME = "어드벤쳐";
     public final static String THEME_DESCRIPTION = "이러쿵저러쿵";
     public final static int THEME_PRICE = 22_000;

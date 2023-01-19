@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.AuthorizationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -17,7 +17,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = AuthorizationExtractor.extract(request);
         if (token == null) {
-            throw new AuthorizationException();
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return false;
         }
         tokenProvider.validate(token);
         return true;

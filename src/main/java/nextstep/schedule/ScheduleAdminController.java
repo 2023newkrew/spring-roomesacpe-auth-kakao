@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/schedules")
+@RequestMapping("/admin/schedules")
 @RequiredArgsConstructor
 public class ScheduleAdminController {
     private final ScheduleService scheduleService;
@@ -25,7 +25,6 @@ public class ScheduleAdminController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
-
         return ResponseEntity.noContent().build();
     }
 }

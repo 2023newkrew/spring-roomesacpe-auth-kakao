@@ -3,7 +3,6 @@ package nextstep.reservation;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.exception.AuthorizationException;
 import nextstep.exception.ForbiddenAccessException;
 import nextstep.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +21,6 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<URI> createReservation(@AuthenticationPrincipal String token,
                                                  @RequestBody ReservationRequest reservationRequest) {
-        if (token == null) {
-            throw new AuthorizationException();
-        }
         memberService.findByToken(token);
         Long id = reservationService.create(reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
@@ -38,18 +34,12 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@AuthenticationPrincipal String token, @PathVariable Long id) {
-        if (token == null) {
-            throw new AuthorizationException();
-        }
-
         Member member = memberService.findByToken(token);
         Reservation reservation = reservationService.findById(id);
         if (!reservation.getName().equals(member.getUsername())) {
             throw new ForbiddenAccessException();
         }
-
         reservationService.deleteById(id);
-
         return ResponseEntity.noContent().build();
     }
 
