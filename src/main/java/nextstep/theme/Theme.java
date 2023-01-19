@@ -2,7 +2,7 @@ package nextstep.theme;
 
 public class Theme {
 
-    private Long id;
+    private long id;
     private String name;
     private String desc;
     private int price;
@@ -10,7 +10,7 @@ public class Theme {
     public Theme() {
     }
 
-    public Theme(Long id, String name, String desc, int price) {
+    public Theme(long id, String name, String desc, int price) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -23,7 +23,7 @@ public class Theme {
         this.price = price;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

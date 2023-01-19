@@ -2,13 +2,13 @@ package nextstep.member;
 
 public class Member {
 
-    private Long id;
+    private long id;
     private String username;
     private String password;
     private String name;
     private String phone;
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member(long id, String username, String password, String name, String phone) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -23,7 +23,7 @@ public class Member {
         this.phone = phone;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

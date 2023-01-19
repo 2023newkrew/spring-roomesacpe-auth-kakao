@@ -40,7 +40,7 @@ class MemberControllerTest {
     @DisplayName("토큰을 사용해 내 정보 열람 테스트")
     class GetMyInfoByToken {
 
-        private Long userId = 1L;
+        private long userId = 1L;
         private String username = "username";
         private String password = "password";
         private String name = "name";

@@ -13,11 +13,11 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public Long create(MemberRequest memberRequest) {
+    public long create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
+    public Member findById(long id) {
         return memberDao.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }

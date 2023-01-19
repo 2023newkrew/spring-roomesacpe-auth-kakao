@@ -19,7 +19,7 @@ public class AuthE2ETest {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
+    private long memberId;
 
     @BeforeEach
     void setUp() {
@@ -67,7 +67,7 @@ public class AuthE2ETest {
     @DisplayName("테마를 삭제한다")
     @Test
     void delete() {
-        Long id = createTheme();
+        long id = createTheme();
 
         var response = RestAssured
                 .given().log().all()
@@ -78,7 +78,7 @@ public class AuthE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
+    public long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given().log().all()

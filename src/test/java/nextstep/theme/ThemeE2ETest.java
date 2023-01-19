@@ -45,7 +45,7 @@ public class ThemeE2ETest {
     @DisplayName("테마를 삭제한다")
     @Test
     void delete() {
-        Long id = createTheme();
+        long id = createTheme();
 
         var response = RestAssured
                 .given().log().all()
@@ -56,7 +56,7 @@ public class ThemeE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
+    public long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given().log().all()

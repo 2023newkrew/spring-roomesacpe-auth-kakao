@@ -26,7 +26,7 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(Long authId, ReservationRequest reservationRequest) {
+    public long create(long authId, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.SCHEDULE_NOT_FOUND));
 
@@ -42,14 +42,14 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(long themeId, String date) {
         themeDao.findById(themeId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long authId, Long reservationId) {
+    public void deleteById(long authId, long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
         Member me = memberDao.findById(authId)

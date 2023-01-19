@@ -7,20 +7,20 @@ import java.time.LocalTime;
 
 public class ScheduleRequest {
 
-    private Long themeId;
+    private long themeId;
     private String date;
     private String time;
 
     private ScheduleRequest() {
     }
 
-    public ScheduleRequest(Long themeId, String date, String time) {
+    public ScheduleRequest(long themeId, String date, String time) {
         this.themeId = themeId;
         this.date = date;
         this.time = time;
     }
 
-    public Long getThemeId() {
+    public long getThemeId() {
         return themeId;
     }
 

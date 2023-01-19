@@ -17,7 +17,7 @@ import java.util.Optional;
 import static nextstep.exception.ErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +49,9 @@ class ReservationServiceTest {
         @Test
         @DisplayName("내가 예약한 예약정보는 취소할 수 있다.")
         void should_successfully_when_myReservation() {
-            when(reservationDao.findById(any())).thenReturn(Optional.of(myReservation));
-            when(memberDao.findById(any())).thenReturn(Optional.of(me));
-            doNothing().when(reservationDao).deleteById(any());
+            when(reservationDao.findById(anyLong())).thenReturn(Optional.of(myReservation));
+            when(memberDao.findById(anyLong())).thenReturn(Optional.of(me));
+            doNothing().when(reservationDao).deleteById(anyLong());
 
             assertDoesNotThrow(() -> reservationService.deleteById(1L, 1L));
         }
@@ -59,8 +59,8 @@ class ReservationServiceTest {
         @Test
         @DisplayName("내가 예약한 예약정보는 다른 사람이 취소할 수 없다.")
         void should_throwException_when_otherReservation() {
-            when(reservationDao.findById(any())).thenReturn(Optional.of(myReservation));
-            when(memberDao.findById(any())).thenReturn(Optional.of(other));
+            when(reservationDao.findById(anyLong())).thenReturn(Optional.of(myReservation));
+            when(memberDao.findById(anyLong())).thenReturn(Optional.of(other));
 
             assertThatThrownBy(() -> reservationService.deleteById(1L, 1L))
                     .isInstanceOf(BusinessException.class)

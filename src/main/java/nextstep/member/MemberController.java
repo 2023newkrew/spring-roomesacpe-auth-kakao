@@ -18,12 +18,12 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
-        Long id = memberService.create(memberRequest);
+        long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal Long authId) {
+    public ResponseEntity me(@AuthenticationPrincipal long authId) {
         Member member = memberService.findById(authId);
         return ResponseEntity.ok().body(member);
     }

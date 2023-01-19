@@ -25,7 +25,7 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Member member) {
+    public long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -42,7 +42,7 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Optional<Member> findById(Long id) {
+    public Optional<Member> findById(long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }

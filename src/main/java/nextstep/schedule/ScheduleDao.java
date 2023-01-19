@@ -34,7 +34,7 @@ public class ScheduleDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Schedule schedule) {
+    public long save(Schedule schedule) {
         String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -50,7 +50,7 @@ public class ScheduleDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Optional<Schedule> findById(Long id) {
+    public Optional<Schedule> findById(long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
@@ -59,7 +59,7 @@ public class ScheduleDao {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
-    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
+    public List<Schedule> findByThemeIdAndDate(long themeId, String date) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
@@ -68,7 +68,7 @@ public class ScheduleDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
     }
 

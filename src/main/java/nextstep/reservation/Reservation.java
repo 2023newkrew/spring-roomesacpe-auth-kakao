@@ -5,7 +5,7 @@ import nextstep.schedule.Schedule;
 
 public class Reservation {
 
-    private Long id;
+    private long id;
     private Schedule schedule;
     private String name;
 
@@ -17,13 +17,13 @@ public class Reservation {
         this.name = name;
     }
 
-    public Reservation(Long id, Schedule schedule, String name) {
+    public Reservation(long id, Schedule schedule, String name) {
         this.id = id;
         this.schedule = schedule;
         this.name = name;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

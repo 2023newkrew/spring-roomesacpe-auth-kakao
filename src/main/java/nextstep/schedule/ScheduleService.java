@@ -19,17 +19,17 @@ public class ScheduleService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
+    public long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 
-    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
+    public List<Schedule> findByThemeIdAndDate(long themeId, String date) {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         scheduleDao.deleteById(id);
     }
 }

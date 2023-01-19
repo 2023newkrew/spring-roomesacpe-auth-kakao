@@ -29,9 +29,9 @@ class ReservationE2ETest {
     public static final String NAME = "name";
 
     private ReservationRequest request;
-    private Long themeId;
-    private Long scheduleId;
-    private Long memberId;
+    private long themeId;
+    private long scheduleId;
+    private long memberId;
 
     @BeforeEach
     void setUp() {

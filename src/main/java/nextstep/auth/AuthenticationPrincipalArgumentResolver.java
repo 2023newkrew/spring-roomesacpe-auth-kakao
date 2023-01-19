@@ -35,9 +35,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
     }
 
-    private Long tryGetMyIdBy(String token) {
+    private long tryGetMyIdBy(String token) {
         try {
-            return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+            return Long.parseLong(jwtTokenProvider.getPrincipal(token));
         } catch (NumberFormatException e) {
             throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
         }

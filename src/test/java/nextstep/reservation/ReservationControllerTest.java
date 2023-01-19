@@ -42,9 +42,9 @@ class ReservationControllerTest {
     @DisplayName("토큰을 사용해 예약 삭제 테스트")
     class DeleteReservation {
 
-        private Long userId = 1L;
+        private long userId = 1L;
         private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
-        private Long reservationId = 1L;
+        private long reservationId = 1L;
 
         @Test
         @DisplayName("유효한 토큰이고, 자신의 예약일 경우 204를 응답해야 한다.")

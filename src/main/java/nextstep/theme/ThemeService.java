@@ -15,7 +15,7 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
+    public long create(ThemeRequest themeRequest) {
         return themeDao.save(themeRequest.toEntity());
     }
 
@@ -23,7 +23,7 @@ public class ThemeService {
         return themeDao.findAll();
     }
 
-    public void delete(Long id) {
+    public void delete(long id) {
         themeDao.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
 
