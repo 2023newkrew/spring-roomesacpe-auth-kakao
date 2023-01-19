@@ -30,8 +30,16 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         String token = jwtTokenProvider.resolveToken(request);
         if (jwtTokenProvider.validateToken(token)) {
-            return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+            return tryGetMyIdBy(token);
         }
         throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
+    }
+
+    private Long tryGetMyIdBy(String token) {
+        try {
+            return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+        } catch (NumberFormatException e) {
+            throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
+        }
     }
 }
