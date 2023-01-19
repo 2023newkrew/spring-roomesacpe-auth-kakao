@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.DataLoader.ADMIN_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -20,6 +21,10 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
+        registerMember();
+    }
+
+    private static void registerMember() {
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
@@ -30,7 +35,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("멤버 토큰을 생성한다")
     @Test
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
@@ -58,5 +63,20 @@ public class AuthE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .extract();
+    }
+
+    public static String createMemberToken() {
+        registerMember();
+
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
     }
 }

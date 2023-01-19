@@ -18,12 +18,12 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
-import static nextstep.admin.AdminE2ETest.createAdminToken;
+import static nextstep.admin.AdminE2ETest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class ReservationE2ETest {
+public class ReservationE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String DATE = "2022-08-11";
@@ -38,30 +38,10 @@ class ReservationE2ETest {
     @BeforeEach
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .auth().oauth2(createAdminToken())
-                .when().post("/admin/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        themeId = createThemeWithAdminAuthority(themeRequest);
 
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .auth().oauth2(createAdminToken())
-                .when().post("/admin/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        scheduleId = createScheduleWithAdminAuthority(scheduleRequest);
 
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, "010-1234-5678");
         RestAssured
