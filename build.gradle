@@ -2,8 +2,20 @@ plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'com.google.cloud.tools.jib' version '3.3.1'
 }
-
+jib {
+    from {
+        image = "adoptopenjdk/openjdk11"
+    }
+    to {
+        image = "idock.daumkakao.io/onboarding2023/soony.kwonn"
+        tags = [ "latest" ]
+    }
+    container {
+        ports = [ "8080" ]
+    }
+}
 group 'nextstep'
 version '1.0-SNAPSHOT'
 
@@ -16,8 +28,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    // com.sun.xml.bind
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
+    implementation 'com.sun.xml.bind:jaxb-core:4.0.1'
+    // javax.xml.bind
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:3.3.0'

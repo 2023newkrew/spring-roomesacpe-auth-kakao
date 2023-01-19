@@ -1,31 +1,33 @@
 package nextstep.reservation;
 
+import static nextstep.common.exception.ExceptionMessage.INVALID_RESERVATION_ID;
+import static nextstep.common.exception.ExceptionMessage.INVALID_SCHEDULE_ID;
+import static nextstep.common.exception.ExceptionMessage.INVALID_THEME_ID;
+import static nextstep.common.exception.ExceptionMessage.UNAUTHORIZED_RESERVATION;
+
+import lombok.RequiredArgsConstructor;
+import nextstep.reservation.dto.ReservationRequestDto;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.theme.Theme;
+import nextstep.common.exception.DuplicateEntityException;
+import nextstep.common.exception.NotExistEntityException;
+import nextstep.common.exception.UnauthorizedException;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
+
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
-        this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
-    }
-
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
-        }
+    public Long create(ReservationRequestDto reservationRequestDto, String username) {
+        Schedule schedule = scheduleDao.findById(reservationRequestDto.getScheduleId())
+            .orElseThrow(() -> new NotExistEntityException(INVALID_SCHEDULE_ID.getMessage()));
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
@@ -33,26 +35,24 @@ public class ReservationService {
         }
 
         Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName()
-        );
+            schedule,
+            username);
 
         return reservationDao.save(newReservation);
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
-            throw new NullPointerException();
-        }
-
+        themeDao.findById(themeId)
+            .orElseThrow(() -> new NotExistEntityException(INVALID_THEME_ID.getMessage()));
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
+    public void deleteById(Long id, String username) {
+        Reservation reservation = reservationDao.findById(id)
+            .orElseThrow(() -> new NotExistEntityException(INVALID_RESERVATION_ID.getMessage()));
+
+        if (reservation.getName() != username) {
+            throw new UnauthorizedException(UNAUTHORIZED_RESERVATION.getMessage());
         }
 
         reservationDao.deleteById(id);

@@ -1,5 +1,8 @@
 package nextstep.member;
 
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,19 +12,16 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 
 @Component
+@RequiredArgsConstructor
 public class MemberDao {
+
     public final JdbcTemplate jdbcTemplate;
-
-    public MemberDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
-            resultSet.getString("username"),
-            resultSet.getString("password"),
-            resultSet.getString("name"),
-            resultSet.getString("phone")
+        resultSet.getLong("id"),
+        resultSet.getString("username"),
+        resultSet.getString("password"),
+        resultSet.getString("name"),
+        resultSet.getString("phone")
     );
 
     public Long save(Member member) {
@@ -38,16 +38,19 @@ public class MemberDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKey()
+            .longValue();
     }
 
-    public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public Member findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        Member member = null;
+        try {
+            member = jdbcTemplate.queryForObject(sql, rowMapper, username);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+        return Optional.of(member);
     }
+
 }

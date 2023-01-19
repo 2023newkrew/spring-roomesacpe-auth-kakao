@@ -1,5 +1,9 @@
 package nextstep.member;
 
+import lombok.AllArgsConstructor;
+import nextstep.member.dto.MemberRequestDto;
+import nextstep.member.dto.MemberResponseDto;
+import nextstep.common.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,23 +11,21 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/members")
+@AllArgsConstructor
 public class MemberController {
+
     private MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
-        Long id = memberService.create(memberRequest);
-        return ResponseEntity.created(URI.create("/members/" + id)).build();
+    public ResponseEntity createMember(@RequestBody MemberRequestDto memberRequestDto) {
+        Long id = memberService.create(memberRequestDto);
+        return ResponseEntity.created(URI.create("/members/" + id))
+            .build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me() {
-        Long id = 1L;
-        Member member = memberService.findById(id);
-        return ResponseEntity.ok(member);
+    public ResponseEntity me(@AuthenticationPrincipal String username) {
+        MemberResponseDto memberDto = memberService.findByUsername(username);
+        return ResponseEntity.ok(memberDto);
     }
 }

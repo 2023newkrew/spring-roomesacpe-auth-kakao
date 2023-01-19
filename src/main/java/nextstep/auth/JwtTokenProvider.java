@@ -1,43 +1,47 @@
 package nextstep.auth;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import static nextstep.common.exception.ExceptionMessage.ACCESSTOKEN_IS_NULL;
+import static nextstep.common.exception.ExceptionMessage.INVALID_TOKEN;
+
+import io.jsonwebtoken.*;
+import nextstep.common.exception.NoAccessTokenException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring";
-    private long validityInMilliseconds = 3600000;
+
+    private final String secretKey = "learning-test-spring";
+    private final Long validityInMilliseconds = 3600000L;
 
     public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+        Claims claims = Jwts.claims()
+            .setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
     }
 
     public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public boolean validateToken(String token) {
+        String parsedToken = null;
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            parsedToken = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+        } catch (JwtException jwtException) {
+            throw new JwtException(INVALID_TOKEN.getMessage());
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new NoAccessTokenException(ACCESSTOKEN_IS_NULL.getMessage());
         }
+        return parsedToken;
     }
 }
