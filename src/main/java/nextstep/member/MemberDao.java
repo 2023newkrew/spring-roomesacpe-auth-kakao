@@ -21,11 +21,12 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            resultSet.getString("role")
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -34,6 +35,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setString(5, member.getRole());
             return ps;
 
         }, keyHolder);
