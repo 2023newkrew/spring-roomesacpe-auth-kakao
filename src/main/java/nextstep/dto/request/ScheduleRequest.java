@@ -1,0 +1,28 @@
+package nextstep.dto.request;
+
+public class ScheduleRequest {
+    private Long themeId;
+    private String date;
+    private String time;
+
+    public ScheduleRequest() {
+    }
+
+    public ScheduleRequest(Long themeId, String date, String time) {
+        this.themeId = themeId;
+        this.date = date;
+        this.time = time;
+    }
+
+    public Long getThemeId() {
+        return themeId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+}
