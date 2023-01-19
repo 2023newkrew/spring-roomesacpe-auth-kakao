@@ -21,7 +21,8 @@ public class AuthController {
     }
 
     @ExceptionHandler(value = {NotExistMemberException.class, NotCorrectPasswordException.class})
-    public ResponseEntity handle() {
+    public ResponseEntity handle(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().build();
     }
 }

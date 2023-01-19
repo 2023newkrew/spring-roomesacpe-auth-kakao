@@ -31,11 +31,13 @@ public class MemberController {
 
     @ExceptionHandler()
     public ResponseEntity handleBadRequestException(NotExistMemberException ex) {
+        ex.printStackTrace();
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler()
     public ResponseEntity handleUnauthorizedException(InvalidAuthorizationTokenException ex) {
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

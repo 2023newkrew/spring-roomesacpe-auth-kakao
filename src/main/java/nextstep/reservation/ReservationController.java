@@ -49,11 +49,13 @@ public class ReservationController {
 
     @ExceptionHandler()
     public ResponseEntity handleNotFoundException(NotExistReservationException ex) {
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ExceptionHandler()
     public ResponseEntity handleBadRequestException(DuplicateReservationException ex) {
+        ex.printStackTrace();
         return ResponseEntity.badRequest().build();
     }
 }
