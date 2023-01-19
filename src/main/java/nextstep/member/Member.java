@@ -23,4 +23,8 @@ public class Member {
         this.name = name;
         this.phone = phone;
     }
+
+    public boolean isMyPassword(String password){
+        return this.password == password;
+    }
 }

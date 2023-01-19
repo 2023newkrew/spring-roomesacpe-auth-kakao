@@ -53,14 +53,4 @@ public class MemberDao {
         return Optional.of(member);
     }
 
-    public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ? AND password = ?;";
-        Member member = null;
-        try {
-            member = jdbcTemplate.queryForObject(sql, rowMapper, username, password);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-        return Optional.of(member);
-    }
 }

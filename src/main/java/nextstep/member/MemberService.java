@@ -2,6 +2,7 @@ package nextstep.member;
 
 import static nextstep.common.exception.ExceptionMessage.DUPLICATED_USERNAME;
 import static nextstep.common.exception.ExceptionMessage.NOT_EXIST_MEMBER;
+import static nextstep.common.exception.ExceptionMessage.WRONG_PASSWORD;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.dto.TokenRequestDto;
@@ -33,8 +34,10 @@ public class MemberService {
     }
 
     public void validateUsernameAndPassword(TokenRequestDto tokenRequestDto) {
-        memberDao.findByUsernameAndPassword(tokenRequestDto.getUsername(),
-                tokenRequestDto.getPassword())
+        Member findUser = memberDao.findByUsername(tokenRequestDto.getUsername())
             .orElseThrow(() -> new NotExistEntityException(NOT_EXIST_MEMBER.getMessage()));
+        if (findUser.isMyPassword(tokenRequestDto.getPassword())) {
+            throw new NotExistEntityException(WRONG_PASSWORD.getMessage());
+        }
     }
 }
