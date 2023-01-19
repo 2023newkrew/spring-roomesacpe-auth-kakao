@@ -3,10 +3,10 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.admin.AdminThemeRequest;
+import nextstep.admin.ScheduleRequest;
 import nextstep.auth.TokenRequest;
 import nextstep.member.MemberRequest;
-import nextstep.admin.ScheduleRequest;
-import nextstep.admin.AdminThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,12 +35,21 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("admin", "admin"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .getCookie(ACCESS_TOKEN);
+
         AdminThemeRequest adminThemeRequest = new AdminThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(adminThemeRequest)
-                .when().post("/themes")
+                .cookie(ACCESS_TOKEN, accessToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -52,7 +61,8 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .cookie(ACCESS_TOKEN, accessToken)
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -82,7 +92,7 @@ class ReservationE2ETest {
     void create() {
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
@@ -139,7 +149,7 @@ class ReservationE2ETest {
 
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
@@ -161,7 +171,7 @@ class ReservationE2ETest {
         createReservation();
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
@@ -199,7 +209,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
@@ -218,7 +228,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
