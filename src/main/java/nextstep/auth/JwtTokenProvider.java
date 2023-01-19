@@ -63,6 +63,6 @@ JwtTokenProvider {
     }
 
     private static boolean isTokenNotExist(String authorizationHeader) {
-        return authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX);
+        return authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_PREFIX + " ");
     }
 }
