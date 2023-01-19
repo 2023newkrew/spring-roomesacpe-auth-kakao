@@ -27,7 +27,7 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String USERNAME = "username";
     public static final String NAME = "name";
-    public static final String TOKEN = new JwtTokenProvider().createToken(USERNAME, MemberRole.USER);
+    public static final String TOKEN = new JwtTokenProvider().createToken(USERNAME);
 
     private ReservationRequest request;
     private Long themeId;
@@ -60,7 +60,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest(USERNAME, "password", NAME, "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, "password", NAME, "010-1234-5678", MemberRole.USER);
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -69,7 +69,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
-        MemberRequest otto = new MemberRequest("otto", "password", NAME, "010-1234-5678");
+        MemberRequest otto = new MemberRequest("otto", "password", NAME, "010-1234-5678", MemberRole.USER);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -152,7 +152,7 @@ class ReservationE2ETest {
     void deleteYourReservation() {
         var reservation = createReservation();
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String otherToken = jwtTokenProvider.createToken("otto", MemberRole.USER);
+        String otherToken = jwtTokenProvider.createToken("otto");
 
         var response = RestAssured
                 .given().header("authorization", "Bearer " + otherToken).log().all()

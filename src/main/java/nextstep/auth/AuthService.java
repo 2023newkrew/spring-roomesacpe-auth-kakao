@@ -30,7 +30,7 @@ public class AuthService {
     public String createToken(TokenRequest tokenRequest) {
         Member member = findByUsername(tokenRequest.getUsername());
         validatePassword(member, tokenRequest.getPassword());
-        return TOKEN_PROVIDER.createToken(member.getUsername(), member.getRole());
+        return TOKEN_PROVIDER.createToken(member.getUsername());
     }
 
 }

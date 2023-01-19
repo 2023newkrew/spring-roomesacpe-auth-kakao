@@ -22,7 +22,7 @@ public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest(USERNAME, "password", NAME, PHONE);
+        MemberRequest body = new MemberRequest(USERNAME, "password", NAME, PHONE, MemberRole.USER);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +37,7 @@ public class MemberE2ETest {
     public void me() {
         create();
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String token = jwtTokenProvider.createToken(USERNAME, MemberRole.USER);
+        String token = jwtTokenProvider.createToken(USERNAME);
         RestAssured
                 .given().header("authorization", "Bearer " + token).log().all()
                 .when().get("/members/me")

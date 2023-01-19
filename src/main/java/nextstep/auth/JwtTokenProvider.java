@@ -1,20 +1,17 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
-import nextstep.member.MemberRole;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private static final String AUTHORITIES_KEY = "role";
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal, MemberRole role) {
+    public String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);
-        claims.put(AUTHORITIES_KEY, role);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -28,10 +25,6 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public String getRole(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get(AUTHORITIES_KEY).toString();
     }
 
     public boolean validateToken(String token) {
