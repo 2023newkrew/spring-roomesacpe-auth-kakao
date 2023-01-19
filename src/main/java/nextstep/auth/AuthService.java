@@ -4,9 +4,9 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.support.UnAuthorizedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 @Service
 public class AuthService {
@@ -21,16 +21,17 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public LoginMember parseTokenFromRequest(NativeWebRequest request) {
-        String header = request.getHeader(AUTHORIZATION_HEADER_NAME);
+    public LoginMember parseTokenFromRequest(Function<String, String> getHeaderFunction) {
+        String header = getHeaderFunction.apply(AUTHORIZATION_HEADER_NAME);
         validateHeader(header);
 
         String token = parseTokenFromHeader(header);
         validateToken(token);
 
         String username = jwtTokenProvider.getPrincipal(token);
+        Role role = jwtTokenProvider.getRole(token);
         Member member = memberDao.findByUsername(username);
-        return LoginMember.of(member);
+        return LoginMember.of(member, role);
     }
 
     private void validateHeader(String header) {

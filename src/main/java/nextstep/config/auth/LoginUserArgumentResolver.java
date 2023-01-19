@@ -23,7 +23,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        return authService.parseTokenFromRequest(webRequest);
+        return authService.parseTokenFromRequest(webRequest::getHeader);
     }
 
 }
