@@ -28,7 +28,6 @@ public class ThemeService {
         if (theme == null) {
             throw new NotExistEntityException();
         }
-
         themeDao.delete(id);
     }
 }

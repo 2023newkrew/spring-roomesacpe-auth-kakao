@@ -25,10 +25,6 @@ public class Member {
         this(null, username, password, name, phone, role);
     }
 
-    public Member(Long id, String username, String password, String name, String phone) {
-        this(id, username, password, name, phone, Role.MEMBER);
-    }
-
     public Member(String username, String password, String name, String phone) {
         this(null, username, password, name, phone, Role.MEMBER);
     }

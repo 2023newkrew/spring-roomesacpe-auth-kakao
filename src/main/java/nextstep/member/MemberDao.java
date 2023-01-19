@@ -44,7 +44,7 @@ public class MemberDao {
     }
 
     public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT * from member where username = ?;";
         return jdbcTemplate.query(sql, rowMapper, username)
                 .stream()
                 .findAny()
@@ -58,7 +58,7 @@ public class MemberDao {
     }
 
     public Member findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+        String sql = "SELECT * from member where username = ? and password = ?;";
         return jdbcTemplate.query(sql, rowMapper, username, password)
                 .stream()
                 .findAny()

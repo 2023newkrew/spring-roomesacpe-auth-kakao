@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.admin.AdminE2ETest.createAdminToken;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -25,7 +26,8 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .auth().oauth2(createAdminToken())
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -33,7 +35,7 @@ public class ScheduleE2ETest {
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
     }
 
-    @DisplayName("스케줄을 생성한다")
+    @DisplayName("어드민 권한으로 스케줄을 생성한다")
     @Test
     public void createSchedule() {
         ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
@@ -41,9 +43,23 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .auth().oauth2(createAdminToken())
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("어드민이 없다면 스케줄을 생성할 수 없다")
+    @Test
+    public void createScheduleWithoutAuth() {
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/admin/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("스케줄을 조회한다")
@@ -70,7 +86,8 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .auth().oauth2(createAdminToken())
+                .when().delete("/admin" + location)
                 .then().log().all()
                 .extract();
 
@@ -83,7 +100,8 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .auth().oauth2(createAdminToken())
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()

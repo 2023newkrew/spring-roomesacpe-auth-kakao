@@ -13,6 +13,8 @@ import javax.annotation.PostConstruct;
 @Component
 public class DataLoader implements ApplicationRunner {
 
+    public static Member ADMIN_MEMBER;
+
     @Value("${admin.username}")
     private String adminUsername;
 
@@ -25,6 +27,10 @@ public class DataLoader implements ApplicationRunner {
     @Value("${admin.phone}")
     private String adminPhone;
 
+    @PostConstruct
+    void setUp() {
+        ADMIN_MEMBER = new Member(adminUsername, adminPassword, adminName, adminPhone, Role.ADMIN);
+    }
 
     private final MemberDao memberDao;
 
@@ -34,7 +40,6 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        Member adminMember = new Member(adminUsername, adminPassword, adminName, adminPhone, Role.ADMIN);
-        memberDao.save(adminMember);
+        memberDao.save(ADMIN_MEMBER);
     }
 }
