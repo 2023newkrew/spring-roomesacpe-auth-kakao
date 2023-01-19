@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.support.AuthenticationException;
+import nextstep.util.AuthenticationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    private static final String TOKEN_TYPE = "Bearer";
     private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
@@ -27,21 +30,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authorization = webRequest.getHeader("authorization");
-        String token = extractToken(authorization);
-
-        validateToken(token);
+        String token = AuthenticationUtil.extractToken(authorization);
 
         return getPrincipalFromToken(token);
-    }
-
-    private String extractToken(String authorization) {
-        return Optional.ofNullable(authorization)
-                .map(v -> v.split("Bearer ")[1])
-                .orElseThrow();
-    }
-
-    private void validateToken(String token) {
-        jwtTokenProvider.validateToken(token);
     }
 
     private String getPrincipalFromToken(String token) {
