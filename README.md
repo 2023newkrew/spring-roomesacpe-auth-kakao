@@ -45,8 +45,10 @@
 - [x] member 생성시 중복 판단 기준 생각해보기
   - [x] username 과 phone 에 unique 적용하기
   - [x] unique 조건에 의해 exception 발생시 예외처리하기
-- [ ] reservation 에서 member 를 식별하는 필드를 memberId 로 변경할지 고민해보기
+- [x] reservation 에서 member 를 식별하는 필드를 memberId 로 변경할지 고민해보기
   - 이렇게 하면 멤버의 식별에 있어서도 유일하게 식별 가능하고, 확인 로직 등도 단순해짐
+  - [x] reservation 스키마 수정 - name 대신 member_id 사용하도록
+  - [x] reservation 도메인 및 관련 로직 수정
 
 ## 3단계
 
