@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
+import nextstep.member.Role;
 import nextstep.support.exception.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,22 @@ public class JwtTokenProvider {
     public String createToken(String principal) {
         Claims claims = Jwts.claims()
                 .setSubject(principal);
+        claims.put("role", Role.USER);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + VALIDITY_IN_MILLISECONDS);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
+    public String createAdminToken(String principal) {
+        Claims claims = Jwts.claims();
+        claims.setSubject(principal);
+        claims.put("role", Role.ADMIN);
         Date now = new Date();
         Date validity = new Date(now.getTime() + VALIDITY_IN_MILLISECONDS);
 
@@ -33,6 +50,15 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public String getRole(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role")
+                .toString();
     }
 
     public void validateToken(String token) {
