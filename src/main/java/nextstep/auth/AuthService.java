@@ -26,7 +26,7 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateUsernamePassword(tokenRequest.getUsername(), tokenRequest.getPassword());
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), Role.USER);
         return new TokenResponse(accessToken);
     }
 
