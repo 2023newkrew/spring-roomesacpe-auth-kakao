@@ -1,5 +1,6 @@
 package nextstep.configurations;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.ui.AuthenticationPrincipalArgumentResolver;
 import nextstep.ui.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -10,12 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final LoginInterceptor loginInterceptor;
-
-    public WebMvcConfiguration(LoginInterceptor loginInterceptor) {
-        this.loginInterceptor = loginInterceptor;
-    }
     @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver(){
         return new AuthenticationPrincipalArgumentResolver();
@@ -33,6 +31,4 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authenticationPrincipalArgumentResolver());
     }
-
-
 }

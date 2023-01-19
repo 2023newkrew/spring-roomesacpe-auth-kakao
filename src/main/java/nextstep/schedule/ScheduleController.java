@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,12 +9,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/schedules")
+@RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
-
-    public ScheduleController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
-    }
 
     @PostMapping
     public ResponseEntity<URI> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {

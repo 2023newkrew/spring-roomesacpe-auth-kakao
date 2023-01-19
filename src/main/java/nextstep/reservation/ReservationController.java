@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.exception.AuthorizationException;
@@ -13,14 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
     public final ReservationService reservationService;
     public final MemberService memberService;
-
-    public ReservationController(ReservationService reservationService, MemberService memberService) {
-        this.reservationService = reservationService;
-        this.memberService = memberService;
-    }
 
     @PostMapping
     public ResponseEntity<URI> createReservation(@AuthenticationPrincipal String token,

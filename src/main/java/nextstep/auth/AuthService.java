@@ -1,18 +1,15 @@
 package nextstep.auth;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.exception.LoginInformationException;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
-
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
-    }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateLoginInformation(tokenRequest.getUsername(), tokenRequest.getPassword());

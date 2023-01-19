@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,13 +14,10 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ReservationDao {
 
     public final JdbcTemplate jdbcTemplate;
-
-    public ReservationDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> Reservation.builder()
                     .id(resultSet.getLong("reservation.id"))
