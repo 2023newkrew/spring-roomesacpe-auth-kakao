@@ -1,8 +1,9 @@
 package nextstep.reservation;
 
+import nextstep.exceptions.exception.DuplicatedReservationException;
+import nextstep.exceptions.exception.ObjectNotFoundException;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,12 @@ public class ReservationService {
     public Long create(ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new ObjectNotFoundException("해당 스케쥴을 찾을 수 없습니다.");
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicatedReservationException("해당 스케쥴에 예약이 존재합니다.");
         }
 
         Reservation newReservation = new Reservation(
@@ -43,7 +44,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new ObjectNotFoundException("테마를 찾을 수 없습니다.");
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
@@ -51,18 +52,19 @@ public class ReservationService {
 
     public void deleteById(Long id) {
         Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
-
+        checkNullReservation(reservation);
         reservationDao.deleteById(id);
     }
 
     public Reservation findById(Long id) {
         Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
+        checkNullReservation(reservation);
         return reservation;
+    }
+
+    private static void checkNullReservation(Reservation reservation) {
+        if (reservation == null) {
+            throw new ObjectNotFoundException("해당 예약을 찾을 수 없습니다.");
+        }
     }
 }
