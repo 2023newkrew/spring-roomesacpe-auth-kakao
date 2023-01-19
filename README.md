@@ -19,15 +19,26 @@
   * 자신의 예약이 아닌 경우 예약 취소가 불가능하다.
 
 
-### API 설계
+### 기능 설명
+* `data.sql`에 Theme, Member, Schedule에 대한 쿼리가 포함되어 있음
 
+**토큰 발급** 을 이용하여 유저의 토큰 생성
+  ![TokenGenerator.png](TokenGenerator.png)
 
-**토큰 발급**
-![TokenGenerator.png](TokenGenerator.png)
-
-**내 정보 조회**
+**내 정보 조회** - 유저 정보로 발급받은 토큰을 이용하여 조회
 ![LookUpInfo.png](LookUpInfo.png)
 
+**예약 생성** - 발급받은 토큰과 생성되어 있는 ScheduleId를 이용하여 예약 생성
+![reservationCreate.png](reservationCreate.png)
+
+**예약 삭제** - 생성되어 있는 예약을 삭제
+![reservationDelete.png](reservationDelete.png)
 
 ### TestCase
 * 토큰을 이용하여 유저 정보를 가져올 수 있다.
+* 예약을 생성할 수 있다.
+* 예약을 조회할 수 있다
+* 예약을 삭제할 수 있다
+* 중복 예약을 생성할 경우, 에러가 발생한다
+* 예약이 없을 때 예약 목록은 비어있다.
+* 없는 예약을 삭제할 경우, 에러가 발생한다

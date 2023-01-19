@@ -85,7 +85,7 @@ class ReservationE2ETest {
         );
     }
 
-    @DisplayName("예약을 생성한다")
+    @DisplayName("예약을 생성할 수 있다.")
     @Test
     void create() {
         var response = RestAssured
@@ -100,7 +100,7 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("예약을 조회한다")
+    @DisplayName("예약을 조회할 수 있다")
     @Test
     void show() {
         createReservation();
@@ -118,7 +118,7 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("예약을 삭제할 수 있다")
     @Test
     void delete() {
         var reservation = createReservation();
@@ -133,7 +133,7 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("중복 예약을 생성한다")
+    @DisplayName("중복 예약을 생성할 경우, 에러가 발생한다")
     @Test
     void createDuplicateReservation() {
         createReservation();
@@ -149,7 +149,7 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    @DisplayName("예약이 없을 때 예약 목록을 조회한다")
+    @DisplayName("예약이 없을 때 예약 목록은 비어있다.")
     @Test
     void showEmptyReservations() {
         var response = RestAssured
@@ -165,7 +165,7 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(0);
     }
 
-    @DisplayName("없는 예약을 삭제한다")
+    @DisplayName("없는 예약을 삭제할 경우, 에러가 발생한다")
     @Test
     void createNotExistReservation() {
         var response = RestAssured
