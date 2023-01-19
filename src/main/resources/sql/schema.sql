@@ -41,3 +41,4 @@ CREATE TABLE member
     primary key (id)
 );
 
+INSERT INTO member VALUES (9999, 'admin', 'admin', 'admin', '010-1234-5678', 'admin');

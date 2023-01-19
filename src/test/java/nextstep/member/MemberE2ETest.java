@@ -27,7 +27,7 @@ public class MemberE2ETest {
     @DisplayName("유저는 멤버를 생성할 수 없다.")
     public void createByUser() {
         token = loginUser();
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "admin");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
 
         RestAssured
                 .given().log().all()
@@ -43,7 +43,7 @@ public class MemberE2ETest {
     @DisplayName("관리자는 멤버를 생성할 수 있다.")
     public void createByAdmin() {
         token = loginAdmin();
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "admin");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
 
         RestAssured
                 .given().log().all()

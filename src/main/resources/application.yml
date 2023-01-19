@@ -14,5 +14,5 @@ spring:
 
 auth:
   secretKey: learning-test-spring
-  validityInMilliseconds: 3600000
+  validityInMilliseconds: 3_600_000
 

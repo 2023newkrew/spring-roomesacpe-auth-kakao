@@ -7,7 +7,6 @@ import org.springframework.http.HttpMethod;
 @SpringBootApplication
 public class RoomEscapeApplication {
     public static void main(String[] args) {
-        HttpMethod.POST.name();
         SpringApplication.run(RoomEscapeApplication.class, args);
     }
 }
