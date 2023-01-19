@@ -28,10 +28,14 @@ public class ThemeController {
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
-//    @PostMapping("/themes")
-//    public String createThemeWithoutAdmin(@RequestBody ThemeRequest themeRequest) {
-//        return "redirect:/admin/themes";
-//    }
+    /**
+     * If "/admin"  path is not attached, redirect to "/admin/**"
+     */
+    @PostMapping("/themes")
+    public ResponseEntity<Void> createThemeWithoutAdmin(@RequestBody ThemeRequest themeRequest) {
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .location(URI.create("/admin/themes")).build();
+    }
 
     @GetMapping("/themes")
     public ResponseEntity<List<Theme>> showThemes() {
@@ -46,15 +50,12 @@ public class ThemeController {
         return ResponseEntity.noContent().build();
     }
 
-//    @DeleteMapping("themes/{id}")
-//    public String deleteThemeWithoutAdmin(@PathVariable Long id) {
-//        return "redirect:/admin/themes/{id}";
-//    }
-
-    @GetMapping("/redirect")
-    public ResponseEntity<?> redirect() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/"));
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+    /**
+     * If "/admin"  path is not attached, redirect to "/admin/**"
+     */
+    @DeleteMapping("themes/{id}")
+    public ResponseEntity deleteThemeWithoutAdmin(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.TEMPORARY_REDIRECT)
+                .location(URI.create("/admin/themes/" + id)).build();
     }
 }
