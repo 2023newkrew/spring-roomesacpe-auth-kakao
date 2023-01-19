@@ -1,7 +1,7 @@
 package nextstep.config;
 
 import nextstep.auth.AuthenticationPrincipalArgumentResolver;
-import nextstep.auth.RoleInterceptor;
+import nextstep.auth.AdminRoleInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -12,17 +12,17 @@ import java.util.List;
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
-    private final RoleInterceptor roleInterceptor;
+    private final AdminRoleInterceptor adminRoleInterceptor;
 
     public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver,
-                               RoleInterceptor roleInterceptor) {
+                               AdminRoleInterceptor adminRoleInterceptor) {
         this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
-        this.roleInterceptor = roleInterceptor;
+        this.adminRoleInterceptor = adminRoleInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(roleInterceptor).addPathPatterns("/admin/**");
+        registry.addInterceptor(adminRoleInterceptor).addPathPatterns("/admin/**");
     }
 
     @Override

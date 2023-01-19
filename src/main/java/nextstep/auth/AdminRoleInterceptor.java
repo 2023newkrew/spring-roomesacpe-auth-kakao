@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class RoleInterceptor implements HandlerInterceptor {
+public class AdminRoleInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider tokenProvider;
 
-    public RoleInterceptor(JwtTokenProvider tokenProvider) {
+    public AdminRoleInterceptor(JwtTokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
