@@ -1,3 +1,7 @@
+TRUNCATE TABLE reservation;
+TRUNCATE TABLE schedule;
+TRUNCATE TABLE theme;
+TRUNCATE TABLE member;
 CREATE TABLE IF NOT EXISTS reservation
 (
     id          bigint      not null auto_increment,
