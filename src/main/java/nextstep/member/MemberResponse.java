@@ -3,8 +3,8 @@ package nextstep.member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class MemberResponse {
     private Long id;
     private String username;

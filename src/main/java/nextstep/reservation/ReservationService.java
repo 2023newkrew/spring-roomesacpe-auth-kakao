@@ -1,6 +1,6 @@
 package nextstep.reservation;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.exception.DuplicateEntityException;
@@ -8,11 +8,10 @@ import nextstep.exception.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;

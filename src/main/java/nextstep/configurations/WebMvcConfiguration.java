@@ -1,6 +1,5 @@
 package nextstep.configurations;
 
-import nextstep.auth.JwtTokenProvider;
 import nextstep.ui.AuthenticationPrincipalArgumentResolver;
 import nextstep.ui.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
-    private LoginInterceptor loginInterceptor;
+    private final LoginInterceptor loginInterceptor;
 
     public WebMvcConfiguration(LoginInterceptor loginInterceptor) {
         this.loginInterceptor = loginInterceptor;
@@ -20,11 +19,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver(){
         return new AuthenticationPrincipalArgumentResolver();
-    }
-
-    @Bean
-    public JwtTokenProvider jwtTokenProvider(){
-        return new JwtTokenProvider();
     }
 
     @Override

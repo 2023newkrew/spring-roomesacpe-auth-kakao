@@ -2,9 +2,11 @@ package nextstep.theme;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ThemeRequest {
     private String name;
     private String desc;
