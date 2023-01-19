@@ -31,6 +31,10 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String header = webRequest.getHeader(AUTHORIZATION);
+        if (header == null) {
+            throw new UnAuthorizedException();
+        }
+
         if (!(header.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {
             throw new UnAuthorizedException();
         }
