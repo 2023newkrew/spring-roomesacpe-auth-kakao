@@ -2,9 +2,6 @@ package nextstep.reservation;
 
 import nextstep.member.Member;
 import nextstep.support.annotation.AuthorizationPrincipal;
-import nextstep.support.exception.AuthorizationExcpetion;
-import nextstep.support.exception.ThemeException;
-import nextstep.support.exception.ReservationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +37,4 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(value = {AuthorizationExcpetion.class, ReservationException.class, ThemeException.class})
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
 }

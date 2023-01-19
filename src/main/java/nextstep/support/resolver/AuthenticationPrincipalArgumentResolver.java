@@ -5,6 +5,7 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberService;
 import nextstep.support.annotation.AuthorizationPrincipal;
 import nextstep.support.exception.AuthorizationExcpetion;
+import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -33,7 +34,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             token = token.replace(JwtTokenConfig.TOKEN_CLASS, "");
         }
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationExcpetion("계정을 인증할 수 없습니다.");
+            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN);
         }
         return memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
     }

@@ -3,6 +3,7 @@ package nextstep.auth;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.support.exception.AuthorizationExcpetion;
+import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,9 +25,9 @@ public class AuthService {
 
     void validateMember(String requestUsername, String requestPassword) {
         Member member = memberDao.findByUsername(requestUsername)
-                .orElseThrow(() -> new AuthorizationExcpetion("계정 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new AuthorizationExcpetion(RoomEscapeExceptionCode.AUTHORIZATION_FAIL));
         if (member.checkWrongPassword(requestPassword)) {
-            throw new AuthorizationExcpetion("계정 정보를 찾을 수 없습니다.");
+            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
         }
     }
 }

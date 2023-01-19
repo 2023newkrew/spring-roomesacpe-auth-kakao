@@ -1,8 +1,8 @@
 package nextstep.support.exception;
 
-public class ReservationException extends RuntimeException {
+public class ReservationException extends RoomEscapeException {
 
-    public ReservationException(String msg) {
-        super(msg);
+    public ReservationException(RoomEscapeExceptionCode roomEscapeExceptionCode) {
+        super(roomEscapeExceptionCode);
     }
 }
