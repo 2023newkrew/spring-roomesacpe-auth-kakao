@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.support.exception;
 
 public class NotExistMemberException extends RuntimeException{
     public NotExistMemberException() {

@@ -2,7 +2,6 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ public class AuthE2ETest {
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
     @DisplayName("비밀번호가 잘못된 토큰을 요청하는 경우")
     @Test
@@ -70,7 +69,7 @@ public class AuthE2ETest {
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
 //    @DisplayName("테마 목록을 조회한다")

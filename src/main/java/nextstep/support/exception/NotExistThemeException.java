@@ -1,4 +1,4 @@
-package nextstep.support;
+package nextstep.support.exception;
 
 public class NotExistThemeException extends RuntimeException {
     public NotExistThemeException() {
