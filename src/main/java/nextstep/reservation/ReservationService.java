@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.exception.InaccessibleReservationException;
-import nextstep.exception.UnAuthorizationException;
+import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
@@ -31,7 +31,7 @@ public class ReservationService {
     public Long create(Long userId, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
@@ -51,7 +51,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
@@ -60,12 +60,14 @@ public class ReservationService {
     public void deleteById(Long userId, Long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
+
         Member me = memberDao.findById(userId);
         if (!reservation.isMyReservation(me)) {
             throw new InaccessibleReservationException();
         }
+
         reservationDao.deleteById(reservationId);
     }
 }
