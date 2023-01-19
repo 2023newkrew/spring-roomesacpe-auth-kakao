@@ -43,12 +43,23 @@ public class MemberDao {
 
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        return jdbcTemplate.query(sql, rowMapper, username)
+                .stream()
+                .findAny()
+                .orElse(null);
     }
 
     public boolean isExistingMemberName(String name) {
         String sql = "SELECT count(*) from member where name = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, name);
         return count > 0;
+    }
+
+    public Member findByUsernameAndPassword(String username, String password) {
+        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
+        return jdbcTemplate.query(sql, rowMapper, username, password)
+                .stream()
+                .findAny()
+                .orElse(null);
     }
 }

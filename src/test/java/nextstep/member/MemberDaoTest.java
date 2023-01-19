@@ -71,4 +71,39 @@ public class MemberDaoTest {
         assertThat(foundMember.getName()).isEqualTo(name);
         assertThat(foundMember.getPhone()).isEqualTo(phone);
     }
+
+    @DisplayName("username과 password를 통해 알맞은 멤버를 찾을 수 있다.")
+    @Test
+    void findByUsernameAndPassword() {
+        // given
+        String username = "username";
+        String password = "password";
+        String name = "name";
+        String phone = "phone";
+        Member member = new Member(username, password, name, phone);
+        memberDao.save(member);
+
+        // when
+        Member foundMember = memberDao.findByUsernameAndPassword(username, password);
+
+        // then
+        assertThat(foundMember.getUsername()).isEqualTo(username);
+        assertThat(foundMember.getPassword()).isEqualTo(password);
+        assertThat(foundMember.getName()).isEqualTo(name);
+        assertThat(foundMember.getPhone()).isEqualTo(phone);
+    }
+
+    @DisplayName("username과 password를 통해 조회된 멤버가 없으면 null을 반환한다.")
+    @Test
+    void findByUsernameAndPasswordNotFound() {
+        // given
+        Member member = new Member("username", "password", "name", "phone");
+        memberDao.save(member);
+
+        // when
+        Member foundMember = memberDao.findByUsernameAndPassword("invalidUsername", "invalidPassword");
+
+        // then
+        assertThat(foundMember).isNull();
+    }
 }

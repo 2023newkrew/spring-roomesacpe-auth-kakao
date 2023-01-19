@@ -45,14 +45,12 @@ public class MemberService {
         return new TokenResponse(token);
     }
 
+    @Transactional
     public void validateIsMember(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
-        Member member = memberDao.findByUsername(username);
+        Member member = memberDao.findByUsernameAndPassword(username, password);
         if (member == null) {
-            throw new AuthorizationException();
-        }
-        if (member.checkWrongPassword(password)) {
             throw new AuthorizationException();
         }
     }

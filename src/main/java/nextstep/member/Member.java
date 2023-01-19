@@ -41,8 +41,4 @@ public class Member {
     public String getPhone() {
         return phone;
     }
-
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
-    }
 }

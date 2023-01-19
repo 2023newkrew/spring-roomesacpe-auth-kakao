@@ -47,6 +47,20 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
+    @DisplayName("없는 멤버에 대해 토큰을 생성할 수 없다")
+    @Test
+    public void cannotCreate() {
+        TokenRequest body = new TokenRequest("InvalidUsername", "InvalidPassword");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
+    }
+
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
