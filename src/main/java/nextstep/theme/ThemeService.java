@@ -21,7 +21,7 @@ public class ThemeService {
     public List<ThemeResponse> findAll() {
         return themeDao.findAll()
                 .stream()
-                .map(theme -> ThemeResponse.of(theme))
+                .map(ThemeResponse::of)
                 .collect(Collectors.toList());
     }
 
