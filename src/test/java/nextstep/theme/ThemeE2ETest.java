@@ -54,7 +54,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessTokenOfAdminRole)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -68,7 +68,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessTokenOfUserRole)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -82,7 +82,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .param("date", "2022-08-11")
                 .auth().oauth2(accessTokenOfAdminRole)
-                .when().get("/themes")
+                .when().get("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -98,7 +98,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .param("date", "2022-08-11")
                 .auth().oauth2(accessTokenOfUserRole)
-                .when().get("/themes")
+                .when().get("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -111,7 +111,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessTokenOfAdminRole)
-                .when().delete("/themes/" + id)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -125,8 +125,8 @@ public class ThemeE2ETest {
 
         RestAssured
                 .given().log().all()
-                .auth().oauth2(accessTokenOfAdminRole)
-                .when().delete("/themes/" + id)
+                .auth().oauth2(accessTokenOfUserRole)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -137,7 +137,8 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .auth().oauth2(accessTokenOfAdminRole)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
