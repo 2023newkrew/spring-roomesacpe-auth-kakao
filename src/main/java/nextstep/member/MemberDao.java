@@ -22,11 +22,12 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            MemberRole.values()[resultSet.getInt("role")]
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -35,6 +36,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setInt(5, member.getRole().ordinal());
             return ps;
 
         }, keyHolder);
@@ -43,12 +45,12 @@ public class MemberDao {
     }
 
     public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT * from member where id = ?;";
         return jdbcTemplate.query(sql, rowMapper, id).stream().findFirst();
     }
 
     public Optional<Member> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT * from member where username = ?;";
         return jdbcTemplate.query(sql, rowMapper, username).stream().findFirst();
     }
 }
