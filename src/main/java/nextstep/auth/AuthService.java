@@ -10,16 +10,18 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public AuthService(MemberDao memberDao) {
+    public AuthService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
         this.memberDao = memberDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
     public TokenResponse login(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword())
                 .orElseThrow(NotExistEntityException::new);
-        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(member.getId())));
+        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(member.getId())));
     }
 }

@@ -9,8 +9,14 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+    private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
+
+    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver) {
+        this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
+    }
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthenticationPrincipalArgumentResolver());
+        resolvers.add(authenticationPrincipalArgumentResolver);
     }
 }

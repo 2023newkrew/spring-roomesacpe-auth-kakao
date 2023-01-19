@@ -1,6 +1,8 @@
 package nextstep.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -8,7 +10,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Optional;
 
+@Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -33,10 +41,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     private void validateToken(String token) {
-        JwtTokenProvider.validateToken(token);
+        jwtTokenProvider.validateToken(token);
     }
 
     private String getPrincipalFromToken(String token) {
-        return JwtTokenProvider.getPrincipal(token);
+        return jwtTokenProvider.getPrincipal(token);
     }
 }
