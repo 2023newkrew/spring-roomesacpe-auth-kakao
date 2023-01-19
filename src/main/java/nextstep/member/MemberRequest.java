@@ -15,6 +15,6 @@ public class MemberRequest {
     private String phone;
 
     public Member toEntity() {
-        return Member.ofUser(username, password, name, phone);
+        return Member.of(username, password, name, phone);
     }
 }

@@ -13,6 +13,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "유저네임 또는 패스워드가 틀렸습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
     AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+    ADMIN_AUTHORITY_REQUIRED(HttpStatus.FORBIDDEN, "관리자 권한이 필요합니다."),
 
     // 회원 에러
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 ID의 회원이 존재하지 않습니다."),
