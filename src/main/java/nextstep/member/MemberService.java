@@ -40,17 +40,30 @@ public class MemberService {
     }
 
     public TokenResponse generateToken(TokenRequest tokenRequest) {
-        validateIsMember(tokenRequest);
-        String token = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        Member member = findMember(tokenRequest);
+        if (member.isAdmin()) {
+            return createAdminToken(tokenRequest.getUsername());
+        }
+        return createMemberToken(tokenRequest.getUsername());
+    }
+
+    private TokenResponse createAdminToken(String username) {
+        String token = jwtTokenProvider.createAdminToken(username);
         return new TokenResponse(token);
     }
 
-    public void validateIsMember(TokenRequest tokenRequest) {
+    private TokenResponse createMemberToken(String username) {
+        String token = jwtTokenProvider.createToken(username);
+        return new TokenResponse(token);
+    }
+
+    public Member findMember(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
         Member member = memberDao.findByUsernameAndPassword(username, password);
         if (member == null) {
             throw new AuthorizationException();
         }
+        return member;
     }
 }

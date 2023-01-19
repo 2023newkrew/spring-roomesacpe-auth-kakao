@@ -1,11 +1,13 @@
 package nextstep.auth;
 
 import nextstep.support.AuthorizationException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Component
 public class LoginInterceptor implements HandlerInterceptor {
 
     private static final String GET_METHOD = "GET";
