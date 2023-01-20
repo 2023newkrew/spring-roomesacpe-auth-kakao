@@ -40,4 +40,12 @@ public class AdminController {
         return ResponseEntity.created(URI.create("/schedules/" + id))
                 .build();
     }
+
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
+        scheduleService.deleteById(id);
+
+        return ResponseEntity.noContent()
+                .build();
+    }
 }

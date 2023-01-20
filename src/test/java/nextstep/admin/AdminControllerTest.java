@@ -88,4 +88,18 @@ class AdminControllerTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", "/schedules/1");
     }
+
+    @Test
+    @DisplayName("테마 삭제 API 테스트")
+    void deleteScheduleTest() {
+        when(adminInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
+
+        RestAssured.given()
+                .auth()
+                .oauth2(ADMIN_ACCESS_TOKEN)
+                .when()
+                .delete("/admin/schedules/1")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }
