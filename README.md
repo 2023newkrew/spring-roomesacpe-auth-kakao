@@ -71,14 +71,10 @@ https://edu.nextstep.camp/s/GiKTqpMP/ls/4djIm1J0
 
 ### admin API (관리자 API)
 
-#### Member
-
-    관리자 멤버를 생성할 수 있다.
-    관리자 및 사용자 멤버를 삭제할 수 있다.
-
 #### Reservation
 
     모든 사용자의 예약을 삭제할 수 있다. 
+    사용자는 자신의 액세스 토큰이 권한을 가진 예약만을 삭제할 수 있다.
 
 #### Schedule
 
@@ -98,4 +94,19 @@ https://edu.nextstep.camp/s/GiKTqpMP/ls/4djIm1J0
     - data.sql에 관리자 멤버를 추가하는 쿼리를 추가하는 쿼리를 작성하여 이를 통해서만 관리자 추가 가능
     - 관리자만 또다른 관리자를 추가 가능(admin API)
 
-[ ] 일반 멤버 생성시 default로 'user' 역할을 갖는다.
+## TODO
+- [x] 일반 멤버 생성시 default로 'user' 역할을 갖는다.
+- [x] login 시 관리자인지 확인하여 관리자라면 토큰에 admin role 포함
+- [x] jwtToken 생성 시 role 이용 가능
+- [x] interceptor 구현
+  - [x] 액세스 토큰을 통해 admin 권한을 갖는지 확인한다.
+  - [x] admin 권한이 없다면 UnauthorizedException이 발생한다.
+- [ ] AdminController 구현
+  - [x] Theme
+    - [x] 테마 생성 API 이동 (Theme -> Admin) 
+    - [x] 테마 삭제 API 이동 (Theme -> Admin)
+  - [x] Schedule
+    - [x] 스케줄 생성 API 이동(Schedule -> Admin)
+    - [x] 스케줄 삭제 API 이동(Schedule -> Admin)
+  - [x] Reservation
+    - [x] 예약 삭제 API 추가(모든 예약)
