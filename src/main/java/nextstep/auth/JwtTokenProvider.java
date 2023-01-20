@@ -40,4 +40,19 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public String getValidToken(String bearerToken){
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            throw new AuthenticationException();
+        }
+
+        var accessToken = bearerToken.substring(7);
+
+        if (!validateToken(accessToken)) {
+            throw new AuthenticationException();
+        }
+
+        return accessToken;
+
+    }
 }
