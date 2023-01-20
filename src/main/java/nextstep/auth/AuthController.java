@@ -20,9 +20,4 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.createToken(tokenRequest));
     }
 
-    @ExceptionHandler(value = {NotExistMemberException.class, NotCorrectPasswordException.class})
-    public ResponseEntity handle(Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().build();
-    }
 }

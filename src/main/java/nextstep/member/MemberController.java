@@ -34,13 +34,4 @@ public class MemberController {
         return ResponseEntity.ok().body(member);
     }
 
-    @ExceptionHandler()
-    public ResponseEntity handleBadRequestException(NotExistMemberException ex) {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler()
-    public ResponseEntity handleUnauthorizedException(InvalidAuthorizationTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 }

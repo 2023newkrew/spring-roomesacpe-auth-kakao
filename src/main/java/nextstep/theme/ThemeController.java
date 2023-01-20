@@ -36,14 +36,4 @@ public class ThemeController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler
-    public ResponseEntity handleUnathorizedException(InvalidAuthorizationTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
-    @ExceptionHandler()
-    public ResponseEntity handleNotFoundException(NotExistReservationException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
 }
