@@ -15,7 +15,5 @@ public interface ReservationRepository {
 
     List<ReservationEntity> findByScheduleId(Long scheduleId);
 
-    boolean existsByIdAndMemberId(Long id, Long memberId);
-
     int deleteById(Long id);
 }

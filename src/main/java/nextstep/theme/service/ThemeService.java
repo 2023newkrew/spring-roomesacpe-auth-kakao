@@ -35,10 +35,8 @@ public class ThemeService {
     }
 
     public void deleteById(Long id) {
-        themeRepository.findById(id)
-                .orElseThrow(NotExistEntityException::new)
-        ;
-
-        themeRepository.deleteById(id);
+        if (themeRepository.deleteById(id) == 0) {
+            throw new NotExistEntityException();
+        }
     }
 }

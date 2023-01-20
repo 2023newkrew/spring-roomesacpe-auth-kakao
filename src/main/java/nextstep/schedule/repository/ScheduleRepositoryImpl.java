@@ -40,12 +40,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public boolean existsById(Long id) {
-
-        return scheduleDao.existsById(id);
-    }
-
-    @Override
     public int deleteById(Long id) {
 
         return scheduleDao.deleteById(id);

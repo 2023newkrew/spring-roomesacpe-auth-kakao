@@ -52,11 +52,9 @@ public class ReservationService {
                 ;
     }
 
-    public void delete(Long id, Long memberId) {
-        if (!reservationRepository.existsByIdAndMemberId(id, memberId)) {
+    public void delete(Long id) {
+        if (reservationRepository.deleteById(id) == 0) {
             throw new NotExistEntityException();
         }
-
-        reservationRepository.deleteById(id);
     }
 }

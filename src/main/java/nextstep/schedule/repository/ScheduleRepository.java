@@ -13,7 +13,5 @@ public interface ScheduleRepository {
 
     List<ScheduleEntity> findByThemeIdAndDate(Long themeId, String date);
 
-    boolean existsById(Long id);
-
     int deleteById(Long id);
 }

@@ -48,12 +48,6 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public boolean existsByIdAndMemberId(Long id, Long memberId) {
-
-        return reservationDao.existsByIdAndMemberId(id, memberId);
-    }
-
-    @Override
     public int deleteById(Long id) {
 
         return reservationDao.deleteById(id);

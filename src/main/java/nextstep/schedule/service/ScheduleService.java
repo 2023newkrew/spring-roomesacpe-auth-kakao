@@ -45,10 +45,8 @@ public class ScheduleService {
     }
 
     public void deleteById(Long id) {
-        if (!scheduleRepository.existsById(id)) {
+        if (scheduleRepository.deleteById(id) == 0) {
             throw new NotExistEntityException();
         }
-
-        scheduleRepository.deleteById(id);
     }
 }

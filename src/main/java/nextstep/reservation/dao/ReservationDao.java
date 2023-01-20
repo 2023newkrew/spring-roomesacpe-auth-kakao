@@ -87,12 +87,6 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, rowMapper, id);
     }
 
-    public boolean existsByIdAndMemberId(Long id, Long memberId) {
-        String sql = "SELECT * FROM reservation WHERE id = ? AND member_id = ?";
-
-        return !jdbcTemplate.queryForList(sql, id, memberId).isEmpty();
-    }
-
     public int deleteById(Long id) {
         String sql = "DELETE FROM reservation WHERE id = ?;";
 
