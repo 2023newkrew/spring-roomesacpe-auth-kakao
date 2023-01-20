@@ -33,7 +33,7 @@ public class AdminVerificationInterceptor implements HandlerInterceptor {
             throw new InvalidAuthorizationTokenException();
         }
 
-        Member member =  memberDao.findByUsername(jwtTokenProvider.getPrincipal(token))
+        Member member =  memberDao.findById(jwtTokenProvider.getMemberId(token))
                 .orElseThrow(NotExistMemberException::new);
 
         if (!member.hasAdminRole()) {
