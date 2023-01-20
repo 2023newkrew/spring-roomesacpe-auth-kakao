@@ -43,7 +43,8 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .header(AuthorizationTokenExtractor.AUTHORIZATION, AuthorizationTokenExtractor.BEARER_TYPE+" "+jwtTokenProvider.createToken("admin_member"))
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

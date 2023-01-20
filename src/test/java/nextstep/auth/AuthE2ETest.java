@@ -74,43 +74,4 @@ public class AuthE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
-
-    @DisplayName("테마 목록 조회 요청에 성공하면 200 코드와 테마 목록을 반환")
-    @Test
-    public void showThemes() {
-        createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마 삭제 요청에 성공하면 204 코드 반환")
-    @Test
-    void delete() {
-        Long id = createTheme();
-        RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
-    }
 }
