@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import nextstep.theme.ThemeRequest;
 import nextstep.theme.ThemeService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -23,6 +20,14 @@ public class AdminController {
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id))
+                .build();
+    }
+
+    @DeleteMapping("/themes/{id}")
+    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
+        themeService.delete(id);
+
+        return ResponseEntity.noContent()
                 .build();
     }
 }

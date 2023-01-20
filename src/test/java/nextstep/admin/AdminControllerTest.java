@@ -15,7 +15,8 @@ import org.springframework.http.MediaType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 //@ExtendWith(SpringExtension.class)
 //@WebMvcTest(AdminController.class)
@@ -53,21 +54,16 @@ class AdminControllerTest {
     }
 
     @Test
-    void adminTest() {
+    @DisplayName("테마 삭제 API 테스트")
+    void deleteThemeTest() {
         when(adminInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
 
         RestAssured.given()
-                .log()
-                .all()
                 .auth()
                 .oauth2(ADMIN_ACCESS_TOKEN)
                 .when()
-                .get("/admin")
+                .delete("/admin/themes/1")
                 .then()
-                .log()
-                .all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .asString();
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
