@@ -18,7 +18,8 @@ public class ReservationService {
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+    public ReservationService(
+            ReservationDao reservationDao, MemberDao memberDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
         this.reservationDao = reservationDao;
         this.memberDao = memberDao;
         this.themeDao = themeDao;
@@ -56,11 +57,11 @@ public class ReservationService {
 
     public void deleteById(Long memberId, Long id) {
         Reservation reservation = reservationDao.findById(id);
-        if (!memberId.equals(reservation.getMember().getId())) {
-            throw new RuntimeException();
-        }
         if (reservation == null) {
             throw new NullPointerException();
+        }
+        if (!memberId.equals(reservation.getMember().getId())) {
+            throw new RuntimeException();
         }
 
         reservationDao.deleteById(id);

@@ -50,7 +50,7 @@ public class JwtTokenProvider {
     }
 
     public String getValidToken(String bearerToken) {
-        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+        if (isNullOrNotBearer(bearerToken)) {
             throw new AuthenticationException();
         }
 
@@ -62,5 +62,9 @@ public class JwtTokenProvider {
 
         return accessToken;
 
+    }
+
+    private boolean isNullOrNotBearer(String bearerToken) {
+        return bearerToken == null || !bearerToken.startsWith("Bearer ");
     }
 }

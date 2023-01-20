@@ -1,4 +1,4 @@
 package nextstep.auth;
 
-public class AuthenticationException extends RuntimeException{
+public class AuthenticationException extends RuntimeException {
 }
