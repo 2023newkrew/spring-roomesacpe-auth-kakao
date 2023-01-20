@@ -18,7 +18,12 @@ public class MemberService {
     }
 
     public Long create(String username, String password, String name, String phone) {
-        Member requestedMember = new Member(username, password, name, phone);
+        Member requestedMember = Member.builder()
+                .username(username)
+                .password(password)
+                .name(name)
+                .phone(phone)
+                .build();
         requestedMember.encryptPassword();
 
         return memberRepository.save(MemberMapper.INSTANCE.domainToEntity(requestedMember));
