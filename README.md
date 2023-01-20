@@ -171,6 +171,6 @@ HTTP/1.1 204
   - [x] memberDao 수정
   - [x] memberRole enum 타입 추가
 - [] /admin/** 경로로 들어오는 요청에 인터셉터 적용
-  - [] Admin 검증을 위한 인터셉터 구현
-  - [] WebMvcConfiguration에 인터셉터 등록
-- [] 테마 테스트 수정 - 어드민 권한 테스트 포함
+  - [x] Admin 검증을 위한 인터셉터 구현
+  - [x] WebMvcConfiguration에 인터셉터 등록
+- [] 테마 테스트 수정 - 어드민 권한 테스트 포현
