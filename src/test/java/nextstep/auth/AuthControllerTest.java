@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.member.Member;
+import nextstep.member.MemberResponseDto;
 import nextstep.member.MemberService;
 import nextstep.support.exception.UnauthorizedException;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +37,10 @@ class AuthControllerTest {
     @DisplayName("로그인 API 테스트")
     void loginTest() {
         TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1");
+        Member member = new Member("username1", "password1", "name1", "010-1234-5678");
+        when(memberService.findByUsername(tokenRequestDto.getUsername())).thenReturn(MemberResponseDto.toDto(member));
 
-        when(authService.login(any(TokenRequestDto.class))).thenReturn("token");
+        when(authService.login(any(Member.class), any(TokenRequestDto.class))).thenReturn("token");
 
         RestAssured.given()
                 .log()
@@ -55,9 +59,12 @@ class AuthControllerTest {
     @DisplayName("유효하지 않은 토큰 이용시 로그인 실패 테스트")
     void loginWithInvalidTokenTest() {
         TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1");
+        Member member = new Member("username1", "password1", "name1", "010-1234-5678");
+
+        when(memberService.findByUsername(tokenRequestDto.getUsername())).thenReturn(MemberResponseDto.toDto(member));
 
         doThrow(UnauthorizedException.class).when(memberService)
-                .validateIdAndPassword(any(TokenRequestDto.class));
+                .validatePassword(any(Member.class), any(TokenRequestDto.class));
 
         RestAssured.given()
                 .log()
