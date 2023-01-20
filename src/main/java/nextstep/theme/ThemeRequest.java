@@ -1,27 +1,16 @@
 package nextstep.theme;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ThemeRequest {
-    private final String name;
-    private final String desc;
-    private final int price;
-
-    public ThemeRequest(String name, String desc, int price) {
-        this.name = name;
-        this.desc = desc;
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public int getPrice() {
-        return price;
-    }
+    private String name;
+    private String desc;
+    private int price;
 
     public Theme toEntity() {
         return new Theme(
