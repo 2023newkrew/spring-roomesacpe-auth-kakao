@@ -1,6 +1,7 @@
 package nextstep.admin;
 
 import io.restassured.RestAssured;
+import nextstep.reservation.ReservationService;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.schedule.ScheduleService;
 import nextstep.theme.ThemeRequest;
@@ -33,6 +34,8 @@ class AdminControllerTest {
     private ThemeService themeService;
     @MockBean
     private ScheduleService scheduleService;
+    @MockBean
+    private ReservationService reservationService;
 
     @BeforeEach
     void setUp() {
@@ -99,6 +102,20 @@ class AdminControllerTest {
                 .oauth2(ADMIN_ACCESS_TOKEN)
                 .when()
                 .delete("/admin/schedules/1")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("예약 삭제 API 테스트")
+    void deleteReservationTest() {
+        when(adminInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
+
+        RestAssured.given()
+                .auth()
+                .oauth2(ADMIN_ACCESS_TOKEN)
+                .when()
+                .delete("/admin/reservations/1")
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

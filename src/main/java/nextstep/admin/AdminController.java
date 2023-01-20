@@ -2,6 +2,7 @@ package nextstep.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nextstep.reservation.ReservationService;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.schedule.ScheduleService;
 import nextstep.theme.ThemeRequest;
@@ -18,6 +19,7 @@ import java.net.URI;
 public class AdminController {
     private final ThemeService themeService;
     private final ScheduleService scheduleService;
+    private final ReservationService reservationService;
 
     @PostMapping("/themes")
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
@@ -29,7 +31,6 @@ public class AdminController {
     @DeleteMapping("/themes/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
-
         return ResponseEntity.noContent()
                 .build();
     }
@@ -44,7 +45,13 @@ public class AdminController {
     @DeleteMapping("/schedules/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
+        return ResponseEntity.noContent()
+                .build();
+    }
 
+    @DeleteMapping("reservations/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
+        reservationService.deleteById(id);
         return ResponseEntity.noContent()
                 .build();
     }

@@ -1,12 +1,10 @@
 package nextstep.reservation;
 
-import lombok.RequiredArgsConstructor;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.DuplicateEntityException;
 import nextstep.support.exception.ForbiddenException;
 import nextstep.support.exception.NotExistEntityException;
-import nextstep.support.exception.UnauthorizedException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -61,6 +59,16 @@ public class ReservationService {
         if (!reservation.getName()
                 .equals(username)) {
             throw new ForbiddenException("자신의 예약이 아닙니다.");
+        }
+
+        reservationDao.deleteById(id);
+    }
+
+    public void deleteById(Long id) {
+        Reservation reservation = reservationDao.findById(id);
+
+        if (reservation == null) {
+            throw new NotExistEntityException("예약번호가 유효하지 않습니다.");
         }
 
         reservationDao.deleteById(id);
