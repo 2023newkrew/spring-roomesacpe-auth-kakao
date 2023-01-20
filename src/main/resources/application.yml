@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+admin:
+  username: admin-joel
+  password: admin-joel-pw
+  name: admin-joel
+  phone: 010-1234-5678
+jwt:
+  member-secret: learning-test-spring
+  member-validity: 3600000
+  admin-secret: admin-secret-is-admin
+  admin-validity: 600000

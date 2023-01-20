@@ -42,7 +42,10 @@ public class ThemeDao {
 
     public Theme findById(Long id) {
         String sql = "SELECT id, name, desc, price from theme where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+                .stream()
+                .findAny()
+                .orElse(null);
     }
 
     public List<Theme> findAll() {

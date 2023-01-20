@@ -2,7 +2,6 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,10 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
+        registerMember();
+    }
+
+    private static void registerMember() {
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
@@ -31,7 +34,7 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("멤버 토큰을 생성한다")
     @Test
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
@@ -47,45 +50,32 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("테마 목록을 조회한다")
+    @DisplayName("없는 멤버에 대해 토큰을 생성할 수 없다")
     @Test
-    public void showThemes() {
-        createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
+    public void cannotCreate() {
+        TokenRequest body = new TokenRequest("InvalidUsername", "InvalidPassword");
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .extract();
+    }
+
+    public static String createMemberToken() {
+        registerMember();
+
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
     }
 }
