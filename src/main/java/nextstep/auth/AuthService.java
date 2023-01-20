@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.excpetion.NotCorrectPasswordException;
+import nextstep.support.excpetion.NotCorrectUserNameOrPasswordException;
 import nextstep.support.excpetion.NotExistMemberException;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,9 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(NotExistMemberException::new);
+                .orElseThrow(NotCorrectUserNameOrPasswordException::new);
         if(member.checkWrongPassword(tokenRequest.getPassword())) {
-            throw new NotCorrectPasswordException();
+            throw new NotCorrectUserNameOrPasswordException();
         }
         String accessToken = jwtTokenProvider.createToken(member.getUsername(), member.getId());
         return new TokenResponse(accessToken);

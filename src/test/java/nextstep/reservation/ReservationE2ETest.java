@@ -187,7 +187,7 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("다른 사람의 예약을 삭제하면 401 코드 반환")
+    @DisplayName("다른 사람의 예약을 삭제하면 403 코드 반환")
     @Test
     void tryDeleteNotMyReservation() {
         createReservation();
@@ -199,7 +199,7 @@ class ReservationE2ETest {
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
-                        .statusCode(HttpStatus.UNAUTHORIZED.value());
+                        .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("잘못된 인증 토큰이 들어오면 401 코드 반환")

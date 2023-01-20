@@ -15,8 +15,8 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @ExceptionHandler({InvalidAuthorizationTokenException.class, NotCorrectPasswordException.class})
-    public ResponseEntity handleUnauthorizedException(Exception ex) {
+    @ExceptionHandler()
+    public ResponseEntity handleUnauthorizedException(InvalidAuthorizationTokenException ex) {
         ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -27,8 +27,8 @@ public class ExceptionAdvice {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @ExceptionHandler()
-    public ResponseEntity handleDuplicateException(DuplicateReservationException ex) {
+    @ExceptionHandler({NotCorrectUserNameOrPasswordException.class, DuplicateEntityException.class})
+    public ResponseEntity handleBadRequestException(Exception ex) {
         ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
