@@ -5,20 +5,19 @@ import nextstep.schedule.Schedule;
 public class Reservation {
     private Long id;
     private Schedule schedule;
-    private String name;
+    private Long memberId;
 
     public Reservation() {
     }
 
-    public Reservation(Schedule schedule, String name) {
-        this.schedule = schedule;
-        this.name = name;
+    public Reservation(Schedule schedule, Long memberId) {
+        this(null, schedule, memberId);
     }
 
-    public Reservation(Long id, Schedule schedule, String name) {
+    public Reservation(Long id, Schedule schedule, Long memberId) {
         this.id = id;
         this.schedule = schedule;
-        this.name = name;
+        this.memberId = memberId;
     }
 
     public Long getId() {
@@ -29,11 +28,7 @@ public class Reservation {
         return schedule;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public boolean checkWrongOwner(String name) {
-        return !this.name.equals(name);
+    public Long getMemberId() {
+        return memberId;
     }
 }

@@ -26,14 +26,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String token = AuthorizationExtractor.extract(request);
-        if (token == null) {
+        if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
-        jwtTokenProvider.validateToken(token);
-        String payload = jwtTokenProvider.getPrincipal(token);
-        if (payload == null) {
+        String memberId = jwtTokenProvider.getMemberId(token);
+        if (memberId == null) {
             throw new AuthorizationException();
         }
-        return Long.parseLong(payload);
+        return Long.parseLong(memberId);
     }
 }

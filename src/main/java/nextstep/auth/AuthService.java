@@ -16,10 +16,13 @@ public class AuthService {
     }
 
     public TokenResponse getToken(TokenRequest request) {
-        Member member = memberDao.findByUsername(request.getUsername());
-        if (member == null || member.checkWrongPassword(request.getPassword())) {
+        Member member = memberDao.findByUsernameAndPassword(request.getUsername(), request.getPassword());
+        if (member == null) {
             throw new AuthorizationException();
         }
-        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
+        return new TokenResponse(jwtTokenProvider.createToken(
+                member.getId().toString(),
+                member.getRole().value())
+        );
     }
 }

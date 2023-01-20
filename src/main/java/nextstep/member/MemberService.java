@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import nextstep.support.DuplicateUsernameOrPhoneException;
 import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,11 @@ public class MemberService {
     }
 
     public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
+        try {
+            return memberDao.save(memberRequest.toEntity());
+        } catch (Exception e) {
+            throw new DuplicateUsernameOrPhoneException();
+        }
     }
 
     public Member findById(Long id) {

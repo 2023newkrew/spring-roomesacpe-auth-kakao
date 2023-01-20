@@ -6,23 +6,19 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private Role role;
 
-    public Member() {
-    }
-
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member(Long id, String username, String password, String name, String phone, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
-    public Member(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
+    public static Member asUserRole(String username, String password, String name, String phone) {
+        return new Member(null, username, password, name, phone, Role.USER);
     }
 
     public Long getId() {
@@ -45,7 +41,7 @@ public class Member {
         return phone;
     }
 
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
+    public Role getRole() {
+        return role;
     }
 }

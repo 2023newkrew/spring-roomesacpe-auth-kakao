@@ -2,7 +2,7 @@ CREATE TABLE reservation
 (
     id          bigint      not null auto_increment,
     schedule_id bigint      not null,
-    name        varchar(20) not null,
+    member_id   bigint      not null,
     primary key (id)
 );
 
@@ -27,9 +27,10 @@ CREATE TABLE schedule
 CREATE TABLE member
 (
     id       bigint      not null auto_increment,
-    username varchar(20) not null,
-    password varchar(20) not null,
+    username varchar(20) not null unique,
+    password varbinary(512) not null,
     name     varchar(20) not null,
-    phone    varchar(20) not null,
+    phone    varchar(20) not null unique,
+    role     enum('ADMIN', 'USER') not null,
     primary key (id)
 );
