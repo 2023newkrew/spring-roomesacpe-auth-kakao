@@ -32,7 +32,7 @@ public class ReservationService {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
 
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("스케줄을 찾을 수 없음");
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
