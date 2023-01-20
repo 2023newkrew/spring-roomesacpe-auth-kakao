@@ -1,6 +1,7 @@
 package nextstep.admin;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.infrastructure.AuthorizationExtractor;
 import nextstep.support.exception.UnauthorizedException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @AllArgsConstructor
+@Slf4j
 public class AdminInterceptor implements HandlerInterceptor {
     private JwtTokenProvider jwtTokenProvider;
 
@@ -19,6 +21,6 @@ public class AdminInterceptor implements HandlerInterceptor {
         if (Boolean.FALSE.equals(jwtTokenProvider.isAdmin(accessToken))) {
             throw new UnauthorizedException("관리자 권한이 없습니다.");
         }
-        return preHandle(request, response, handler);
+        return true;
     }
 }
