@@ -2,6 +2,8 @@ package nextstep.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nextstep.schedule.ScheduleRequest;
+import nextstep.schedule.ScheduleService;
 import nextstep.theme.ThemeRequest;
 import nextstep.theme.ThemeService;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import java.net.URI;
 @RequestMapping("/admin")
 public class AdminController {
     private final ThemeService themeService;
+    private final ScheduleService scheduleService;
 
     @PostMapping("/themes")
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
@@ -28,6 +31,13 @@ public class AdminController {
         themeService.delete(id);
 
         return ResponseEntity.noContent()
+                .build();
+    }
+
+    @PostMapping("/schedules")
+    public ResponseEntity<URI> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+        Long id = scheduleService.create(scheduleRequest);
+        return ResponseEntity.created(URI.create("/schedules/" + id))
                 .build();
     }
 }

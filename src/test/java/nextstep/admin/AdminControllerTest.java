@@ -1,6 +1,8 @@
 package nextstep.admin;
 
 import io.restassured.RestAssured;
+import nextstep.schedule.ScheduleRequest;
+import nextstep.schedule.ScheduleService;
 import nextstep.theme.ThemeRequest;
 import nextstep.theme.ThemeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,8 @@ class AdminControllerTest {
     private AdminInterceptor adminInterceptor;
     @MockBean
     private ThemeService themeService;
+    @MockBean
+    private ScheduleService scheduleService;
 
     @BeforeEach
     void setUp() {
@@ -39,8 +43,8 @@ class AdminControllerTest {
     @DisplayName("테마 생성 API 테스트")
     void createThemeTest() {
         ThemeRequest themeRequest = new ThemeRequest("theme", "This is theme", 10000);
-        when(themeService.create(any(ThemeRequest.class))).thenReturn(1L);
         when(adminInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
+        when(themeService.create(any(ThemeRequest.class))).thenReturn(1L);
         RestAssured.given()
                 .auth()
                 .oauth2(ADMIN_ACCESS_TOKEN)
@@ -65,5 +69,23 @@ class AdminControllerTest {
                 .delete("/admin/themes/1")
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("스케줄 생성 API 테스트")
+    void createScheduleTest() {
+        ScheduleRequest scheduleRequest = new ScheduleRequest(1L, "2023-1-20", "(7:48");
+        when(adminInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any(Object.class))).thenReturn(true);
+        when(scheduleService.create(any(ScheduleRequest.class))).thenReturn(1L);
+        RestAssured.given()
+                .auth()
+                .oauth2(ADMIN_ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when()
+                .post("/admin/schedules")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/schedules/1");
     }
 }
