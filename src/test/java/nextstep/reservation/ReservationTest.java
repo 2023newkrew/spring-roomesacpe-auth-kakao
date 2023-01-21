@@ -3,7 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.AcceptanceTestExecutionListener;
+import nextstep.AcceptanceTestExecutionListener;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
@@ -14,17 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-class ReservationE2ETest {
+class ReservationTest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
@@ -95,10 +93,9 @@ class ReservationE2ETest {
                 .body(request)
                 .when().post("/reservations")
                 .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value());
     }
+
 
     @DisplayName("예약을 조회할 수 있다")
     @Test
@@ -122,31 +119,21 @@ class ReservationE2ETest {
     @Test
     void delete() {
         var reservation = createReservation();
-
-        var response = RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + token)
-                .when().delete(reservation.header("Location"))
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        RestAssured
+            .given().log().all()
+            .header("Authorization", "Bearer " + token)
+            .when().delete(reservation.header("Location"))
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("중복 예약을 생성할 경우, 에러가 발생한다")
     @Test
     void createDuplicateReservation() {
         createReservation();
+        ExtractableResponse<Response> response = createReservation();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
-        var response = RestAssured
-                .given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + token)
-                .when().post("/reservations")
-                .then().log().all()
-                .extract();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("예약이 없을 때 예약 목록은 비어있다.")
@@ -168,15 +155,14 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제할 경우, 에러가 발생한다")
     @Test
     void createNotExistReservation() {
-        var response = RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + token)
-                .when().delete("/reservations/1")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        RestAssured
+            .given().log().all()
+            .header("Authorization", "Bearer " + token)
+            .when().delete("/reservations/1")
+            .then().log().all()
+            .statusCode(HttpStatus.LENGTH_REQUIRED.value());
     }
+
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured

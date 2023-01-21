@@ -27,7 +27,6 @@ public class MemberDao {
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, member.getUsername());

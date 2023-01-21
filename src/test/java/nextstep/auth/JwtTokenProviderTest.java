@@ -1,20 +1,21 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.AcceptanceTestExecutionListener;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,48 +23,60 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 class JwtTokenProviderTest {
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
     JwtTokenProvider jwtTokenProvider;
     @BeforeEach
     void setUp(){
         jwtTokenProvider = new JwtTokenProvider();
     }
 
-    @Test
-    void createToken() {
-        String token = jwtTokenProvider.createToken("1");
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
-    }
-
+    @DisplayName("토큰을 생성할 수 있다")
     @Test
-    void getPrincipal() {
-        String token = jwtTokenProvider.createToken("1");
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+    public void createTokenTest() {
+        saveMember();
+
+        ExtractableResponse<Response> response = generateToken();
+        assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
     @Test
     @DisplayName("토큰을 이용하여 유저 정보를 가져올 수 있다.")
-    @Transactional
     void findByUsernameTest() {
-        Member member = new Member( "username", "password", "name", "010");
-        MemberDao memberDao = new MemberDao(new JdbcTemplate(dataSource()));
-        memberDao.save(member);
+        saveMember();
 
-        String token = jwtTokenProvider.createToken(member.getUsername());
+        ExtractableResponse<Response> response = generateToken();
+
+        String accessToken = response.body().jsonPath().getString("accessToken");
+        String username = jwtTokenProvider.getPrincipal(accessToken);
+        Assertions.assertThat(username).isEqualTo(USERNAME);
+
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", "Bearer " + accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
 
-    private DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:~/test;DB_CLOSE_DELAY=-1;AUTO_SERVER=true");
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
-        return dataSource;
+    private void saveMember(){
+        Member member = new Member(USERNAME, PASSWORD, "name", "010");
+        MemberDao memberDao = new MemberDao(jdbcTemplate);
+        memberDao.save(member);
+    }
+
+    private ExtractableResponse<Response> generateToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
     }
 }

@@ -1,8 +1,9 @@
-TRUNCATE TABLE reservation;
-TRUNCATE TABLE schedule;
-TRUNCATE TABLE theme;
-TRUNCATE TABLE member;
-CREATE TABLE IF NOT EXISTS reservation
+DROP TABLE IF EXISTS RESERVATION;
+DROP TABLE IF EXISTS THEME;
+DROP TABLE IF EXISTS SCHEDULE;
+DROP TABLE IF EXISTS MEMBER;
+
+CREATE TABLE reservation
 (
     id          bigint      not null auto_increment,
     schedule_id bigint      not null,
@@ -10,7 +11,7 @@ CREATE TABLE IF NOT EXISTS reservation
     primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS theme
+CREATE TABLE theme
 (
     id    bigint       not null auto_increment,
     name  varchar(20)  not null,
@@ -19,7 +20,7 @@ CREATE TABLE IF NOT EXISTS theme
     primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS schedule
+CREATE TABLE schedule
 (
     id       bigint not null auto_increment,
     theme_id bigint not null,
@@ -28,7 +29,7 @@ CREATE TABLE IF NOT EXISTS schedule
     primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS member
+CREATE TABLE member
 (
     id       bigint      not null auto_increment,
     username varchar(20) not null,

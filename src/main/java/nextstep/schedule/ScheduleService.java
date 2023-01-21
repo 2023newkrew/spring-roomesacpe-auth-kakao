@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import nextstep.reservation.Reservation;
 import nextstep.reservation.ReservationDao;
 import nextstep.support.NotExistEntityException;
 import nextstep.theme.Theme;
@@ -7,6 +8,7 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ScheduleService {
@@ -33,7 +35,8 @@ public class ScheduleService {
     }
 
     public void deleteById(Long id) {
-        if (reservationDao.findByScheduleId(id) != null) {
+        List<Reservation> reservationList = reservationDao.findByScheduleId(id);
+        if (Objects.requireNonNull(reservationList).size() != 0) {
             throw new NotExistEntityException("예약이 존재하여 삭제할 수 없음");
         }
         scheduleDao.deleteById(id);
