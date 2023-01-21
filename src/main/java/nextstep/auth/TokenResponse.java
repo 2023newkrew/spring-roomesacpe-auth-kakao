@@ -9,7 +9,6 @@ public class TokenResponse {
     private TokenResponse() {
     }
 
-
     public String getAccessToken() {
         return accessToken;
     }
