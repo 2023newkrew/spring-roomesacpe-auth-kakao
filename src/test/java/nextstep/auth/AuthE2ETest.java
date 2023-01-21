@@ -67,7 +67,6 @@ public class AuthE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(token)
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
