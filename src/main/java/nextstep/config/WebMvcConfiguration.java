@@ -13,11 +13,14 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final LoginArgumentResolver loginArgumentResolver;
     private final LoginInterceptor loginInterceptor;
+    private final AdminInterceptor adminInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
                 .excludePathPatterns("/login/**", "/members", "/h2-console/**");
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin/**");
     }
 
     @Override
