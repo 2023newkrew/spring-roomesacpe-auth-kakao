@@ -35,6 +35,8 @@ public class ScheduleE2ETest {
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
+        TokenRequest adminLoginBody = new TokenRequest("admin1", "admin1");
+
 
         token = RestAssured
                 .given().log().all()
@@ -45,12 +47,21 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class).getAccessToken();
 
+        String adminToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminLoginBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .auth().oauth2(token)
-                .when().post("/themes")
+                .auth().oauth2(adminToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
