@@ -31,6 +31,7 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    private static final String ROLE_USER = "ROLE_USER";
 
     private ReservationRequest request;
     private Long themeId;
@@ -199,7 +200,7 @@ class ReservationE2ETest {
     void deleteNotOwner() {
         var reservation = createReservation();
 
-        Member anotherMember = new Member("notOwnerUsername", "notOwnerPassword", "notOwnerName", "010-1234-5678");
+        Member anotherMember = new Member("notOwnerUsername", "notOwnerPassword", "notOwnerName", "010-1234-5678", ROLE_USER);
         memberDao.save(anotherMember);
         TokenRequest loginBody = new TokenRequest(anotherMember.getUsername(), anotherMember.getPassword());
 

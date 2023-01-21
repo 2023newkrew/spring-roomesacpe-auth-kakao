@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScheduleE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    private static final String ROLE_USER = "ROLE_USER";
 
     private Long themeId;
     @Autowired
@@ -30,7 +31,7 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+        memberDao.save(new Member("username", "password", "name", "010-1234-5678", ROLE_USER));
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
