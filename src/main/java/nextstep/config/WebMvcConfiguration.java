@@ -21,6 +21,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/login/**", "/members", "/h2-console/**");
         registry.addInterceptor(adminInterceptor)
                 .addPathPatterns("/admin/**");
+
     }
 
     @Override

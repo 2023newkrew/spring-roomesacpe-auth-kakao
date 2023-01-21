@@ -52,6 +52,7 @@ public class MemberDao {
 
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
+
         return jdbcTemplate.query(sql, rowMapper, username)
                 .stream()
                 .findFirst()
