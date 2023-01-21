@@ -8,13 +8,6 @@ import java.util.List;
 
 public class AcceptanceTestExecutionListener extends AbstractTestExecutionListener {
     @Override
-    public void beforeTestClass(TestContext testContext) {
-        final JdbcTemplate jdbcTemplate = getJdbcTemplate(testContext);
-        final List<String> truncateQueries = getTruncateQueries(jdbcTemplate);
-        truncateTables(jdbcTemplate, truncateQueries);
-    }
-
-    @Override
     public void afterTestMethod(final TestContext testContext) {
         final JdbcTemplate jdbcTemplate = getJdbcTemplate(testContext);
         final List<String> truncateQueries = getTruncateQueries(jdbcTemplate);
