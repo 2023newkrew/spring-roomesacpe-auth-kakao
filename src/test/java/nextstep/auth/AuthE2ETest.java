@@ -3,7 +3,6 @@ package nextstep.auth;
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
 import nextstep.member.MemberResponse;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,15 +47,6 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class);
 
-        String accessToken = tokenResponse.getAccessToken();
-        MemberResponse memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(MemberResponse.class);
         assertThat(tokenResponse).isNotNull();
     }
 
@@ -85,47 +75,5 @@ public class AuthE2ETest {
 
         assertThat(memberResponse.getUsername()).isEqualTo(USERNAME);
         assertThat(memberResponse.getPassword()).isEqualTo(PASSWORD);
-    }
-
-    @DisplayName("테마 목록을 조회한다")
-    @Test
-    public void showThemes() {
-        createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
     }
 }

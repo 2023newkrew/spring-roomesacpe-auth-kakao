@@ -40,54 +40,22 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        // 테마 생성
+        String themeLocation = requestCreateTheme();
+        themeId = extractId(themeLocation);
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        // 스케줄 생성
+        String scheduleLocation = requestCreateSchedule();
+        scheduleId = extractId(scheduleLocation);
 
-        MemberRequest memberRequestBody = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequestBody)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-
-        TokenResponse tokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class);
-
+        // 멤버 생성
+        requestCreateMember();
+        // 해당 멤버 정보로 토큰 생성
+        TokenResponse tokenResponse = requestCreateToken();
+        // 토큰 추출 후 전역변수로 저장
         accessToken = tokenResponse.getAccessToken();
 
+        // 테스트에서 사용할 ReservationRequest 객체 초기화
         request = new ReservationRequest(
                 scheduleId,
                 USERNAME
@@ -260,5 +228,62 @@ class ReservationE2ETest {
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private static TokenResponse requestCreateToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+        return tokenResponse;
+    }
+
+    private static void requestCreateMember() {
+        MemberRequest memberRequestBody = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequestBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+    }
+
+    private static long extractId(String location) {
+        return Long.parseLong(location.split("/")[2]);
+    }
+
+    private String requestCreateSchedule() {
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        String scheduleLocation = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        return scheduleLocation;
+    }
+
+    private static String requestCreateTheme() {
+        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        String themeLocation = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(themeRequest)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        return themeLocation;
     }
 }
