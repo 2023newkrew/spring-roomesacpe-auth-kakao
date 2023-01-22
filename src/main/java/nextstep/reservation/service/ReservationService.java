@@ -7,7 +7,7 @@ import nextstep.reservation.dao.ReservationDao;
 import nextstep.reservation.model.ReservationRequest;
 import nextstep.schedule.model.Schedule;
 import nextstep.schedule.dao.ScheduleDao;
-import nextstep.support.AuthorizationException;
+import nextstep.auth.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
 import nextstep.theme.model.Theme;
 import nextstep.theme.dao.ThemeDao;
