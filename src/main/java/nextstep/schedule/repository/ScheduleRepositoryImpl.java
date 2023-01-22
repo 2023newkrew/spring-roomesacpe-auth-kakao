@@ -1,11 +1,11 @@
 package nextstep.schedule.repository;
 
 import nextstep.schedule.dao.ScheduleDao;
-import nextstep.schedule.entity.ScheduleEntity;
+import nextstep.schedule.domain.Schedule;
+import nextstep.schedule.mapper.ScheduleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,23 +20,21 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public Long save(ScheduleEntity scheduleEntity) {
+    public Long save(Schedule schedule) {
 
-        return scheduleDao.save(scheduleEntity);
+        return scheduleDao.save(ScheduleMapper.INSTANCE.domainToEntity(schedule));
     }
 
     @Override
-    public Optional<ScheduleEntity> findById(Long id) {
+    public Optional<Schedule> findById(Long id) {
 
-        return Optional.ofNullable(scheduleDao.findById(id));
+        return Optional.ofNullable(ScheduleMapper.INSTANCE.entityToDomain(scheduleDao.findById(id)));
     }
 
     @Override
-    public List<ScheduleEntity> findByThemeIdAndDate(Long themeId, String date) {
+    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
 
-        return Optional.ofNullable(scheduleDao.findByThemeIdAndDate(themeId, date))
-                .orElse(new ArrayList<>())
-                ;
+        return ScheduleMapper.INSTANCE.entityListToDomainList(scheduleDao.findByThemeIdAndDate(themeId, date));
     }
 
     @Override

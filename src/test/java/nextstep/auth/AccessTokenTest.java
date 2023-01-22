@@ -3,9 +3,13 @@ package nextstep.auth;
 import nextstep.auth.domain.AccessToken;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AccessTokenTest {
 
     private static final String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjc0MzkwODIyLCJleHAiOjE2NzQzOTQ0MjJ9.etlqY9QcpHiIC2fRF7I1NiTaD_XPb44oXinUtQTgI8c";

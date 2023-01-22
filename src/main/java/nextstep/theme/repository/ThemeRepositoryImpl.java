@@ -1,11 +1,11 @@
 package nextstep.theme.repository;
 
 import nextstep.theme.dao.ThemeDao;
-import nextstep.theme.entity.ThemeEntity;
+import nextstep.theme.domain.Theme;
+import nextstep.theme.mapper.ThemeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,23 +20,21 @@ public class ThemeRepositoryImpl implements ThemeRepository {
     }
 
     @Override
-    public Long save(ThemeEntity themeEntity) {
+    public Long save(Theme theme) {
 
-        return themeDao.save(themeEntity);
+        return themeDao.save(ThemeMapper.INSTANCE.domainToEntity(theme));
     }
 
     @Override
-    public Optional<ThemeEntity> findById(Long id) {
+    public Optional<Theme> findById(Long id) {
 
-        return Optional.ofNullable(themeDao.findById(id));
+        return Optional.ofNullable(ThemeMapper.INSTANCE.entityToDomain(themeDao.findById(id)));
     }
 
     @Override
-    public List<ThemeEntity> findAll() {
+    public List<Theme> findAll() {
 
-        return Optional.ofNullable(themeDao.findAll())
-                .orElse(new ArrayList<>())
-                ;
+        return ThemeMapper.INSTANCE.entityListToDomainList(themeDao.findAll());
     }
 
     @Override

@@ -12,11 +12,7 @@ import java.time.LocalTime;
 public class ScheduleEntity {
 
     private Long id;
-    private ThemeEntity themeEntity;
+    private ThemeEntity theme;
     private LocalDate date;
     private LocalTime time;
-
-    public static ScheduleEntity of(ThemeEntity themeEntity, LocalDate date, LocalTime time) {
-        return new ScheduleEntity(null, themeEntity, date, time);
-    }
 }

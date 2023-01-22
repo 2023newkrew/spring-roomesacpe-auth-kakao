@@ -9,3 +9,6 @@ spring:
   sql:
     init:
       mode: always
+
+jwt:
+  signature-key: lXH810veBaPOZAh5WN4cuo9BFRolED9ELuOuUa10lQCBcn0ckL

@@ -43,7 +43,7 @@ public class ScheduleDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, scheduleEntity.getThemeEntity().getId());
+            ps.setLong(1, scheduleEntity.getTheme().getId());
             ps.setDate(2, Date.valueOf(scheduleEntity.getDate()));
             ps.setTime(3, Time.valueOf(scheduleEntity.getTime()));
             return ps;

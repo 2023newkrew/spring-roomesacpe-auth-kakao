@@ -3,6 +3,10 @@ package nextstep.schedule.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -10,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class ScheduleRequest {
 
     private Long themeId;
-    private String date;
-    private String time;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
+    @DateTimeFormat(pattern = "kk:mm:ss")
+    private LocalTime time;
 }

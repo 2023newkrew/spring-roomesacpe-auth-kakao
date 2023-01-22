@@ -1,17 +1,17 @@
 package nextstep.schedule.repository;
 
-import nextstep.schedule.entity.ScheduleEntity;
+import nextstep.schedule.domain.Schedule;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ScheduleRepository {
 
-    Long save(ScheduleEntity scheduleEntity);
+    Long save(Schedule schedule);
 
-    Optional<ScheduleEntity> findById(Long id);
+    Optional<Schedule> findById(Long id);
 
-    List<ScheduleEntity> findByThemeIdAndDate(Long themeId, String date);
+    List<Schedule> findByThemeIdAndDate(Long themeId, String date);
 
     int deleteById(Long id);
 }

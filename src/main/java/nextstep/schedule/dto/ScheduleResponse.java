@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.theme.dto.ThemeResponse;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +16,8 @@ public class ScheduleResponse {
 
     private Long id;
     private ThemeResponse theme;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+    @DateTimeFormat(pattern = "kk:mm:ss")
     private LocalTime time;
 }

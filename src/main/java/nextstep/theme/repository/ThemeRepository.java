@@ -1,17 +1,17 @@
 package nextstep.theme.repository;
 
-import nextstep.theme.entity.ThemeEntity;
+import nextstep.theme.domain.Theme;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface ThemeRepository {
 
-    Long save(ThemeEntity themeEntity);
+    Long save(Theme themeEntity);
 
-    Optional<ThemeEntity> findById(Long id);
+    Optional<Theme> findById(Long id);
 
-    List<ThemeEntity> findAll();
+    List<Theme> findAll();
 
     int deleteById(Long id);
 }

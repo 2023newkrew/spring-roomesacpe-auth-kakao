@@ -3,8 +3,8 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.dto.AuthRequest;
 import nextstep.auth.dto.AccessTokenResponse;
+import nextstep.auth.dto.AuthRequest;
 import nextstep.member.dto.MemberRequest;
 import nextstep.reservation.dto.ReservationRequest;
 import nextstep.reservation.dto.ReservationResponse;
@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +51,7 @@ class ReservationE2ETest {
         String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, LocalDate.parse(DATE), LocalTime.parse(TIME));
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -132,6 +134,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
         assertThat(reservations.size()).isEqualTo(1);
     }
@@ -180,6 +183,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<ReservationResponse> reservations = response.jsonPath().getList(".", ReservationResponse.class);
         assertThat(reservations.size()).isEqualTo(0);
     }

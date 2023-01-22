@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -20,7 +23,7 @@ public class ScheduleE2ETest {
     private Long themeId;
 
     public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleRequest body = new ScheduleRequest(1L, LocalDate.parse("2022-08-11"), LocalTime.parse("13:00"));
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +53,7 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 생성한다")
     @Test
     public void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        ScheduleRequest body = new ScheduleRequest(themeId, LocalDate.parse("2022-08-11"), LocalTime.parse("13:00"));
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

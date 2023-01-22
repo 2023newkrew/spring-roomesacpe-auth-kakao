@@ -1,12 +1,9 @@
 package nextstep.schedule.service;
 
-import nextstep.schedule.datamapper.ScheduleMapper;
-import nextstep.schedule.dto.ScheduleRequest;
-import nextstep.schedule.dto.ScheduleResponse;
-import nextstep.schedule.entity.ScheduleEntity;
+import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.repository.ScheduleRepository;
 import nextstep.support.NotExistEntityException;
-import nextstep.theme.entity.ThemeEntity;
+import nextstep.theme.domain.Theme;
 import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -28,20 +24,16 @@ public class ScheduleService {
         this.themeRepository = themeRepository;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
-        ThemeEntity targetTheme = themeRepository.findById(scheduleRequest.getThemeId())
+    public Long create(Long themeId, LocalDate date, LocalTime time) {
+        Theme targetTheme = themeRepository.findById(themeId)
                 .orElseThrow(NotExistEntityException::new);
 
-        return scheduleRepository.save(ScheduleEntity.of(targetTheme, LocalDate.parse(scheduleRequest.getDate()), LocalTime.parse(scheduleRequest.getTime())));
+        return scheduleRepository.save(Schedule.of(targetTheme, date, time));
     }
 
-    public List<ScheduleResponse> findByThemeIdAndDate(Long themeId, String date) {
-        List<ScheduleEntity> targetSchedules = scheduleRepository.findByThemeIdAndDate(themeId, date);
+    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
 
-        return targetSchedules.stream()
-                .map(ScheduleMapper.INSTANCE::entityToDtoResponse)
-                .collect(Collectors.toList())
-                ;
+        return scheduleRepository.findByThemeIdAndDate(themeId, date);
     }
 
     public void deleteById(Long id) {

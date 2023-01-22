@@ -1,10 +1,8 @@
 package nextstep.reservation.service;
 
-import nextstep.reservation.datamapper.ReservationMapper;
-import nextstep.reservation.dto.ReservationResponse;
-import nextstep.reservation.entity.ReservationEntity;
+import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.repository.ReservationRepository;
-import nextstep.schedule.entity.ScheduleEntity;
+import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.repository.ScheduleRepository;
 import nextstep.support.DuplicateEntityException;
 import nextstep.support.NotExistEntityException;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -30,26 +27,24 @@ public class ReservationService {
     }
 
     public Long create(Long scheduleId, Long memberId) {
-        ScheduleEntity targetSchedule = scheduleRepository.findById(scheduleId)
+        Schedule targetSchedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(NotExistEntityException::new);
 
-        List<ReservationEntity> reservations = reservationRepository.findByScheduleId(scheduleId);
+        List<Reservation> reservations = reservationRepository.findByScheduleId(scheduleId);
         if (!reservations.isEmpty()) {
             throw new DuplicateEntityException();
         }
 
-        return reservationRepository.save(ReservationEntity.of(targetSchedule, memberId));
+        Reservation nextReservation = Reservation.of(targetSchedule, memberId);
+
+        return reservationRepository.save(nextReservation);
     }
 
-    public List<ReservationResponse> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         themeRepository.findById(themeId)
                 .orElseThrow(NotExistEntityException::new);
 
-        return reservationRepository.findAllByThemeIdAndDate(themeId, date)
-                .stream()
-                .map(ReservationMapper.INSTANCE::entityToDto)
-                .collect(Collectors.toList())
-                ;
+        return reservationRepository.findAllByThemeIdAndDate(themeId, date);
     }
 
     public void delete(Long id) {

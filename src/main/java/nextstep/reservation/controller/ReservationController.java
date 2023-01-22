@@ -1,8 +1,10 @@
 package nextstep.reservation.controller;
 
 import nextstep.global.config.annotation.ExtractPrincipal;
+import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.dto.ReservationRequest;
 import nextstep.reservation.dto.ReservationResponse;
+import nextstep.reservation.mapper.ReservationMapper;
 import nextstep.reservation.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +33,9 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<ReservationResponse>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<ReservationResponse> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
+        List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
 
-        return ResponseEntity.ok().body(reservations);
+        return ResponseEntity.ok().body(ReservationMapper.INSTANCE.domainListToDtoList(reservations));
     }
 
     @DeleteMapping("/{id}")

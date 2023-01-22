@@ -1,11 +1,11 @@
 package nextstep.reservation.repository;
 
 import nextstep.reservation.dao.ReservationDao;
-import nextstep.reservation.entity.ReservationEntity;
+import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.mapper.ReservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,31 +20,27 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public Long save(ReservationEntity reservationEntity) {
+    public Long save(Reservation reservation) {
 
-        return reservationDao.save(reservationEntity);
+        return reservationDao.save(ReservationMapper.INSTANCE.domainToEntity(reservation));
     }
 
     @Override
-    public List<ReservationEntity> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
 
-        return Optional.ofNullable(reservationDao.findAllByThemeIdAndDate(themeId, date))
-                .orElse(new ArrayList<>())
-                ;
+        return ReservationMapper.INSTANCE.entityListToDomainList(reservationDao.findAllByThemeIdAndDate(themeId, date));
     }
 
     @Override
-    public Optional<ReservationEntity> findById(Long id) {
+    public Optional<Reservation> findById(Long id) {
 
-        return Optional.ofNullable(reservationDao.findById(id));
+        return Optional.ofNullable(ReservationMapper.INSTANCE.entityToDomain(reservationDao.findById(id)));
     }
 
     @Override
-    public List<ReservationEntity> findByScheduleId(Long scheduleId) {
+    public List<Reservation> findByScheduleId(Long scheduleId) {
 
-        return Optional.ofNullable(reservationDao.findByScheduleId(scheduleId))
-                .orElse(new ArrayList<>())
-                ;
+        return ReservationMapper.INSTANCE.entityListToDomainList(reservationDao.findByScheduleId(scheduleId));
     }
 
     @Override

@@ -1,15 +1,12 @@
 package nextstep.theme.service;
 
 import nextstep.support.NotExistEntityException;
-import nextstep.theme.datamapper.ThemeMapper;
-import nextstep.theme.dto.ThemeResponse;
-import nextstep.theme.entity.ThemeEntity;
+import nextstep.theme.domain.Theme;
 import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ThemeService {
@@ -23,15 +20,12 @@ public class ThemeService {
 
     public Long create(String name, String desc, int price) {
 
-        return themeRepository.save(ThemeEntity.of(name, desc, price));
+        return themeRepository.save(Theme.of(name, desc, price));
     }
 
-    public List<ThemeResponse> findAll() {
+    public List<Theme> findAll() {
 
-        return themeRepository.findAll().stream()
-                .map(ThemeMapper.INSTANCE::entityToDto)
-                .collect(Collectors.toList())
-                ;
+        return themeRepository.findAll();
     }
 
     public void deleteById(Long id) {

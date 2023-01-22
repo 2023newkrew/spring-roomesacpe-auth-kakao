@@ -35,12 +35,6 @@ public class AccessToken extends Jwt {
         return new AccessToken(createToken(sub));
     }
 
-    @Override
-    public boolean isValid() {
-
-        return !(expired | unsupported | malformed);
-    }
-
     private static String createToken(String sub) {
         Claims claims = Jwts.claims().setSubject(sub);
         Date now = new Date();
@@ -50,13 +44,20 @@ public class AccessToken extends Jwt {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+                .signWith(KEY, SignatureAlgorithm.HS256)
+                .compact()
+                ;
+    }
+
+    @Override
+    public boolean isValid() {
+
+        return !(expired | unsupported | malformed);
     }
 
     private void validateToken() {
         try {
-            parserBuilder
+            PARSER_BUILDER
                     .parseClaimsJws(this.accessToken)
             ;
         } catch (ExpiredJwtException e) {
@@ -70,7 +71,7 @@ public class AccessToken extends Jwt {
 
     private String extractSub() {
 
-        return parserBuilder
+        return PARSER_BUILDER
                 .parseClaimsJws(this.accessToken)
                 .getBody()
                 .getSubject();
