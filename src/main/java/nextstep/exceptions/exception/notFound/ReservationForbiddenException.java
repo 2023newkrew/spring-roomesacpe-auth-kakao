@@ -1,5 +1,6 @@
-package nextstep.exceptions.exception;
+package nextstep.exceptions.exception.notFound;
 
+import nextstep.exceptions.exception.RestAPIException;
 import org.springframework.http.HttpStatus;
 
 public class ReservationForbiddenException extends RestAPIException {
