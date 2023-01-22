@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.member.model.Member;
 import nextstep.member.service.MemberService;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -18,7 +19,6 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-    public static final String AUTHORIZATION = "Authorization";
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -29,14 +29,9 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = getCredential(request);
-        String principal = jwtTokenProvider.getPrincipal(token);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String subject = jwtTokenProvider.getSubject(token);
 
-        return memberService.findByUserName(principal);
-    }
-
-    public String getCredential(HttpServletRequest request) {
-        String token = request.getHeader(AUTHORIZATION);
-        return jwtTokenProvider.getCredential(token);
+        return memberService.findByUserName(subject);
     }
 }

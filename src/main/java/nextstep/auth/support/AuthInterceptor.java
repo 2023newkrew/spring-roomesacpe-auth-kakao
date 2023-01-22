@@ -13,8 +13,6 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor extends HandlerInterceptorAdapter {
-    public static final String AUTHORIZATION = "Authorization";
-
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -23,17 +21,17 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-        if(!isValidAuthorizationHeader(request)){
+        if(!hasValidToken(request)){
             throw new AuthorizationException();
         }
 
         return super.preHandle(request, response, handler);
     }
 
-    private boolean isValidAuthorizationHeader(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
+    private boolean hasValidToken(HttpServletRequest request) {
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        return jwtTokenProvider.validateAuthorizationHeader(authorizationHeader);
+        return jwtTokenProvider.isValidToken(token);
     }
 
     private static boolean isLoginRequiredMethod(Object handler) {

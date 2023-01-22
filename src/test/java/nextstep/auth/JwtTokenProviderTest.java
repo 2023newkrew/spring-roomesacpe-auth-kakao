@@ -3,7 +3,9 @@ package nextstep.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.auth.support.InvalidTokenException;
 import nextstep.auth.support.JwtTokenProvider;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,45 +34,66 @@ class JwtTokenProviderTest {
     @Test
     @DisplayName("만기되지 않은 토큰은 유효하다.")
     void test1() {
-        String token = createToken("1", DEFINED_SECRET_KEY, VALIDITY_IN_MILLISECONDS);
+        String token = creteToken("1", DEFINED_SECRET_KEY, VALIDITY_IN_MILLISECONDS);
 
-        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
+        assertThat(jwtTokenProvider.isValidToken(token)).isTrue();
     }
 
     @Test
     @DisplayName("만기되지 않은 토큰은 유효하다.")
     void test2() {
-        String token = createToken("1", DEFINED_SECRET_KEY, 0L);
+        String token = creteToken("1", DEFINED_SECRET_KEY, -1L);
 
-        assertThat(jwtTokenProvider.validateToken(token)).isFalse();
+        assertThat(jwtTokenProvider.isValidToken(token)).isFalse();
     }
 
     @Test
     @DisplayName("다른 비밀키로 생성된 token은 유효하지 않다.")
     void test3() {
-        String token = createToken("1", "NOT_VALID_SECRET_KEY", VALIDITY_IN_MILLISECONDS);
+        String tokenHeader = creteToken("1", "NOT_VALID_SECRET_KEY", VALIDITY_IN_MILLISECONDS);
 
-        assertThat(jwtTokenProvider.validateToken(token)).isFalse() ;
+        assertThat(jwtTokenProvider.isValidToken(tokenHeader)).isFalse() ;
     }
 
     @Test
-    @DisplayName("발급된 토큰에서 principal을 추출할 수 있다.")
+    @DisplayName("발급된 토큰에서 subject를 추출할 수 있다.")
     void test4() {
-        String token = jwtTokenProvider.createToken("1");
+        String subject = "1";
+        String credential = jwtTokenProvider.createCredential(subject);
+        String token = createToken(credential);
 
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        assertThat(jwtTokenProvider.getSubject(token))
+                .isEqualTo(subject);
     }
 
     @ParameterizedTest
-    @DisplayName("발급된 토큰에서 Credential을 추출할 수 있다.")
     @NullAndEmptySource
-    @ValueSource(strings = {"Bearer", "Bearer ", "Bearer Token"})
+    @DisplayName("토큰은 Type과 Credential로 이루어져야 한다.")
+    @ValueSource(strings = {"Bearer", "Bearer "})
     void test5(String token) {
-        assertThat(jwtTokenProvider.getCredential(token)).isNotNull();
+        Assertions.assertThatThrownBy(() -> jwtTokenProvider.getCredential(token))
+                .isInstanceOf(InvalidTokenException.class);
     }
 
-    private String createToken(String principal, String secretKey, Long validityInMilliseconds) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    @ParameterizedTest
+    @ValueSource(strings = {"Token"})
+    @DisplayName("토큰 헤더에서 Credential을 추출할 수 있다.")
+    void test6(String credential) {
+        String token = createToken(credential);
+        assertThat(jwtTokenProvider.getCredential(token))
+                .isEqualTo(credential);
+    }
+
+    private String createToken(String credential) {
+        return "Bearer " + credential;
+    }
+
+    private String creteToken(String subject, String secretKey, Long validityInMilliseconds) {
+        return createToken(createCredential(secretKey, subject, validityInMilliseconds));
+    }
+
+    private String createCredential(String secretKey, String subject, Long validityInMilliseconds) {
+        Claims claims = Jwts.claims().setSubject(subject);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
