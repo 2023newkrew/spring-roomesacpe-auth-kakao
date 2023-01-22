@@ -1,6 +1,6 @@
 package nextstep.member.controller;
 
-import nextstep.global.config.annotation.ExtractPrincipal;
+import nextstep.global.annotation.ExtractPrincipal;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
 import nextstep.member.mapper.MemberMapper;
