@@ -1,11 +1,12 @@
 package nextstep.member.service;
 
-import nextstep.member.datamapper.MemberMapper;
 import nextstep.member.domain.Member;
-import nextstep.member.dto.MemberResponse;
+import nextstep.member.mapper.MemberMapper;
 import nextstep.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -29,11 +30,8 @@ public class MemberService {
         return memberRepository.save(MemberMapper.INSTANCE.domainToEntity(requestedMember));
     }
 
-    public MemberResponse findById(Long id) {
+    public Optional<Member> findById(Long id) {
 
-        return memberRepository.findById(id)
-                .map(MemberMapper.INSTANCE::entityToResponseDto)
-                .orElse(null)
-                ;
+        return memberRepository.findById(id);
     }
 }

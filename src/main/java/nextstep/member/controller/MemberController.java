@@ -3,6 +3,7 @@ package nextstep.member.controller;
 import nextstep.global.config.annotation.ExtractPrincipal;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
+import nextstep.member.mapper.MemberMapper;
 import nextstep.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,9 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity<MemberResponse> me(@ExtractPrincipal String memberId) {
-        MemberResponse memberResponse = memberService.findById(Long.parseLong(memberId));
+        MemberResponse memberResponse = memberService.findById(Long.parseLong(memberId))
+                .map(MemberMapper.INSTANCE::domainToResponseDto)
+                .orElse(null);
 
         return ResponseEntity.ok(memberResponse);
     }

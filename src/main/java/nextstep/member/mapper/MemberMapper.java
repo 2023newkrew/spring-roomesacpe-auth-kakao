@@ -1,4 +1,4 @@
-package nextstep.member.datamapper;
+package nextstep.member.mapper;
 
 import nextstep.member.domain.Member;
 import nextstep.member.dto.MemberResponse;
@@ -17,16 +17,16 @@ public interface MemberMapper {
     @Mapping(target = "id", ignore = true)
     MemberEntity domainToEntity(Member member);
 
-    default MemberResponse entityToResponseDto(MemberEntity memberEntity) {
-        if (memberEntity == null) {
+    default MemberResponse domainToResponseDto(Member member) {
+        if (member == null) {
             return null;
         }
 
-        Long id = memberEntity.getId();
-        String username = memberEntity.getUsername();
-        String password = memberEntity.getPassword();
-        String name = memberEntity.getName();
-        String phone = memberEntity.getPhone();
+        Long id = member.getId();
+        String username = member.getUsername();
+        String password = member.getPassword();
+        String name = member.getName();
+        String phone = member.getPhone();
 
         return new MemberResponse(id, username, password, name, phone);
     }

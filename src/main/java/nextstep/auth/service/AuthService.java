@@ -1,7 +1,6 @@
 package nextstep.auth.service;
 
 import nextstep.auth.domain.AccessToken;
-import nextstep.member.mapper.MemberMapper;
 import nextstep.member.domain.Member;
 import nextstep.member.repository.MemberRepository;
 import nextstep.support.NotExistEntityException;
@@ -25,8 +24,8 @@ public class AuthService {
                 .password(password)
                 .build();
 
-        Member existMember = MemberMapper.INSTANCE.entityToDomain(memberRepository.findByUsername(requestedMember.getUsername())
-                .orElseThrow(NotExistEntityException::new));
+        Member existMember = memberRepository.findByUsername(requestedMember.getUsername())
+                .orElseThrow(NotExistEntityException::new);
         if (!existMember.matchPassword(requestedMember)) {
             throw new UnauthenticatedException();
         }

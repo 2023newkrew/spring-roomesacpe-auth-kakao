@@ -1,7 +1,9 @@
 package nextstep.member.repository;
 
 import nextstep.member.dao.MemberDao;
+import nextstep.member.domain.Member;
 import nextstep.member.entity.MemberEntity;
+import nextstep.member.mapper.MemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -24,14 +26,14 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<MemberEntity> findById(Long id) {
+    public Optional<Member> findById(Long id) {
 
-        return Optional.ofNullable(memberDao.findById(id));
+        return Optional.ofNullable(MemberMapper.INSTANCE.entityToDomain(memberDao.findById(id)));
     }
 
     @Override
-    public Optional<MemberEntity> findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
 
-        return Optional.ofNullable(memberDao.findByUsername(username));
+        return Optional.ofNullable(MemberMapper.INSTANCE.entityToDomain(memberDao.findByUsername(username)));
     }
 }
