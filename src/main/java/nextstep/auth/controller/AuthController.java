@@ -1,7 +1,9 @@
 package nextstep.auth.controller;
 
+import nextstep.auth.domain.AccessToken;
+import nextstep.auth.dto.AccessTokenResponse;
 import nextstep.auth.dto.AuthRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.mapper.AuthMapper;
 import nextstep.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,9 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody AuthRequest authRequest) {
-        TokenResponse tokenResponse = authService.login(authRequest.getUsername(), authRequest.getPassword());
+    public ResponseEntity<AccessTokenResponse> login(@RequestBody AuthRequest authRequest) {
+        AccessToken accessToken = authService.login(authRequest.getUsername(), authRequest.getPassword());
 
-        return ResponseEntity.ok(tokenResponse);
+        return ResponseEntity.ok(AuthMapper.INSTANCE.accessTokenDomainToDto(accessToken));
     }
 }

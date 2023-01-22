@@ -1,45 +1,49 @@
 package nextstep.auth;
 
-import nextstep.global.util.JwtTokenProvider;
+import nextstep.auth.domain.AccessToken;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JwtTokenProviderTest {
+class AccessTokenTest {
 
-    private static final String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNSIsImlhdCI6MTY3Mzg1OTIwMSwiZXhwIjoxNjczODYyODAxfQ.dBsCm7PImHV5D78C6lt3UYOPbWo2VWklodMvGXYsdZs";
+    private static final String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjc0MzkwODIyLCJleHAiOjE2NzQzOTQ0MjJ9.etlqY9QcpHiIC2fRF7I1NiTaD_XPb44oXinUtQTgI8c";
     private static final String invalidToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk4NTkwLCJleHAiOjE2NjMzMDIxOTAsInJvbGUiOiJBRE1JTiJ9.-OO1QxEpcKhmC34HpmuBhlnwhKdZ39U8q91QkTdH9i0";
 
     @DisplayName("새로운 토큰을 생성한다.")
     @Test
     void createToken() {
-        String token = JwtTokenProvider.createToken("1");
+        AccessToken token = AccessToken.create("1");
 
-        assertThat(JwtTokenProvider.validateToken(token)).isTrue();
+        assertThat(token.isValid()).isTrue();
     }
 
     @DisplayName("토큰에서 memberId를 가져온다.")
     @Test
     void getPrincipal() {
-        String token = JwtTokenProvider.createToken("1");
+        AccessToken token = AccessToken.create("1");
 
-        assertThat(JwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        assertThat(token.getSub()).isEqualTo("1");
     }
 
     @DisplayName("만료된 토큰을 검증한다.")
     @Test
     void validateExpiredToken() {
-        assertThat(JwtTokenProvider.validateToken(expiredToken))
-                .isFalse()
+        AccessToken token = AccessToken.from(expiredToken);
+
+        assertThat(token.isExpired())
+                .isTrue()
         ;
     }
 
     @DisplayName("올바르지 않은 포맷의 토큰을 검증한다.")
     @Test
     void validateInvalidToken() {
-        assertThat(JwtTokenProvider.validateToken(invalidToken))
-                .isFalse()
+        AccessToken token = AccessToken.from(invalidToken);
+
+        assertThat(token.isMalformed())
+                .isTrue()
         ;
     }
 }

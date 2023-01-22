@@ -1,10 +1,8 @@
 package nextstep.auth.service;
 
-import nextstep.auth.dto.TokenResponse;
-import nextstep.global.util.JwtTokenProvider;
-import nextstep.member.datamapper.MemberMapper;
+import nextstep.auth.domain.AccessToken;
+import nextstep.member.mapper.MemberMapper;
 import nextstep.member.domain.Member;
-import nextstep.member.entity.MemberEntity;
 import nextstep.member.repository.MemberRepository;
 import nextstep.support.NotExistEntityException;
 import nextstep.support.UnauthenticatedException;
@@ -21,19 +19,18 @@ public class AuthService {
         this.memberRepository = memberRepository;
     }
 
-    public TokenResponse login(String username, String password) {
+    public AccessToken login(String username, String password) {
         Member requestedMember = Member.builder()
                 .username(username)
                 .password(password)
                 .build();
 
-        MemberEntity existMember = memberRepository.findByUsername(requestedMember.getUsername())
-                .orElseThrow(NotExistEntityException::new);
-        Member existMemberDomain = MemberMapper.INSTANCE.entityToDomain(existMember);
-        if (!existMemberDomain.matchPassword(requestedMember)) {
+        Member existMember = MemberMapper.INSTANCE.entityToDomain(memberRepository.findByUsername(requestedMember.getUsername())
+                .orElseThrow(NotExistEntityException::new));
+        if (!existMember.matchPassword(requestedMember)) {
             throw new UnauthenticatedException();
         }
 
-        return new TokenResponse(JwtTokenProvider.createToken(String.valueOf(existMember.getId())));
+        return AccessToken.create(String.valueOf(existMember.getId()));
     }
 }

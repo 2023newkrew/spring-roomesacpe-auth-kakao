@@ -1,7 +1,8 @@
 package nextstep.global.resolver;
 
+import nextstep.auth.domain.AccessToken;
 import nextstep.global.config.annotation.ExtractPrincipal;
-import nextstep.global.util.JwtTokenProvider;
+import nextstep.support.UnauthenticatedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -23,22 +24,17 @@ public class ExtractPrincipalArgumentResolver implements HandlerMethodArgumentRe
         String authorization = webRequest.getHeader("authorization");
         String token = extractToken(authorization);
 
-        validateToken(token);
+        AccessToken accessToken = AccessToken.from(token);
+        if (!accessToken.isValid()) {
+            throw new UnauthenticatedException();
+        }
 
-        return getPrincipalFromToken(token);
+        return accessToken.getSub();
     }
 
     private String extractToken(String authorization) {
         return Optional.ofNullable(authorization)
                 .map(v -> v.split("Bearer ")[1])
                 .orElseThrow();
-    }
-
-    private void validateToken(String token) {
-        JwtTokenProvider.validateToken(token);
-    }
-
-    private String getPrincipalFromToken(String token) {
-        return JwtTokenProvider.getPrincipal(token);
     }
 }

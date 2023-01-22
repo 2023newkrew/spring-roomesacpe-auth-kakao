@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.dto.AuthRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.dto.AccessTokenResponse;
 import nextstep.member.dto.MemberRequest;
 import nextstep.reservation.dto.ReservationRequest;
 import nextstep.reservation.dto.ReservationResponse;
@@ -81,7 +81,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(TokenResponse.class);
+                .as(AccessTokenResponse.class);
         accessToken = tokenResponse.getAccessToken();
 
         request = new ReservationRequest(
