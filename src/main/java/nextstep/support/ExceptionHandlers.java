@@ -1,6 +1,7 @@
 package nextstep.support;
 
 import com.sun.jdi.request.DuplicateRequestException;
+import nextstep.auth.authorization.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class ExceptionHandlers {
     public ResponseEntity<Object> lengthRequiredException(final NullPointerException ex) {
         logger.warn(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.LENGTH_REQUIRED);
+    }
+
+    @ExceptionHandler(AuthorizationException.class )
+    public ResponseEntity<Object> unAuthorizedException(final AuthorizationException ex) {
+        logger.warn(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
