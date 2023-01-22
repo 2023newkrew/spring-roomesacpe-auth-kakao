@@ -1,7 +1,7 @@
 package nextstep.member.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.support.AuthPrincipal;
+import nextstep.auth.support.AuthenticationPrincipal;
 import nextstep.auth.support.LoginRequired;
 import nextstep.member.model.Member;
 import nextstep.member.model.MemberRequest;
@@ -26,7 +26,7 @@ public class MemberController {
 
     @LoginRequired
     @GetMapping("/me")
-    public ResponseEntity<Member> me(@AuthPrincipal Member member) {
+    public ResponseEntity<Member> me(@AuthenticationPrincipal Member member) {
         return ResponseEntity.ok(member);
     }
 }

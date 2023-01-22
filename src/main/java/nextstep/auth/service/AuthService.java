@@ -6,7 +6,7 @@ import nextstep.auth.model.TokenRequest;
 import nextstep.auth.model.TokenResponse;
 import nextstep.member.model.Member;
 import nextstep.member.dao.MemberDao;
-import nextstep.auth.support.AuthorizationException;
+import nextstep.auth.support.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +17,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         if (checkInvalidLogin(tokenRequest.getMemberName(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+            throw new AuthenticationException();
         }
 
         String accessToken = jwtTokenProvider.createCredential(tokenRequest.getMemberName());

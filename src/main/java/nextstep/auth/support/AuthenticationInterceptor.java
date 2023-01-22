@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class AuthInterceptor extends HandlerInterceptorAdapter {
+public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -22,7 +22,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
 
         if(!hasValidToken(request)){
-            throw new AuthorizationException();
+            throw new AuthenticationException();
         }
 
         return super.preHandle(request, response, handler);

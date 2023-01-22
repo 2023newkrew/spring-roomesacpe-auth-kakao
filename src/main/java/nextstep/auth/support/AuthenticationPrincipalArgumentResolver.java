@@ -15,14 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 @RequiredArgsConstructor
-public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthPrincipal.class)
+        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class)
                 && parameter.getParameterType().equals(Member.class);
     }
 
