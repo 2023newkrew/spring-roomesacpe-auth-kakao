@@ -1,15 +1,14 @@
 package nextstep.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.support.LoginRequired;
 import nextstep.schedule.model.Schedule;
-import nextstep.schedule.model.ScheduleRequest;
 import nextstep.schedule.service.ScheduleService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -18,23 +17,8 @@ import java.util.List;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    @LoginRequired
-    @PostMapping
-    public ResponseEntity<Void> createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
-        Long id = scheduleService.create(scheduleRequest);
-        return ResponseEntity.created(URI.create("/schedules/" + id)).build();
-    }
-
     @GetMapping
     public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
-    }
-
-    @LoginRequired
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        scheduleService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
     }
 }
