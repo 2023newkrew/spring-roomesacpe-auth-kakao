@@ -16,7 +16,7 @@ public class JwtTokenProvider {
 
     public String createCredential(String subject) {
         Claims claims = makeClaims(subject);
-        Date expiration = getExpiration();
+        Date expiration = makeExpiration();
         Date issuedAt = new Date();
 
         return Jwts.builder()
@@ -28,10 +28,11 @@ public class JwtTokenProvider {
     }
 
     private static Claims makeClaims(String subject) {
-        return Jwts.claims().setSubject(subject);
+        return Jwts.claims()
+                .setSubject(subject);
     }
 
-    private Date getExpiration() {
+    private Date makeExpiration() {
         Date now = new Date();
         return new Date(now.getTime() + validityInMilliseconds);
     }
@@ -52,18 +53,29 @@ public class JwtTokenProvider {
     }
 
     public boolean isValidToken(String token){
-        String credential = getCredential(token);
-        return isValidCredential(credential);
+        try{
+            String credential = getCredential(token);
+            return isValidCredential(credential);
+        }catch (Exception e) {
+            return false;
+        }
     }
 
     private boolean isValidCredential(String credential) {
-        try {
-            return !getClaims(credential)
-                    .getBody()
-                    .getExpiration()
-                    .before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
+        try{
+            Date expiration = getExpiration(credential);
+            return !(expiration.before(new Date()));
+        }catch (Exception e){
             return false;
+        }
+    }
+
+    private Date getExpiration(String credential) {
+        Claims claims = getClaims(credential).getBody();
+        try{
+            return claims.getExpiration();
+        }catch (Exception e) {
+            throw new InvalidTokenException();
         }
     }
 
