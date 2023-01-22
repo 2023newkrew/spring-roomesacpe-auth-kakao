@@ -1,6 +1,7 @@
 package nextstep.auth.support;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

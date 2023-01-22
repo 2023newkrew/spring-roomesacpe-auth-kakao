@@ -1,7 +1,7 @@
 package nextstep.theme.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.support.NotExistEntityException;
+import nextstep.exception.NotExistEntityException;
 import nextstep.theme.model.Theme;
 import nextstep.theme.dao.ThemeDao;
 import nextstep.theme.model.ThemeRequest;

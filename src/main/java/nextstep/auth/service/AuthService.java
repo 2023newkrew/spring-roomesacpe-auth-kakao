@@ -6,7 +6,7 @@ import nextstep.auth.model.TokenRequest;
 import nextstep.auth.model.TokenResponse;
 import nextstep.member.model.Member;
 import nextstep.member.dao.MemberDao;
-import nextstep.auth.support.AuthenticationException;
+import nextstep.auth.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service

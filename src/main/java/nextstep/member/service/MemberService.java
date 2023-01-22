@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.member.model.Member;
 import nextstep.member.dao.MemberDao;
 import nextstep.member.model.MemberRequest;
-import nextstep.support.DuplicateEntityException;
+import nextstep.exception.DuplicateEntityException;
 import org.springframework.stereotype.Service;
 
 @Service

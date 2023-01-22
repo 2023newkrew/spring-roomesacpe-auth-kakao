@@ -3,7 +3,7 @@ package nextstep.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nextstep.auth.support.InvalidTokenException;
+import nextstep.auth.exception.InvalidTokenException;
 import nextstep.auth.support.JwtTokenProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
