@@ -17,19 +17,19 @@ public class MemberDao {
 
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
             resultSet.getLong("id"),
-            resultSet.getString("username"),
+            resultSet.getString("member_name"),
             resultSet.getString("password"),
             resultSet.getString("name"),
             resultSet.getString("phone")
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (member_name, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, member.getUsername());
+            ps.setString(1, member.getMemberName());
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
@@ -41,13 +41,13 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, member_name, password, name, phone from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.query(sql, rowMapper, username)
+    public Member findByMemberName(String memberName) {
+        String sql = "SELECT id, member_name, password, name, phone from member where member_name = ?;";
+        return jdbcTemplate.query(sql, rowMapper, memberName)
                 .stream()
                 .findFirst()
                 .orElse(null);

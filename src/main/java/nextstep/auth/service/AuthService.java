@@ -16,16 +16,16 @@ public class AuthService {
     private final MemberDao memberDao;
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
+        if (checkInvalidLogin(tokenRequest.getMemberName(), tokenRequest.getPassword())) {
             throw new AuthorizationException();
         }
 
-        String accessToken = jwtTokenProvider.createCredential(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createCredential(tokenRequest.getMemberName());
         return new TokenResponse(accessToken);
     }
 
     private boolean checkInvalidLogin(String subject, String credentials) {
-        Member member = memberDao.findByUsername(subject);
+        Member member = memberDao.findByMemberName(subject);
         if (member == null) {
             return true;
         }

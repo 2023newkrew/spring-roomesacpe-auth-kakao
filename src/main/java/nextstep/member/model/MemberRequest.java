@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class MemberRequest {
     @NotBlank
-    private String username;
+    private String memberName;
     @NotBlank
     private String password;
     @NotBlank
@@ -17,14 +17,14 @@ public class MemberRequest {
     @NotBlank
     private String phone;
 
-    public MemberRequest(String username, String password, String name, String phone) {
-        this.username = username;
+    public MemberRequest(String memberName, String password, String name, String phone) {
+        this.memberName = memberName;
         this.password = password;
         this.name = name;
         this.phone = phone;
     }
 
     public Member toEntity() {
-        return new Member(username, password, name, phone);
+        return new Member(memberName, password, name, phone);
     }
 }

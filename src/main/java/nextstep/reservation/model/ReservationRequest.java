@@ -13,7 +13,7 @@ public class ReservationRequest {
     private Long scheduleId;
 
     @Setter
-    private String username;
+    private String memberName;
 
     public ReservationRequest(Long scheduleId) {
         this.scheduleId = scheduleId;

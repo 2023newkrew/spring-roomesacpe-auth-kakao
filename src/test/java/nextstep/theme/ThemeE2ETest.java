@@ -22,8 +22,8 @@ class ThemeE2ETest {
     @DisplayName("인증된 사용자는 테마를 생성할 수 있다.")
     @Test
     void test1() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member ReservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistMember);
 
         ThemeTestUtil.createThemeAndGetValidatableResponse(ThemeTestUtil.DEFAULT_THEME_REQUEST, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.CREATED.value());
@@ -46,8 +46,8 @@ class ThemeE2ETest {
     @DisplayName("인증된 사용자는 테마를 삭제할 수 있다.")
     @Test
     void test4() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member ReservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistMember);
 
         ThemeTestUtil.deleteThemeAndGetValidatableResponse(1L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());

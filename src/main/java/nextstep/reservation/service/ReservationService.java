@@ -36,27 +36,27 @@ public class ReservationService {
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getUsername()
+                reservationRequest.getMemberName()
         );
 
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date, Member loginUser) {
+    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date, Member loginMember) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
             throw new NullPointerException();
         }
 
-        return reservationDao.findAllByThemeIdAndDateAndUsername(themeId, date, loginUser.getUsername());
+        return reservationDao.findAllByThemeIdAndDateAndMemberName(themeId, date, loginMember.getMemberName());
     }
 
-    public void deleteById(Long id, Member loginUser) {
+    public void deleteById(Long id, Member loginMember) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();
         }
-        if (!reservation.getUsername().equals(loginUser.getUsername())) {
+        if (!reservation.getMemberName().equals(loginMember.getMemberName())) {
             throw new AuthorizationException();
         }
 

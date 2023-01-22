@@ -9,13 +9,13 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class TokenRequest {
     @NotBlank
-    private String username;
+    private String memberName;
 
     @NotBlank
     private String password;
 
-    public TokenRequest(String username, String password) {
-        this.username = username;
+    public TokenRequest(String memberName, String password) {
+        this.memberName = memberName;
         this.password = password;
     }
 }

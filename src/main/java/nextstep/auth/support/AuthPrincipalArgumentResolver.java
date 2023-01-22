@@ -32,6 +32,6 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String subject = jwtTokenProvider.getSubject(token);
 
-        return memberService.findByUserName(subject);
+        return memberService.findByMemberName(subject);
     }
 }

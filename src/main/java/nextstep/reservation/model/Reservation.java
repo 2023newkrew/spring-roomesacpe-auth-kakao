@@ -9,19 +9,19 @@ import nextstep.schedule.model.Schedule;
 public class Reservation {
     private Long id;
     private Schedule schedule;
-    private String username;
+    private String memberName;
 
     public Reservation() {
     }
 
-    public Reservation(Schedule schedule, String username) {
+    public Reservation(Schedule schedule, String memberName) {
         this.schedule = schedule;
-        this.username = username;
+        this.memberName = memberName;
     }
 
-    public Reservation(Long id, Schedule schedule, String username) {
+    public Reservation(Long id, Schedule schedule, String memberName) {
         this.id = id;
         this.schedule = schedule;
-        this.username = username;
+        this.memberName = memberName;
     }
 }

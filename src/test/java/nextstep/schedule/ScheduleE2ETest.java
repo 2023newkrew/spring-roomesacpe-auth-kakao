@@ -23,8 +23,8 @@ class ScheduleE2ETest {
     @DisplayName("인증된 사용자는 스케줄을 생성할 수 있다.")
     @Test
     void test1() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member ReservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistMember);
 
         ScheduleRequest schedule = new ScheduleRequest(1L, "2022-08-11", "13:00");
         ScheduleTestUtil.createScheduleAndGetValidatableResponse(schedule, tokenResponse.getAccessToken())
@@ -50,8 +50,8 @@ class ScheduleE2ETest {
     @DisplayName("인증된 사용자는 스케줄을 삭제할 수 있다.")
     @Test
     void test4() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member ReservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistMember);
 
         ScheduleTestUtil.deleteScheduleAndGetValidatableResponse(2L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());

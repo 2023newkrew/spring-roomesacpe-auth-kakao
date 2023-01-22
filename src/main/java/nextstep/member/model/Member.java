@@ -7,21 +7,21 @@ import lombok.ToString;
 @ToString
 public class Member {
     private Long id;
-    private String username;
+    private String memberName;
     private String password;
     private String name;
     private String phone;
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member(Long id, String memberName, String password, String name, String phone) {
         this.id = id;
-        this.username = username;
+        this.memberName = memberName;
         this.password = password;
         this.name = name;
         this.phone = phone;
     }
 
-    public Member(String username, String password, String name, String phone) {
-        this.username = username;
+    public Member(String memberName, String password, String name, String phone) {
+        this.memberName = memberName;
         this.password = password;
         this.name = name;
         this.phone = phone;
@@ -31,7 +31,7 @@ public class Member {
     }
 
     public MemberRequest toDto(){
-        return new MemberRequest(this.username, this.password, this.name, this.phone);
+        return new MemberRequest(this.memberName, this.password, this.name, this.phone);
     }
 
 

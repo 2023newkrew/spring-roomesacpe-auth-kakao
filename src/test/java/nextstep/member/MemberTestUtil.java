@@ -10,11 +10,11 @@ import org.springframework.http.MediaType;
 import java.util.List;
 
 public class MemberTestUtil {
-    public static final Member RESERVATION_EXIST_MEMBER_1 = new Member(1L, "reservation_exist_user1", "password", "name", "010-1234-5678");
-    public static final Member RESERVATION_EXIST_MEMBER_2 = new Member(2L, "reservation_exist_user2", "password", "name", "010-1234-5678");
-    public static final Member RESERVATION_NOT_EXIST_MEMBER = new Member("'no_reservation_exist_user'", "'password'", "name", "010-1234-5678");
+    public static final Member RESERVATION_EXIST_MEMBER_1 = new Member(1L, "reservation_exist_member1", "password", "name", "010-1234-5678");
+    public static final Member RESERVATION_EXIST_MEMBER_2 = new Member(2L, "reservation_exist_member2", "password", "name", "010-1234-5678");
+    public static final Member RESERVATION_NOT_EXIST_MEMBER = new Member("'no_reservation_exist_member'", "'password'", "name", "010-1234-5678");
 
-    public static final Member NOT_EXIST_MEMBER = new Member("NOT_EXIST_USERNAME", "password", "name", "010-1234-5678");
+    public static final Member NOT_EXIST_MEMBER = new Member("NOT_EXIST_MEMBER_NAME", "password", "name", "010-1234-5678");
     public static final List<Member> RESERVATION_EXIST_MEMBER_LIST = List.of(RESERVATION_EXIST_MEMBER_1, RESERVATION_EXIST_MEMBER_2);
 
     public static Response createMember(MemberRequest memberRequest) {
