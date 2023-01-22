@@ -1,35 +1,26 @@
 package nextstep.reservation;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Reservation {
     private Long id;
     private Schedule schedule;
-    private String name;
+    private Member member;
 
-    public Reservation() {
-    }
-
-    public Reservation(Schedule schedule, String name) {
+    public Reservation(Schedule schedule, Member member) {
+        this.id = null;
         this.schedule = schedule;
-        this.name = name;
-    }
-
-    public Reservation(Long id, Schedule schedule, String name) {
-        this.id = id;
-        this.schedule = schedule;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public String getName() {
-        return name;
+        this.member = member;
     }
 }

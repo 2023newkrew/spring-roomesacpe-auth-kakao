@@ -18,12 +18,14 @@ public class MemberResponse {
     private String name;
     private String phone;
 
-    public MemberResponse (Member member) {
-        this.id = member.getId();
-        this.username = member.getUsername();
-        this.password = member.getPassword();
-        this.name = member.getName();
-        this.phone = member.getPhone();
+    public static MemberResponse from(Member member) {
+        return MemberResponse.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .password(member.getPassword())
+                .name(member.getName())
+                .phone(member.getPhone())
+                .build();
     }
 
 }

@@ -20,7 +20,7 @@ public class ScheduleRequest {
     private String date;
     private String time;
 
-    public Schedule toEntity(Theme theme) {
+    public Schedule toEntityWithTheme(Theme theme) {
         return new Schedule(
                 theme,
                 LocalDate.parse(this.date),
