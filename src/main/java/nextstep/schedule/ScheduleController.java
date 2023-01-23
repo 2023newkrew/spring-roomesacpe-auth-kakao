@@ -3,6 +3,7 @@ package nextstep.schedule;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.ContextNotEmptyException;
 import java.net.URI;
 import java.util.List;
 
@@ -18,16 +19,17 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
-        return ResponseEntity.created(URI.create("/schedules/" + id)).body("Location: /themes/" + id);
+        return ResponseEntity.created(URI.create("/schedules/" + id)).body("Location: /schedules/" + id);
     }
 
+    // localhost:8080/schedules?themeId=1&date=2022-02-01
     @GetMapping
     public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    public ResponseEntity deleteReservation(@PathVariable Long id) throws ContextNotEmptyException {
         scheduleService.deleteById(id);
 
         return ResponseEntity.noContent().build();

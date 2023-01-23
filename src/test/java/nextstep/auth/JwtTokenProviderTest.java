@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("JwtTokenProvider 학습 테스트")
 @SpringBootTest
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-class JwtTokenProviderTest {
+public class JwtTokenProviderTest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     JwtTokenProvider jwtTokenProvider;
@@ -37,8 +37,7 @@ class JwtTokenProviderTest {
     @DisplayName("토큰을 생성할 수 있다")
     @Test
     public void createTokenTest() {
-        saveMember();
-
+        saveMember(jdbcTemplate);
         ExtractableResponse<Response> response = generateToken();
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
@@ -46,7 +45,7 @@ class JwtTokenProviderTest {
     @Test
     @DisplayName("토큰을 이용하여 유저 정보를 가져올 수 있다.")
     void findByUsernameTest() {
-        saveMember();
+        saveMember(jdbcTemplate);
 
         ExtractableResponse<Response> response = generateToken();
 
@@ -62,13 +61,13 @@ class JwtTokenProviderTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    private void saveMember(){
+    public static void saveMember(JdbcTemplate jdbcTemplate){
         Member member = new Member(USERNAME, PASSWORD, "name", "010");
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);
     }
 
-    private ExtractableResponse<Response> generateToken() {
+    public static ExtractableResponse<Response> generateToken() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         return RestAssured
                 .given().log().all()

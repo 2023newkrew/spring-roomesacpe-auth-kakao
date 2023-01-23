@@ -43,9 +43,7 @@ public class ScheduleDao {
             ps.setDate(2, Date.valueOf(schedule.getDate()));
             ps.setTime(3, Time.valueOf(schedule.getTime()));
             return ps;
-
         }, keyHolder);
-
         return keyHolder.getKey().longValue();
     }
 

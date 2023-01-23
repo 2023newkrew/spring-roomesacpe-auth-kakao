@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static nextstep.auth.principal.MemberAuthenticationPrincipalArgumentResolver.Bearer;
 
@@ -51,11 +52,10 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
+        Optional<List<Theme>> themeList = themeDao.findById(themeId);
+        if (themeList.get().isEmpty()) {
             throw new NullPointerException();
         }
-
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 

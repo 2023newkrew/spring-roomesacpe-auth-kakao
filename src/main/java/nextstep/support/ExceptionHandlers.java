@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import javax.naming.ContextNotEmptyException;
+import javax.naming.NamingException;
 import javax.naming.NotContextException;
 import java.util.NoSuchElementException;
 
@@ -42,9 +44,15 @@ public class ExceptionHandlers {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({KeyAlreadyExistsException.class, NotContextException.class})
-    public ResponseEntity<Object> remainElement(final Exception ex) {
+    @ExceptionHandler({NotContextException.class, ContextNotEmptyException.class})
+    public ResponseEntity<Object> remainElement(final NamingException ex) {
         logger.warn(ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler({KeyAlreadyExistsException.class, NotExistEntityException.class})
+    public ResponseEntity<Object> keyAlreadyExists(final RuntimeException ex) {
+        logger.warn(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

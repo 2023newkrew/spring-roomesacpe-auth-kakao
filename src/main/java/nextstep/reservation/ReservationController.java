@@ -23,6 +23,7 @@ public class ReservationController {
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
+    // localhost:8080/reservations?themeId=1&date=2022-02-01
     @GetMapping
     public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);

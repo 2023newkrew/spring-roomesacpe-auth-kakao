@@ -5,19 +5,22 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestExecutionListeners;
 
 import java.util.List;
 
+import static nextstep.auth.JwtTokenProviderTest.generateToken;
+import static nextstep.auth.JwtTokenProviderTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -33,14 +36,22 @@ class ReservationTest {
     private Long memberId;
 
     JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
     private String token;
 
     @BeforeEach
     void setUp() {
+        jwtTokenProvider = new JwtTokenProvider();
+        saveMember(jdbcTemplate);
+        ExtractableResponse<Response> tokenResponse = generateToken();
+        token = tokenResponse.body().jsonPath().getString("accessToken");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + token)
                 .body(themeRequest)
                 .when().post("/themes")
                 .then().log().all()
@@ -53,6 +64,7 @@ class ReservationTest {
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + token)
                 .body(scheduleRequest)
                 .when().post("/schedules")
                 .then().log().all()
@@ -60,22 +72,6 @@ class ReservationTest {
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
-        jwtTokenProvider = new JwtTokenProvider();
-        token = jwtTokenProvider.createToken("username");
 
         request = new ReservationRequest(
                 scheduleId,
@@ -86,6 +82,7 @@ class ReservationTest {
     @DisplayName("예약을 생성할 수 있다.")
     @Test
     void create() {
+        System.out.println(token);
         var response = RestAssured
                 .given().log().all()
                 .header("Authorization", "Bearer " + token)
