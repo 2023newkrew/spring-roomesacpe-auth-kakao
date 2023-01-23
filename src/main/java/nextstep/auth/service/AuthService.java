@@ -18,7 +18,7 @@ public class AuthService {
     private final MemberRoleDao memberRoleDao;
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (isInvalidLogin(tokenRequest)) {
+        if (!isValidLogin(tokenRequest)) {
             throw new AuthenticationException();
         }
 
@@ -30,9 +30,9 @@ public class AuthService {
         return memberRoleDao.findByMemberName(memberName);
     }
 
-    private boolean isInvalidLogin(TokenRequest request) {
+    private boolean isValidLogin(TokenRequest request) {
         return memberDao.findByMemberName(request.getMemberName())
-                .filter(member -> !member.checkWrongPassword(request.getPassword()))
-                .isEmpty();
+                .filter(member -> member.isValidPassword(request.getPassword()))
+                .isPresent();
     }
 }
