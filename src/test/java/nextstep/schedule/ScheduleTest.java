@@ -72,6 +72,22 @@ public class ScheduleTest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("테마가 없는 스케줄을 생성하는 경우, 에러 발생")
+    @Test
+    void createErrorByTheme(){
+        ScheduleRequest body = new ScheduleRequest(themeId+2, "2022-08-11", "13:00");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + accessToken)
+                .body(body)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.LENGTH_REQUIRED.value())
+                .extract()
+                .header("Location");
+    }
+
     @DisplayName("스케줄을 조회할 수 있음")
     @Test
     public void showSchedules() {
@@ -125,21 +141,18 @@ public class ScheduleTest {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
-    @DisplayName("테마가 없는 스케줄을 생성하는 경우, 에러 발생")
+    @DisplayName("없는 스케줄을 삭제할 경우, 에러 발생")
     @Test
-    void createErrorByTheme(){
-        ScheduleRequest body = new ScheduleRequest(themeId+2, "2022-08-11", "13:00");
+    void emptyDeleteTest(){
+        String location = requestCreateSchedule() + "22";
         RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .header("Authorization", "Bearer " + accessToken)
-            .body(body)
-            .when().post("/schedules")
-            .then().log().all()
-            .statusCode(HttpStatus.LENGTH_REQUIRED.value())
-            .extract()
-            .header("Location");
+                .given().log().all()
+                .header("Authorization", "Bearer " + accessToken)
+                .when().delete(location)
+                .then().log().all()
+                .statusCode(HttpStatus.LENGTH_REQUIRED.value());
     }
+
 
     private String requestCreateSchedule() {
         ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
@@ -154,5 +167,4 @@ public class ScheduleTest {
                 .extract()
                 .header("Location");
     }
-
 }

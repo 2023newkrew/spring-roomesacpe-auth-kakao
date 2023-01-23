@@ -15,8 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestExecutionListeners;
 
+import static nextstep.RoomEscapeApplication.getPasswordEncoder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
@@ -46,7 +48,6 @@ public class JwtTokenProviderTest {
     @DisplayName("토큰을 이용하여 유저 정보를 가져올 수 있다.")
     void findByUsernameTest() {
         saveMember(jdbcTemplate);
-
         ExtractableResponse<Response> response = generateToken();
 
         String accessToken = response.body().jsonPath().getString("accessToken");
@@ -62,7 +63,8 @@ public class JwtTokenProviderTest {
     }
 
     public static void saveMember(JdbcTemplate jdbcTemplate){
-        Member member = new Member(USERNAME, PASSWORD, "name", "010");
+        PasswordEncoder passwordEncoder = getPasswordEncoder();
+        Member member = new Member(USERNAME, passwordEncoder.encode(PASSWORD), "name", "010");
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);
     }
