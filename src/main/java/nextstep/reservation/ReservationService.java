@@ -1,13 +1,15 @@
 package nextstep.reservation;
 
+import nextstep.exception.BusinessException;
+import nextstep.exception.CommonErrorCode;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -21,20 +23,20 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(String memberName, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new BusinessException(CommonErrorCode.DUPLICATE_ENTITY);
         }
 
         Reservation newReservation = new Reservation(
                 schedule,
-                reservationRequest.getName()
+                memberName
         );
 
         return reservationDao.save(newReservation);
@@ -43,16 +45,19 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(String memberName, Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+        }
+        if(!Objects.equals(reservation.getName(), memberName)) {
+            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
         }
 
         reservationDao.deleteById(id);
