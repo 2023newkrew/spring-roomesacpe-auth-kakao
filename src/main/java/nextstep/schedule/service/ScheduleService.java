@@ -1,6 +1,7 @@
 package nextstep.schedule.service;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.exception.NotExistEntityException;
 import nextstep.schedule.dao.ScheduleDao;
 import nextstep.schedule.model.Schedule;
 import nextstep.schedule.model.ScheduleRequest;
@@ -17,7 +18,8 @@ public class ScheduleService {
     private final ThemeDao themeDao;
 
     public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
+        Theme theme = themeDao.findById(scheduleRequest.getThemeId())
+                .orElseThrow(NotExistEntityException::new);
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 

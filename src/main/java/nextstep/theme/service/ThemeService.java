@@ -2,8 +2,8 @@ package nextstep.theme.service;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.exception.NotExistEntityException;
-import nextstep.theme.model.Theme;
 import nextstep.theme.dao.ThemeDao;
+import nextstep.theme.model.Theme;
 import nextstep.theme.model.ThemeRequest;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +23,8 @@ public class ThemeService {
     }
 
     public void delete(Long id) {
-        Theme theme = themeDao.findById(id);
-        if (theme == null) {
-            throw new NotExistEntityException();
-        }
+        themeDao.findById(id)
+                .orElseThrow(NotExistEntityException::new);
 
         themeDao.delete(id);
     }

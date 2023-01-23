@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -40,16 +41,17 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(Long id) {
         String sql = "SELECT id, member_name, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id)
+                .stream()
+                .findFirst();
     }
 
-    public Member findByMemberName(String memberName) {
+    public Optional<Member> findByMemberName(String memberName) {
         String sql = "SELECT id, member_name, password, name, phone from member where member_name = ?;";
         return jdbcTemplate.query(sql, rowMapper, memberName)
                 .stream()
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 }
