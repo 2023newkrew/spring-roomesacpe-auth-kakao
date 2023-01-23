@@ -5,8 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.member.MemberRole;
+import nextstep.member.MemberCreateRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,12 +38,25 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
+        var adminTokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+        String adminAccessToken = adminTokenResponse.getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminAccessToken)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -55,15 +67,16 @@ class ReservationE2ETest {
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminAccessToken)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberCreateRequest body = new MemberCreateRequest("username", "password", "name", "010-1234-5678");
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -132,6 +145,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .auth().oauth2(accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();

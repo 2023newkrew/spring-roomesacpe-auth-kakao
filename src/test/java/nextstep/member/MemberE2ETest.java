@@ -20,11 +20,11 @@ import static org.hamcrest.core.Is.is;
 @Sql("/init.sql")
 public class MemberE2ETest {
 
-    private MemberRequest memberRequest;
+    private MemberCreateRequest memberCreateRequest;
 
     @BeforeEach
     void setUp() {
-        memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
+        memberCreateRequest = new MemberCreateRequest("username", "password", "name", "010-1234-5678");
     }
 
     @DisplayName("멤버를 생성한다")
@@ -33,7 +33,7 @@ public class MemberE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
+                .body(memberCreateRequest)
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -58,7 +58,7 @@ public class MemberE2ETest {
     private String createMemberAndGetToken() {
         RestAssured
                 .given().log().all()
-                .body(memberRequest)
+                .body(memberCreateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/members")
                 .then().log().all()
