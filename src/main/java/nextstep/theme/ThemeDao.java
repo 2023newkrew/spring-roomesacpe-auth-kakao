@@ -41,6 +41,11 @@ public class ThemeDao {
         return keyHolder.getKey().longValue();
     }
 
+    public Boolean findByNameAndPrice(ThemeRequest theme){
+        String sql = "SELECT EXISTS(SELECT 1 FROM theme WHERE name=? and price=?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, theme.getName(), theme.getPrice());
+    }
+
     public Optional<List<Theme>> findById(Long id) {
         String sql = "SELECT id, name, desc, price from theme where id = ?;";
         return Optional.of(jdbcTemplate.query(sql, rowMapper, id));
