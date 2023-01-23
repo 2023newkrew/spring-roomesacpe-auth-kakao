@@ -1,6 +1,9 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
+import nextstep.member.MemberCreateRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,28 +22,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScheduleE2ETest {
 
     private Long themeId;
-
-    public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .header("Location");
-    }
+    private String adminAccessToken;
 
     @BeforeEach
     void setUp() {
+        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
+        var adminTokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+        adminAccessToken = adminTokenResponse.getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminAccessToken)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -55,8 +59,9 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminAccessToken)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -82,13 +87,29 @@ public class ScheduleE2ETest {
     @Test
     void delete() {
         String location = requestCreateSchedule();
+        System.out.println("-----------------------" + location);
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminAccessToken)
                 .when().delete(location)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public String requestCreateSchedule() {
+        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminAccessToken)
+                .body(body)
+                .when().post("/admin/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .header("Location");
     }
 }
