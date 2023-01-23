@@ -4,7 +4,7 @@ public class ReservationRequest {
     private Long scheduleId;
     private String name;
 
-    public ReservationRequest() {
+    private ReservationRequest() {
     }
 
     public ReservationRequest(Long scheduleId, String name) {

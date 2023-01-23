@@ -9,18 +9,7 @@ public class Reservation {
 
     private Long memberId;
 
-    public Reservation() {
-    }
-
-    public Reservation(Schedule schedule, String name) {
-        this.schedule = schedule;
-        this.name = name;
-    }
-
-    public Reservation(Long id, Schedule schedule, String name) {
-        this.id = id;
-        this.schedule = schedule;
-        this.name = name;
+    private Reservation() {
     }
 
     public Reservation(Schedule schedule, String name, Long memberId) {
