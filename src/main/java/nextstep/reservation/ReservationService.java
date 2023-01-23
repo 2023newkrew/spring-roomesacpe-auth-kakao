@@ -3,11 +3,7 @@ package nextstep.reservation;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.exception.AuthorizationExcpetion;
-import nextstep.support.exception.ReservationException;
-import nextstep.support.exception.RoomEscapeExceptionCode;
-import nextstep.support.exception.ScheduleException;
-import nextstep.theme.Theme;
+import nextstep.support.exception.*;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +23,9 @@ public class ReservationService {
     }
 
     public Long create(ReservationRequest reservationRequest, Member member) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new ScheduleException(RoomEscapeExceptionCode.NOT_FOUND_SCHEDULE);
-        }
+        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId()).orElseThrow(
+                () -> new ScheduleException(RoomEscapeExceptionCode.NOT_FOUND_SCHEDULE)
+        );
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
@@ -46,10 +41,9 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
-            throw new NullPointerException();
-        }
+        themeDao.findById(themeId).orElseThrow(
+                () -> new ThemeException(RoomEscapeExceptionCode.NOT_FOUND_THEME)
+        );
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
