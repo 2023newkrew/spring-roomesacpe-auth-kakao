@@ -37,7 +37,6 @@ public class MemberDao {
             ps.setString(4, member.getPhone());
             ps.setString(5, member.getRole().name());
             return ps;
-
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
@@ -51,5 +50,10 @@ public class MemberDao {
     public Optional<Member> findByUsernameAndPassword(String username, String password) {
         String sql = "SELECT id, username, password, name, phone, role from member where username = ? and password = ?;";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username, password));
+    }
+
+    public void updateRole(Long id, MemberRole memberRole) {
+        String sql = String.format("UPDATE member SET role = %s where id = ?", memberRole.name());
+        jdbcTemplate.update(sql, rowMapper, id);
     }
 }

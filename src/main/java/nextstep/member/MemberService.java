@@ -10,11 +10,16 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
+    public Long create(MemberCreateRequest memberCreateRequest) {
+        return memberDao.save(memberCreateRequest.toEntity());
     }
 
     public Member findById(Long id) {
         return memberDao.findById(id);
+    }
+
+    public Member authorization(MemberAuthorizationRequest memberAuthorizationRequest) {
+        memberDao.updateRole(memberAuthorizationRequest.getId(), MemberRole.ADMIN);
+        return memberDao.findById(memberAuthorizationRequest.getId());
     }
 }
