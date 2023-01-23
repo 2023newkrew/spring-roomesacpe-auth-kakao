@@ -1,13 +1,15 @@
 package nextstep.reservation;
 
+import nextstep.schedule.Schedule;
+
 public class ReservationResponse {
     private Long id;
-    private Long scheduleId;
+    private Schedule schedule;
     private String name;
 
-    public ReservationResponse(Long id, Long scheduleId, String name) {
+    public ReservationResponse(Long id, Schedule schedule, String name) {
         this.id = id;
-        this.scheduleId = scheduleId;
+        this.schedule = schedule;
         this.name = name;
     }
 
@@ -15,8 +17,8 @@ public class ReservationResponse {
         return id;
     }
 
-    public Long getScheduleId() {
-        return scheduleId;
+    public Schedule getSchedule() {
+        return schedule;
     }
 
     public String getName() {

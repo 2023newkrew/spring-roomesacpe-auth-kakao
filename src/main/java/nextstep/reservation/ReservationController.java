@@ -26,16 +26,16 @@ public class ReservationController {
         if (!reservationRequest.getName().equals(member.getUsername())) {
             throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
         }
-        Long id = reservationService.create(reservationRequest);
-        ReservationResponse res = new ReservationResponse(id, reservationRequest.getScheduleId(), reservationRequest.getName());
-        return ResponseEntity.created(URI.create("/reservations/").resolve(id.toString())).body(res);
+        Reservation reservation = reservationService.create(reservationRequest);
+        ReservationResponse res = new ReservationResponse(reservation.getId(), reservation.getSchedule(), reservation.getName());
+        return ResponseEntity.created(URI.create("/reservations/").resolve(reservation.getId().toString())).body(res);
     }
 
     @GetMapping
     public List<ReservationResponse> readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
         List<ReservationResponse> res = reservations.stream()
-                .map(r -> new ReservationResponse(r.getId(), r.getSchedule().getId(), r.getName()))
+                .map(r -> new ReservationResponse(r.getId(), r.getSchedule(), r.getName()))
                 .collect(Collectors.toList());
         return res;
     }
