@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({DuplicateEntityException.class})
-    public ResponseEntity<Void> onDuplicatedEntityException(DuplicateEntityException e) {
+    @ExceptionHandler({NotExistEntityException.class, DuplicateEntityException.class})
+    public ResponseEntity<Void> onDuplicatedAndNotExistEntityException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
 
