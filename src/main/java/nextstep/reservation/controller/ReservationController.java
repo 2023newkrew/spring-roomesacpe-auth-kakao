@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.support.AuthenticationPrincipal;
 import nextstep.auth.support.LoginRequired;
 import nextstep.member.model.Member;
+import nextstep.reservation.model.CreateReservationRequest;
 import nextstep.reservation.model.Reservation;
 import nextstep.reservation.model.ReservationRequest;
 import nextstep.reservation.service.ReservationService;
@@ -24,8 +25,8 @@ public class ReservationController {
     @LoginRequired
     @PostMapping
     public ResponseEntity<Void> createReservation(@AuthenticationPrincipal Member member, @Valid @RequestBody ReservationRequest reservationRequest) {
-        reservationRequest.setMemberName(member.getName());
-        Long id = reservationService.create(reservationRequest);
+        CreateReservationRequest createReservationRequest = CreateReservationRequest.to(reservationRequest, member.getMemberName());
+        Long id = reservationService.create(createReservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 

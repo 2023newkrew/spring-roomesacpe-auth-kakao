@@ -1,16 +1,16 @@
 package nextstep.reservation.service;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.model.Member;
-import nextstep.reservation.model.Reservation;
-import nextstep.reservation.dao.ReservationDao;
-import nextstep.reservation.model.ReservationRequest;
-import nextstep.schedule.model.Schedule;
-import nextstep.schedule.dao.ScheduleDao;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.exception.DuplicateEntityException;
-import nextstep.theme.model.Theme;
+import nextstep.member.model.Member;
+import nextstep.reservation.dao.ReservationDao;
+import nextstep.reservation.model.CreateReservationRequest;
+import nextstep.reservation.model.Reservation;
+import nextstep.schedule.dao.ScheduleDao;
+import nextstep.schedule.model.Schedule;
 import nextstep.theme.dao.ThemeDao;
+import nextstep.theme.model.Theme;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class ReservationService {
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public Long create(ReservationRequest reservationRequest) {
+    public Long create(CreateReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
