@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
+import java.util.Optional;
 
 @Component
 public class MemberDao {
@@ -16,13 +17,13 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
-            resultSet.getString("username"),
-            resultSet.getString("password"),
-            resultSet.getString("name"),
-            resultSet.getString("phone")
-    );
+    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> Member.builder()
+            .id(resultSet.getLong("id"))
+            .username(resultSet.getString("username"))
+            .password(resultSet.getString("password"))
+            .name(resultSet.getString("name"))
+            .phone(resultSet.getString("phone"))
+            .build();
 
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
@@ -41,13 +42,9 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public Member findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        return jdbcTemplate.query(sql, rowMapper, username).stream()
+                .findAny();
     }
 }

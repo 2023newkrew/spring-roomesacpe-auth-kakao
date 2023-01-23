@@ -1,10 +1,13 @@
 package nextstep.reservation;
 
+import nextstep.member.Member;
+import nextstep.support.annotation.AuthorizationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservations")
@@ -17,26 +20,23 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest);
+    public ResponseEntity<Void> createReservation(@RequestBody ReservationRequest reservationRequest, @AuthorizationPrincipal Member member) {
+        Long id = reservationService.create(reservationRequest, member);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
-        return ResponseEntity.ok().body(results);
+    public ResponseEntity<List<ReservationResponse>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
+        List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
+        List<ReservationResponse> reservationResponses = reservations.stream().map(ReservationResponse::fromEntity).collect(Collectors.toList());
+        return ResponseEntity.ok().body(reservationResponses);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
-        reservationService.deleteById(id);
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthorizationPrincipal Member member) {
+        reservationService.deleteById(id, member);
 
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
-    }
 }

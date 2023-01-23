@@ -2,8 +2,6 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,75 +16,72 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
 
-    @BeforeEach
-    void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("id/pw를 통해 토큰을 생성후 반환한다.")
     @Test
     public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        //given
+        createMember(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
+
+        //when
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
+        //then
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
-        createTheme();
+    @DisplayName("등록되지 않은 멤버로 토큰 생성을 요청하면 실패한다.")
+    void createTokenFail() {
+        //given
+        TokenRequest tokenRequest = new TokenRequest("???", "????");
 
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
+        //when
+        //then
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("잘못된 password가 주어질 때 토큰 생성에 실패한다.")
+    void createTokenFail_with_InvalidPassword() {
+        //given
+        createMember(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(USERNAME, "invalid");
+
+        //when
+        //then
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void createMember(String username, String password) {
+        MemberRequest memberRequest = new MemberRequest(username, password, "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .extract();
     }
 }
