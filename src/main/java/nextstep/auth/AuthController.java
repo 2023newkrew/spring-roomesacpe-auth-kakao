@@ -33,7 +33,7 @@ public class AuthController {
             throw new ReservationException(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
         }
 
-        TokenResponse tokenResponse = authService.createToken(member);
+        TokenResponse tokenResponse = authService.createToken(member, tokenRequest.getPassword());
         return ResponseEntity.ok(tokenResponse);
     }
 

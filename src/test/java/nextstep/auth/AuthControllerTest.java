@@ -40,7 +40,7 @@ public class AuthControllerTest {
         TokenRequest requestBody = new TokenRequest("username", "password");
         String content = objectMapper.writeValueAsString(requestBody);
         when(memberService.findByUsername(ArgumentMatchers.any(String.class))).thenReturn(new Member("username", "password", "name", "010-1234-5678"));
-        when(authService.createToken(ArgumentMatchers.any(Member.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
+        when(authService.createToken(ArgumentMatchers.any(Member.class), ArgumentMatchers.any(String.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
 
         //when
         String responseBody = mockMvc.perform(post("/login/token")

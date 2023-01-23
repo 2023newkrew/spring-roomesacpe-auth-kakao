@@ -55,6 +55,24 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    @DisplayName("잘못된 password가 주어질 때 토큰 생성에 실패한다.")
+    void createTokenFail_with_InvalidPassword() {
+        //given
+        createMember(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(USERNAME, "invalid");
+
+        //when
+        //then
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     private void createMember(String username, String password) {
         MemberRequest memberRequest = new MemberRequest(username, password, "name", "010-1234-5678");
         RestAssured
