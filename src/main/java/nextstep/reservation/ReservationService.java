@@ -24,7 +24,10 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Reservation create(ReservationRequest reservationRequest) {
+    public Reservation reserve(Member member, ReservationRequest reservationRequest) {
+        if (!reservationRequest.getName().equals(member.getUsername())) {
+            throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
+        }
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();

@@ -1,7 +1,6 @@
 package nextstep.reservation;
 
 import nextstep.auth.AuthenticationPrincipal;
-import nextstep.exceptions.exception.ReservationForbiddenException;
 import nextstep.member.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +22,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal Member member, @RequestBody ReservationRequest reservationRequest) {
-        if (!reservationRequest.getName().equals(member.getUsername())) {
-            throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
-        }
-        Reservation reservation = reservationService.create(reservationRequest);
+        Reservation reservation = reservationService.reserve(member, reservationRequest);
         ReservationResponse res = new ReservationResponse(reservation.getId(), reservation.getSchedule(), reservation.getName());
         return ResponseEntity.created(URI.create("/reservations/").resolve(reservation.getId().toString())).body(res);
     }
@@ -42,7 +38,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@AuthenticationPrincipal Member member, @PathVariable Long id) {
+    public void cancelReservation(@AuthenticationPrincipal Member member, @PathVariable Long id) {
         reservationService.cancelReservation(id, member);
     }
 }
