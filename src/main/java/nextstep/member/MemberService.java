@@ -2,6 +2,9 @@ package nextstep.member;
 
 import org.springframework.stereotype.Service;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.util.List;
+
 @Service
 public class MemberService {
     private final MemberDao memberDao;
@@ -11,14 +14,14 @@ public class MemberService {
     }
 
     public Long create(MemberRequest memberRequest) {
+        if (!memberDao.findByUsername(memberRequest.getUsername()).isEmpty()){
+            throw new KeyAlreadyExistsException("Already Registered User");
+        }
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
-        return memberDao.findById(id);
-    }
-
-    public Member findByUsername(String username) {
+    public List<Member> findByUsername(String username) {
         return memberDao.findByUsername(username);
     }
+
 }

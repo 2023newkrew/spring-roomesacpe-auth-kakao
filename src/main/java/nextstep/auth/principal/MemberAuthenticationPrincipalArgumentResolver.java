@@ -9,6 +9,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.naming.NotContextException;
 import java.util.Objects;
 
 @Component
@@ -30,9 +31,9 @@ public static final String Bearer = "Bearer ";
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String accessToken = Objects.requireNonNull(webRequest.getHeader("Authorization"))
-                                    .substring(Bearer.length());
+        String accessToken = Objects.requireNonNull(webRequest.getHeader("Authorization"),
+                "Needs to be login").substring(Bearer.length());
         String principal = jwtTokenProvider.getPrincipal(accessToken);
-        return memberService.findByUsername(principal);
+        return memberService.findByUsername(principal).get(0);
     }
 }
