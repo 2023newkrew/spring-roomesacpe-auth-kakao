@@ -55,10 +55,9 @@ public class ReservationService {
     }
 
     public void deleteById(Long id, Member member) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new ReservationException(RoomEscapeExceptionCode.NOT_FOUND_RESERVATION);
-        }
+        Reservation reservation = reservationDao.findById(id).orElseThrow(
+                () -> new ReservationException(RoomEscapeExceptionCode.NOT_FOUND_RESERVATION)
+        );
         Long memberId = reservation.getMemberId();
         if (!Objects.equals(member.getId(), memberId)) {
             throw new AuthorizationExcpetion(RoomEscapeExceptionCode.NOT_OWN_RESERVATION);
