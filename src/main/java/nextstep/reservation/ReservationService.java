@@ -31,7 +31,7 @@ public class ReservationService {
         if (reservation == null) {
             throw new RoomEscapeException(RoomEscapeExceptionCode.UNEXPECTED_EXCEPTION);
         }
-        if (reservation.isEmpty()) {
+        if (!reservation.isEmpty()) {
             throw new ScheduleException(RoomEscapeExceptionCode.SCHEDUL_ALREADY_RESERVED);
         }
 
