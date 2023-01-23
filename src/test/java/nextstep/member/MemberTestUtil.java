@@ -15,6 +15,9 @@ public class MemberTestUtil {
     public static final Member RESERVATION_NOT_EXIST_MEMBER = new Member("'no_reservation_exist_member'", "'password'", "name", "010-1234-5678");
 
     public static final Member NOT_EXIST_MEMBER = new Member("NOT_EXIST_MEMBER_NAME", "password", "name", "010-1234-5678");
+    public static final Member ROLE_ADMIN_MEMBER = new Member("role_admin", "password", "name", "010-1234-5678");
+    public static final Member ROLE_MEMBER_MEMBER = new Member("role_member", "password", "name", "010-1234-5678");
+
     public static final List<Member> RESERVATION_EXIST_MEMBER_LIST = List.of(RESERVATION_EXIST_MEMBER_1, RESERVATION_EXIST_MEMBER_2);
 
     public static Response createMember(MemberRequest memberRequest) {

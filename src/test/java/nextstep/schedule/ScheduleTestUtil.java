@@ -29,7 +29,7 @@ public class ScheduleTestUtil {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/schedules/" + id)
+                .when().delete("/admin/schedules/" + id)
                 .then().log().all();
     }
 
@@ -39,7 +39,7 @@ public class ScheduleTestUtil {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all();
     }
 }
