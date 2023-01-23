@@ -22,10 +22,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(
-            @AuthenticationPrincipal Member member,
-            @RequestBody ReservationRequest reservationRequest
-    ) {
+    public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal Member member, @RequestBody ReservationRequest reservationRequest) {
         if (!reservationRequest.getName().equals(member.getUsername())) {
             throw new ReservationForbiddenException("예약자가 일치해야만 예약을 생성할 수 있습니다.");
         }
@@ -45,14 +42,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(
-            @AuthenticationPrincipal Member member,
-            @PathVariable Long id
-    ) {
-        Reservation reservation = reservationService.findById(id);
-        if (!reservation.getName().equals(member.getUsername())) {
-            throw new ReservationForbiddenException("예약당사자만 예약을 삭제할 수 있습니다.");
-        }
-        reservationService.deleteById(id);
+    public void deleteReservation(@AuthenticationPrincipal Member member, @PathVariable Long id) {
+        reservationService.cancelReservation(id, member);
     }
 }

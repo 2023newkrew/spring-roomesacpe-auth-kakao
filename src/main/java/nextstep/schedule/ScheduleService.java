@@ -25,9 +25,7 @@ public class ScheduleService {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void cancelById(Long id) {
         scheduleDao.deleteById(id);
     }
 }
-
-// todo 복합인덱스 유니크?

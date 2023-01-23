@@ -2,6 +2,8 @@ package nextstep.reservation;
 
 import nextstep.exceptions.exception.DuplicateEntityException;
 import nextstep.exceptions.exception.NotExistEntityException;
+import nextstep.exceptions.exception.ReservationForbiddenException;
+import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;
@@ -50,12 +52,11 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
+    public void cancelReservation(Long id, Member member) {
+        Reservation reservation = findById(id);
+        if (!reservation.isReservedBy(member.getName())) {
+            throw new ReservationForbiddenException("예약당사자만 예약을 삭제할 수 있습니다.");
         }
-
         reservationDao.deleteById(id);
     }
 

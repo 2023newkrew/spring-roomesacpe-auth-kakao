@@ -25,7 +25,7 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public List<ScheduleResponse> showReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public List<ScheduleResponse> showSchedules(@RequestParam Long themeId, @RequestParam String date) {
         List<Schedule> schedules = scheduleService.findByThemeIdAndDate(themeId, date);
         List<ScheduleResponse> res = schedules.stream()
                 .map(s -> new ScheduleResponse(s.getId(), s.getTheme().getId(), s.getDate().toString(), s.getTime().toString()))
@@ -35,7 +35,7 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReservation(@PathVariable Long id) {
-        scheduleService.deleteById(id);
+    public void cancelSchedule(@PathVariable Long id) {
+        scheduleService.cancelById(id);
     }
 }
