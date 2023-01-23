@@ -42,12 +42,6 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Optional<Member> findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.query(sql, rowMapper, id).stream()
-                .findAny();
-    }
-
     public Optional<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         return jdbcTemplate.query(sql, rowMapper, username).stream()
