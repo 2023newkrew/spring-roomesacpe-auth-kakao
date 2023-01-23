@@ -1,4 +1,4 @@
-package nextstep.util;
+package nextstep.support;
 
 public class AuthenticationUtil {
     private static final String TOKEN_TYPE = "Bearer";

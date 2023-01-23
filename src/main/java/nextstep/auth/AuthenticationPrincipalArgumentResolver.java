@@ -1,8 +1,8 @@
 package nextstep.auth;
 
 import nextstep.support.AuthenticationException;
-import nextstep.util.AuthenticationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import nextstep.support.AuthenticationUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
