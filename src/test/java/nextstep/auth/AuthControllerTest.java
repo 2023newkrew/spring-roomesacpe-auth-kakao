@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +39,8 @@ public class AuthControllerTest {
         //given
         TokenRequest requestBody = new TokenRequest("username", "password");
         String content = objectMapper.writeValueAsString(requestBody);
-        when(authService.createToken(ArgumentMatchers.any(TokenRequest.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
+        when(memberService.findByUsername(ArgumentMatchers.any(String.class))).thenReturn(new Member("username", "password", "name", "010-1234-5678"));
+        when(authService.createToken(ArgumentMatchers.any(Member.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
 
         //when
         String responseBody = mockMvc.perform(post("/login/token")
