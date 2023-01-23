@@ -6,11 +6,13 @@ import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.*;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
@@ -21,7 +23,6 @@ public class ReservationService {
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
     }
-
     public Long create(ReservationRequest reservationRequest, Member member) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId()).orElseThrow(
                 () -> new ScheduleException(RoomEscapeExceptionCode.NOT_FOUND_SCHEDULE)
@@ -43,6 +44,7 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
+    @Transactional(readOnly = true)
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         themeDao.findById(themeId).orElseThrow(
                 () -> new ThemeException(RoomEscapeExceptionCode.NOT_FOUND_THEME)

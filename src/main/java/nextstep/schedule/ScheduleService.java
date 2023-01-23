@@ -5,10 +5,12 @@ import nextstep.support.exception.ThemeException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ScheduleService {
     private final ScheduleDao scheduleDao;
     private final ThemeDao themeDao;
@@ -25,6 +27,7 @@ public class ScheduleService {
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 
+    @Transactional(readOnly = true)
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
