@@ -34,3 +34,5 @@ CREATE TABLE member
     role     varchar(20) not null,
     primary key (id)
 );
+
+INSERT INTO member (username, password, name, phone, role) VALUES ('admin', 'admin', 'admin', 'admin', 'ADMIN');
