@@ -28,7 +28,10 @@ public class ReservationService {
         );
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
-        if (!reservation.isEmpty()) {
+        if (reservation == null) {
+            throw new RoomEscapeException(RoomEscapeExceptionCode.UNEXPECTED_EXCEPTION);
+        }
+        if (reservation.isEmpty()) {
             throw new ScheduleException(RoomEscapeExceptionCode.SCHEDUL_ALREADY_RESERVED);
         }
 
