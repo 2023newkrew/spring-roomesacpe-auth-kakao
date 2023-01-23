@@ -28,7 +28,7 @@ public abstract class Jwt {
 
         private static String signatureKey;
 
-        public JwtHolder(@Value("${jwt.signature-key}") String signatureKey) {
+        private JwtHolder(@Value("${jwt.signature-key}") String signatureKey) {
             JwtHolder.signatureKey = signatureKey;
         }
     }

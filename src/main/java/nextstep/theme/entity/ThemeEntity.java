@@ -11,9 +11,4 @@ public class ThemeEntity {
     private String name;
     private String desc;
     private int price;
-
-    public static ThemeEntity of(String name, String desc, int price) {
-
-        return new ThemeEntity(null, name, desc, price);
-    }
 }
