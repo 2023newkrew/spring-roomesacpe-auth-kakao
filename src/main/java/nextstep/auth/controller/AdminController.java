@@ -1,7 +1,8 @@
 package nextstep.auth.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.support.LoginRequired;
+import nextstep.auth.domain.MemberRoleType;
+import nextstep.auth.support.AuthorizationRequired;
 import nextstep.schedule.model.ScheduleRequest;
 import nextstep.schedule.service.ScheduleService;
 import nextstep.theme.model.ThemeRequest;
@@ -19,14 +20,14 @@ public class AdminController {
     private final ThemeService themeService;
     private final ScheduleService scheduleService;
 
-    @LoginRequired
+    @AuthorizationRequired(MemberRoleType.ADMIN)
     @PostMapping("/themes")
     public ResponseEntity<Void> createTheme(@Valid @RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
-    @LoginRequired
+    @AuthorizationRequired(MemberRoleType.ADMIN)
     @DeleteMapping("/themes/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
@@ -34,15 +35,15 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @LoginRequired
+    @AuthorizationRequired(MemberRoleType.ADMIN)
     @PostMapping("/schedules")
     public ResponseEntity<Void> createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
     }
 
-    @LoginRequired
-    @DeleteMapping("/schedules/∂{id}")
+    @AuthorizationRequired(MemberRoleType.ADMIN)
+    @DeleteMapping("/schedules/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
 

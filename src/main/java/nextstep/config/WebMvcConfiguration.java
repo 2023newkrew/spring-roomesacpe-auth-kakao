@@ -16,10 +16,12 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
     private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
     private final AuthenticationInterceptor authenticationInterceptor;
+    private final AuthorizationInterceptor authorizationInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor);
+        registry.addInterceptor(authorizationInterceptor);
     }
 
     @Override
