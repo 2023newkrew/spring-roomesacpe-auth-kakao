@@ -2,7 +2,6 @@ package nextstep.auth;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextstep.member.MemberService;
 import nextstep.support.AuthenticationException;
 import nextstep.support.AuthenticationUtil;
 import org.springframework.stereotype.Component;
