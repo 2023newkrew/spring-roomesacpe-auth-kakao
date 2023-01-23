@@ -3,11 +3,13 @@ package nextstep.reservation;
 import nextstep.auth.AuthenticationPrincipal;
 import nextstep.exceptions.exception.ReservationForbiddenException;
 import nextstep.member.Member;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservations")
@@ -33,13 +35,17 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
-        return ResponseEntity.ok().body(results);
+    public List<ReservationResponse> readReservations(@RequestParam Long themeId, @RequestParam String date) {
+        List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
+        List<ReservationResponse> res = reservations.stream()
+                .map(r -> new ReservationResponse(r.getId(), r.getSchedule().getId(), r.getName()))
+                .collect(Collectors.toList());
+        return res;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReservation(
             @AuthenticationPrincipal Member member,
             @PathVariable Long id
     ) {
@@ -48,6 +54,5 @@ public class ReservationController {
             throw new ReservationForbiddenException("예약당사자만 예약을 삭제할 수 있습니다.");
         }
         reservationService.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 }

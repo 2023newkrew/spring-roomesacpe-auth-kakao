@@ -29,3 +29,5 @@ public class ScheduleService {
         scheduleDao.deleteById(id);
     }
 }
+
+// todo 복합인덱스 유니크?

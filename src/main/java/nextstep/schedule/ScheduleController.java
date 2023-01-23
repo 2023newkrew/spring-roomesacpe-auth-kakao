@@ -1,10 +1,12 @@
 package nextstep.schedule;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/schedules")
@@ -23,14 +25,17 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
-        return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
+    public List<ScheduleResponse> showReservations(@RequestParam Long themeId, @RequestParam String date) {
+        List<Schedule> schedules = scheduleService.findByThemeIdAndDate(themeId, date);
+        List<ScheduleResponse> res = schedules.stream()
+                .map(s -> new ScheduleResponse(s.getId(), s.getTheme().getId(), s.getDate().toString(), s.getTime().toString()))
+                .collect(Collectors.toList());
+        return res;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
     }
 }
