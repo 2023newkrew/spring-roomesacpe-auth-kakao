@@ -37,12 +37,11 @@ public class ReservationService {
             throw new ScheduleException(RoomEscapeExceptionCode.SCHEDUL_ALREADY_RESERVED);
         }
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName(),
-                member.getId()
-        );
-
+        Reservation newReservation = Reservation.builder()
+                .schedule(schedule)
+                .name(reservationRequest.getName())
+                .memberId(member.getId())
+                .build();
         return reservationDao.save(newReservation);
     }
 

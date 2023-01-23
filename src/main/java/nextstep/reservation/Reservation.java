@@ -1,43 +1,18 @@
 package nextstep.reservation;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
 import nextstep.schedule.Schedule;
 
+@Builder
+@Getter
 public class Reservation {
-    private Long id;
-    private Schedule schedule;
-    private String name;
-
-    private Long memberId;
-
-    private Reservation() {
-    }
-
-    public Reservation(Schedule schedule, String name, Long memberId) {
-        this.schedule = schedule;
-        this.name = name;
-        this.memberId = memberId;
-    }
-
-    public Reservation(Long id, Schedule schedule, String name, Long memberId) {
-        this.id = id;
-        this.schedule = schedule;
-        this.name = name;
-        this.memberId = memberId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Schedule getSchedule() {
-        return schedule;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
+    private final Long id;
+    @NonNull
+    private final Schedule schedule;
+    @NonNull
+    private final String name;
+    @NonNull
+    private final Long memberId;
 }

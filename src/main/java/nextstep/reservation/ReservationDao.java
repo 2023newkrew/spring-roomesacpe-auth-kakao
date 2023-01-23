@@ -21,22 +21,25 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> new Reservation(
-            resultSet.getLong("reservation.id"),
-            new Schedule(
-                    resultSet.getLong("schedule.id"),
-                    new Theme(
-                            resultSet.getLong("theme.id"),
-                            resultSet.getString("theme.name"),
-                            resultSet.getString("theme.desc"),
-                            resultSet.getInt("theme.price")
-                    ),
-                    resultSet.getDate("schedule.date").toLocalDate(),
-                    resultSet.getTime("schedule.time").toLocalTime()
-            ),
-            resultSet.getString("reservation.name"),
-            resultSet.getLong("reservation.member_id")
-    );
+    private final RowMapper<Reservation> rowMapper = (resultSet, rowNum) -> Reservation.builder()
+            .id(resultSet.getLong("reservation.id"))
+            .schedule(Schedule.builder()
+                    .id(resultSet.getLong("schedule.id"))
+                    .theme(
+                            Theme.builder()
+                                    .id(resultSet.getLong("theme.id"))
+                                    .name(resultSet.getString("theme.name"))
+                                    .desc(resultSet.getString("theme.desc"))
+                                    .price(resultSet.getInt("theme.price"))
+                                    .build()
+                    )
+                    .date(resultSet.getDate("schedule.date").toLocalDate())
+                    .time(resultSet.getTime("schedule.time").toLocalTime())
+                    .build()
+            )
+            .name(resultSet.getString("reservation.name"))
+            .memberId(resultSet.getLong("reservation.member_id"))
+            .build();
 
     public Long save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, name, member_id) VALUES (?, ?, ?);";

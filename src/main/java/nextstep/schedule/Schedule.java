@@ -1,45 +1,21 @@
 package nextstep.schedule;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
 import nextstep.theme.Theme;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Builder
+@Getter
 public class Schedule {
-    private Long id;
-    private Theme theme;
-    private LocalDate date;
-    private LocalTime time;
-
-    private Schedule() {
-    }
-
-    public Schedule(Long id, Theme theme, LocalDate date, LocalTime time) {
-        this.id = id;
-        this.theme = theme;
-        this.date = date;
-        this.time = time;
-    }
-
-    public Schedule(Theme theme, LocalDate date, LocalTime time) {
-        this.theme = theme;
-        this.date = date;
-        this.time = time;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Theme getTheme() {
-        return theme;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
+    private final Long id;
+    @NonNull
+    private final Theme theme;
+    @NonNull
+    private final LocalDate date;
+    @NonNull
+    private final LocalTime time;
 }
