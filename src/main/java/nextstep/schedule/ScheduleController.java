@@ -8,7 +8,6 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/schedules")
 public class ScheduleController {
     private ScheduleService scheduleService;
 
@@ -16,19 +15,19 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
+    @PostMapping("/admin/schedules")
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         URI uri = UriComponentsBuilder.fromUriString("/schedules/{id}").buildAndExpand(id).toUri();
         return ResponseEntity.created(uri).build();
     }
 
-    @GetMapping
+    @GetMapping("/schedules")
     public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/schedules/{id}")
     public ResponseEntity deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
 

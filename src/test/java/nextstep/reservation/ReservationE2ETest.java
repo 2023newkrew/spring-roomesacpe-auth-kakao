@@ -41,6 +41,8 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        String token = jwtTokenProvider.createToken("admin1");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
@@ -58,8 +60,9 @@ class ReservationE2ETest {
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

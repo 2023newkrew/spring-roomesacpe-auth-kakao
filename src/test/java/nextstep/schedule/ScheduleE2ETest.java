@@ -1,6 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.util.AuthorizationTokenExtractor;
+import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +21,7 @@ import static org.hamcrest.Matchers.is;
 class ScheduleE2ETest {
 
     private Long themeId;
+    private String token;
 
     @BeforeEach
     void setUp() {
@@ -33,6 +36,9 @@ class ScheduleE2ETest {
                 .extract();
         String[] themeLocation = response.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        token = jwtTokenProvider.createToken("admin1");
     }
 
     @DisplayName("스케줄을 생성한다")
@@ -42,8 +48,9 @@ class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -55,8 +62,9 @@ class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(ErrorCode.THEME_NOT_FOUND.getStatus())
                 .body("code", is(ErrorCode.THEME_NOT_FOUND.getCode()));
@@ -86,7 +94,8 @@ class ScheduleE2ETest {
 
         RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .auth().oauth2(token)
+                .when().delete("/admin" + location)
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -96,8 +105,9 @@ class ScheduleE2ETest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
