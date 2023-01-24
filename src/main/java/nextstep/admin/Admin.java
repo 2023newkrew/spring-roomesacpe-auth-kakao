@@ -61,6 +61,10 @@ public class Admin {
         this.phone = phone;
     }
 
+    public boolean checkWrongPassword(String password) {
+        return !this.password.equals(password);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
