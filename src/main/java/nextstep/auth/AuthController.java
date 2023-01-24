@@ -20,4 +20,10 @@ public class AuthController {
     public ResponseEntity<TokenResponse> loginMember(@RequestBody TokenRequest tokenRequest) {
         return ResponseEntity.ok().body(authService.createMemberToken(tokenRequest));
     }
+
+    @PostMapping("/admin")
+    public ResponseEntity<TokenResponse> loginAdmin(@RequestBody TokenRequest tokenRequest) {
+        return ResponseEntity.ok().body(authService.createAdminToken(tokenRequest));
+    }
 }
+
