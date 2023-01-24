@@ -82,6 +82,23 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @DisplayName("관리자 계정은 애플리케이션 시작시 등록 된다.")
+    @Test
+    void admin() {
+        RestAssured
+                // given
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("admin", "admin"))
+
+                // when
+                .when().post("/login/token")
+
+                // then
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
     //
 //    @DisplayName("테마 목록을 조회한다")
 //    @Test
