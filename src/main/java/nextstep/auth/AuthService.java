@@ -19,7 +19,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
+    public TokenResponse createMemberToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
                 .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
         if(member.checkWrongPassword(tokenRequest.getPassword())) {

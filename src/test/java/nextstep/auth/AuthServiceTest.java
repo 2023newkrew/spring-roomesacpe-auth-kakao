@@ -43,7 +43,7 @@ class AuthServiceTest {
     void create() {
         TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
 
-        TokenResponse tokenResponse = authService.createToken(tokenRequest);
+        TokenResponse tokenResponse = authService.createMemberToken(tokenRequest);
 
         String username = jwtTokenProvider.getPrincipal(tokenResponse.getAccessToken());
 

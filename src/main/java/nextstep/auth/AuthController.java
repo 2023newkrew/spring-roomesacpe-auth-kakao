@@ -18,6 +18,6 @@ public class AuthController {
 
     @PostMapping("/member")
     public ResponseEntity<TokenResponse> loginMember(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok().body(authService.createToken(tokenRequest));
+        return ResponseEntity.ok().body(authService.createMemberToken(tokenRequest));
     }
 }
