@@ -52,7 +52,7 @@ public class AuthE2ETest {
                 .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class AuthE2ETest {
                 .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void createMember(String username, String password) {

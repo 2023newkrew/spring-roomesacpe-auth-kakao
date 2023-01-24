@@ -27,67 +27,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
-    public static final String NAME = "name";
 
-    private ReservationRequest request;
+    private ReservationRequest reservationRequest;
     private Long themeId;
-    private Long scheduleId;
-    private Long memberId;
     private String token;
 
     @BeforeEach
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        themeId = createTheme(themeRequest);
 
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        Long scheduleId = createSchedule(scheduleRequest);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+        MemberRequest memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
+        createMember(memberRequest);
 
         TokenRequest tokenRequest = new TokenRequest("username", "password");
-        var tokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+        token = issueToken(tokenRequest);
 
-        TokenResponse tokenResponse1 = tokenResponse.response().getBody().as(TokenResponse.class);
-        token = tokenResponse1.getAccessToken();
-
-        request = new ReservationRequest(
+        reservationRequest = new ReservationRequest(
                 scheduleId,
                 "브라운"
         );
@@ -99,7 +58,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
-                .body(request)
+                .body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -113,13 +72,13 @@ class ReservationE2ETest {
     void create_fail() {
         var response = RestAssured
                 .given().log().all()
-                .body(request)
+                .body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -159,14 +118,20 @@ class ReservationE2ETest {
     void noAuthDelete() {
         var reservation = createReservation();
 
+        MemberRequest memberRequest = new MemberRequest("username2", "password2", "name2", "010-1234-5678");
+        createMember(memberRequest);
+
+        TokenRequest tokenRequest = new TokenRequest(memberRequest.getUsername(), memberRequest.getPassword());
+        String token = issueToken(tokenRequest);
+
         var response = RestAssured
                 .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + "dummytokenstring!")
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -176,13 +141,14 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .body(request)
+                .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
+                .body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
@@ -217,10 +183,68 @@ class ReservationE2ETest {
         return RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
-                .body(request)
+                .body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private Long createMember(MemberRequest memberRequest) {
+        var memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        String[] memberLocation = memberResponse.header("Location").split("/");
+        Long memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+        return memberId;
+    }
+
+    private String issueToken(TokenRequest tokenRequest) {
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        TokenResponse tokenResponse1 = tokenResponse.response().getBody().as(TokenResponse.class);
+        String token = tokenResponse1.getAccessToken();
+        return token;
+    }
+
+    private Long createTheme(ThemeRequest themeRequest) {
+        var themeResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(themeRequest)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] themeLocation = themeResponse.header("Location").split("/");
+        Long themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        return themeId;
+    }
+
+    private Long createSchedule(ScheduleRequest scheduleRequest) {
+        var scheduleResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        return scheduleId;
     }
 }
