@@ -1,4 +1,4 @@
-package nextstep.config;
+package nextstep.global.config;
 
 import nextstep.global.resolver.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;

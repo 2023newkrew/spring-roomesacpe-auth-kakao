@@ -52,8 +52,8 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
-    public Boolean isUsernameAndPasswordMatch(String username, String password) {
+    public Member findByUsernameAndPassword(String username, String password) {
         String sql = "SELECT * FROM member WHERE username = ? AND password = ?";
-        return jdbcTemplate.query(sql, rowMapper, username, password).size() >= 1;
+        return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
     }
 }
