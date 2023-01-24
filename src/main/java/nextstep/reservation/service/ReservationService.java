@@ -1,6 +1,6 @@
 package nextstep.reservation.service;
 
-import nextstep.member.entity.Member;
+import nextstep.member.entity.MemberEntity;
 import nextstep.member.dao.MemberDao;
 import nextstep.reservation.dao.ReservationDao;
 import nextstep.reservation.dto.ReservationRequest;
@@ -40,10 +40,8 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Member member = memberDao.findByUsername(username);
-        if (member == null) {
-            throw new NullPointerException();
-        }
+        MemberEntity member = memberDao.findByUsername(username)
+                .orElseThrow(NullPointerException::new);
 
         Reservation newReservation = new Reservation(
                 schedule,
@@ -63,10 +61,8 @@ public class ReservationService {
     }
 
     public void deleteById(String username, Long id) {
-        Member member = memberDao.findByUsername(username);
-        if (member == null) {
-            throw new NullPointerException();
-        }
+        MemberEntity member = memberDao.findByUsername(username)
+                .orElseThrow(NullPointerException::new);
 
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
