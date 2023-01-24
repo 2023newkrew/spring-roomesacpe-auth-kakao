@@ -27,6 +27,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
+        // 이미 해당 스케쥴로 예약이 있다면 예외 던짐
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
@@ -52,7 +53,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("테마가 존재하지 않습니다.");
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);

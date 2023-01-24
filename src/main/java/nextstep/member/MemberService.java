@@ -22,7 +22,11 @@ public class MemberService {
     }
 
     public Member findByUsername(String username) {
-        return memberDao.findByUsername(username);
+        Member member = memberDao.findByUsername(username);
+        if (member == null) {
+            throw new NullPointerException("유저가 존재하지 않습니다.");
+        }
+        return member;
     }
 
     public Member findByToken(String token) {
