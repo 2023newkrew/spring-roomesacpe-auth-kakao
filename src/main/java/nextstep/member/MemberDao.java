@@ -23,10 +23,11 @@ public class MemberDao {
             .password(resultSet.getString("password"))
             .name(resultSet.getString("name"))
             .phone(resultSet.getString("phone"))
+            .role(Role.valueOf(resultSet.getString("role")))
             .build();
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -35,6 +36,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setString(5, member.getRole().name());
             return ps;
 
         }, keyHolder);
@@ -43,7 +45,7 @@ public class MemberDao {
     }
 
     public Optional<Member> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         return jdbcTemplate.query(sql, rowMapper, username).stream()
                 .findAny();
     }
