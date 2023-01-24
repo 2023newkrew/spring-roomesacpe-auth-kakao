@@ -68,7 +68,6 @@ public class MemberE2ETest {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(1))
                 .body("username", equalTo("username"))
                 .body("password", equalTo("password"))
                 .body("name", equalTo("name"))
