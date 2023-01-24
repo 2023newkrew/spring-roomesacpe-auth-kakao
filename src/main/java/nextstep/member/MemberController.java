@@ -4,6 +4,7 @@ import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -16,7 +17,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<MemberResponse> createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<MemberResponse> createMember(@Valid @RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         MemberResponse res = new MemberResponse(id, memberRequest.getUsername(), memberRequest.getName(), memberRequest.getPhone());
         return ResponseEntity.created(URI.create("/members/").resolve(id.toString())).body(res);

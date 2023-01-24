@@ -2,12 +2,16 @@ package nextstep.schedule;
 
 import nextstep.theme.Theme;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ScheduleRequest {
+    @NotNull
     private Long themeId;
+    @NotNull
     private String date;
+    @NotNull
     private String time;
 
     public ScheduleRequest() {

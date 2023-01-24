@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal Member member, @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal Member member, @Valid @RequestBody ReservationRequest reservationRequest) {
         Reservation reservation = reservationService.reserve(member, reservationRequest);
         ReservationResponse res = new ReservationResponse(reservation.getId(), reservation.getSchedule(), reservation.getName());
         return ResponseEntity.created(URI.create("/reservations/").resolve(reservation.getId().toString())).body(res);
