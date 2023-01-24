@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS member
 (
     id       bigint      not null auto_increment,
     username varchar(20) not null,
-    password varchar(20) not null,
+    password varchar(255) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
     primary key (id)
