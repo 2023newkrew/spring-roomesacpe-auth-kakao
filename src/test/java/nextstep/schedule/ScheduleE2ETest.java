@@ -25,20 +25,22 @@ class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        token = jwtTokenProvider.createToken("admin1");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
+
         String[] themeLocation = response.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        token = jwtTokenProvider.createToken("admin1");
     }
 
     @DisplayName("스케줄을 생성한다")

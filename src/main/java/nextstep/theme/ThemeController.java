@@ -8,31 +8,29 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/themes")
 public class ThemeController {
-    private ThemeService themeService;
+    private final ThemeService themeService;
 
     public ThemeController(ThemeService themeService) {
         this.themeService = themeService;
     }
 
-    @PostMapping
+    @PostMapping("/admin/themes")
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         URI uri = UriComponentsBuilder.fromUriString("/themes/{id}").buildAndExpand(id).toUri();
         return ResponseEntity.created(uri).build();
     }
 
-    @GetMapping
+    @GetMapping("themes")
     public ResponseEntity<List<Theme>> showThemes() {
         List<Theme> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/themes/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
-
         return ResponseEntity.noContent().build();
     }
 }
