@@ -1,12 +1,13 @@
 package nextstep.auth;
 
-import nextstep.auth.service.LoginService;
-import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.domain.member.MemberRole;
+import nextstep.service.LoginService;
+import nextstep.utils.JwtTokenProvider;
 import nextstep.dto.request.TokenRequest;
 import nextstep.dto.response.TokenResponse;
 import nextstep.error.ApplicationException;
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
+import nextstep.domain.member.Member;
+import nextstep.domain.member.MemberDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,7 +50,7 @@ public class LoginServiceTest {
         // given
         String username = "username", password = "password", wrongPassword = "wrongPassword";
         TokenRequest tokenRequest = new TokenRequest(username, wrongPassword);
-        Member member = new Member(username, password, "name", "010-0000-0000");
+        Member member = new Member(username, password, "name", "010-0000-0000", MemberRole.USER);
 
         given(memberDao.findByUsername(member.getUsername()))
                 .willReturn(member);
@@ -64,11 +65,11 @@ public class LoginServiceTest {
         // given
         String username = "username", password = "password", token = "access-token";
         TokenRequest tokenRequest = new TokenRequest(username, password);
-        Member member = new Member(1L, username, password, "name", "010-0000-0000");
+        Member member = new Member(1L, username, password, "name", "010-0000-0000", MemberRole.USER);
 
         given(memberDao.findByUsername(member.getUsername()))
                 .willReturn(member);
-        given(jwtTokenProvider.createToken(member.getId().toString()))
+        given(jwtTokenProvider.createToken(member.getId().toString(), member.getRole().name()))
                 .willReturn(token);
 
         // when

@@ -1,11 +1,14 @@
 package nextstep.config;
 
-import nextstep.auth.utils.JwtTokenProvider;
-import nextstep.auth.presentation.argumentresolver.AuthenticationPrincipalArgumentResolver;
-import nextstep.auth.presentation.interceptor.AuthInterceptor;
+import nextstep.presentation.interceptor.AdminInterceptor;
+import nextstep.presentation.interceptor.PathPatternInterceptor;
+import nextstep.utils.JwtTokenProvider;
+import nextstep.presentation.argumentresolver.AuthenticationPrincipalArgumentResolver;
+import nextstep.presentation.interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -35,15 +38,28 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public AdminInterceptor adminInterceptor() {
+        return new AdminInterceptor(jwtTokenProvider);
+    }
+
+    @Bean
     public AuthenticationPrincipalArgumentResolver authArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor())
+        PathPatternInterceptor pathPatternInterceptor = PathPatternInterceptor.from(authInterceptor())
+                .excludeCustomPathPattern("/members", HttpMethod.POST.name())
+                .excludeCustomPathPattern("/reservations", HttpMethod.GET.name());
+
+        registry.addInterceptor(pathPatternInterceptor)
                 .order(1)
-                .addPathPatterns("/members/me", "/reservations/**");
+                .addPathPatterns("/admin/**", "/members/**", "/reservations/**");
+
+        registry.addInterceptor(adminInterceptor())
+                .order(2)
+                .addPathPatterns("/admin/**");
     }
 
     @Override

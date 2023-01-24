@@ -1,12 +1,11 @@
 package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nextstep.auth.presentation.LoginController;
-import nextstep.auth.service.LoginService;
-import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.presentation.LoginController;
+import nextstep.service.LoginService;
+import nextstep.utils.JwtTokenProvider;
 import nextstep.dto.request.TokenRequest;
 import nextstep.dto.response.TokenResponse;
-import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

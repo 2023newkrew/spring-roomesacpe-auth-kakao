@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.domain.member.Member;
+import nextstep.domain.member.MemberRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +13,7 @@ public class MemberTest {
     @Test
     void checkWrongPassword() {
         String password = "test";
-        Member member = new Member("username", password, "name", "010-0000-0000");
+        Member member = new Member("username", password, "name", "010-0000-0000", MemberRole.USER);
 
         assertThat(member.checkWrongPassword(password)).isFalse();
     }
@@ -20,7 +22,7 @@ public class MemberTest {
     @Test
     void failToCheckWrongPassword() {
         String password = "test", wrongPassword = "test222";
-        Member member = new Member("username", password, "name", "010-0000-0000");
+        Member member = new Member("username", password, "name", "010-0000-0000", MemberRole.USER);
 
         assertThat(member.checkWrongPassword(wrongPassword)).isTrue();
     }

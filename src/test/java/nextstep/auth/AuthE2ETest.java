@@ -1,18 +1,23 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.dto.request.TokenRequest;
 import nextstep.dto.response.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
+import nextstep.dto.request.MemberRequest;
+import nextstep.dto.request.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.common.fixture.MemberProvider.로그인을_한다;
+import static nextstep.common.fixture.MemberProvider.멤버를_생성한다;
+import static nextstep.common.fixture.ThemeProvider.테마를_생성한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -20,44 +25,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+        멤버를_생성한다(new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678"));
     }
 
     @DisplayName("토큰을 생성한다")
     @Test
     public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+        TokenResponse response = 로그인을_한다(new TokenRequest(USERNAME, PASSWORD));
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(response).isNotNull();
     }
 
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
-        createTheme();
+        TokenResponse adminTokenResponse = 로그인을_한다(new TokenRequest("admin", "admin"));
+        테마를_생성한다(adminTokenResponse.getAccessToken(), new ThemeRequest("테마이름", "테마설명", 22000));
 
         var response = RestAssured
                 .given().log().all()
-                .param("date", "2022-08-11")
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -65,30 +54,21 @@ public class AuthE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
+    @DisplayName("일반 사용자는 테마를 삭제할 수 없다.")
     @Test
     void delete() {
-        Long id = createTheme();
+        TokenResponse memberTokenResponse = 로그인을_한다(new TokenRequest(USERNAME, PASSWORD));
+        TokenResponse adminTokenResponse = 로그인을_한다(new TokenRequest("admin", "admin"));
+        ExtractableResponse<Response> themeResponse = 테마를_생성한다(adminTokenResponse.getAccessToken(), new ThemeRequest("테마이름", "테마설명", 22000));
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + memberTokenResponse.getAccessToken())
+                .when().delete("/admin" + themeResponse.header(HttpHeaders.LOCATION))
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
-    }
 }
