@@ -1,8 +1,8 @@
 package nextstep.support.resolver;
 
-import nextstep.auth.JwtTokenProvider;
-import nextstep.member.MemberService;
+import nextstep.service.MemberService;
 import nextstep.support.annotation.AuthenticationPrincipal;
+import nextstep.support.util.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -27,6 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String accessToken = webRequest.getHeader("Authorization");
         assert jwtTokenProvider.validateToken(accessToken);
-        return memberService.findByUsername(jwtTokenProvider.getPrincipal(accessToken));
+        long memberId = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
+        return memberService.findByMemberId(memberId);
     }
 }

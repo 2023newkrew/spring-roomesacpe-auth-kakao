@@ -3,12 +3,10 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
-import nextstep.member.Member;
-import nextstep.member.MemberRequest;
-import nextstep.schedule.ScheduleRequest;
-import nextstep.theme.ThemeRequest;
+import nextstep.domain.Reservation;
+import nextstep.dto.request.*;
+import nextstep.dto.response.ReservationResponse;
+import nextstep.dto.response.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,25 +22,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ReservationE2ETest {
-    public static final String DATE = "2022-08-11";
-    public static final String TIME = "13:00";
-    public static final String NAME = "name";
+    private static final String DATE = "2022-08-11";
+    private static final String TIME = "13:00";
+
+    private static final long ADMIN_MEMBER_ID = 1L;
+    private static final String ADMIN_PASSWORD = "admin";
 
     private TokenResponse token;
-    private Member member;
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
+    private String adminAccessToken;
 
     @BeforeEach
     void setUp() {
+        TokenRequest adminTokenRequest = new TokenRequest(ADMIN_MEMBER_ID, ADMIN_PASSWORD);
+        this.adminAccessToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response().as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .header("Authorization", this.adminAccessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -71,7 +82,10 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
+        String[] memberLocation = memberResponse.header("Location").split("/");
+        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+
+        TokenRequest tokenRequest = new TokenRequest(memberId, "password");
         this.token = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -80,9 +94,6 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().response().as(TokenResponse.class);
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
         request = new ReservationRequest(scheduleId);
     }
@@ -138,7 +149,7 @@ class ReservationE2ETest {
     @Test
     void mismatchDelete() {
         MemberRequest body = new MemberRequest("a", "b", "c", "010-1111-2222");
-        RestAssured
+        var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -147,8 +158,11 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        TokenRequest tokenRequest = new TokenRequest("a", "b");
-        var wrongToken = RestAssured
+        String[] memberLocation = memberResponse.header("Location").split("/");
+        long subMemberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
+
+        TokenRequest tokenRequest = new TokenRequest(subMemberId, "b");
+        var invalidToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
@@ -161,7 +175,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header("Authorization", wrongToken.getAccessToken())
+                .header("Authorization", invalidToken.getAccessToken())
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
