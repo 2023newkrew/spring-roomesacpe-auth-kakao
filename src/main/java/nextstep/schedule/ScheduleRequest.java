@@ -38,4 +38,13 @@ public class ScheduleRequest {
                 LocalTime.parse(this.time)
         );
     }
+
+    @Override
+    public String toString() {
+        return "ScheduleRequest{" +
+                "themeId=" + themeId +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                '}';
+    }
 }

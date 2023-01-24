@@ -30,4 +30,13 @@ public class ThemeRequest {
                 this.price
         );
     }
+
+    @Override
+    public String toString() {
+        return "ThemeRequest{" +
+                "name='" + name + '\'' +
+                ", desc='" + desc + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

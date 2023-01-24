@@ -45,4 +45,15 @@ public class Member {
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 }

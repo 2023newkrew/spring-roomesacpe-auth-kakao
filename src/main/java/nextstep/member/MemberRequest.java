@@ -32,4 +32,14 @@ public class MemberRequest {
     public Member toEntity() {
         return new Member(username, password, name, phone);
     }
+
+    @Override
+    public String toString() {
+        return "MemberRequest{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 }

@@ -19,4 +19,12 @@ public class ReservationRequest {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "ReservationRequest{" +
+                "scheduleId=" + scheduleId +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

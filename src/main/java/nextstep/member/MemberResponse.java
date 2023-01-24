@@ -39,4 +39,15 @@ public class MemberResponse {
     public String getPhone() {
         return phone;
     }
+
+    @Override
+    public String toString() {
+        return "MemberResponse{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 }
