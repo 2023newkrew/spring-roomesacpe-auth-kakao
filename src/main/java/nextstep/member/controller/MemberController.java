@@ -2,7 +2,8 @@ package nextstep.member.controller;
 
 import nextstep.global.annotation.AuthenticationPrincipal;
 import nextstep.global.util.JwtTokenProvider;
-import nextstep.member.entity.Member;
+import nextstep.member.dto.MemberResponse;
+import nextstep.member.entity.MemberEntity;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal String username) {
-        Member member = memberService.findByUsername(username);
-        return ResponseEntity.ok(member);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal String memberId) {
+        MemberResponse memberResponse = memberService.findById(Long.parseLong(memberId));
+        return ResponseEntity.ok(memberResponse);
     }
 }
