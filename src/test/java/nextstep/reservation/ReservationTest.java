@@ -10,12 +10,17 @@ import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -24,6 +29,7 @@ import static nextstep.auth.JwtTokenProviderTest.saveMember;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 class ReservationTest {
     public static final String DATE = "2022-08-11";
@@ -35,14 +41,21 @@ class ReservationTest {
     private Long scheduleId;
     private Long memberId;
 
+    @InjectMocks
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    Environment env;
+
     @Autowired
     JdbcTemplate jdbcTemplate;
     private String token;
 
     @BeforeEach
     void setUp() {
-        jwtTokenProvider = new JwtTokenProvider();
+        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", env.getProperty("jwt.secret"));
+        ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", env.getProperty("jwt.validateMilliSeconds"));
+
         saveMember(jdbcTemplate);
         ExtractableResponse<Response> tokenResponse = generateToken();
         token = tokenResponse.body().jsonPath().getString("accessToken");
@@ -79,18 +92,43 @@ class ReservationTest {
         );
     }
 
-    @DisplayName("예약을 생성할 수 있다.")
+    @DisplayName("스케줄이 있는 경우, 예약을 생성할 수 있다.")
     @Test
     void create() {
-        System.out.println(token);
-        var response = RestAssured
-                .given().log().all()
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/reservations")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+        RestAssured
+            .given().log().all()
+            .header("Authorization", "Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("스케줄이 없는 경우, 예약을 생성하면 에러가 발생한다.")
+    @Test
+    void createError() {
+        request = new ReservationRequest(
+                scheduleId+2,
+                jwtTokenProvider.getPrincipal(token)
+        );
+        RestAssured
+            .given().log().all()
+            .header("Authorization", "Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
+            .when().post("/reservations")
+            .then().log().all()
+            .statusCode(HttpStatus.LENGTH_REQUIRED.value());
+    }
+
+    @DisplayName("중복 예약을 생성할 경우, 에러가 발생한다")
+    @Test
+    void createDuplicateReservation() {
+        createReservation();
+        ExtractableResponse<Response> response = createReservation();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
     }
 
 
@@ -112,27 +150,6 @@ class ReservationTest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제할 수 있다")
-    @Test
-    void delete() {
-        var reservation = createReservation();
-        RestAssured
-            .given().log().all()
-            .header("Authorization", "Bearer " + token)
-            .when().delete(reservation.header("Location"))
-            .then().log().all()
-            .statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("중복 예약을 생성할 경우, 에러가 발생한다")
-    @Test
-    void createDuplicateReservation() {
-        createReservation();
-        ExtractableResponse<Response> response = createReservation();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-
-    }
-
     @DisplayName("예약이 없을 때 예약 목록은 비어있다.")
     @Test
     void showEmptyReservations() {
@@ -149,6 +166,18 @@ class ReservationTest {
         assertThat(reservations.size()).isEqualTo(0);
     }
 
+    @DisplayName("예약을 삭제할 수 있다")
+    @Test
+    void delete() {
+        var reservation = createReservation();
+        RestAssured
+            .given().log().all()
+            .header("Authorization", "Bearer " + token)
+            .when().delete(reservation.header("Location"))
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
     @DisplayName("없는 예약을 삭제할 경우, 에러가 발생한다")
     @Test
     void createNotExistReservation() {
@@ -159,7 +188,6 @@ class ReservationTest {
             .then().log().all()
             .statusCode(HttpStatus.LENGTH_REQUIRED.value());
     }
-
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
