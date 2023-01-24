@@ -82,7 +82,6 @@ public class ReservationDao {
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
-
         try {
             return jdbcTemplate.query(sql, rowMapper, id);
         } catch (Exception e) {

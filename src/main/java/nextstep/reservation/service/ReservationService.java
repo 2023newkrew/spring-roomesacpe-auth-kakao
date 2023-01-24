@@ -56,7 +56,12 @@ public class ReservationService {
     }
 
     public void deleteById(Long id, Member member) {
-        if (!member.getUsername().equals(reservationDao.findById(id).getName())) {
+        Reservation reservation = reservationDao.findById(id);
+        if(reservation == null){
+            throw new NotExistEntityException();
+        }
+
+        if (!member.getUsername().equals(reservation.getName())) {
             throw new AuthorizationException();
         }
 
