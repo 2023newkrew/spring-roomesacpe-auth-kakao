@@ -1,14 +1,12 @@
 package nextstep.auth;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class PathContainer {
     private final PathMatcher pathMatcher;
     private final List<RequestPathAndMethod> includePathPattern;

@@ -12,9 +12,9 @@ public class PathMatchInterceptor implements HandlerInterceptor {
     private final HandlerInterceptor handlerInterceptor;
     private final PathContainer pathContainer;
 
-    public PathMatchInterceptor(LoginInterceptor handlerInterceptor, PathContainer pathContainer) {
+    public PathMatchInterceptor(LoginInterceptor handlerInterceptor) {
         this.handlerInterceptor = handlerInterceptor;
-        this.pathContainer = pathContainer;
+        this.pathContainer = new PathContainer();
     }
 
     @Override
