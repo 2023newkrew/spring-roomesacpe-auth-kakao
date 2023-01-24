@@ -3,6 +3,7 @@ package nextstep.auth.service;
 import nextstep.auth.config.JwtTokenProvider;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
+import nextstep.exception.AuthorizationException;
 import nextstep.member.domain.Member;
 import nextstep.member.repository.MemberDao;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,10 +22,8 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-
         if (!checkPassword(tokenRequest)) {
-            // TODO: throw exception
-            return null;
+            throw new AuthorizationException("비밀번호를 잘못 입력했습니다.");
         }
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
         return new TokenResponse(accessToken);
