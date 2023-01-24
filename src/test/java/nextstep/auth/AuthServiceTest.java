@@ -25,9 +25,10 @@ public class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
+
     @Test
     void 비밀번호가_일치하지_않으면_오류가_발생한다() {
-        TokenRequest tokenRequest = new TokenRequest("username", "invalidPassword");
+        TokenRequest tokenRequest = new TokenRequest(1L, "invalidPassword");
         Member member = new Member(
                 1L,
                 "username",
@@ -35,14 +36,14 @@ public class AuthServiceTest {
                 "name",
                 "010-0000-0000"
         );
-        given(memberService.findByUsername(member.getUsername())).willReturn(member);
+        given(memberService.findById(member.getId())).willReturn(member);
         assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isInstanceOf(AuthorizationException.class);
     }
 
     @Test
     void 비밀번호가_일치하면_토큰이_반환된다() {
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
+        TokenRequest tokenRequest = new TokenRequest(1L, "password");
         Member member = new Member(
                 1L,
                 "username",
@@ -51,8 +52,8 @@ public class AuthServiceTest {
                 "010-0000-0000"
         );
         String token = "token";
-        given(memberService.findByUsername(member.getUsername())).willReturn(member);
-        given(jwtTokenProvider.createToken(member.getUsername())).willReturn(token);
+        given(memberService.findById(member.getId())).willReturn(member);
+        given(jwtTokenProvider.createToken(String.valueOf(member.getId()))).willReturn(token);
         assertThat(authService.createToken(tokenRequest).getAccessToken()).isEqualTo(token);
     }
 
