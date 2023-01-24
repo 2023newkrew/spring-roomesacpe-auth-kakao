@@ -33,7 +33,7 @@ class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("일반 사용자가 로그인을 요청해서 로그인에 성공하면 토큰을 반환한다")
     @Test
     void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
@@ -42,7 +42,7 @@ class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/token")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -59,7 +59,7 @@ class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/token")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
                 .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
@@ -73,7 +73,7 @@ class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/token")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(ErrorCode.MEMBER_NOT_FOUND.getStatus())
                 .body("code", is(ErrorCode.MEMBER_NOT_FOUND.getCode()));
