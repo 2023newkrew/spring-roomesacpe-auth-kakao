@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -31,17 +32,23 @@ class ReservationE2ETest {
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
-    private Long memberId;
     private String token;
 
     @BeforeEach
     void setUp() {
+        String adminToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("admin", "admin"))
+                .post("/login/token").as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(new Header(HttpHeaders.AUTHORIZATION,  "Bearer " + adminToken))
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -52,36 +59,24 @@ class ReservationE2ETest {
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(new Header(HttpHeaders.AUTHORIZATION,  "Bearer " + adminToken))
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
         request = new ReservationRequest(
                 scheduleId,
-                body.getName()
+                "davi"
         );
 
         var tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TokenRequest(body.getUsername(), body.getPassword()))
+                .body(new TokenRequest("username", "password"))
                 .post("/login/token");
 
         token = "Bearer " + tokenResponse.as(TokenResponse.class).getAccessToken();
@@ -106,7 +101,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
@@ -121,7 +116,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -139,7 +134,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -153,7 +148,7 @@ class ReservationE2ETest {
     void deleteNotMine() {
         var reservation = createReservation();
 
-        MemberRequest body = new MemberRequest("kane", "password", "davi", "010-1234-5678");
+        MemberRequest body = new MemberRequest("kane", "password", "kane", "010-1234-5678");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -167,7 +162,7 @@ class ReservationE2ETest {
                 .as(TokenResponse.class).getAccessToken();
         RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", "Bearer " + token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -180,7 +175,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -195,7 +190,7 @@ class ReservationE2ETest {
     void showEmptyReservations() {
         var response = RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -211,18 +206,18 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .header(new Header("Authorization", token))
+                .header(new Header(HttpHeaders.AUTHORIZATION, token))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
