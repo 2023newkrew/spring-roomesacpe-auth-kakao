@@ -1,11 +1,13 @@
+DROP TABLE IF EXISTS reservation;
 CREATE TABLE reservation
 (
-    id          bigint      not null auto_increment,
-    schedule_id bigint      not null,
-    name        varchar(20) not null,
+    id          bigint not null auto_increment,
+    schedule_id bigint not null,
+    member_id   bigint not null,
     primary key (id)
 );
 
+DROP TABLE IF EXISTS theme;
 CREATE TABLE theme
 (
     id    bigint       not null auto_increment,
@@ -15,6 +17,7 @@ CREATE TABLE theme
     primary key (id)
 );
 
+DROP TABLE IF EXISTS schedule;
 CREATE TABLE schedule
 (
     id       bigint not null auto_increment,
@@ -24,12 +27,14 @@ CREATE TABLE schedule
     primary key (id)
 );
 
+DROP TABLE IF EXISTS member;
 CREATE TABLE member
 (
-    id       bigint      not null auto_increment,
-    username varchar(20) not null,
-    password varchar(20) not null,
-    name     varchar(20) not null,
-    phone    varchar(20) not null,
-    primary key (id)
+    id       bigint       not null auto_increment,
+    username varchar(20)  not null,
+    password varchar(100) not null,
+    name     varchar(20)  not null,
+    phone    varchar(20)  not null,
+    primary key (id),
+    unique (username)
 );
