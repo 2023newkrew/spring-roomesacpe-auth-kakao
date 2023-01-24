@@ -1,6 +1,6 @@
 package nextstep.member.mapper;
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import nextstep.global.util.PasswordUtility;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberResponse;
@@ -8,7 +8,7 @@ import nextstep.member.entity.MemberEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-@NoArgsConstructor
+@AllArgsConstructor
 public class MemberMapper {
     private PasswordUtility passwordUtility;
 
