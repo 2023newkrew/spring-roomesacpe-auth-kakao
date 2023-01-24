@@ -28,13 +28,14 @@ public class AuthServiceTest {
 
     @Test
     void 비밀번호가_일치하지_않으면_오류가_발생한다() {
-        TokenRequest tokenRequest = new TokenRequest(1L, "invalidPassword");
+        TokenRequest tokenRequest = new TokenRequest(2L, "invalidPassword");
         Member member = new Member(
-                1L,
+                2L,
                 "username",
                 "password",
                 "name",
-                "010-0000-0000"
+                "010-0000-0000",
+                "MEMBER"
         );
         given(memberService.findById(member.getId())).willReturn(member);
         assertThatThrownBy(() -> authService.createToken(tokenRequest))
@@ -43,13 +44,14 @@ public class AuthServiceTest {
 
     @Test
     void 비밀번호가_일치하면_토큰이_반환된다() {
-        TokenRequest tokenRequest = new TokenRequest(1L, "password");
+        TokenRequest tokenRequest = new TokenRequest(2L, "password");
         Member member = new Member(
-                1L,
+                2L,
                 "username",
                 "password",
                 "name",
-                "010-0000-0000"
+                "010-0000-0000",
+                "MEMBER"
         );
         String token = "token";
         given(memberService.findById(member.getId())).willReturn(member);
