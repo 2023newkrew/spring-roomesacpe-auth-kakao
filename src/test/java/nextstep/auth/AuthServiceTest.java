@@ -74,4 +74,16 @@ class AuthServiceTest {
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.UNAUTHORIZED);
     }
+
+    @DisplayName("Admin의 username과 password가 일치하는지 확인 후 토큰 발급해서 반환")
+    @Test
+    void createAdminToken() {
+        TokenRequest tokenRequest = new TokenRequest("admin1", "admin1");
+
+        TokenResponse tokenResponse = authService.createAdminToken(tokenRequest);
+
+        String username = jwtTokenProvider.getPrincipal(tokenResponse.getAccessToken());
+
+        assertThat(username).isEqualTo("admin1");
+    }
 }
