@@ -12,7 +12,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
-    private long validityInMilliseconds = 3600000;
+    private long validityInMilliseconds = 3_600_000;
 
     public String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);
