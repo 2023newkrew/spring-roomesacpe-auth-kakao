@@ -22,8 +22,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthServiceTest {
 
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    public static final String MEMBER_USERNAME = "username";
+    public static final String MEMBER_PASSWORD = "password";
+    public static final String ADMIN_USERNAME = "admin1";
+    public static final String ADMIN_PASSWORD = "admin1";
 
     @Autowired
     AuthService authService;
@@ -32,7 +34,7 @@ class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(MEMBER_USERNAME, MEMBER_PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -45,19 +47,19 @@ class AuthServiceTest {
     @DisplayName("Member의 username과 password 일치 확인 후 토큰을 발급해서 반환")
     @Test
     void create() {
-        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(MEMBER_USERNAME, MEMBER_PASSWORD);
 
         TokenResponse tokenResponse = authService.createMemberToken(tokenRequest);
 
         String username = jwtTokenProvider.getPrincipal(tokenResponse.getAccessToken());
 
-        assertThat(username).isEqualTo(USERNAME);
+        assertThat(username).isEqualTo(MEMBER_USERNAME);
     }
 
     @DisplayName("username에 해당하는 Member가 DB에 없는 경우 예외 발생")
     @Test
     void create_notFound() {
-        TokenRequest tokenRequest = new TokenRequest("wrongUserName", PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest("wrongUserName", MEMBER_PASSWORD);
         assertThatThrownBy(() -> authService.createMemberToken(tokenRequest))
                 .isInstanceOf(NotExistEntityException.class)
                 .extracting("errorCode")
@@ -67,7 +69,7 @@ class AuthServiceTest {
     @DisplayName("Member의 username과 password가 일치하지 않는 경우 예외 발생")
     @Test
     void create_wrongPassword() {
-        TokenRequest tokenRequest = new TokenRequest(USERNAME, "wrongPassword");
+        TokenRequest tokenRequest = new TokenRequest(MEMBER_USERNAME, "wrongPassword");
         assertThatThrownBy(() -> authService.createMemberToken(tokenRequest))
                 .isInstanceOf(NotCorrectPasswordException.class)
                 .extracting("errorCode")
@@ -77,12 +79,32 @@ class AuthServiceTest {
     @DisplayName("Admin의 username과 password가 일치하는지 확인 후 토큰 발급해서 반환")
     @Test
     void createAdminToken() {
-        TokenRequest tokenRequest = new TokenRequest("admin1", "admin1");
+        TokenRequest tokenRequest = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
 
         TokenResponse tokenResponse = authService.createAdminToken(tokenRequest);
 
         String username = jwtTokenProvider.getPrincipal(tokenResponse.getAccessToken());
 
-        assertThat(username).isEqualTo("admin1");
+        assertThat(username).isEqualTo(ADMIN_USERNAME);
+    }
+
+    @DisplayName("username에 해당하는 Admin이 DB에 없는 경우 예외 발생")
+    @Test
+    void createAdminToken_notFound() {
+        TokenRequest tokenRequest = new TokenRequest("wrongAdminUserName", ADMIN_PASSWORD);
+        assertThatThrownBy(() -> authService.createAdminToken(tokenRequest))
+                .isInstanceOf(NotExistEntityException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.USER_NOT_FOUND);
+    }
+
+    @DisplayName("Admin의 username과 password가 일치하지 않는 경우 예외 발생")
+    @Test
+    void createAdminToken_wrongPassword() {
+        TokenRequest tokenRequest = new TokenRequest(ADMIN_USERNAME, "wrongPassword");
+        assertThatThrownBy(() -> authService.createAdminToken(tokenRequest))
+                .isInstanceOf(NotCorrectPasswordException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.UNAUTHORIZED);
     }
 }
