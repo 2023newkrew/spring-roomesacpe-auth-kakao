@@ -51,4 +51,9 @@ public class MemberDao {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         return jdbcTemplate.query(sql, rowMapper, username).stream().findAny();
     }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM member WHERE id = (?)";
+        jdbcTemplate.update(sql, id);
+    }
 }
