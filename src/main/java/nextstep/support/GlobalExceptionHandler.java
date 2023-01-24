@@ -15,6 +15,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorType.UNAUTHORIZED.getMessage()));
     }
 
+    @ExceptionHandler(DuplicateEntityException.class)
+    protected ResponseEntity<ErrorResponse> handleDuplicateEntityException(DuplicateEntityException e) {
+        return ResponseEntity.status(ErrorType.DUPLICATE_ENTITY.getStatusCode())
+                .body(new ErrorResponse(ErrorType.DUPLICATE_ENTITY.getMessage()));
+    }
+
     @ExceptionHandler(InvalidMemberException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidMemberException(InvalidMemberException e) {
         return ResponseEntity.status(ErrorType.INVALID_MEMBER.getStatusCode())
