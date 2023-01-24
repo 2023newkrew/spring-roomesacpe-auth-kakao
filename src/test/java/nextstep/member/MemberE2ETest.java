@@ -1,45 +1,64 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
+import nextstep.domain.domain.Member;
+import nextstep.domain.model.request.MemberRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+import java.io.InputStream;
+import java.util.List;
+
+import static nextstep.auth.LoginUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Sql(scripts = "/sql/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class MemberE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    @Autowired
-    private MemberDao memberDao;
+    private String token;
 
-    @DisplayName("멤버를 생성한다")
     @Test
-    public void create() {
+    @DisplayName("유저는 멤버를 생성할 수 없다.")
+    public void createByUser() {
+        token = loginUser();
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(token)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    @DisplayName("관리자는 멤버를 생성할 수 있다.")
+    public void createByAdmin() {
+        token = loginAdmin();
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .auth().oauth2(token)
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰으로 멤버 정보를 조회한다")
     @Test
+    @DisplayName("토큰으로 멤버 정보를 조회한다")
     public void findByToken() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
-
-        String token = requestLogin();
-
+        String token = loginUser();
         Member member = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -48,21 +67,20 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract().as(Member.class);
 
-        Assertions.assertThat(member.getUsername()).isEqualTo(USERNAME);
-        Assertions.assertThat(member.getPassword()).isEqualTo(PASSWORD);
+        assertThat(member.getUsername()).isEqualTo("user");
+        assertThat(member.getPassword()).isEqualTo("user");
     }
 
-    private String requestLogin() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-
-        return RestAssured
+    @Test
+    @DisplayName("로그인이 되어있지 않아도 멤버 리스트를 볼 수 있다.")
+    public void findAll() {
+        List<?> memberList = RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class)
-                .getAccessToken();
+                .statusCode(HttpStatus.OK.value()).extract().as(List.class);
+
+        assertThat(memberList).hasSize(3);
     }
 }

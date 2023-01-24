@@ -1,31 +1,30 @@
 package nextstep.auth;
 
-import nextstep.infrastructure.JwtTokenProvider;
+import nextstep.infra.jwt.JwtTokenProvider;
+import nextstep.domain.context.MemberDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
 @DisplayName("JwtTokenProvider 학습 테스트")
 class JwtTokenProviderTest {
-    private static final String SECRET_KEY = "secretKey";
-    private static final Long MAX_AGE = 32000L;
-
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
     @Test
     void createToken() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(SECRET_KEY, MAX_AGE);
-
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(MemberDetails.builder().build());
 
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
 
     @Test
     void getPrincipal() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(SECRET_KEY, MAX_AGE);
+        String token = jwtTokenProvider.createToken(MemberDetails.builder().id(1L).build());
 
-        String token = jwtTokenProvider.createToken("1");
-
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        assertThat(jwtTokenProvider.getPrincipal(token).getId()).isEqualTo(1L);
     }
 }

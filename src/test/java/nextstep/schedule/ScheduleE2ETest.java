@@ -1,64 +1,47 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
-import nextstep.member.Member;
-import nextstep.member.MemberDao;
-import nextstep.theme.ThemeRequest;
-import org.junit.jupiter.api.BeforeEach;
+import nextstep.domain.model.request.ScheduleRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
+import static nextstep.auth.LoginUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Sql(scripts = "/sql/schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class ScheduleE2ETest {
-    private Long themeId;
-
-    @BeforeEach
-    void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = response.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-    }
-
-    @DisplayName("스케줄을 생성한다")
+    private String token;
     @Test
+    @DisplayName("스케줄을 생성한다")
     public void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        token = loginAdmin();
+
+        ScheduleRequest body = new ScheduleRequest(9999L, "2022-08-15", "13:00");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .auth().oauth2(token)
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("스케줄을 조회한다")
     @Test
+    @DisplayName("스케줄을 조회한다")
     public void showSchedules() {
-        requestCreateSchedule();
+        token = loginUser();
 
         var response = RestAssured
                 .given().log().all()
-                .param("themeId", themeId)
+                .param("themeId", 9999L)
                 .param("date", "2022-08-11")
+                .auth().oauth2(token)
                 .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -67,14 +50,16 @@ public class ScheduleE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
     @Test
+    @DisplayName("스케줄을 삭제한다")
     void delete() {
+        token = loginAdmin();
         String location = requestCreateSchedule();
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .auth().oauth2(token)
+                .when().delete("/admin" + location)
                 .then().log().all()
                 .extract();
 
@@ -82,12 +67,13 @@ public class ScheduleE2ETest {
     }
 
     public String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleRequest body = new ScheduleRequest(9999L, "2022-08-15", "13:00");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .auth().oauth2(token)
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
