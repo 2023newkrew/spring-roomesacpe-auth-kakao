@@ -25,10 +25,9 @@ public class AuthService {
     }
 
     private boolean checkInvalidLogin(Long id, String password) {
-        return !memberService
+        return memberService
                 .findById(id)
-                .getPassword()
-                .equals(password);
+                .checkWrongPassword(password);
     }
 
     public Member getMemberFromToken(String token) {
