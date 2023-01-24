@@ -3,11 +3,13 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.schedule.ScheduleRequest;
-import nextstep.theme.ThemeRequest;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
+import nextstep.member.dto.MemberRequest;
+import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.dto.ReservationRequest;
+import nextstep.schedule.dto.ScheduleRequest;
+import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -171,6 +173,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -200,6 +203,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
