@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.auth.AuthenticatedUsername;
+import nextstep.auth.AuthenticatedMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +22,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@AuthenticatedUsername String username) {
-        Member member = memberService.findByUsername(username);
+    public ResponseEntity<MemberResponse> me(@AuthenticatedMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.from(member));
     }
 

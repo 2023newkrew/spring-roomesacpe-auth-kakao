@@ -20,4 +20,11 @@ public class MemberRequest {
     public Member toEntity() {
         return new Member(username, password, name, phone);
     }
+
+    public MemberRequest(Member member) {
+        this.username = member.getUsername();
+        this.password = member.getPassword();
+        this.name = member.getName();
+        this.phone = member.getPhone();
+    }
 }

@@ -4,8 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.exceptions.exception.AuthorizationException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Component
 public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -19,7 +21,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = extractToken(request);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationException("유효하지 않은 토큰입니다.");
+            throw new AuthorizationException();
         }
         request.setAttribute("accessToken", token);
         return true;

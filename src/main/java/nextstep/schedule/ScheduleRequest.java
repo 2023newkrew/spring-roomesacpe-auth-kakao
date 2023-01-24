@@ -27,4 +27,10 @@ public class ScheduleRequest {
                 LocalTime.parse(this.time)
         );
     }
+
+    public ScheduleRequest(Schedule schedule) {
+        this.themeId = schedule.getTheme().getId();
+        this.date = schedule.getDate().toString();
+        this.time = schedule.getTime().toString();
+    }
 }

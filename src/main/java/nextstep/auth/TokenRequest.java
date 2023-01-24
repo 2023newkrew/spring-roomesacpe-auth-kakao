@@ -12,6 +12,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 public class TokenRequest {
-    private String username;
+    private Long id;
     private String password;
 }

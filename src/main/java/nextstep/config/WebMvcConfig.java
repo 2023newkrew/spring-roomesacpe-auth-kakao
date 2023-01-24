@@ -1,9 +1,7 @@
 package nextstep.config;
 
 import nextstep.auth.AuthArgumentResolver;
-import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.AuthInterceptor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,33 +12,23 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthArgumentResolver authArgumentResolver;
+    private final AuthInterceptor authInterceptor;
 
-    public WebMvcConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    @Bean
-    public AuthInterceptor authInterceptor() {
-        return new AuthInterceptor(jwtTokenProvider);
-    }
-
-    @Bean
-    public AuthArgumentResolver authArgumentResolver() {
-        return new AuthArgumentResolver(jwtTokenProvider);
+    public WebMvcConfig(AuthArgumentResolver authArgumentResolver, AuthInterceptor authInterceptor) {
+        this.authArgumentResolver = authArgumentResolver;
+        this.authInterceptor = authInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor())
-                .excludePathPatterns("/**");
-
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/login/token", "/members");
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login/token", "/members");
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authArgumentResolver());
+        resolvers.add(authArgumentResolver);
     }
 }

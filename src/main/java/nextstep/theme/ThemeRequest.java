@@ -23,4 +23,10 @@ public class ThemeRequest {
                 this.price
         );
     }
+
+    public ThemeRequest(Theme theme) {
+        this.name = theme.getName();
+        this.desc = theme.getDesc();
+        this.price = theme.getPrice();
+    }
 }
