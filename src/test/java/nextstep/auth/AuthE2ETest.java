@@ -50,6 +50,32 @@ public class AuthE2ETest {
         assertThat(tokenResponse).isNotNull();
     }
 
+    @DisplayName("잘못된 username으로 토큰을 생성한다")
+    @Test
+    public void create_token_with_wrong_username() {
+        TokenRequest body = new TokenRequest("wrong username", PASSWORD);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("잘못된 비밀번호로 토큰을 생성한다")
+    @Test
+    public void create_token_with_wrong_password() {
+        TokenRequest body = new TokenRequest(USERNAME, "wrong password");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("토큰 정보로 회원 정보를 조회한다")
     @Test
     public void findMemberByToken() {
