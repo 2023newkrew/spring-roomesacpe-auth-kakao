@@ -33,3 +33,8 @@ CREATE TABLE IF NOT EXISTS member
     phone    varchar(20) not null,
     primary key (id)
 );
+
+
+CREATE INDEX ON member(username);
+CREATE INDEX ON reservation(schedule_id);
+CREATE INDEX ON schedule(theme_id, date);
