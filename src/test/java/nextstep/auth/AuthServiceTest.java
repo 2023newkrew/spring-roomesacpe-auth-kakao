@@ -6,7 +6,6 @@ import nextstep.error.ErrorCode;
 import nextstep.exception.NotCorrectPasswordException;
 import nextstep.exception.NotExistEntityException;
 import nextstep.member.MemberRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +61,7 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.createMemberToken(tokenRequest))
                 .isInstanceOf(NotExistEntityException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.MEMBER_NOT_FOUND);
+                .isEqualTo(ErrorCode.USER_NOT_FOUND);
     }
 
     @DisplayName("Member의 username과 password가 일치하지 않는 경우 예외 발생")

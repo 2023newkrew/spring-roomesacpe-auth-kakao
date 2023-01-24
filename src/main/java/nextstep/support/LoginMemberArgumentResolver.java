@@ -45,6 +45,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         String username = jwtTokenProvider.getPrincipal(token);
         return memberDao.findByUsername(username)
-                .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.USER_NOT_FOUND));
     }
 }

@@ -22,6 +22,6 @@ public class MemberService {
 
     public Member findByUserName(String userName) {
         return memberDao.findByUsername(userName)
-                .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.USER_NOT_FOUND));
     }
 }

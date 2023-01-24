@@ -75,7 +75,7 @@ class AuthE2ETest {
                 .body(body)
                 .when().post("/login/member")
                 .then().log().all()
-                .statusCode(ErrorCode.MEMBER_NOT_FOUND.getStatus())
-                .body("code", is(ErrorCode.MEMBER_NOT_FOUND.getCode()));
+                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
     }
 }
