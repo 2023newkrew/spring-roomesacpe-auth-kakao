@@ -1,6 +1,8 @@
 package nextstep.support;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.admin.AdminInterceptor;
+import nextstep.auth.JwtTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberService;
 import nextstep.support.resolver.AuthenticationPrincipalArgumentResolver;
@@ -12,16 +14,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcCustomConfigurer implements WebMvcConfigurer {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
     private final AdminInterceptor adminInterceptor;
-
-    public WebMvcCustomConfigurer(MemberService memberService, JwtTokenProvider jwtTokenProvider, AdminInterceptor adminInterceptor) {
-        this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.adminInterceptor = adminInterceptor;
-    }
+    private final JwtTokenExtractor jwtTokenExtractor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -30,6 +28,6 @@ public class WebMvcCustomConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthenticationPrincipalArgumentResolver(memberService, jwtTokenProvider));
+        resolvers.add(new AuthenticationPrincipalArgumentResolver(memberService, jwtTokenProvider, jwtTokenExtractor));
     }
 }

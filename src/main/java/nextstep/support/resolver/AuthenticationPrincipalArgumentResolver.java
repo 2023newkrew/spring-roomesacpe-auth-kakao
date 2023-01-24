@@ -1,6 +1,7 @@
 package nextstep.support.resolver;
 
-import nextstep.auth.JwtTokenConfig;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.JwtTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.MemberService;
 import nextstep.support.annotation.AuthorizationPrincipal;
@@ -13,14 +14,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@RequiredArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
-
-    public AuthenticationPrincipalArgumentResolver(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
-        this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtTokenExtractor jwtTokenExtractor;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -29,10 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String token = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-        if (token != null) {
-            token = token.replace(JwtTokenConfig.TOKEN_CLASS, "");
-        }
+        String token = jwtTokenExtractor.extractToken(webRequest.getHeader(HttpHeaders.AUTHORIZATION));
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN);
         }

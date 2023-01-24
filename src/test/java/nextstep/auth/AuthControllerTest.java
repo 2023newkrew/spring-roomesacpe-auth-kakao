@@ -29,6 +29,8 @@ public class AuthControllerTest {
     private MemberService memberService; // WebMvcConfigurer 생성을 위한 Mock
     @MockBean
     private JwtTokenProvider jwtTokenProvider; // WebMvcConfigurer 생성을 위한 Mock
+    @MockBean
+    private JwtTokenExtractor jwtTokenExtractor; // WebMvcConfigurer 생성을 위한 Mock
     @Autowired
     private ObjectMapper objectMapper;
     private final String DUMMY_TOKEN_STRING = "abcde";
