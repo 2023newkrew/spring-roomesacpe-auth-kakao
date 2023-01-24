@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class AnyRoleInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider tokenProvider;
     private final MemberService memberService;
 
-    public AnyRoleInterceptor(JwtTokenProvider tokenProvider, MemberService memberService) {
+    public LoginInterceptor(JwtTokenProvider tokenProvider, MemberService memberService) {
         this.tokenProvider = tokenProvider;
         this.memberService = memberService;
     }
