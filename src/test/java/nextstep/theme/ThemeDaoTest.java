@@ -52,7 +52,7 @@ public class ThemeDaoTest {
     @Test
     void 테마를_삭제할_수_있다() {
         Long id = themeDao.save(theme);
-        themeDao.delete(id);
+        themeDao.deleteById(id);
         assertThat(themeDao.findById(id)).isEqualTo(Optional.empty());
     }
 }

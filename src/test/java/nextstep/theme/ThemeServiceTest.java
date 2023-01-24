@@ -45,7 +45,7 @@ public class ThemeServiceTest {
     @Test
     void 존재하지_않는_예약을_삭제하려고_하면_예외가_발생한다() {
         given(themeDao.findById(1L)).willReturn(Optional.empty());
-        assertThatThrownBy(() -> themeService.delete(1L))
+        assertThatThrownBy(() -> themeService.deleteById(1L))
                 .isInstanceOf(ThemeNotFoundException.class);
     }
 

@@ -29,12 +29,12 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Schedule>> showSchedules(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
         return ResponseEntity.noContent().build();

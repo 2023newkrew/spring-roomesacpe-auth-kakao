@@ -29,8 +29,8 @@ public class ThemeService {
         return themeDao.findAll();
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         themeDao.findById(id).orElseThrow(ThemeNotFoundException::new);
-        themeDao.delete(id);
+        themeDao.deleteById(id);
     }
 }

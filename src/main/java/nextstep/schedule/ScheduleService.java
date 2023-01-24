@@ -30,6 +30,7 @@ public class ScheduleService {
     }
 
     public void deleteById(Long id) {
+        scheduleDao.findById(id).orElseThrow(ScheduleNotFoundException::new);
         scheduleDao.deleteById(id);
     }
 }
