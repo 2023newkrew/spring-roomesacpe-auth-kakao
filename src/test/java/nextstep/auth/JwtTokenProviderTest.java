@@ -28,13 +28,4 @@ class JwtTokenProviderTest {
 
         assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
     }
-
-    @Test
-    void getRole() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-
-        String token = jwtTokenProvider.createToken(new TokenGenDto(1L, Role.NORMAL));
-
-        assertThat(jwtTokenProvider.getRole(token)).isEqualTo(Role.NORMAL);
-    }
 }

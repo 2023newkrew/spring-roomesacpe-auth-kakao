@@ -19,9 +19,7 @@ public class JwtTokenProvider {
     private long validityInMilliseconds = 3600000;
 
     public String createToken(TokenGenDto tokenGenDto) {
-        Map<String, Object> customClaims = new HashMap<>();
-        customClaims.put("role", tokenGenDto.getRole());
-        Claims claims = Jwts.claims(customClaims).setSubject(tokenGenDto.getId().toString());
+        Claims claims = Jwts.claims().setSubject(tokenGenDto.getId().toString());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -35,10 +33,6 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public Role getRole(String token) {
-        return Role.valueOf(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class));
     }
 
     public boolean validateToken(String token) {
