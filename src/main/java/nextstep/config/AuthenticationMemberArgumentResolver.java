@@ -5,8 +5,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.CustomException;
-import nextstep.exception.ErrorCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -30,11 +28,6 @@ public class AuthenticationMemberArgumentResolver implements HandlerMethodArgume
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authHeader = webRequest.getHeader(AUTHORIZATION);
         String token = getTokenFromHeader(authHeader);
-        boolean isValidToken = jwtTokenProvider.validateToken(token);
-
-        if (!isValidToken) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        }
 
         return jwtTokenProvider.getAuthMember(token);
     }
