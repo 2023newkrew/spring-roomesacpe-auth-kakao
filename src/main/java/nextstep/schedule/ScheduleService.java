@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.support.exception.RoomEscapeExceptionCode;
 import nextstep.support.exception.ThemeException;
 import nextstep.theme.Theme;
@@ -11,14 +12,10 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleDao scheduleDao;
     private final ThemeDao themeDao;
-
-    public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao) {
-        this.scheduleDao = scheduleDao;
-        this.themeDao = themeDao;
-    }
 
     public Long create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId()).orElseThrow(

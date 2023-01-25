@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.support.exception.AuthorizationExcpetion;
@@ -14,15 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login/token")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final MemberService memberService;
-
-    public AuthController(AuthService authService, MemberService memberService) {
-        this.authService = authService;
-        this.memberService = memberService;
-    }
 
     @PostMapping
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {

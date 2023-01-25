@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
@@ -13,16 +14,12 @@ import java.util.Objects;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
-        this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
-    }
     public Long create(ReservationRequest reservationRequest, Member member) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId()).orElseThrow(
                 () -> new ScheduleException(RoomEscapeExceptionCode.NOT_FOUND_SCHEDULE)
@@ -62,3 +59,4 @@ public class ReservationService {
         reservationDao.deleteById(id);
     }
 }
+

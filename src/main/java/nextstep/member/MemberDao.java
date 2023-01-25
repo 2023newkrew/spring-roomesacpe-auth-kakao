@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,12 +11,9 @@ import java.sql.PreparedStatement;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class MemberDao {
-    public final JdbcTemplate jdbcTemplate;
-
-    public MemberDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> Member.builder()
             .id(resultSet.getLong("id"))

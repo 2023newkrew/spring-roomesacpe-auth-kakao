@@ -1,9 +1,11 @@
 package nextstep.support.exception;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.*;
 
+@RequiredArgsConstructor
 public enum RoomEscapeExceptionCode {
     AUTHORIZATION_FAIL(UNAUTHORIZED, "계정을 인증할 수 없습니다."),
     NOT_FOUND_MEMBER(NOT_FOUND, "멤버를 찾을 수 없습니다."),
@@ -16,11 +18,6 @@ public enum RoomEscapeExceptionCode {
     FORBIDDEN_ACCESS(FORBIDDEN, "관리자만 접속할 수 있습니다.");
     private final HttpStatus httpStatus;
     private final String errorMessage;
-
-    RoomEscapeExceptionCode(HttpStatus httpStatus, String errorMessage) {
-        this.httpStatus = httpStatus;
-        this.errorMessage = errorMessage;
-    }
 
     public HttpStatus getHttpStatus() {
         return httpStatus;
