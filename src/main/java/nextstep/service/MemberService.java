@@ -27,4 +27,7 @@ public class MemberService {
         return memberDao.findById(id).orElseThrow( () -> new NotFoundException("존재하지 않는 아이디 입니다."));
     }
 
+    public Long deleteById(Long id){
+        return memberDao.deleteById(id);
+    }
 }

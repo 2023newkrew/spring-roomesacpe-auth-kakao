@@ -56,4 +56,8 @@ public class MemberDao {
                 .findAny();
     }
 
+    public Long deleteById(Long id) {
+        return (long) jdbcTemplate.update(MemberJdbcSql.DELETE_BY_ID, id);
+    }
+
 }
