@@ -15,4 +15,8 @@ public enum Role {
                 .findAny()
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ROLE));
     }
+
+    public boolean isAdmin() {
+        return this.equals(ADMIN);
+    }
 }
