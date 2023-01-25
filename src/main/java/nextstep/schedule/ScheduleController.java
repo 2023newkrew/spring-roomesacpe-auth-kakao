@@ -17,7 +17,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+    public ResponseEntity<String> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).body("Location: /schedules/" + id);
     }
@@ -29,7 +29,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) throws NotContextException {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) throws NotContextException {
         scheduleService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

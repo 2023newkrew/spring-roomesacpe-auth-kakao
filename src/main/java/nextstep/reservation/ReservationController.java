@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.List;
 
 
+
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
@@ -19,21 +20,22 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest,
+    public ResponseEntity<String> createReservation(@RequestBody ReservationRequest reservationRequest,
                                             @RequestHeader(value = "Authorization") String authorization) {
         Long id = reservationService.create(reservationRequest, authorization);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).build();
+        return ResponseEntity.created(URI.create("/reservations/" + id)).body("Location: /reservations/" + id);
     }
 
     // localhost:8080/reservations?themeId=1&date=2022-02-01
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
+    public ResponseEntity<List<Reservation>> readReservations(@RequestParam Long themeId, @RequestParam String date,
+                                            @RequestHeader(value = "Authorization") String authorization) {
+        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date, authorization);
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id,
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id,
                                             @RequestHeader(value = "Authorization") String authorization)
                                             throws NotContextException {
         reservationService.deleteById(id, authorization);

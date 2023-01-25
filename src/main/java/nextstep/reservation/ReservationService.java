@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static nextstep.auth.authorization.LoginInterceptor.bearer;
+import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
 import static nextstep.config.Messages.*;
 
 
@@ -41,13 +41,12 @@ public class ReservationService {
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedules.get(0).getId());
-        if (!reservation.isEmpty()) {
+        if (!reservation.isEmpty()) {  // <- 하나만 수용.. / -> size()
             throw new DuplicateRequestException(ALREADY_REGISTERED_RESERVATION.getMessage());
         }
 
         String accessToken = authorization.substring(bearer.length());
         String username = jwtTokenProvider.getPrincipal(accessToken);
-
         Reservation newReservation = new Reservation(
                 schedules.get(0),
                 username
@@ -55,12 +54,16 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date, String authorization) {
         Optional<List<Theme>> themeList = themeDao.findById(themeId);
         if (themeList.isEmpty() || themeList.get().isEmpty()) {
             throw new NullPointerException();
         }
-        return reservationDao.findAllByThemeIdAndDate(themeId, date);
+
+        String accessToken = authorization.substring(bearer.length());
+        String username = jwtTokenProvider.getPrincipal(accessToken);
+
+        return reservationDao.findAllByThemeIdAndDate(username, themeId, date);
     }
 
     public void deleteById(Long id, String authorization) throws NotContextException {

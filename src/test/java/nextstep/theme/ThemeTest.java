@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static nextstep.auth.JwtTokenProviderTest.*;
-import static nextstep.auth.authorization.LoginInterceptor.authorization;
-import static nextstep.auth.authorization.LoginInterceptor.bearer;
+import static nextstep.auth.Interceptor.LoginInterceptor.authorization;
+import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

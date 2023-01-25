@@ -52,14 +52,14 @@ public class ReservationDao {
         return keyHolder.getKey().longValue();
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<Reservation> findAllByThemeIdAndDate(String username, Long themeId, String date) {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.name, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
-                "where theme.id = ? and schedule.date = ?;";
+                "where reservation.name = ? and theme.id = ? and schedule.date = ?;";
 
-        return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
+        return jdbcTemplate.query(sql, rowMapper, username, themeId, Date.valueOf(date));
     }
 
     public Reservation findById(Long id) {
@@ -94,4 +94,8 @@ public class ReservationDao {
         jdbcTemplate.update(sql, id);
     }
 
+    public void findByName(String username) {
+        String sql = "SELECT name FROM reservation WHERE name = ?";
+
+    }
 }

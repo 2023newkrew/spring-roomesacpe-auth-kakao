@@ -25,7 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static nextstep.auth.JwtTokenProviderTest.*;
-import static nextstep.auth.authorization.LoginInterceptor.*;
+import static nextstep.auth.Interceptor.LoginInterceptor.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

@@ -24,8 +24,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static nextstep.RoomEscapeApplication.getPasswordEncoder;
-import static nextstep.auth.authorization.LoginInterceptor.authorization;
-import static nextstep.auth.authorization.LoginInterceptor.bearer;
+import static nextstep.auth.Interceptor.LoginInterceptor.authorization;
+import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtTokenProvider 학습 테스트")

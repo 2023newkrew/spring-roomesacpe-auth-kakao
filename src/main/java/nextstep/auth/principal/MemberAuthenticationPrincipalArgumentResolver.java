@@ -11,8 +11,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Objects;
 
-import static nextstep.auth.authorization.LoginInterceptor.authorization;
-import static nextstep.auth.authorization.LoginInterceptor.bearer;
+import static nextstep.auth.Interceptor.LoginInterceptor.authorization;
+import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
 import static nextstep.config.Messages.*;
 
 
