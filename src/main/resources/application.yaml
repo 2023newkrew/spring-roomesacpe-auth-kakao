@@ -1,0 +1,6 @@
+jwt:
+  key:
+    secret: "learning-test-spring"
+    role: "role"
+    username: "username"
+  expire-time: 3600000
