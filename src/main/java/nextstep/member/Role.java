@@ -1,15 +1,32 @@
 package nextstep.member;
 
+import java.util.Arrays;
+
 public enum Role {
-    USER("user"), ADMIN("admin");
+    USER(0), ADMIN(1);
 
-    private final String role;
+    private final int roleNumber;
 
-    Role(String role) {
-        this.role = role;
+    Role(int roleNumber) {
+        this.roleNumber = roleNumber;
     }
 
-    public String getRole() {
-        return role;
+    public int getValue() {
+        return roleNumber;
+    }
+
+
+    public static Role getRole(int role) {
+        return Arrays.stream(Role.values())
+                .filter(v -> v.getValue() == role)
+                .findFirst()
+                .orElseThrow(() -> new IllegalAccessError("권한이 올바르지 않습니다."));
+    }
+
+    public static Role getRole(String role) {
+        return Arrays.stream(Role.values())
+                .filter(v -> v.name().equals(role))
+                .findFirst()
+                .orElseThrow(() -> new IllegalAccessError("권한이 올바르지 않습니다."));
     }
 }

@@ -9,17 +9,21 @@ public class Member {
     private String phone;
     private Role role;
 
-    public Member(String username, String password, String name, String phone) {
-        this(null, username, password, name, phone);
+    public Member(String username, String password, String name, String phone, Role role) {
+        this(null, username, password, name, phone, role);
     }
 
     public Member(Long id, String username, String password, String name, String phone) {
+        this(id, username, password, name, phone, Role.USER);
+    }
+
+    public Member(Long id, String username, String password, String name, String phone, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = Role.USER;
+        this.role = role;
     }
 
     public Long getId() {
@@ -44,10 +48,6 @@ public class Member {
 
     public Role getRole() {
         return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public boolean isWrongPassword(String password) {

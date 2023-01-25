@@ -1,11 +1,12 @@
 package nextstep.auth;
 
-import nextstep.exception.UnAuthorizationException;
 import nextstep.member.Role;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class AdminInterceptor extends HandlerInterceptorAdapter {
 
@@ -18,18 +19,24 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = request.getHeader("Authorization");
+        checkIsValidToken(request, response, accessToken);
+        return super.preHandle(request, response, handler);
+    }
+
+    private void checkIsValidToken(HttpServletRequest request, HttpServletResponse response, String accessToken) throws ServletException, IOException {
         if (accessToken == null ||
                 accessToken.length() < "Bearer ".length()) {
-            throw new UnAuthorizationException();
+            request.setAttribute("exception", "AuthenticationException");
+            request.getRequestDispatcher("/api/error").forward(request, response);
+            return;
         }
         String token = accessToken.substring("Bearer ".length());
 
-        if (jwtTokenProvider.validateToken(token)
-                && jwtTokenProvider.getRole(token) != Role.ADMIN) {
-            throw new UnAuthorizationException();
+        if (!jwtTokenProvider.validateToken(token)
+                || jwtTokenProvider.getRole(token) != Role.ADMIN) {
+            request.setAttribute("exception", "UnAuthorizationException");
+            request.getRequestDispatcher("/api/error").forward(request, response);
         }
-
-        return super.preHandle(request, response, handler);
     }
 }
 
