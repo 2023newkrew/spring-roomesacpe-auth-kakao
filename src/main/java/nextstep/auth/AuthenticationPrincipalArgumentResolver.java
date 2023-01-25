@@ -23,10 +23,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (headerValue == null) {
             throw new UnauthorizedException();
         }
-        String payload = new JwtTokenProvider().getPrincipal(headerValue);
-        if (payload == null) {
-            return null;
+        try {
+            String payload = new JwtTokenProvider().getPrincipal(headerValue);
+            if (payload == null) {
+                return null;
+            }
+            return Long.parseLong(payload);
         }
-        return Long.parseLong(payload);
+        catch (Exception ex){
+            throw new UnauthorizedException();
+        }
     }
 }
