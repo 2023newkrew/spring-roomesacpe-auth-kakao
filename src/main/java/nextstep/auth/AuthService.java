@@ -16,7 +16,7 @@ public class AuthService {
     private final MemberDao memberDao;
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
+        if (checkInvalidLogin(tokenRequest)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
@@ -24,8 +24,8 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public boolean checkInvalidLogin(String username, String password) {
-        Member member = memberDao.findByUsername(username);
-        return member.checkWrongPassword(password);
+    private boolean checkInvalidLogin(TokenRequest tokenRequest) {
+        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+        return member.checkWrongPassword(tokenRequest.getPassword());
     }
 }
