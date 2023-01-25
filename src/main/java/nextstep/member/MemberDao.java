@@ -23,7 +23,8 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            resultSet.getBoolean("is_admin")
     );
 
     public Long save(Member member) {
@@ -44,13 +45,13 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, is_admin from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Optional<Member> findByUsername(String username) {
         try {
-            String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+            String sql = "SELECT id, username, password, name, phone, is_admin from member where username = ?;";
             Member member = jdbcTemplate.queryForObject(sql, rowMapper, username);
             return Optional.of(member);
         } catch (EmptyResultDataAccessException e) {
