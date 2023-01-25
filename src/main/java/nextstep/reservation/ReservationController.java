@@ -23,26 +23,26 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest,
+    public ResponseEntity<Void> createReservation(@RequestBody ReservationRequest reservationRequest,
             @AuthenticationMember String username) {
         Long id = reservationService.create(reservationRequest, username);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Reservation>> readReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id, @AuthenticationMember String username) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthenticationMember String username) {
         reservationService.deleteById(id, username);
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity handleNullPointer() {
+    public ResponseEntity<Void> handleNullPointer() {
         return ResponseEntity.badRequest().build();
     }
 }
