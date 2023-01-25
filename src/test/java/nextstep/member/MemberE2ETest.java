@@ -2,6 +2,7 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.support.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +29,24 @@ public class MemberE2ETest {
         String username = "username";
         // 멤버 등록
         MemberRequest memberRequest = new MemberRequest(username, "password", "name", "010-1234-5678");
-        memberService.create(memberRequest);
+        Long id = memberService.create(memberRequest);
 
         // token 가져오기
-        String token = jwtTokenProvider.createToken(username);
+        String token = jwtTokenProvider.createToken(String.valueOf(id));
 
         // authorizon 헤더 만들기
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("authorization", "Bearer " + token)
+                .header("authorization", token)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(1))
+                .body("id", equalTo(2))
                 .body("username", equalTo("username"))
                 .body("password", equalTo("password"))
                 .body("name", equalTo("name"))
-                .body("phone", equalTo("010-1234-5678"));
+                .body("phone", equalTo("010-1234-5678"))
+                .body("role", equalTo("USER"));
     }
 }
