@@ -1,9 +1,9 @@
 package nextstep.reservation;
 
 import nextstep.exception.InaccessibleReservationException;
-import nextstep.exception.UnAuthorizationException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.Role;
 import nextstep.schedule.Schedule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,8 +41,8 @@ class ReservationServiceTest {
         private final String myName = "name";
         private final String otherName = "otherName";
         private final Reservation myReservation = new Reservation(schedule, myName);
-        private final Member me = new Member("username", "password", myName, "phone");
-        private final Member other = new Member("username", "password", otherName, "phone");
+        private final Member me = new Member("username", "password", myName, "phone", Role.USER);
+        private final Member other = new Member("username", "password", otherName, "phone", Role.USER);
 
         @Test
         @DisplayName("내가 예약한 예약정보는 취소할 수 있다.")
