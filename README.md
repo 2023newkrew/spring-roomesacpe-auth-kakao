@@ -20,5 +20,5 @@
 - [x] ArgumentResolver가 Member를 리턴하도록 변경
 - [ ] 의존성 줄이기
 - [x] 상황에 맞는 Exception 사용 
-- [ ] 가능한 곳에 final 키워드 사용
+- [x] 가능한 곳에 final 키워드 사용
 - [ ] Validation 로직을 적절한 레이어에 구현
