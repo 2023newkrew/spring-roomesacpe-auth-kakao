@@ -11,6 +11,7 @@ public enum ErrorCode {
     NO_SUCH_ENTITY(HttpStatus.NOT_FOUND, "해당 자원이 존재하지 않습니다."),
     INVALID_SCHEDULE_ID(HttpStatus.BAD_REQUEST, "요청에 유효하지 않은 스케줄이 존재합니다."),
     INVALID_THEME_ID(HttpStatus.BAD_REQUEST, "요청에 유효하지 않는 테마가 존재합니다."),
+    INVALID_ROLE(HttpStatus.BAD_REQUEST, "유효하지 않은 멤버 역할입니다."),
     ;
 
     private final HttpStatus status;

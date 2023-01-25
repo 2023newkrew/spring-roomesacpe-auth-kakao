@@ -13,6 +13,6 @@ public enum Role {
         return Arrays.stream(Role.values())
                 .filter(e -> e.toString().equalsIgnoreCase(role))
                 .findAny()
-                .orElseThrow(() -> new CustomException(ErrorCode.NO_SUCH_ENTITY));
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_ROLE));
     }
 }
