@@ -37,18 +37,21 @@ public class MemberE2ETest {
     @DisplayName("멤버 정보 조회")
     @Test
     public void me() {
+        // 멤버 생성
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(body)
                 .when().post("/members")
                 .then().statusCode(HttpStatus.CREATED.value());
 
+        // 토큰 발급
         TokenRequest request = new TokenRequest(USERNAME, PASSWORD);
         String accessToken = RestAssured
                 .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(request)
                 .when().post("/login/token")
                 .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
 
+        // 토큰으로 멤버 정보 조회
         Member member = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)

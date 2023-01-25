@@ -35,6 +35,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        // 테마 추가
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
@@ -47,6 +48,7 @@ class ReservationE2ETest {
         String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
+        // 일정 추가
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
         var scheduleResponse = RestAssured
                 .given().log().all()
@@ -59,6 +61,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
+        // 멤버 추가
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
         var memberResponse = RestAssured
                 .given().log().all()
@@ -68,19 +71,20 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
-
         String[] memberLocation = memberResponse.header("Location").split("/");
         memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
 
+        // 토큰 발급
+        TokenRequest tokenRequest = new TokenRequest("username", "password");
+        accessToken = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(tokenRequest)
+                .when().post("/login/token")
+                .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
+
+        // 예약 요청 생성
         request = new ReservationRequest(
                 scheduleId
         );
-
-        TokenRequest request = new TokenRequest("username", "password");
-        accessToken = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(request)
-                .when().post("/login/token")
-                .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
     }
 
     @DisplayName("예약을 생성한다")
@@ -138,6 +142,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .body(request)
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
@@ -166,6 +171,7 @@ class ReservationE2ETest {
     void createNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
@@ -173,7 +179,38 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("잘못된 토큰으로 예약을 생성한다")
+    @Test
+    void createInvalidToken() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .auth().oauth2("invalid")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("잘못된 토큰으로 예약을 삭제한다")
+    @Test
+    void deleteInvalidToken() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2("invalid")
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> createReservation() {
+        // 예약 생성
         return RestAssured
                 .given().log().all()
                 .body(request)

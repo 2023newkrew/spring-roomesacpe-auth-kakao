@@ -20,6 +20,7 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
+        // 멤버 생성
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
