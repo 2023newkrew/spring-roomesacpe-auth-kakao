@@ -38,7 +38,7 @@ public class MemberE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("authorization", "Bearer " + token)
+                .header("authorization", token)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
