@@ -43,8 +43,8 @@ class AdminE2ETest {
     }
 
     @Test
-    @DisplayName("admin 계정이 아닌 JWT에 대해 /admin/** 경로에 접근 불가하다.")
-    void adminAccessDeny() {
+    @DisplayName("admin 계정이 아닌 JWT에 대해 /admin/** 경로에 접근 불가하며 403이 반환된다.")
+    void adminAccessAbort_Member() {
         // 일반 member 생성
         MemberRequest memberRequest = new MemberRequest("user1", "password", "name", "010-2595-6532");
         RestAssured.given().log().all()
@@ -71,5 +71,14 @@ class AdminE2ETest {
                 .when().get("admin/")
                 .then().log().all()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    @DisplayName("Authorization token이 없는 상태로 /admin/** 에 접속 불가하며 401 코드가 반환된다.")
+    void adminAccessAbort_NoToken() {
+        RestAssured.given().log().all()
+                .when().get("admin/")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
