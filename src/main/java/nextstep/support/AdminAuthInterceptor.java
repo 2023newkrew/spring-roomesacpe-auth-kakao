@@ -5,6 +5,7 @@ import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
+import nextstep.exception.UnauthorizedMemberException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.Role;
@@ -37,10 +38,11 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
         String username = jwtTokenProvider.getPrincipal(token);
 
-        Optional<Member> member = memberDao.findByUsername(username);
+        Member member = memberDao.findByUsername(username)
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.UNAUTHORIZED));
 
-        if (member.isEmpty() || member.get().getRole() != Role.ADMIN) {
-            throw new NotExistEntityException(ErrorCode.UNAUTHORIZED);
+        if (member.getRole() != Role.ADMIN) {
+            throw new UnauthorizedMemberException(ErrorCode.UNAUTHORIZED);
         }
 
         return true;

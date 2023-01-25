@@ -5,6 +5,11 @@ import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
+import nextstep.exception.UnauthorizedMemberException;
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
+import nextstep.member.Role;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +26,9 @@ class AdminAuthInterceptorTest {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    MemberDao memberDao;
 
     @DisplayName("헤더에서 토큰을 추출해서 검증 통과하면 true 반환")
     @Test
@@ -45,7 +53,7 @@ class AdminAuthInterceptorTest {
                 .isInstanceOf(InvalidAuthorizationTokenException.class);
     }
 
-    @DisplayName("토큰에서 추출한 username에 해당하는 Admin이 존재하지 않는 경우 예외 발생")
+    @DisplayName("토큰에서 추출한 username에 해당하는 Member가 존재하지 않는 경우 예외 발생")
     @Test
     void preHandle_notFoundAdmin() {
         String token = jwtTokenProvider.createToken("wrongUsername");
@@ -56,6 +64,24 @@ class AdminAuthInterceptorTest {
 
         assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, null))
                 .isInstanceOf(NotExistEntityException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.UNAUTHORIZED);
+    }
+
+    @DisplayName("Admin Role이 아닌 경우 예외 발생")
+    @Test
+    void preHandle_unauthorized() {
+        memberDao.save(
+                new Member("username", "password", "kim", "010-1234-5678", Role.USER));
+
+        String token = jwtTokenProvider.createToken("username");
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(AuthorizationTokenExtractor.AUTHORIZATION,
+                AuthorizationTokenExtractor.BEARER_TYPE + " " + token);
+
+        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, null))
+                .isInstanceOf(UnauthorizedMemberException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.UNAUTHORIZED);
     }
