@@ -9,7 +9,7 @@ public class MemberResponse {
     public MemberResponse() {
     }
 
-    public MemberResponse(Long id, String password, String name, String phone) {
+    public MemberResponse(Long id, String username, String name, String phone) {
         this.id = id;
         this.username = username;
         this.name = name;

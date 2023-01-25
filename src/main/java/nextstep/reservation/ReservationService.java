@@ -55,7 +55,7 @@ public class ReservationService {
 
     public void cancelReservation(Long id, Member member) {
         Reservation reservation = findById(id);
-        if (!reservation.isReservedBy(member.getName())) {
+        if (!reservation.isReservedBy(member.getUsername())) {
             throw new ReservationForbiddenException("예약당사자만 예약을 삭제할 수 있습니다.");
         }
         reservationDao.deleteById(id);
