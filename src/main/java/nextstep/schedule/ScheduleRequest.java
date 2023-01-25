@@ -1,9 +1,11 @@
 package nextstep.schedule;
 
+import nextstep.support.InvalidInputException;
 import nextstep.theme.Theme;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 
 public class ScheduleRequest {
     private Long themeId;
@@ -32,10 +34,14 @@ public class ScheduleRequest {
     }
 
     public Schedule toEntity(Theme theme) {
-        return new Schedule(
-                theme,
-                LocalDate.parse(this.date),
-                LocalTime.parse(this.time)
-        );
+        try {
+            return new Schedule(
+                    theme,
+                    LocalDate.parse(this.date),
+                    LocalTime.parse(this.time)
+            );
+        } catch (DateTimeParseException e) {
+            throw new InvalidInputException();
+        }
     }
 }

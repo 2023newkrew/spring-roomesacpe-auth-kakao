@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NotExistEntityException extends RuntimeException {
-    public NotExistEntityException() {
-        super("대상을 찾을 수 없습니다.");
+public class InvalidInputException extends RuntimeException {
+    public InvalidInputException() {
+        super("유효하지 않은 요청입니다.");
     }
 }
