@@ -13,6 +13,6 @@ public class GlobalHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleException(CustomException e) {
         return ResponseEntity
                 .status(HttpStatus.valueOf(e.getErrorCode().getStatus()))
-                .body(e.getErrorCode().getErrorResult());
+                .body(new ErrorResponse(e.getErrorCode()));
     }
 }

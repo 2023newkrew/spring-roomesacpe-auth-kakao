@@ -1,7 +1,9 @@
 package nextstep.exception;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Getter
 public enum ErrorCode {
 
@@ -13,10 +15,6 @@ public enum ErrorCode {
 
 
     private final int status;
-    private final ErrorResult errorResult;
-
-    ErrorCode(int status, String code, String message) {
-        this.status = status;
-        this.errorResult = new ErrorResult(status, code, message);
-    }
+    private final String code;
+    private final String message;
 }
