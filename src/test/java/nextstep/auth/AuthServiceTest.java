@@ -49,7 +49,7 @@ class AuthServiceTest {
     void create() {
         TokenRequest tokenRequest = new TokenRequest(MEMBER_USERNAME, MEMBER_PASSWORD);
 
-        TokenResponse tokenResponse = authService.createMemberToken(tokenRequest);
+        TokenResponse tokenResponse = authService.createToken(tokenRequest);
 
         String username = jwtTokenProvider.getPrincipal(tokenResponse.getAccessToken());
 
@@ -60,7 +60,7 @@ class AuthServiceTest {
     @Test
     void create_notFound() {
         TokenRequest tokenRequest = new TokenRequest("wrongUserName", MEMBER_PASSWORD);
-        assertThatThrownBy(() -> authService.createMemberToken(tokenRequest))
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isInstanceOf(NotExistEntityException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.USER_NOT_FOUND);
@@ -70,7 +70,7 @@ class AuthServiceTest {
     @Test
     void create_wrongPassword() {
         TokenRequest tokenRequest = new TokenRequest(MEMBER_USERNAME, "wrongPassword");
-        assertThatThrownBy(() -> authService.createMemberToken(tokenRequest))
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isInstanceOf(NotCorrectPasswordException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.UNAUTHORIZED);
@@ -81,7 +81,7 @@ class AuthServiceTest {
     void createAdminToken() {
         TokenRequest tokenRequest = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
 
-        TokenResponse tokenResponse = authService.createAdminToken(tokenRequest);
+        TokenResponse tokenResponse = authService.createToken(tokenRequest);
 
         String username = jwtTokenProvider.getPrincipal(tokenResponse.getAccessToken());
 
@@ -92,7 +92,7 @@ class AuthServiceTest {
     @Test
     void createAdminToken_notFound() {
         TokenRequest tokenRequest = new TokenRequest("wrongAdminUserName", ADMIN_PASSWORD);
-        assertThatThrownBy(() -> authService.createAdminToken(tokenRequest))
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isInstanceOf(NotExistEntityException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.USER_NOT_FOUND);
@@ -102,7 +102,7 @@ class AuthServiceTest {
     @Test
     void createAdminToken_wrongPassword() {
         TokenRequest tokenRequest = new TokenRequest(ADMIN_USERNAME, "wrongPassword");
-        assertThatThrownBy(() -> authService.createAdminToken(tokenRequest))
+        assertThatThrownBy(() -> authService.createToken(tokenRequest))
                 .isInstanceOf(NotCorrectPasswordException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.UNAUTHORIZED);

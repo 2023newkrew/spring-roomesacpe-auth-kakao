@@ -1,26 +1,28 @@
 package nextstep.support;
 
-import nextstep.admin.Admin;
-import nextstep.admin.AdminDao;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
+import nextstep.member.Role;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Component
 public class AdminAuthInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
-    private final AdminDao adminDao;
+    private final MemberDao memberDao;
 
-    public AdminAuthInterceptor(JwtTokenProvider jwtTokenProvider, AdminDao adminDao) {
+    public AdminAuthInterceptor(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.adminDao = adminDao;
+        this.memberDao = memberDao;
     }
 
     @Override
@@ -35,7 +37,9 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
         String username = jwtTokenProvider.getPrincipal(token);
 
-        if (adminDao.findByUsername(username).isEmpty()) {
+        Optional<Member> member = memberDao.findByUsername(username);
+
+        if (member.isEmpty() || member.get().getRole() != Role.ADMIN) {
             throw new NotExistEntityException(ErrorCode.USER_NOT_FOUND);
         }
 

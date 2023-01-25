@@ -18,12 +18,7 @@ public class AuthController {
 
     @PostMapping("/member")
     public ResponseEntity<TokenResponse> loginMember(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok().body(authService.createMemberToken(tokenRequest));
-    }
-
-    @PostMapping("/admin")
-    public ResponseEntity<TokenResponse> loginAdmin(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok().body(authService.createAdminToken(tokenRequest));
+        return ResponseEntity.ok().body(authService.createToken(tokenRequest));
     }
 }
 

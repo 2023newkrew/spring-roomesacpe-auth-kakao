@@ -92,7 +92,7 @@ class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/admin")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -109,7 +109,7 @@ class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/admin")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
                 .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
@@ -124,7 +124,7 @@ class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/admin")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
                 .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
