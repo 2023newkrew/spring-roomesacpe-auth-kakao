@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.admin.Role;
+import nextstep.support.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

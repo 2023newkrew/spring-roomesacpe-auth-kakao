@@ -1,4 +1,4 @@
-package nextstep.admin;
+package nextstep.support;
 
 public enum Role {
     ADMIN,

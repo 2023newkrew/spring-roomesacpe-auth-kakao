@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.admin.Role;
+import nextstep.support.Role;
 
 public class Member {
     private Long id;

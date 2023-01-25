@@ -1,6 +1,6 @@
 package nextstep.support.interceptor;
 
-import nextstep.admin.Role;
+import nextstep.support.Role;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
