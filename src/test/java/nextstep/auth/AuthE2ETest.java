@@ -72,7 +72,8 @@ public class AuthE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .auth().oauth2(loginAdmin())
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -85,10 +86,29 @@ public class AuthE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .auth().oauth2(loginAdmin())
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
+    }
+
+    public String loginUser(){
+        return login(USERNAME, PASSWORD);
+    }
+
+    public String loginAdmin(){
+        return login("admin", "admin");
+    }
+
+    public String login(String userName, String password){
+        return RestAssured
+                .given().log().all()
+                .body(new TokenRequest(userName, password))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
     }
 }
