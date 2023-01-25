@@ -27,6 +27,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String token = webRequest.getHeader("Authorization");
         assert jwtTokenProvider.validateToken(token);
-        return memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
+        return memberService.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)));
     }
 }

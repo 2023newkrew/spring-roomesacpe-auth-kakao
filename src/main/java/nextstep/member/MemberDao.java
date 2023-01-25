@@ -50,11 +50,6 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
-    }
-
     public Member findByUsernamePassword(String username, String password) {
         try {
             String sql = "SELECT id, username, password, name, phone, role from member where username = ? AND password = ?;";

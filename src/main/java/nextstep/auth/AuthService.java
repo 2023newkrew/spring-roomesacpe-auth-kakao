@@ -22,6 +22,6 @@ public class AuthService {
             throw new AuthorizationExcpetion();
         }
 
-        return jwtTokenProvider.createToken(member.getUsername());
+        return jwtTokenProvider.createToken(String.valueOf(member.getId()));
     }
 }

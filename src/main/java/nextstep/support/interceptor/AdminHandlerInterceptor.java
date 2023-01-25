@@ -30,7 +30,7 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        Member member = memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
+        Member member = memberService.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)));
 
         if (member.getRole() != Role.ADMIN) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
