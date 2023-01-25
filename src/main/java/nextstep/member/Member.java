@@ -16,12 +16,14 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private MemberRole role;
 
-    public Member(String username, String password, String name, String phone) {
+    public Member(String username, String password, String name, String phone, String roleName) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = MemberRole.findBy(roleName);
     }
 
     public boolean isMyPassword(String password){
