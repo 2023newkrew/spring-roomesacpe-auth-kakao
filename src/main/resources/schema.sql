@@ -24,6 +24,13 @@ CREATE TABLE schedule
     primary key (id)
 );
 
+CREATE TABLE role
+(
+    id   bigint      NOT NULL auto_increment,
+    name varchar(20) NOT NULL UNIQUE,
+    primary key (id)
+);
+
 CREATE TABLE member
 (
     id       bigint      not null auto_increment,
@@ -31,7 +38,9 @@ CREATE TABLE member
     password varchar(20) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
-    primary key (id)
+    role_id  bigint      not null,
+    primary key (id),
+    foreign key (role_id) references role (id)
 );
 
 CREATE TABLE admin
