@@ -49,7 +49,7 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void cancle(long authId, long reservationId) {
+    public void cancel(long authId, long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
         Member me = memberDao.findById(authId)

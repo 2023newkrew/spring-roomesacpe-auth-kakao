@@ -51,7 +51,7 @@ class ReservationControllerTest {
         @Test
         @DisplayName("유효한 토큰이고, 자신의 예약일 경우 204를 응답해야 한다.")
         void should_successfully_when_validRequest() throws Exception {
-            doNothing().when(reservationService).cancle(userId, reservationId);
+            doNothing().when(reservationService).cancel(userId, reservationId);
             mockMvc.perform(delete("/reservations/" + reservationId)
                             .cookie(new Cookie(JwtTokenProvider.ACCESS_TOKEN, userToken)))
                     .andExpect(status().isNoContent());
@@ -62,7 +62,7 @@ class ReservationControllerTest {
         void should_401UnAuthorization_when_notMyReservation() throws Exception {
             doThrow(new BusinessException(ErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION))
                     .when(reservationService)
-                    .cancle(userId, reservationId);
+                    .cancel(userId, reservationId);
 
             mockMvc.perform(delete("/reservations/" + reservationId)
                             .cookie(new Cookie(JwtTokenProvider.ACCESS_TOKEN, userToken)))
@@ -74,7 +74,7 @@ class ReservationControllerTest {
         void should_401UnAuthorization_when_invalidToken() throws Exception {
             doThrow(new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE))
                     .when(reservationService)
-                    .cancle(userId, reservationId);
+                    .cancel(userId, reservationId);
 
             mockMvc.perform(delete("/reservations/" + reservationId)
                             .header(AUTHORIZATION, ""))
