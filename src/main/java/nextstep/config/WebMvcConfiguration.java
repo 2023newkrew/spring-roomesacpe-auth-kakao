@@ -21,9 +21,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean<JwtAuthFilter> filterRegistration(JwtTokenProvider jwtTokenProvider) {
+    public FilterRegistrationBean<JwtAuthFilter> filterRegistration(JwtTokenProvider jwtTokenProvider,
+            AuthContext authContext) {
         FilterRegistrationBean<JwtAuthFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new JwtAuthFilter(jwtTokenProvider));
+        registrationBean.setFilter(new JwtAuthFilter(jwtTokenProvider, authContext));
         registrationBean.addUrlPatterns("/reservations/*");
         return registrationBean;
     }
