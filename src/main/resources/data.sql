@@ -1,0 +1,1 @@
+INSERT INTO member(username, password, name, phone, role) VALUES ('admin', '1234', 'admin', '010-1234-5678', 1);

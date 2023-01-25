@@ -1,17 +1,12 @@
 package nextstep.reservation;
 
-import nextstep.support.ForbiddenException;
-import nextstep.support.TokenExpirationException;
-import nextstep.support.UnauthorizedException;
-import nextstep.ui.AuthenticationPrincipal;
 import nextstep.login.LoginMember;
-import org.springframework.http.HttpStatus;
+import nextstep.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservations")

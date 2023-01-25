@@ -1,6 +1,6 @@
 package nextstep.support;
 
-public class ScheduleNotFoundException extends IllegalArgumentException {
+public class ScheduleNotFoundException extends NotFoundException {
     public ScheduleNotFoundException() {
     }
 

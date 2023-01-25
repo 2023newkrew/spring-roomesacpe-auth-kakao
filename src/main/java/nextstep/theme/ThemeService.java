@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ThemeService {
-    private ThemeDao themeDao;
+    private final ThemeDao themeDao;
 
     public ThemeService(ThemeDao themeDao) {
         this.themeDao = themeDao;
@@ -21,7 +21,7 @@ public class ThemeService {
     public List<ThemeResponse> findAll() {
         return themeDao.findAll()
                 .stream()
-                .map(theme -> ThemeResponse.of(theme))
+                .map(ThemeResponse::of)
                 .collect(Collectors.toList());
     }
 

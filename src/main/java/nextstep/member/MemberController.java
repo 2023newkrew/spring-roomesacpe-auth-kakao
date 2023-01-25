@@ -1,11 +1,7 @@
 package nextstep.member;
 
 import nextstep.login.LoginMember;
-import nextstep.support.ForbiddenException;
-import nextstep.support.TokenExpirationException;
-import nextstep.support.UnauthorizedException;
 import nextstep.ui.AuthenticationPrincipal;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +10,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/members")
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -27,8 +23,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<LoginMember> me(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(loginMember);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(MemberResponse.of(loginMember));
     }
 
 }

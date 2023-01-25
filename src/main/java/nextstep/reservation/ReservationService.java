@@ -23,10 +23,17 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
+    private void validateSchedule(Long scheduleId) {
+        reservationDao.findByScheduleId(scheduleId)
+                .ifPresent(reservation -> {
+                    throw new DuplicateReservationException();
+                });
+    }
+
     public Long create(Long scheduleId, LoginMember loginMember) {
         Schedule schedule = scheduleDao.findById(scheduleId).orElseThrow(ScheduleNotFoundException::new);
-        reservationDao.findByScheduleId(schedule.getId())
-                .ifPresent(s -> {throw new DuplicateReservationException();});
+        validateSchedule(scheduleId);
+
         Reservation newReservation = new Reservation(
                 schedule,
                 loginMember.getUsername()
@@ -39,7 +46,7 @@ public class ReservationService {
         Theme theme = themeDao.findById(themeId).orElseThrow(ThemeNotFoundException::new);
         return reservationDao.findAllByThemeIdAndDate(themeId, date)
                 .stream()
-                .map(reservation -> ReservationResponse.of(reservation))
+                .map(ReservationResponse::of)
                 .collect(Collectors.toList());
     }
 
