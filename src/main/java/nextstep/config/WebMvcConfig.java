@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthService;
 import nextstep.interceptor.AdminInterceptor;
 import nextstep.interceptor.LoginInterceptor;
-import nextstep.member.MemberService;
+import nextstep.member.service.MemberService;
 import nextstep.resolver.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

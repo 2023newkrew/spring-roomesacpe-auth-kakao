@@ -1,6 +1,7 @@
-package nextstep.member;
+package nextstep.member.domain;
 
 import lombok.Getter;
+import nextstep.member.domain.Member;
 
 @Getter
 public class LoginMember {

@@ -1,9 +1,13 @@
-package nextstep.member;
+package nextstep.member.controller;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import nextstep.annotation.AuthenticationPrincipal;
 import nextstep.auth.AuthService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.dto.request.MemberRequest;
+import nextstep.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

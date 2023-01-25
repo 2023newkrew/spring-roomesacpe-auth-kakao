@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.AuthService;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
-import nextstep.member.Member;
-import nextstep.member.MemberService;
+import nextstep.member.domain.Member;
+import nextstep.member.service.MemberService;
 
 public class AdminInterceptor extends LoginInterceptor {
 

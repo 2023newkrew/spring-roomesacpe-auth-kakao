@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nextstep.annotation.AuthenticationPrincipal;
-import nextstep.member.LoginMember;
+import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

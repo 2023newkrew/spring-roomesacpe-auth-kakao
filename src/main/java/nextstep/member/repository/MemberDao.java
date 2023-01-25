@@ -1,8 +1,10 @@
-package nextstep.member;
+package nextstep.member.repository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nextstep.member.domain.Authority;
+import nextstep.member.domain.Member;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -54,5 +56,10 @@ public class MemberDao {
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone, authority from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
+    }
+
+    public int deleteById(Long id) {
+        String sql = "delete from member where id = ?;";
+        return jdbcTemplate.update(sql, id);
     }
 }

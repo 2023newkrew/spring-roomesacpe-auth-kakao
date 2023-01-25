@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
-import nextstep.member.MemberDao;
+import nextstep.member.repository.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;

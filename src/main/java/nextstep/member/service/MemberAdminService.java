@@ -1,38 +1,40 @@
-package nextstep.member;
+package nextstep.member.service;
 
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
+import nextstep.member.domain.Member;
+import nextstep.member.repository.MemberDao;
+import nextstep.reservation.Reservation;
+import nextstep.reservation.ReservationDao;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService {
+public class MemberAdminService {
+
     private final MemberDao memberDao;
 
-    public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
-    }
+    private final ReservationDao reservationDao;
 
     public List<Member> findAll() {
         return memberDao.findAll();
     }
 
-    public Member findById(Long id) {
+    public void deleteById(Long id) {
         Member member = memberDao.findById(id);
         if (Objects.isNull(member)) {
             throw new RoomReservationException(ErrorCode.MEMBER_NOT_FOUND);
         }
-        return member;
-    }
-
-    public Member findByUsername(String username) {
-        Member member = memberDao.findByUsername(username);
-        if (Objects.isNull(member)) {
+        List<Reservation> reservations = reservationDao.findByMemberId(id);
+        if (reservations.size() > 0) {
+            throw new RoomReservationException(ErrorCode.MEMBER_CANT_BE_DELETED);
+        }
+        int deletedCount = memberDao.deleteById(id);
+        if (deletedCount != 1) {
             throw new RoomReservationException(ErrorCode.MEMBER_NOT_FOUND);
         }
-        return member;
     }
 }

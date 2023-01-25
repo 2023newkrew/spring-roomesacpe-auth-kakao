@@ -3,7 +3,7 @@ package nextstep.auth;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
-import nextstep.member.Member;
+import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service

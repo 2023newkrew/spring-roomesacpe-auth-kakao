@@ -1,8 +1,8 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.Member;
-import nextstep.member.MemberService;
+import nextstep.member.domain.Member;
+import nextstep.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
