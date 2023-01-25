@@ -28,20 +28,16 @@ public class ReservationService {
                 () -> new ScheduleException(RoomEscapeExceptionCode.NOT_FOUND_SCHEDULE)
         );
 
-        List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
-        if (reservation == null) {
-            throw new RoomEscapeException(RoomEscapeExceptionCode.UNEXPECTED_EXCEPTION);
-        }
-        if (!reservation.isEmpty()) {
+        if (!reservationDao.findByScheduleId(schedule.getId()).isEmpty()) {
             throw new ScheduleException(RoomEscapeExceptionCode.SCHEDUL_ALREADY_RESERVED);
         }
 
-        Reservation newReservation = Reservation.builder()
+        Reservation reservation = Reservation.builder()
                 .schedule(schedule)
                 .name(reservationRequest.getName())
                 .memberId(member.getId())
                 .build();
-        return reservationDao.save(newReservation);
+        return reservationDao.save(reservation);
     }
 
     @Transactional(readOnly = true)
@@ -57,10 +53,12 @@ public class ReservationService {
         Reservation reservation = reservationDao.findById(id).orElseThrow(
                 () -> new ReservationException(RoomEscapeExceptionCode.NOT_FOUND_RESERVATION)
         );
+
         Long memberId = reservation.getMemberId();
         if (!Objects.equals(member.getId(), memberId)) {
             throw new AuthorizationExcpetion(RoomEscapeExceptionCode.NOT_OWN_RESERVATION);
         }
+
         reservationDao.deleteById(id);
     }
 }
