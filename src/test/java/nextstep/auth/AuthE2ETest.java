@@ -1,13 +1,13 @@
 package nextstep.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
-import nextstep.auth.service.AuthService;
 import nextstep.auth.utils.JwtTokenProvider;
-import nextstep.member.dto.LoginMember;
-import nextstep.member.dto.MemberRequest;
-import nextstep.member.dto.MemberResponse;
+import nextstep.dto.member.MemberRequest;
+import nextstep.dto.member.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

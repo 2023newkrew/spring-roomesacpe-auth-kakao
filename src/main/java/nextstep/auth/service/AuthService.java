@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.utils.JwtTokenProvider;
 import nextstep.exception.UnauthorizedAccessException;
-import nextstep.member.Member;
-import nextstep.member.dto.LoginMember;
+import nextstep.entity.Member;
+import nextstep.dto.member.LoginMember;
 import org.springframework.stereotype.Service;
 
 @Service

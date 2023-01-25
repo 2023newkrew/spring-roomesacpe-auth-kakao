@@ -3,13 +3,15 @@ package nextstep.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.auth.utils.JwtTokenProvider;
-import nextstep.member.Member;
-import nextstep.member.MemberRole;
-import nextstep.member.dto.LoginMember;
+import nextstep.dto.member.LoginMember;
+import nextstep.entity.Member;
+import nextstep.entity.MemberRole;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
+@TestPropertySource("classpath:/application.yml")
 class JwtTokenProviderTest {
 
     @Test

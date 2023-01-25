@@ -4,8 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.service.AuthService;
 import nextstep.exception.UnauthorizedAccessException;
-import nextstep.member.MemberRole;
-import nextstep.member.dto.LoginMember;
+import nextstep.entity.MemberRole;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class CheckAdminInterceptor implements HandlerInterceptor {
