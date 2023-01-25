@@ -33,7 +33,7 @@ public class ScheduleDao {
             resultSet.getTime("schedule.time").toLocalTime()
     );
 
-    public Long save(Schedule schedule) {
+    public Schedule save(Schedule schedule) {
         String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -46,14 +46,16 @@ public class ScheduleDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Long id = keyHolder.getKey().longValue();
+        return new Schedule(id, schedule.getTheme(), schedule.getDate(), schedule.getTime());
     }
 
     public Schedule findById(Long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
-                "where schedule.id = ?;";
+                "where schedule.id = ?" +
+                "limit 1;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }

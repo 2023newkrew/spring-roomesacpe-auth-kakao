@@ -24,7 +24,7 @@ public class ThemeDao {
             resultSet.getInt("price")
     );
 
-    public Long save(Theme theme) {
+    public Theme save(Theme theme) {
         String sql = "INSERT INTO theme (name, desc, price) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -37,11 +37,12 @@ public class ThemeDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Long id = keyHolder.getKey().longValue();
+        return new Theme(id, theme.getName(), theme.getDesc(), theme.getPrice());
     }
 
     public Theme findById(Long id) {
-        String sql = "SELECT id, name, desc, price from theme where id = ?;";
+        String sql = "SELECT id, name, desc, price from theme where id = ? limit 1;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
@@ -51,7 +52,7 @@ public class ThemeDao {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM reservation where id = ?;";
+        String sql = "DELETE FROM theme where id = ?;";
         jdbcTemplate.update(sql, id);
     }
 }

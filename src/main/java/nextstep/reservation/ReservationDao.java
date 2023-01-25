@@ -37,7 +37,7 @@ public class ReservationDao {
             resultSet.getString("reservation.name")
     );
 
-    public Long save(Reservation reservation) {
+    public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -49,7 +49,8 @@ public class ReservationDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Long id =  keyHolder.getKey().longValue();
+        return new Reservation(id, reservation.getSchedule(), reservation.getName());
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
@@ -67,7 +68,8 @@ public class ReservationDao {
                 "from reservation " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
-                "where reservation.id = ?;";
+                "where reservation.id = ?" +
+                "limit 1;";
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
         } catch (Exception e) {

@@ -1,21 +1,20 @@
 package nextstep.theme;
 
-import javax.validation.constraints.NotNull;
-
-public class ThemeRequest {
-    @NotNull
+public class ThemeResponse {
+    private Long id;
     private String name;
-    @NotNull
     private String desc;
-    @NotNull
     private int price;
 
-    public ThemeRequest() {}
-
-    public ThemeRequest(String name, String desc, int price) {
+    public ThemeResponse(Long id, String name, String desc, int price) {
+        this.id = id;
         this.name = name;
         this.desc = desc;
         this.price = price;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

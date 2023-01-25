@@ -16,7 +16,7 @@ public class ScheduleService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
+    public Schedule create(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId());
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
@@ -25,7 +25,7 @@ public class ScheduleService {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void cancelById(Long id) {
         scheduleDao.deleteById(id);
     }
 }

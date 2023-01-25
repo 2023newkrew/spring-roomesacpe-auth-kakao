@@ -1,16 +1,13 @@
 package nextstep.theme;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/themes")
@@ -22,21 +19,24 @@ public class ThemeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
-        Long id = themeService.create(themeRequest);
-        return ResponseEntity.created(URI.create("/themes/" + id)).build();
+    public ResponseEntity<ThemeResponse> createTheme(@Valid @RequestBody ThemeRequest themeRequest) {
+        Theme theme = themeService.create(themeRequest);
+        ThemeResponse res = new ThemeResponse(theme.getId(), theme.getName(), theme.getDesc(), theme.getPrice());
+        return ResponseEntity.created(URI.create("/themes/").resolve(theme.getId().toString())).body(res);
     }
 
     @GetMapping
-    public ResponseEntity<List<Theme>> showThemes() {
-        List<Theme> results = themeService.findAll();
-        return ResponseEntity.ok().body(results);
+    public List<ThemeResponse> showThemes() {
+        List<Theme> themes = themeService.findAll();
+        List<ThemeResponse> res = themes.stream()
+                .map(t -> new ThemeResponse(t.getId(), t.getName(), t.getDesc(), t.getPrice()))
+                .collect(Collectors.toList());
+        return res;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
-
-        return ResponseEntity.noContent().build();
     }
 }

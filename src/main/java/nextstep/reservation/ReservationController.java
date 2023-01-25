@@ -1,42 +1,45 @@
 package nextstep.reservation;
 
+import nextstep.auth.AuthenticationPrincipal;
+import nextstep.member.Member;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    public final ReservationService reservationService;
+    private final ReservationService reservationService;
 
     public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
     @PostMapping
-    public ResponseEntity createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest);
-        return ResponseEntity.created(URI.create("/reservations/" + id)).build();
+    public ResponseEntity<ReservationResponse> createReservation(@AuthenticationPrincipal Member member, @Valid @RequestBody ReservationRequest reservationRequest) {
+        Reservation reservation = reservationService.reserve(member, reservationRequest);
+        ReservationResponse res = new ReservationResponse(reservation.getId(), reservation.getSchedule(), reservation.getName());
+        return ResponseEntity.created(URI.create("/reservations/").resolve(reservation.getId().toString())).body(res);
     }
 
     @GetMapping
-    public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
-        return ResponseEntity.ok().body(results);
+    public List<ReservationResponse> readReservations(@RequestParam Long themeId, @RequestParam String date) {
+        List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
+        List<ReservationResponse> res = reservations.stream()
+                .map(r -> new ReservationResponse(r.getId(), r.getSchedule(), r.getName()))
+                .collect(Collectors.toList());
+        return res;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
-        reservationService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelReservation(@AuthenticationPrincipal Member member, @PathVariable Long id) {
+        reservationService.cancelReservation(id, member);
     }
 }
