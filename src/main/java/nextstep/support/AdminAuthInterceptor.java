@@ -4,7 +4,6 @@ import nextstep.auth.Auth;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
-import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
 import nextstep.exception.UnauthorizedMemberException;
 import nextstep.member.Member;
@@ -21,10 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 public class AdminAuthInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
+    private final AuthorizationTokenExtractor authorizationTokenExtractor;
 
-    public AdminAuthInterceptor(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AdminAuthInterceptor(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, AuthorizationTokenExtractor authorizationTokenExtractor) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
+        this.authorizationTokenExtractor = authorizationTokenExtractor;
     }
 
     @Override
@@ -38,13 +39,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String token = AuthorizationTokenExtractor.extract(
-                request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION))
-                .orElseThrow(() -> new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN));
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException(ErrorCode.TOKEN_EXPIRED);
-        }
+        String token = authorizationTokenExtractor.extract(request);
 
         String username = jwtTokenProvider.getPrincipal(token);
 
