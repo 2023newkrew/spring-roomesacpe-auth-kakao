@@ -2,6 +2,9 @@ package nextstep.reservation;
 
 import java.util.stream.Collectors;
 import nextstep.auth.AuthenticationPrincipal;
+import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
+import nextstep.support.UnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +44,13 @@ public class ReservationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onException(Exception e) {
+    @ExceptionHandler({NotExistEntityException.class, DuplicateEntityException.class, UnauthorizedException.class})
+    public ResponseEntity onBadRequest(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity onInternalServerError() {
+        return ResponseEntity.internalServerError().body("요청을 처리할 수 없습니다.");
     }
 }
