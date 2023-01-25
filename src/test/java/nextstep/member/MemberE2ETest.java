@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import static org.hamcrest.core.Is.is;
+
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
@@ -11,9 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.hamcrest.core.Is.is;
 
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -43,13 +42,7 @@ public class MemberE2ETest {
     @DisplayName("내 정보 조회")
     @Test
     void show() {
-        RestAssured
-                .given().log().all()
-                .body(memberCreateRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+        createMemberAndGetId();
 
         TokenRequest tokenRequest = new TokenRequest("username", "password");
         var tokenResponse = RestAssured
@@ -72,5 +65,60 @@ public class MemberE2ETest {
                 .body("username", is("username"))
                 .body("name", is("name"))
                 .body("phone", is("010-1234-5678"));
+    }
+
+    @DisplayName("사용자에게 관리자 권한 부여 테스트")
+    @Test
+    void authorization() {
+        MemberCreateRequest adminBody = new MemberCreateRequest("admin", "admin", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
+        var adminTokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+        String adminAccessToken = adminTokenResponse.getAccessToken();
+
+        Long id = createMemberAndGetId();
+
+        MemberAuthorizationRequest memberAuthorizationRequest = new MemberAuthorizationRequest(id);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminAccessToken)
+                .body(memberAuthorizationRequest)
+                .when().post("/admin/authorization")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("username", is("username"))
+                .body("name", is("name"))
+                .body("phone", is("010-1234-5678"))
+                .body("role", is(MemberRole.ADMIN.name()));
+    }
+
+    private Long createMemberAndGetId() {
+        var response = RestAssured
+                .given().log().all()
+                .body(memberCreateRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/members")
+                .then().log().all()
+                .extract();
+
+        String[] location = response.header("Location").split("/");
+        return Long.parseLong(location[location.length - 1]);
     }
 }

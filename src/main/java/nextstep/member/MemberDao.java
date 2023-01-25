@@ -67,7 +67,7 @@ public class MemberDao {
     }
 
     public void updateRole(Long id, MemberRole memberRole) {
-        String sql = String.format("UPDATE member SET role = %s where id = ?", memberRole.name());
-        jdbcTemplate.update(sql, rowMapper, id);
+        String sql = "UPDATE member SET role = ? where id = ?";
+        jdbcTemplate.update(sql, memberRole.name(), id);
     }
 }
