@@ -29,12 +29,12 @@ public class Member {
         this.role = MemberRole.MEMBER;
     }
 
-    public Member(String username, String password, String name, String phone) {
+    public Member(String username, String password, String name, String phone, MemberRole role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = MemberRole.MEMBER;
+        this.role = role;
     }
 
     public Long getId() {

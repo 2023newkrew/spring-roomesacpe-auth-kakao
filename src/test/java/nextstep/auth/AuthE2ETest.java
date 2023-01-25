@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.domain.member.MemberRole;
 import nextstep.interfaces.auth.dto.TokenRequest;
 import nextstep.interfaces.auth.dto.TokenResponse;
 import nextstep.interfaces.member.dto.MemberRequest;
@@ -24,7 +25,7 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", MemberRole.MEMBER);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +66,7 @@ public class AuthE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
+    @DisplayName("테마를 삭제한다 - 관리자 계정")
     @Test
     void delete() {
         Long id = createTheme();
@@ -78,6 +79,21 @@ public class AuthE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("테마를 삭제한다 - 관리자 계정이 아닐 경우")
+    @Test
+    void deleteNotAdmin() {
+        Long id = createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(loginUser())
+                .when().delete("/admin/themes/" + id)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public Long createTheme() {

@@ -1,4 +1,4 @@
-package nextstep.application;
+package nextstep;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
