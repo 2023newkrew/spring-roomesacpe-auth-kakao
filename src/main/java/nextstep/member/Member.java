@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.admin.Role;
+
 public class Member {
     private Long id;
     private String username;
@@ -7,12 +9,15 @@ public class Member {
     private String name;
     private String phone;
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    private Role role;
+
+    public Member(Long id, String username, String password, String name, String phone, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
     public Member(String username, String password, String name, String phone) {
@@ -20,6 +25,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = Role.USER;
     }
 
     public Long getId() {
@@ -40,6 +46,10 @@ public class Member {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public boolean checkWrongPassword(String password) {
