@@ -1,11 +1,11 @@
 package nextstep.member;
 
 public class MemberResponse {
-    private Long id;
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
+    private final Long id;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
 
     public MemberResponse(Long id, String username, String password, String name, String phone) {
         this.id = id;

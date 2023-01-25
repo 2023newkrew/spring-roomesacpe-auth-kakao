@@ -1,11 +1,8 @@
 package nextstep.reservation;
 
 public class ReservationRequest {
-    private Long scheduleId;
-    private String name;
-
-    public ReservationRequest() {
-    }
+    private final Long scheduleId;
+    private final String name;
 
     public ReservationRequest(Long scheduleId, String name) {
         this.scheduleId = scheduleId;

@@ -2,7 +2,7 @@ package nextstep.member;
 
 public class Member {
     private Long id;
-    private String username;
+    private final String username;
     private String password;
     private String name;
     private String phone;
