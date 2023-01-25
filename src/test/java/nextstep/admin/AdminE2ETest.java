@@ -29,46 +29,10 @@ class AdminE2ETest {
     @BeforeEach
     void setUp() {
         MemberRequest request = new MemberRequest("sienna-o", "password", "subin", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .body(request)
-                .post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-
-        TokenRequest tokenRequest = new TokenRequest(request.getUsername(), request.getPassword());
-        accessToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .body(tokenRequest)
-                .post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class).getAccessToken();
+        accessToken = 사용자_생성_후_토큰을_발급받는다(request);
 
         MemberRequest adminRequest = new MemberRequest("admin", "password", "admin", "010-8712-3452");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .body(adminRequest)
-                .post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-
-        TokenRequest adminTokenRequest = new TokenRequest(request.getUsername(), request.getPassword());
-        String beforeAdminToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .body(adminTokenRequest)
-                .post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class).getAccessToken();
+        String beforeAdminToken = 사용자_생성_후_토큰을_발급받는다(adminRequest);
 
         adminToken = RestAssured
                 .given().log().all()
@@ -187,18 +151,7 @@ class AdminE2ETest {
     @DisplayName("관리자는 테마를 삭제할 수 있다")
     @Test
     void deleteTheme() {
-        ThemeRequest request = new ThemeRequest("테마 이름", "설명", 23010);
-        String location = RestAssured
-                .given().log().all()
-                .auth().oauth2(adminToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().log().all()
-                .post("/admin/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("location");
-        Long themeId = Long.parseLong(location.split("/")[2]);
+        Long themeId = 테마_생성_후_id를_반환한다();
 
         RestAssured
                 .given().log().all()
@@ -213,7 +166,44 @@ class AdminE2ETest {
     @DisplayName("사용자는 테마를 삭제할 수 없다")
     @Test
     void deleteThemeByMember() {
+        Long themeId = 테마_생성_후_id를_반환한다();
+
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .delete("/admin/themes/" + themeId)
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    private String 사용자_생성_후_토큰을_발급받는다(MemberRequest request) {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .body(request)
+                .post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        TokenRequest tokenRequest = new TokenRequest(request.getUsername(), request.getPassword());
+        String token = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .body(tokenRequest)
+                .post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+        return token;
+    }
+
+    private Long 테마_생성_후_id를_반환한다() {
         ThemeRequest request = new ThemeRequest("테마 이름", "설명", 23010);
+
         String location = RestAssured
                 .given().log().all()
                 .auth().oauth2(adminToken)
@@ -225,15 +215,6 @@ class AdminE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("location");
 
-        Long themeId = Long.parseLong(location.split("/")[2]);
-
-        RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().log().all()
-                .delete("/admin/themes/" + themeId)
-                .then().log().all()
-                .statusCode(HttpStatus.FORBIDDEN.value());
+        return Long.parseLong(location.split("/")[2]);
     }
 }
