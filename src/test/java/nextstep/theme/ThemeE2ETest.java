@@ -3,23 +3,18 @@ package nextstep.theme;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import nextstep.auth.dto.TokenRequest;
-import nextstep.auth.dto.TokenResponse;
+import nextstep.E2ETest;
 import nextstep.auth.utils.JwtTokenProvider;
 import nextstep.dto.theme.ThemeRequest;
 import nextstep.entity.Member;
 import nextstep.entity.MemberRole;
-import nextstep.repository.MemberDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@E2ETest
 public class ThemeE2ETest {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
@@ -129,9 +124,6 @@ public class ThemeE2ETest {
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[3]);
     }
-
-
-
 
     private String createToken(MemberRole role) {
         Member member = Member.builder().role(role)

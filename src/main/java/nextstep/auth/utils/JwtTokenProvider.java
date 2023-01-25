@@ -8,9 +8,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import nextstep.dto.member.LoginMember;
 import nextstep.entity.Member;
 import nextstep.entity.MemberRole;
-import nextstep.dto.member.LoginMember;
 import org.springframework.beans.factory.annotation.Value;
 
 public class JwtTokenProvider {

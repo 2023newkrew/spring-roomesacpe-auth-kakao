@@ -1,10 +1,10 @@
 package nextstep.service;
 
 import java.util.List;
-import nextstep.entity.Schedule;
 import nextstep.dto.schedule.ScheduleRequest;
-import nextstep.repository.ScheduleDao;
+import nextstep.entity.Schedule;
 import nextstep.entity.Theme;
+import nextstep.repository.ScheduleDao;
 import nextstep.repository.ThemeDao;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import nextstep.entity.Theme;
 import nextstep.repository.ThemeDao;
 import org.junit.jupiter.api.Test;

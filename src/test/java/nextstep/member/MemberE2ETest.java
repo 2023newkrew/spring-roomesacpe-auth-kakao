@@ -1,16 +1,14 @@
 package nextstep.member;
 
 import io.restassured.RestAssured;
+import nextstep.E2ETest;
 import nextstep.dto.member.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@E2ETest
 public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test

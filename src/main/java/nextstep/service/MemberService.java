@@ -1,9 +1,9 @@
 package nextstep.service;
 
 import java.util.Optional;
-import nextstep.exception.NotFoundException;
-import nextstep.entity.Member;
 import nextstep.dto.member.MemberRequest;
+import nextstep.entity.Member;
+import nextstep.exception.NotFoundException;
 import nextstep.repository.MemberDao;
 import org.springframework.stereotype.Service;
 

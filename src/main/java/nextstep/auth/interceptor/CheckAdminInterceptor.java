@@ -3,8 +3,8 @@ package nextstep.auth.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.service.AuthService;
-import nextstep.exception.UnauthorizedAccessException;
 import nextstep.entity.MemberRole;
+import nextstep.exception.UnauthorizedAccessException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class CheckAdminInterceptor implements HandlerInterceptor {

@@ -2,8 +2,8 @@ package nextstep.controller;
 
 import java.net.URI;
 import java.util.List;
-import nextstep.entity.Schedule;
 import nextstep.dto.schedule.ScheduleRequest;
+import nextstep.entity.Schedule;
 import nextstep.service.ScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

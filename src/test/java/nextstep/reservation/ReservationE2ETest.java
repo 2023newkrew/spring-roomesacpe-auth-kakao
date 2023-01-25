@@ -1,8 +1,12 @@
 package nextstep.reservation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import nextstep.E2ETest;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.utils.JwtTokenProvider;
@@ -18,18 +22,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@E2ETest
 class ReservationE2ETest {
     private static final String DATE = "2022-08-11";
     private static final String TIME = "13:00";

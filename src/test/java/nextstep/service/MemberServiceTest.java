@@ -35,7 +35,6 @@ class MemberServiceTest {
         }
     }
 
-
     @Test
     @DisplayName("id로 삭제가 가능하다")
     void delete_by_id_test() {
@@ -49,6 +48,5 @@ class MemberServiceTest {
         assertThat(count).isEqualTo(1L);
         Assertions.assertThatThrownBy(() -> memberService.findById(id)).isInstanceOf(NotFoundException.class);
     }
-
 
 }

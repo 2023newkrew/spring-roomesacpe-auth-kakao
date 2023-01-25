@@ -1,6 +1,9 @@
 package nextstep.schedule;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
+import nextstep.E2ETest;
 import nextstep.auth.utils.JwtTokenProvider;
 import nextstep.dto.schedule.ScheduleRequest;
 import nextstep.dto.theme.ThemeRequest;
@@ -10,15 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@E2ETest
 public class ScheduleE2ETest {
 
     private Long themeId;

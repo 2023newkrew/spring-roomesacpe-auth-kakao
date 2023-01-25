@@ -1,6 +1,6 @@
 package nextstep.entity;
 
-import static nextstep.entity.MemberRole.*;
+import static nextstep.entity.MemberRole.USER;
 
 import java.util.Objects;
 

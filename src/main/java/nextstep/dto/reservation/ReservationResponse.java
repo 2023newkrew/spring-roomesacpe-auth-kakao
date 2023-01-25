@@ -3,8 +3,8 @@ package nextstep.dto.reservation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import nextstep.dto.member.MemberInfoResponse;
-import nextstep.entity.Reservation;
 import nextstep.dto.schedule.ScheduleResponse;
+import nextstep.entity.Reservation;
 
 public class ReservationResponse {
 

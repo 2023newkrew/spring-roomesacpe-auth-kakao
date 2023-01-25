@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 import nextstep.entity.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 @JdbcTest
 class MemberDaoTest {
@@ -48,7 +46,5 @@ class MemberDaoTest {
         assertThat(count).isEqualTo(1L);
         assertThat(memberDao.findById(id).isEmpty()).isTrue();
     }
-
-
 
 }
