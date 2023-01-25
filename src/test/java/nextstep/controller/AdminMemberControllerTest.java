@@ -35,9 +35,7 @@ class AdminMemberControllerTest {
         Member target = createMember("target", MemberRole.USER);
         memberDao.save(member);
         Long id = memberDao.save(target);
-
-        TokenRequest body = new TokenRequest("normal", "PASSWORD");
-        String token = loginAndGetToken(body);
+        String token = createToken(MemberRole.USER);
 
         RestAssured
                 .given().log().all()
@@ -56,9 +54,7 @@ class AdminMemberControllerTest {
         Member target = createMember("target", MemberRole.USER);
         memberDao.save(member);
         Long id = memberDao.save(target);
-
-        TokenRequest body = new TokenRequest("admin", "PASSWORD");
-        String token = loginAndGetToken(body);
+        String token = createToken(MemberRole.ADMIN);
 
         Long count = RestAssured
                 .given().log().all()
@@ -82,14 +78,14 @@ class AdminMemberControllerTest {
                 .build();
     }
 
-    private String loginAndGetToken(TokenRequest body) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().as(TokenResponse.class).getAccessToken();
+
+    private String createToken(MemberRole role) {
+        Member member = Member.builder().role(role)
+                .username("USERNAME")
+                .name("NAME")
+                .phone("PHONE")
+                .password("PASSWORD").build();
+        Member.giveId(member, 1L);
+        return jwtTokenProvider.createToken(member);
     }
 }

@@ -5,11 +5,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
+import nextstep.auth.utils.JwtTokenProvider;
 import nextstep.dto.member.MemberRequest;
 import nextstep.dto.reservation.ReservationRequest;
 import nextstep.dto.reservation.ReservationResponse;
 import nextstep.dto.schedule.ScheduleRequest;
 import nextstep.dto.theme.ThemeRequest;
+import nextstep.entity.Member;
+import nextstep.entity.MemberRole;
 import nextstep.entity.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,9 +40,8 @@ class ReservationE2ETest {
 
     private String accessToken;
 
-
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JwtTokenProvider jwtTokenProvider;
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
@@ -51,8 +53,9 @@ class ReservationE2ETest {
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(createToken(MemberRole.ADMIN))
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -294,6 +297,16 @@ class ReservationE2ETest {
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private String createToken(MemberRole role) {
+        Member member = Member.builder().role(role)
+                .username("USERNAME")
+                .name("NAME")
+                .phone("PHONE")
+                .password("PASSWORD").build();
+        Member.giveId(member, 1L);
+        return jwtTokenProvider.createToken(member);
     }
 
 }
