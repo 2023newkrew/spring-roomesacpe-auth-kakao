@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/login/token")
 public class AuthController {
-    JwtTokenProvider jwtTokenProvider;
+    private AuthService authService;
 
-    public AuthController(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
-        return ResponseEntity.ok(new TokenResponse(jwtTokenProvider.createToken(tokenRequest.getUsername())));
+        String token = authService.createToken(tokenRequest);
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 }
