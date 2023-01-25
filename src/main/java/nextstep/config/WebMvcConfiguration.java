@@ -31,7 +31,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean<JwtAuthFilter> filterRegistration(JwtTokenProvider jwtTokenProvider,
+    public FilterRegistrationBean<JwtAuthFilter> jwtAuthFilterFilterRegistration(JwtTokenProvider jwtTokenProvider,
             AuthContext authContext) {
         FilterRegistrationBean<JwtAuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new JwtAuthFilter(jwtTokenProvider, authContext));
@@ -41,7 +41,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean<AdminFilter> filterRegistration(AuthContext authContext) {
+    public FilterRegistrationBean<AdminFilter> adminFilterFilterRegistration(AuthContext authContext) {
         FilterRegistrationBean<AdminFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new AdminFilter(authContext));
         registrationBean.setOrder(1);
