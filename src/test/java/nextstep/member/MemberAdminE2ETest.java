@@ -4,32 +4,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import java.util.List;
-import nextstep.auth.TokenRequest;
 import nextstep.member.domain.Member;
-import nextstep.member.dto.request.MemberRequest;
+import nextstep.auth.E2ETestAuthUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class MemberAdminE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String ADMIN_USERNAME = "admin";
-    public static final String ADMIN_PASSWORD = "admin";
 
     @DisplayName("어드민 권한으로 전체 멤버를 조회한다.")
     @Test
     public void showAllMembers() {
-        createMember();
+        E2ETestMemberUtils.createMember();
 
-        String accessToken = adminLoginAndGetAccessToken();
+        String accessToken = E2ETestAuthUtils.adminLoginAndGetAccessToken();
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -44,9 +38,9 @@ public class MemberAdminE2ETest {
     @DisplayName("일반 유저 권한으로는 전체 멤버를 조회할 수 없다.")
     @Test
     public void showAllMembersWithUserAuthority() {
-        createMember();
+        E2ETestMemberUtils.createMember();
 
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = E2ETestAuthUtils.loginAndGetAccessToken();
         RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -59,7 +53,7 @@ public class MemberAdminE2ETest {
     @DisplayName("로그인을 하지 않고 전체 멤버를 조회할 수 없다.")
     @Test
     public void showAllMembersWithNoneAuthority() {
-        createMember();
+        E2ETestMemberUtils.createMember();
 
         RestAssured
                 .given().log().all()
@@ -72,9 +66,9 @@ public class MemberAdminE2ETest {
     @Test
     @DisplayName("관리자 권한으로 회원을 삭제할 수 있다.")
     public void deleteMember() {
-        Long generatedId = createMember();
+        Long generatedId = E2ETestMemberUtils.createMember();
 
-        String accessToken = adminLoginAndGetAccessToken();
+        String accessToken = E2ETestAuthUtils.adminLoginAndGetAccessToken();
         RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -95,9 +89,9 @@ public class MemberAdminE2ETest {
     @DisplayName("일반 유저 권한으로는 전체 멤버를 조회할 수 없다.")
     @Test
     public void deleteMemberWithUserAuthority() {
-        Long generatedId = createMember();
+        Long generatedId = E2ETestMemberUtils.createMember();
 
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = E2ETestAuthUtils.loginAndGetAccessToken();
         RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -110,7 +104,7 @@ public class MemberAdminE2ETest {
     @DisplayName("로그인을 하지 않고 전체 멤버를 조회할 수 없다.")
     @Test
     public void deleteMemberWithNoneAuthority() {
-        Long generatedId = createMember();
+        Long generatedId = E2ETestMemberUtils.createMember();
 
         RestAssured
                 .given().log().all()
@@ -123,7 +117,7 @@ public class MemberAdminE2ETest {
     @DisplayName("관리자 권한으로 내 정보를 조회할 수 있다.(일반 api 테스트)")
     @Test
     public void getMyInfoWithAdminAuthority() {
-        String accessToken = adminLoginAndGetAccessToken();
+        String accessToken = E2ETestAuthUtils.adminLoginAndGetAccessToken();
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -133,46 +127,5 @@ public class MemberAdminE2ETest {
                 .extract();
 
         assertThat(response.as(Member.class)).isNotNull();
-    }
-
-    public Long createMember() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
-    }
-
-    private String loginAndGetAccessToken() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var accessToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().get("accessToken");
-
-        return accessToken.toString();
-    }
-
-    private String adminLoginAndGetAccessToken() {
-        TokenRequest body = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
-        var accessToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().get("accessToken");
-
-        return accessToken.toString();
     }
 }

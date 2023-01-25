@@ -7,8 +7,8 @@ import nextstep.error.exception.RoomReservationException;
 import nextstep.member.repository.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.theme.Theme;
-import nextstep.theme.ThemeDao;
+import nextstep.theme.domain.Theme;
+import nextstep.theme.repository.ThemeDao;
 import org.springframework.stereotype.Service;
 
 @Service

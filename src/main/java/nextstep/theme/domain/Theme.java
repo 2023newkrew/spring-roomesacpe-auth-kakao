@@ -1,4 +1,4 @@
-package nextstep.theme;
+package nextstep.theme.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

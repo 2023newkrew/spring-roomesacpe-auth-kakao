@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.theme.Theme;
+import nextstep.theme.domain.Theme;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

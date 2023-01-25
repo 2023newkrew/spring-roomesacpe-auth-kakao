@@ -1,9 +1,10 @@
-package nextstep.theme;
+package nextstep.theme.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.theme.domain.Theme;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nextstep.schedule.Schedule;
-import nextstep.theme.Theme;
+import nextstep.theme.domain.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

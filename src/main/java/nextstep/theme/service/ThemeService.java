@@ -1,4 +1,4 @@
-package nextstep.theme;
+package nextstep.theme.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,9 @@ import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
+import nextstep.theme.dto.request.ThemeRequest;
+import nextstep.theme.domain.Theme;
+import nextstep.theme.repository.ThemeDao;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +30,6 @@ public class ThemeService {
         if (schedules.size() > 0) {
             throw new RoomReservationException(ErrorCode.THEME_CANT_BE_DELETED);
         }
-
         themeDao.delete(id);
     }
 }
