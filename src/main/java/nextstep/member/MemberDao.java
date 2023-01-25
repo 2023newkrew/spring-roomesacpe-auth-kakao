@@ -1,7 +1,9 @@
 package nextstep.member;
 
+import nextstep.Mapper.DatabaseMapper;
+import nextstep.Mapper.H2Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -11,19 +13,13 @@ import java.util.List;
 
 @Component
 public class MemberDao {
-    public final JdbcTemplate jdbcTemplate;
-
+    private final JdbcTemplate jdbcTemplate;
+    private final DatabaseMapper databaseMapper;
+    @Autowired
     public MemberDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.databaseMapper = new H2Mapper();
     }
-
-    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
-            resultSet.getString("username"),
-            resultSet.getString("password"),
-            resultSet.getString("name"),
-            resultSet.getString("phone")
-    );
 
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
@@ -39,9 +35,8 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-
     public List<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.query(sql, rowMapper, username);
+        return jdbcTemplate.query(sql, databaseMapper.memberRowMapper(), username);
     }
 }

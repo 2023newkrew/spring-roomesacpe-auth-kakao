@@ -14,7 +14,7 @@ import org.springframework.test.context.TestExecutionListeners;
 public class MemberTest {
     @DisplayName("멤버를 생성할 수 있다")
     @Test
-    public void create() {
+    void create() {
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
@@ -27,7 +27,7 @@ public class MemberTest {
 
     @DisplayName("조회를 할 때 로그인이 되지 않았을 경우, 에러 발생")
     @Test
-    public void notLogin() {
+    void notLogin() {
         create();
         RestAssured
                 .given().log().all()
@@ -39,7 +39,7 @@ public class MemberTest {
 
     @DisplayName("잘못된 토큰을 입력하는 경우, 에러 발생")
     @Test
-    public void errorToken() {
+    void errorToken() {
         create();
         RestAssured
                 .given().log().all()

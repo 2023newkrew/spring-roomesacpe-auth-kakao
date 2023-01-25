@@ -52,7 +52,7 @@ public class JwtTokenProviderTest {
 
     @DisplayName("토큰을 생성할 수 있다")
     @Test
-    public void createTokenTest() {
+    void createTokenTest() {
         saveMember(jdbcTemplate, USERNAME, PASSWORD);
         ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
         assertThat(response.as(TokenResponse.class)).isNotNull();

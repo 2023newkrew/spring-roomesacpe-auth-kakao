@@ -93,7 +93,7 @@ class ReservationTest {
 
     @DisplayName("허용되지 않은 사용자가 예약을 이용할 때, 에러가 발생한다")
     @Test
-    public void notAuthorizedUserTest(){
+    void notAuthorizedUserTest(){
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

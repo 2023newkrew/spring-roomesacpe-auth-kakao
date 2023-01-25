@@ -45,7 +45,7 @@ public class ThemeTest {
 
     @DisplayName("허용되지 않은 사용자가 테마를 이용할 때, 에러가 발생한다")
     @Test
-    public void notAuthorizedUserTest(){
+    void notAuthorizedUserTest(){
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
@@ -58,14 +58,14 @@ public class ThemeTest {
 
     @DisplayName("테마를 생성할 수 있다")
     @Test
-    public void create() {
+    void create() {
         ExtractableResponse<Response> createdTheme = requestCreateTheme();
         assertThat(createdTheme.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("중복 테마를 생성할 경우, 에러가 발생한다")
     @Test
-    public void duplicateCreateTest(){
+    void duplicateCreateTest(){
         requestCreateTheme();
         ExtractableResponse<Response> createdTheme = requestCreateTheme();
         assertThat(createdTheme.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());

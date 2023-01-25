@@ -62,7 +62,7 @@ public class ScheduleTest {
 
     @DisplayName("허용되지 않은 사용자가 스케줄을 이용할 때, 에러가 발생한다")
     @Test
-    public void notAuthorizedUserTest(){
+    void notAuthorizedUserTest(){
         ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
         RestAssured
                 .given().log().all()
@@ -75,7 +75,7 @@ public class ScheduleTest {
 
     @DisplayName("테마가 있는 경우 스케줄을 생성할 수 있음")
     @Test
-    public void create() {
+    void create() {
         ExtractableResponse<Response> createSchedule = requestCreateSchedule();
         Assertions.assertThat(createSchedule.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -98,7 +98,7 @@ public class ScheduleTest {
 
     @DisplayName("스케줄을 조회할 수 있음")
     @Test
-    public void showSchedules() {
+    void showSchedules() {
         requestCreateSchedule();
         var response = RestAssured
                 .given().log().all()
