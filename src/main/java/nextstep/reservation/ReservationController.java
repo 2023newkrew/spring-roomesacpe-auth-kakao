@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import java.util.stream.Collectors;
 import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,12 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity readReservations(@RequestParam Long themeId, @RequestParam String date) {
-        List<Reservation> results = reservationService.findAllByThemeIdAndDate(themeId, date);
-        return ResponseEntity.ok().body(results);
+        List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
+        List<ReservationResponse> responses = reservations.stream()
+                .map(ReservationResponse::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping("/{id}")
