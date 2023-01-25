@@ -20,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -168,14 +169,14 @@ class ReservationE2ETest {
     void delete() {
         var reservation = createReservation();
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
-                .extract();
+                .statusCode(HttpStatus.OK.value())
+                .body("deletedReservationCount", is(1));
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     @DisplayName("중복 예약을 생성한다")

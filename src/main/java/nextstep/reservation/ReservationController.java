@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import java.util.Collections;
 import nextstep.auth.AuthenticationPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +43,9 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteReservation(@AuthenticationPrincipal String principal, @PathVariable Long id) {
-        reservationService.delete(id, Long.parseLong(principal));
+        int deletedRowCount = reservationService.delete(id, Long.parseLong(principal));
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(Collections.singletonMap("deletedReservationCount", deletedRowCount));
     }
 
     @ExceptionHandler(Exception.class)
