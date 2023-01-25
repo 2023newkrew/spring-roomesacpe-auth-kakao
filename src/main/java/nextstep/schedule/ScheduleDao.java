@@ -47,13 +47,18 @@ public class ScheduleDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Schedule findById(Long id) {
+    public List<Schedule> findById(Long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id);
+    }
+
+    public Boolean isExistsByTimeAndDate(String time, String date){
+        String sql = "SELECT EXISTS (SELECT 1 FROM schedule WHERE time = ? and date = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, time, date);
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

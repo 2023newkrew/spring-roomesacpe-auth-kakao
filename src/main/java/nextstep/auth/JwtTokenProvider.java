@@ -5,11 +5,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import nextstep.auth.authorization.AuthorizationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import static nextstep.config.Messages.*;
 
 @Component
 public class JwtTokenProvider {
@@ -35,7 +36,7 @@ public class JwtTokenProvider {
         if (validateToken(token)) {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
-        throw new AuthorizationException();
+        throw new AuthorizationServiceException(INVALID_TOKEN.getMessage());
     }
 
     public boolean validateToken(String token) {
@@ -43,7 +44,7 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthorizationException("ErrorMessage: " + e.getMessage());
+            throw new AuthorizationServiceException(JWT_Exception.getMessage() + e.getMessage());
         }
     }
 }

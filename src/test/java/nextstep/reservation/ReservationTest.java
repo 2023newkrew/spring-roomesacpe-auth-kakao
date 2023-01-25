@@ -24,8 +24,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static nextstep.auth.JwtTokenProviderTest.generateToken;
-import static nextstep.auth.JwtTokenProviderTest.saveMember;
+import static nextstep.auth.JwtTokenProviderTest.*;
+import static nextstep.auth.authorization.LoginInterceptor.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -39,7 +39,6 @@ class ReservationTest {
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
-    private Long memberId;
 
     @InjectMocks
     JwtTokenProvider jwtTokenProvider;
@@ -56,15 +55,15 @@ class ReservationTest {
         ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", env.getProperty("jwt.secret"));
         ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", env.getProperty("jwt.validateMilliSeconds"));
 
-        saveMember(jdbcTemplate);
-        ExtractableResponse<Response> tokenResponse = generateToken();
+        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        ExtractableResponse<Response> tokenResponse = generateToken(USERNAME, PASSWORD);
         token = tokenResponse.body().jsonPath().getString("accessToken");
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + token)
+                .header(authorization, bearer + token)
                 .body(themeRequest)
                 .when().post("/themes")
                 .then().log().all()
@@ -77,7 +76,7 @@ class ReservationTest {
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + token)
+                .header(authorization, bearer + token)
                 .body(scheduleRequest)
                 .when().post("/schedules")
                 .then().log().all()
@@ -92,12 +91,24 @@ class ReservationTest {
         );
     }
 
+    @DisplayName("허용되지 않은 사용자가 예약을 이용할 때, 에러가 발생한다")
+    @Test
+    public void notAuthorizedUserTest(){
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("스케줄이 있는 경우, 예약을 생성할 수 있다.")
     @Test
     void create() {
         RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + token)
+            .header(authorization, bearer + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
             .when().post("/reservations")
@@ -114,7 +125,7 @@ class ReservationTest {
         );
         RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + token)
+            .header(authorization, bearer + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(request)
             .when().post("/reservations")
@@ -125,23 +136,22 @@ class ReservationTest {
     @DisplayName("중복 예약을 생성할 경우, 에러가 발생한다")
     @Test
     void createDuplicateReservation() {
-        createReservation();
-        ExtractableResponse<Response> response = createReservation();
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-
+        requestCreateReservation();
+        ExtractableResponse<Response> createReservation = requestCreateReservation();
+        assertThat(createReservation.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
 
     @DisplayName("예약을 조회할 수 있다")
     @Test
     void show() {
-        createReservation();
+        requestCreateReservation();
 
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
-                .header("Authorization", "Bearer " + token)
+                .header(authorization, bearer + token)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -157,7 +167,7 @@ class ReservationTest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
-                .header("Authorization", "Bearer " + token)
+                .header(authorization, bearer + token)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -169,10 +179,10 @@ class ReservationTest {
     @DisplayName("예약을 삭제할 수 있다")
     @Test
     void delete() {
-        var reservation = createReservation();
+        var reservation = requestCreateReservation();
         RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + token)
+            .header(authorization, bearer + token)
             .when().delete(reservation.header("Location"))
             .then().log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
@@ -183,17 +193,34 @@ class ReservationTest {
     void createNotExistReservation() {
         RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + token)
-            .when().delete("/reservations/1")
+            .header(authorization, bearer + token)
+            .when().delete("/reservations/22221")
             .then().log().all()
-            .statusCode(HttpStatus.LENGTH_REQUIRED.value());
+            .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> createReservation() {
+    @DisplayName("다른 회원이 삭제하는 경우, 에러가 발생한다")
+    @Test
+    void otherUserDeleteTest(){
+        var reservation = requestCreateReservation();
+        String otherUserName = USERNAME + "22";
+        saveMember(jdbcTemplate, otherUserName, PASSWORD);
+        ExtractableResponse<Response> otherTokenResponse = generateToken(otherUserName, PASSWORD);
+        String otherToken = otherTokenResponse.body().jsonPath().getString("accessToken");
+
+        RestAssured
+                .given().log().all()
+                .header(authorization, bearer + otherToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> requestCreateReservation() {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + token)
+                .header(authorization, bearer + token)
                 .body(request)
                 .when().post("/reservations")
                 .then().log().all()

@@ -9,12 +9,16 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.naming.NotContextException;
 import java.util.Objects;
+
+import static nextstep.auth.authorization.LoginInterceptor.authorization;
+import static nextstep.auth.authorization.LoginInterceptor.bearer;
+import static nextstep.config.Messages.*;
+
 
 @Component
 public class MemberAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-public static final String Bearer = "Bearer ";
+
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
@@ -31,8 +35,8 @@ public static final String Bearer = "Bearer ";
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String accessToken = Objects.requireNonNull(webRequest.getHeader("Authorization"),
-                "Needs to be login").substring(Bearer.length());
+        String accessToken = Objects.requireNonNull(webRequest.getHeader(authorization),
+                LOGIN_NEEDS.getMessage()).substring(bearer.length());
         String principal = jwtTokenProvider.getPrincipal(accessToken);
         return memberService.findByUsername(principal).get(0);
     }

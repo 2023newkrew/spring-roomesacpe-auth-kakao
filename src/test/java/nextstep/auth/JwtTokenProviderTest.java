@@ -24,6 +24,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static nextstep.RoomEscapeApplication.getPasswordEncoder;
+import static nextstep.auth.authorization.LoginInterceptor.authorization;
+import static nextstep.auth.authorization.LoginInterceptor.bearer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
@@ -51,16 +53,16 @@ public class JwtTokenProviderTest {
     @DisplayName("토큰을 생성할 수 있다")
     @Test
     public void createTokenTest() {
-        saveMember(jdbcTemplate);
-        ExtractableResponse<Response> response = generateToken();
+        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
     @Test
     @DisplayName("토큰을 이용하여 유저 정보를 가져올 수 있다.")
     void findByUsernameTest() {
-        saveMember(jdbcTemplate);
-        ExtractableResponse<Response> response = generateToken();
+        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
 
         String accessToken = response.body().jsonPath().getString("accessToken");
         String username = jwtTokenProvider.getPrincipal(accessToken);
@@ -68,21 +70,21 @@ public class JwtTokenProviderTest {
 
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + accessToken)
+                .header(authorization, bearer + accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
 
-    public static void saveMember(JdbcTemplate jdbcTemplate){
+    public static void saveMember(JdbcTemplate jdbcTemplate, String username, String password){
         PasswordEncoder passwordEncoder = getPasswordEncoder();
-        Member member = new Member(USERNAME, passwordEncoder.encode(PASSWORD), "name", "010");
+        Member member = new Member(username, passwordEncoder.encode(password), "name", "010");
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);
     }
 
-    public static ExtractableResponse<Response> generateToken() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+    public static ExtractableResponse<Response> generateToken(String username, String password) {
+        TokenRequest body = new TokenRequest(username, password);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

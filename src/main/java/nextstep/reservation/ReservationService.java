@@ -6,13 +6,17 @@ import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
+import javax.naming.NotContextException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static nextstep.auth.principal.MemberAuthenticationPrincipalArgumentResolver.Bearer;
+import static nextstep.auth.authorization.LoginInterceptor.bearer;
+import static nextstep.config.Messages.*;
+
 
 @Service
 public class ReservationService {
@@ -30,22 +34,22 @@ public class ReservationService {
     }
 
     public Long create(ReservationRequest reservationRequest, String authorization) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+        List<Schedule> schedules = scheduleDao.findById(reservationRequest.getScheduleId());
 
-        if (schedule == null) {
-            throw new NullPointerException("스케줄을 찾을 수 없음");
+        if (schedules.isEmpty()) {
+            throw new NullPointerException(NOT_FOUND_SCHEDULE.getMessage() + reservationRequest.getScheduleId());
         }
 
-        List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
+        List<Reservation> reservation = reservationDao.findByScheduleId(schedules.get(0).getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateRequestException("이미 해당 스케줄로 등록되어 있음");
+            throw new DuplicateRequestException(ALREADY_REGISTERED_RESERVATION.getMessage());
         }
 
-        String accessToken = authorization.substring(Bearer.length());
+        String accessToken = authorization.substring(bearer.length());
         String username = jwtTokenProvider.getPrincipal(accessToken);
 
         Reservation newReservation = new Reservation(
-                schedule,
+                schedules.get(0),
                 username
         );
         return reservationDao.save(newReservation);
@@ -53,25 +57,23 @@ public class ReservationService {
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Optional<List<Theme>> themeList = themeDao.findById(themeId);
-        if (themeList.get().isEmpty()) {
+        if (themeList.isEmpty() || themeList.get().isEmpty()) {
             throw new NullPointerException();
         }
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, String authorization) {
-        String accessToken = authorization.substring(Bearer.length());
+    public void deleteById(Long id, String authorization) throws NotContextException {
+        String accessToken = authorization.substring(bearer.length());
         String username = jwtTokenProvider.getPrincipal(accessToken);
 
         Reservation reservation = reservationDao.findById(id);
-
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NotContextException(RESERVATION_NOT_FOUND.getMessage());
         }
        if (!Objects.equals(reservation.getName(), username)){
-            throw new IllegalArgumentException("삭제 권한이 없습니다");
+            throw new AuthorizationServiceException(NOT_PERMISSION_DELETE.getMessage());
         }
-
         reservationDao.deleteById(id);
     }
 }

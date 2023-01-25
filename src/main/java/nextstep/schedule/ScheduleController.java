@@ -3,7 +3,7 @@ package nextstep.schedule;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.ContextNotEmptyException;
+import javax.naming.NotContextException;
 import java.net.URI;
 import java.util.List;
 
@@ -29,9 +29,8 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) throws ContextNotEmptyException {
+    public ResponseEntity deleteReservation(@PathVariable Long id) throws NotContextException {
         scheduleService.deleteById(id);
-
         return ResponseEntity.noContent().build();
     }
 }

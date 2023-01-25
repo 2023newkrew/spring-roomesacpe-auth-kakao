@@ -1,12 +1,13 @@
 package nextstep.member;
 
+import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.List;
 
 import static nextstep.RoomEscapeApplication.getPasswordEncoder;
+import static nextstep.config.Messages.*;
 
 @Service
 public class MemberService {
@@ -18,7 +19,7 @@ public class MemberService {
 
     public Long create(MemberRequest memberRequest) {
         if (!memberDao.findByUsername(memberRequest.getUsername()).isEmpty()){
-            throw new KeyAlreadyExistsException("Already Registered User");
+            throw new DuplicateRequestException(ALREADY_USER.getMessage());
         }
         PasswordEncoder passwordEncoder = getPasswordEncoder();
         Member member = new Member(memberRequest.getUsername(), passwordEncoder.encode(memberRequest.getPassword()),

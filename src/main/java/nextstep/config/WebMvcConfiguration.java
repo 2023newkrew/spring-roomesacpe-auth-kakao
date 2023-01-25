@@ -23,7 +23,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/reservations/**")
-                .addPathPatterns("/schedules/**");
+                .addPathPatterns("/schedules/**")
+                .addPathPatterns("/themes/**");
     }
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
