@@ -27,7 +27,6 @@ public class AdminController {
     @DeleteMapping("/schedules/{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
-
         return ResponseEntity.noContent().build();
     }
 

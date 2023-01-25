@@ -70,6 +70,6 @@ class AdminE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("admin/")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 }
