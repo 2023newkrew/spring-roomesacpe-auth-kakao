@@ -1,5 +1,6 @@
 package nextstep.support;
 
+import nextstep.auth.Auth;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
@@ -10,11 +11,11 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.Role;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 @Component
 public class AdminAuthInterceptor implements HandlerInterceptor {
@@ -28,6 +29,15 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (!(handler instanceof HandlerMethod)) {
+            return true;
+        }
+
+        Auth auth = extractAuthAnnotation(handler);
+        if (auth == null || auth.role() != Role.ADMIN) {
+            return true;
+        }
+
         String token = AuthorizationTokenExtractor.extract(
                 request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION))
                 .orElseThrow(() -> new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN));
@@ -46,5 +56,10 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    private Auth extractAuthAnnotation(Object handler) {
+        HandlerMethod handlerMethod = (HandlerMethod) handler;
+        return handlerMethod.getMethodAnnotation(Auth.class);
     }
 }

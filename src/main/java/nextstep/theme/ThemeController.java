@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import nextstep.auth.Auth;
+import nextstep.member.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,6 +18,7 @@ public class ThemeController {
     }
 
     @PostMapping("/admin/themes")
+    @Auth(role = Role.ADMIN)
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest);
         URI uri = UriComponentsBuilder.fromUriString("/themes/{id}").buildAndExpand(id).toUri();
@@ -29,6 +32,7 @@ public class ThemeController {
     }
 
     @DeleteMapping("/admin/themes/{id}")
+    @Auth(role = Role.ADMIN)
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
         return ResponseEntity.noContent().build();

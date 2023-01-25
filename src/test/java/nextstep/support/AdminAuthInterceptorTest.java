@@ -1,5 +1,6 @@
 package nextstep.support;
 
+import nextstep.auth.Auth;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
@@ -12,9 +13,14 @@ import nextstep.member.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.handler.MockHandlerFactory;
+import org.mockito.mock.MockCreationSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.method.HandlerMethod;
+
+import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -30,6 +36,21 @@ class AdminAuthInterceptorTest {
     @Autowired
     MemberDao memberDao;
 
+    class MockController {
+        @Auth(role = Role.ADMIN)
+        void adminMethod() {}
+    }
+
+    HandlerMethod handlerMethod;
+
+    @BeforeEach
+    void setUp() throws NoSuchMethodException {
+        Method method = MockController.class.getDeclaredMethod("adminMethod");
+        MockController mockController = new MockController();
+
+        handlerMethod = new HandlerMethod(mockController, method);
+    }
+
     @DisplayName("헤더에서 토큰을 추출해서 검증 통과하면 true 반환")
     @Test
     void preHandle_success() {
@@ -39,7 +60,7 @@ class AdminAuthInterceptorTest {
         request.addHeader(AuthorizationTokenExtractor.AUTHORIZATION,
                 AuthorizationTokenExtractor.BEARER_TYPE + " " + token);
 
-        assertThat(adminAuthInterceptor.preHandle(request, null, null))
+        assertThat(adminAuthInterceptor.preHandle(request, null, handlerMethod))
                 .isTrue();
     }
 
@@ -49,7 +70,7 @@ class AdminAuthInterceptorTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(AuthorizationTokenExtractor.AUTHORIZATION, "invalidToken");
 
-        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, null))
+        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, handlerMethod))
                 .isInstanceOf(InvalidAuthorizationTokenException.class);
     }
 
@@ -62,7 +83,7 @@ class AdminAuthInterceptorTest {
         request.addHeader(AuthorizationTokenExtractor.AUTHORIZATION,
                 AuthorizationTokenExtractor.BEARER_TYPE + " " + token);
 
-        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, null))
+        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, handlerMethod))
                 .isInstanceOf(NotExistEntityException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.UNAUTHORIZED);
@@ -80,7 +101,7 @@ class AdminAuthInterceptorTest {
         request.addHeader(AuthorizationTokenExtractor.AUTHORIZATION,
                 AuthorizationTokenExtractor.BEARER_TYPE + " " + token);
 
-        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, null))
+        assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, handlerMethod))
                 .isInstanceOf(UnauthorizedMemberException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.UNAUTHORIZED);

@@ -1,5 +1,7 @@
 package nextstep.schedule;
 
+import nextstep.auth.Auth;
+import nextstep.member.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,6 +18,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/admin/schedules")
+    @Auth(role = Role.ADMIN)
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         URI uri = UriComponentsBuilder.fromUriString("/schedules/{id}").buildAndExpand(id).toUri();
@@ -28,6 +31,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/admin/schedules/{id}")
+    @Auth(role = Role.ADMIN)
     public ResponseEntity deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
 
