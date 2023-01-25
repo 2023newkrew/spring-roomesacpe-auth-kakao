@@ -14,14 +14,16 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final LoginInterceptor loginInterceptor;
 
-    public WebMvcConfiguration(JwtTokenProvider jwtTokenProvider) {
+    public WebMvcConfiguration(JwtTokenProvider jwtTokenProvider, LoginInterceptor loginInterceptor) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.loginInterceptor = loginInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor(jwtTokenProvider)).addPathPatterns("/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");
     }
 
     @Override

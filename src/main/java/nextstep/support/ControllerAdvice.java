@@ -17,4 +17,13 @@ public class ControllerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(exception.getMessage());
     }
+
+    @ExceptionHandler(value = {
+            AuthorizationException.class
+    })
+    public ResponseEntity<String> handleUnauthorizedRequest(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(exception.getMessage());
+    }
 }
