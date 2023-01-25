@@ -1,9 +1,11 @@
 package nextstep.reservation;
 
 import nextstep.auth.AuthTestUtil;
-import nextstep.auth.TokenResponse;
-import nextstep.member.Member;
+import nextstep.auth.model.TokenResponse;
+import nextstep.member.model.Member;
 import nextstep.member.MemberTestUtil;
+import nextstep.reservation.model.Reservation;
+import nextstep.reservation.model.ReservationRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,8 +24,8 @@ class ReservationE2ETest {
     @DisplayName("인증된 사용자는 예약할 수 있다.")
     @Test
     void test1() {
-        Member reservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(reservationExistUser);
+        Member reservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(reservationExistMember);
         ReservationRequest reservationRequest = new ReservationRequest(6L);
 
         ReservationTestUtil.createReservation(reservationRequest, tokenResponse.getAccessToken())
@@ -49,12 +51,12 @@ class ReservationE2ETest {
     @DisplayName("본인의 예약만 조회할 수 있다.")
     @Test
     void test4() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member reservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(reservationExistMember);
 
         List<Reservation> reservations = ReservationTestUtil.getReservations(1L, "2022-11-11", tokenResponse.getAccessToken());
         List<Reservation> notMyReservations = reservations.stream()
-                .filter((reservation -> !reservation.getUsername().equals(ReservationExistUser.getUsername())))
+                .filter((reservation -> !reservation.getMemberName().equals(reservationExistMember.getMemberName())))
                 .collect(Collectors.toList());
 
         assertThat(reservations.size()).isEqualTo(3);
@@ -64,8 +66,8 @@ class ReservationE2ETest {
     @DisplayName("인증된 사용자는 본인의 예약을 삭제할 수 있다.")
     @Test
     void test6() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member reservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(reservationExistMember);
 
         ReservationTestUtil.removeReservation(1L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -81,8 +83,8 @@ class ReservationE2ETest {
     @DisplayName("타인의 예약을 삭제할 수 없다.")
     @Test
     void test8() {
-        Member ReservationExistUser = MemberTestUtil.getReservationExistMember(1L);
-        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(ReservationExistUser);
+        Member reservationExistMember = MemberTestUtil.getReservationExistMember(1L);
+        TokenResponse tokenResponse = AuthTestUtil.tokenLogin(reservationExistMember);
 
         ReservationTestUtil.removeReservation(5L, tokenResponse.getAccessToken())
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
