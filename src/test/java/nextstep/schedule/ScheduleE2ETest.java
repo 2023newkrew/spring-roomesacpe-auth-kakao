@@ -1,13 +1,13 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
-import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +23,11 @@ class ScheduleE2ETest {
     private Long themeId;
     private String token;
 
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     @BeforeEach
     void setUp() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
         token = jwtTokenProvider.createToken("admin1");
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
@@ -100,6 +102,24 @@ class ScheduleE2ETest {
                 .when().delete("/admin" + location)
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("일반 사용자가 스케줄 생성 요청 시 404 코드 반환")
+    @Test
+    void createSchedule_unauthorized() {
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+
+        String token = jwtTokenProvider.createToken("user");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .body(body)
+                .when().post("/admin/schedules")
+                .then().log().all()
+                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
     }
 
     private String requestCreateSchedule() {
