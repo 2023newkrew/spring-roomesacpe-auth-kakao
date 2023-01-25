@@ -3,8 +3,8 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.support.exception.ReservationException;
-import nextstep.support.exception.RoomEscapeException;
+import nextstep.support.exception.AuthorizationExcpetion;
+import nextstep.support.exception.MemberException;
 import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +27,14 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest tokenRequest) {
         Member member;
+
         try {
-            member = memberService.findByUsername(tokenRequest.getUsername());
-        } catch (RoomEscapeException e) {
-            throw new ReservationException(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
+            member = memberService.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword());
+        } catch (MemberException e) {
+            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
         }
 
-        TokenResponse tokenResponse = authService.createToken(member, tokenRequest.getPassword());
+        TokenResponse tokenResponse = authService.createToken(member);
         return ResponseEntity.ok(tokenResponse);
     }
 

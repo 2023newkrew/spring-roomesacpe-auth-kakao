@@ -1,8 +1,6 @@
 package nextstep.auth;
 
 import nextstep.member.Member;
-import nextstep.support.exception.AuthorizationExcpetion;
-import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,10 +15,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public TokenResponse createToken(Member member, String tokenPassword) {
-        if (member.checkWrongPassword(tokenPassword)) {
-            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
-        }
+    public TokenResponse createToken(Member member) {
         String token = jwtTokenProvider.createToken(member.getUsername(), Map.of(TOKEN_ROLE_KEY, member.getRole().name()));
         return new TokenResponse(token);
     }

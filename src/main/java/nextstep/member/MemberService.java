@@ -23,4 +23,13 @@ public class MemberService {
         return memberDao.findByUsername(username)
                 .orElseThrow(() -> new MemberException(RoomEscapeExceptionCode.NOT_FOUND_MEMBER));
     }
+
+    @Transactional(readOnly = true)
+    public Member findByUsernameAndPassword(String username, String password) {
+        Member member = findByUsername(username);
+        if (member.checkWrongPassword(password)) {
+            throw new MemberException(RoomEscapeExceptionCode.NOT_FOUND_MEMBER);
+        }
+        return member;
+    }
 }

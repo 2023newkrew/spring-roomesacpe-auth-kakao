@@ -42,8 +42,8 @@ public class AuthControllerTest {
         TokenRequest requestBody = new TokenRequest("username", "password");
         Member member = Member.builder().username("username").password("password").name("name").phone("010-1234-5678").build();
         String content = objectMapper.writeValueAsString(requestBody);
-        when(memberService.findByUsername(ArgumentMatchers.any(String.class))).thenReturn(member);
-        when(authService.createToken(ArgumentMatchers.any(Member.class), ArgumentMatchers.any(String.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
+        when(memberService.findByUsernameAndPassword(ArgumentMatchers.any(String.class), ArgumentMatchers.any(String.class))).thenReturn(member);
+        when(authService.createToken(ArgumentMatchers.any(Member.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
 
         //when
         String responseBody = mockMvc.perform(post("/login/token")
