@@ -5,7 +5,7 @@ import java.util.Arrays;
 public enum MemberRole {
     ADMIN(0), USER(1);
 
-    private int value;
+    private final int value;
 
     MemberRole(int value) {
         this.value = value;
