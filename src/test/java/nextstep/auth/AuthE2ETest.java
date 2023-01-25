@@ -1,11 +1,12 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.Login;
+import nextstep.ThemeMethod;
 import nextstep.domain.member.MemberRole;
 import nextstep.interfaces.auth.dto.TokenRequest;
 import nextstep.interfaces.auth.dto.TokenResponse;
 import nextstep.interfaces.member.dto.MemberRequest;
-import nextstep.interfaces.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ public class AuthE2ETest {
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
-        createTheme();
+        ThemeMethod.createTheme();
 
         var response = RestAssured
                 .given().log().all()
@@ -69,11 +70,11 @@ public class AuthE2ETest {
     @DisplayName("테마를 삭제한다 - 관리자 계정")
     @Test
     void delete() {
-        Long id = createTheme();
+        Long id = ThemeMethod.createTheme();
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(loginAdmin())
+                .auth().oauth2(Login.loginAdmin())
                 .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
@@ -84,11 +85,11 @@ public class AuthE2ETest {
     @DisplayName("테마를 삭제한다 - 관리자 계정이 아닐 경우")
     @Test
     void deleteNotAdmin() {
-        Long id = createTheme();
+        Long id = ThemeMethod.createTheme();
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(loginUser())
+                .auth().oauth2(Login.loginUser())
                 .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
@@ -96,35 +97,7 @@ public class AuthE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .auth().oauth2(loginAdmin())
-                .when().post("/admin/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
-    }
 
-    public String loginUser(){
-        return login(USERNAME, PASSWORD);
-    }
 
-    public String loginAdmin(){
-        return login("admin", "admin");
-    }
 
-    public String login(String userName, String password){
-        return RestAssured
-                .given().log().all()
-                .body(new TokenRequest(userName, password))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-    }
 }
