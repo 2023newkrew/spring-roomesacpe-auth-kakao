@@ -15,3 +15,10 @@
   - 가능하면 Controller와 인증 로직을 분리한다.
 - 토큰을 이용한 인증 프로세스에 대해 이해가 어려운 경우 페어와 함께 추가학습을 진행한다.
 - HandlerMethodArgumentResolver를 활용한다.
+
+# 1월 25일 코드리뷰 이후 수정사항
+- [ ] ArgumentResolver가 Member를 리턴하도록 변경
+- [ ] 의존성 줄이기
+- [ ] 상황에 맞는 Exception 사용 
+- [ ] 가능한 곳에 final 키워드 사용
+- [ ] Validation 로직을 적절한 레이어에 구현
