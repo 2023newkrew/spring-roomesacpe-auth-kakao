@@ -42,7 +42,7 @@ public class MemberServiceTest {
     @DisplayName("member 생성 시 username 중복처리 테스트")
     void createDuplicateMemberTest() {
 
-        MemberRequestDto memberRequestDto = new MemberRequestDto("username", "password", "name", "010-1234-5678");
+        MemberRequestDto memberRequestDto = new MemberRequestDto("username", "password", "name", "010-1234-5678", MemberRole.GENERAL.getName());
         when(memberDao.findByUsername(anyString())).thenReturn(Optional.of(MEMBER));
         Assertions.assertThatCode(() -> memberService.create(memberRequestDto))
                 .isInstanceOf(DuplicateEntityException.class);

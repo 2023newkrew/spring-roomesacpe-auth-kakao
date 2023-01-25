@@ -11,10 +11,10 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public String login(TokenRequestDto tokenRequestDto) {
-        return jwtTokenProvider.createToken(tokenRequestDto.getUsername());
+        return jwtTokenProvider.createToken(tokenRequestDto);
     }
 
     public String findUsernameByToken(String token) {
-        return jwtTokenProvider.getPrincipal(token);
+        return jwtTokenProvider.getUsername(token);
     }
 }

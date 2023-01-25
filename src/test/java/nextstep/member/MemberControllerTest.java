@@ -39,7 +39,7 @@ public class MemberControllerTest {
         MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678");
         when(authService.findUsernameByToken(anyString())).thenReturn("username");
         when(memberService.findByUsername("username")).thenReturn(memberResponseDto);
-        when(jwtTokenProvider.getPrincipal(ACCESS_TOKEN)).thenReturn("username");
+        when(jwtTokenProvider.getUsername(ACCESS_TOKEN)).thenReturn("username");
 
         RestAssured.given()
                 .log()

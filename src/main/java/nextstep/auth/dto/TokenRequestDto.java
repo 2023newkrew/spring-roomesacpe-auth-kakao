@@ -10,5 +10,5 @@ import lombok.Getter;
 public class TokenRequestDto {
     private String username;
     private String password;
-
+    private String role;
 }

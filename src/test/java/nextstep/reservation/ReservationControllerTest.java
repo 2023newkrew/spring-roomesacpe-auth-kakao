@@ -45,7 +45,7 @@ public class ReservationControllerTest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
-        when(jwtTokenProvider.getPrincipal(validAccessToken))
+        when(jwtTokenProvider.getUsername(validAccessToken))
                 .thenReturn("username");
 
         when(reservationService.create(request, "username"))
@@ -72,7 +72,7 @@ public class ReservationControllerTest {
     @DisplayName("예약을 생성할 때 액세스 토큰이 유효해야한다.")
     @Test
     void create_with_invalid_accessToken() {
-        when(jwtTokenProvider.getPrincipal(invalidAccessToken)).thenThrow(JwtException.class);
+        when(jwtTokenProvider.getUsername(invalidAccessToken)).thenThrow(JwtException.class);
 
         RestAssured
                 .given()
@@ -110,7 +110,7 @@ public class ReservationControllerTest {
     @DisplayName("권한을 가진 예약만 삭제할 수 있다.")
     @Test
     void delete_with_invalid_accessToken_test() {
-        when(jwtTokenProvider.getPrincipal(validAccessToken))
+        when(jwtTokenProvider.getUsername(validAccessToken))
                 .thenReturn("username");
         doThrow(new UnauthorizedException()).when(reservationService)
                 .deleteById(eq(1L), eq("username"));
@@ -132,7 +132,7 @@ public class ReservationControllerTest {
     @DisplayName("존재하는 예약만 삭제할 수 있다.")
     @Test
     void delete_not_exist_reservation_test() {
-        when(jwtTokenProvider.getPrincipal(validAccessToken))
+        when(jwtTokenProvider.getUsername(validAccessToken))
                 .thenReturn("username");
         doThrow(new NotExistEntityException()).when(reservationService)
                 .deleteById(eq(1L), eq("username"));
