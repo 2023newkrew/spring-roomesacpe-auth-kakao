@@ -5,6 +5,8 @@ import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,10 +54,11 @@ public class MemberE2ETest {
     }
 
     @DisplayName("유효하지 않는 토큰으로 사용자를 조회할 수 없다")
-    @Test
-    public void readMemberByInvalidToken() {
+    @ParameterizedTest
+    @ValueSource(strings = {"Bearer invalid-token", "invalid-token", "   "})
+    public void readMemberByInvalidToken(String token) {
         RestAssured.given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer invalid-token")
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .when().log().all()
                 .get("/members/me")
                 .then().log().all()
