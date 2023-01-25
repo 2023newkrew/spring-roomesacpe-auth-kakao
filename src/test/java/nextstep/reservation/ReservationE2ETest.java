@@ -1,8 +1,24 @@
 package nextstep.reservation;
 
+import static nextstep.Constant.ADMIN_PASSWORD;
+import static nextstep.Constant.ADMIN_USERNAME;
+import static nextstep.Constant.AUTHORIZATION;
+import static nextstep.Constant.BEARER_TYPE;
+import static nextstep.Constant.DATE;
+import static nextstep.Constant.NAME;
+import static nextstep.Constant.PASSWORD;
+import static nextstep.Constant.PHONE;
+import static nextstep.Constant.THEME_DESCRIPTION;
+import static nextstep.Constant.THEME_NAME;
+import static nextstep.Constant.THEME_PRICE;
+import static nextstep.Constant.TIME;
+import static nextstep.Constant.USERNAME;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
@@ -15,20 +31,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static nextstep.Constant.USERNAME;
-import static nextstep.Constant.PASSWORD;
-import static nextstep.Constant.NAME;
-import static nextstep.Constant.PHONE;
-import static nextstep.Constant.AUTHORIZATION;
-import static nextstep.Constant.BEARER_TYPE;
-import static nextstep.Constant.THEME_NAME;
-import static nextstep.Constant.THEME_DESCRIPTION;
-import static nextstep.Constant.THEME_PRICE;
-import static nextstep.Constant.DATE;
-import static nextstep.Constant.TIME;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -39,14 +41,42 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        TokenRequest adminTokenRequest = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
+        TokenResponse adminTokenResponse = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+        String adminToken = adminTokenResponse.getAccessToken();
+
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
+        String themeLocation = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(themeRequest)
+                .header(AUTHORIZATION, BEARER_TYPE + adminToken)
+                .when().post("/admin/themes")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        String[] themeLocations = themeLocation.split("/");
+        themeId = Long.parseLong(themeLocations[themeLocations.length - 1]);
+
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        String scheduleLocation = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, BEARER_TYPE + adminToken)
+                .body(scheduleRequest)
+                .when().post("/admin/schedules")
+                .then().statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        String[] scheduleLocations = scheduleLocation.split("/");
+        Long scheduleId = Long.parseLong(scheduleLocations[scheduleLocations.length - 1]);
+
         MemberRequest memberRequestBody = MemberRequest.builder()
                 .username(USERNAME).password(PASSWORD).name(NAME).phone(PHONE).build();
 
         RestAssured
                 .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(memberRequestBody)
                 .when().post("/members")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract();
+                .then().statusCode(HttpStatus.CREATED.value());
 
         TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
 
@@ -57,28 +87,6 @@ class ReservationE2ETest {
                 .extract().as(TokenResponse.class);
 
         accessToken = tokenResponse.getAccessToken();
-
-        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESCRIPTION, THEME_PRICE);
-        var themeResponse = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
         reservationRequest = new ReservationRequest(
                 scheduleId,
@@ -240,7 +248,6 @@ class ReservationE2ETest {
                 .given().header(AUTHORIZATION, BEARER_TYPE + accessToken).body(reservationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
-                .then()
-                .extract();
+                .then().extract();
     }
 }

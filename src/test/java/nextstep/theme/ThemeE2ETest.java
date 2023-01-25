@@ -1,5 +1,18 @@
 package nextstep.theme;
 
+import static nextstep.Constant.ADMIN_PASSWORD;
+import static nextstep.Constant.ADMIN_USERNAME;
+import static nextstep.Constant.AUTHORIZATION;
+import static nextstep.Constant.BEARER_TYPE;
+import static nextstep.Constant.NAME;
+import static nextstep.Constant.PASSWORD;
+import static nextstep.Constant.PHONE;
+import static nextstep.Constant.THEME_DESCRIPTION;
+import static nextstep.Constant.THEME_NAME;
+import static nextstep.Constant.THEME_PRICE;
+import static nextstep.Constant.USERNAME;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
@@ -12,23 +25,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static nextstep.Constant.ADMIN_PASSWORD;
-import static nextstep.Constant.ADMIN_USERNAME;
-import static nextstep.Constant.AUTHORIZATION;
-import static nextstep.Constant.BEARER_TYPE;
-import static nextstep.Constant.NAME;
-import static nextstep.Constant.PASSWORD;
-import static nextstep.Constant.PHONE;
-import static nextstep.Constant.USERNAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static nextstep.Constant.THEME_NAME;
-import static nextstep.Constant.THEME_DESCRIPTION;
-import static nextstep.Constant.THEME_PRICE;
-
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ThemeE2ETest {
     private String adminToken;
+
     @BeforeEach
     void setUp() {
         TokenRequest tokenRequest = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
