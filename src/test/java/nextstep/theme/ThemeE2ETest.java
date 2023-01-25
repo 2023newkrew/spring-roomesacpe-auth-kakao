@@ -98,8 +98,8 @@ class ThemeE2ETest {
                 .body(body)
                 .when().post("/admin/themes")
                 .then().log().all()
-                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
-                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
+                .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
+                .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
     }
 
     private Long createTheme() {

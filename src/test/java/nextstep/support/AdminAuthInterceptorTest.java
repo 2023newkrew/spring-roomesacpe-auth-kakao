@@ -57,6 +57,6 @@ class AdminAuthInterceptorTest {
         assertThatThrownBy(() -> adminAuthInterceptor.preHandle(request, null, null))
                 .isInstanceOf(NotExistEntityException.class)
                 .extracting("errorCode")
-                .isEqualTo(ErrorCode.USER_NOT_FOUND);
+                .isEqualTo(ErrorCode.UNAUTHORIZED);
     }
 }

@@ -118,8 +118,8 @@ class ScheduleE2ETest {
                 .body(body)
                 .when().post("/admin/schedules")
                 .then().log().all()
-                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
-                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
+                .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
+                .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
     }
 
     private String requestCreateSchedule() {

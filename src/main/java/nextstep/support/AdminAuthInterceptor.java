@@ -40,7 +40,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         Optional<Member> member = memberDao.findByUsername(username);
 
         if (member.isEmpty() || member.get().getRole() != Role.ADMIN) {
-            throw new NotExistEntityException(ErrorCode.USER_NOT_FOUND);
+            throw new NotExistEntityException(ErrorCode.UNAUTHORIZED);
         }
 
         return true;
