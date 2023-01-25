@@ -2,7 +2,7 @@ package nextstep.exception;
 
 import org.springframework.http.HttpStatus;
 
-public enum ErrorCode {
+public enum BusinessErrorCode {
     MEMBER_NOT_FOUND("유저를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     RESERVATION_NOT_FOUND("예약을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     SCHEDULE_NOT_FOUND("스케줄을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
@@ -19,7 +19,7 @@ public enum ErrorCode {
     private final String message;
     private final HttpStatus httpStatus;
 
-    ErrorCode(String message, HttpStatus httpStatus) {
+    BusinessErrorCode(String message, HttpStatus httpStatus) {
         this.message = message;
         this.httpStatus = httpStatus;
     }

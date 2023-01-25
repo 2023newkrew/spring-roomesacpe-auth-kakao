@@ -1,7 +1,7 @@
 package nextstep.admin;
 
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
@@ -24,14 +24,14 @@ public class AdminService {
 
     public void deleteTheme(long id) {
         themeDao.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.THEME_NOT_FOUND));
 
         themeDao.delete(id);
     }
 
     public long createSchedule(ScheduleRequest scheduleRequest) {
         Theme theme = themeDao.findById(scheduleRequest.getThemeId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.THEME_NOT_FOUND));
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 

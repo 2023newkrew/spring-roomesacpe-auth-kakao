@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static nextstep.exception.ErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION;
+import static nextstep.exception.BusinessErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.anyLong;

@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
@@ -28,15 +28,15 @@ public class ReservationService {
 
     public long create(long authId, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.SCHEDULE_NOT_FOUND));
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new BusinessException(ErrorCode.RESERVATION_ALREADY_EXIST_AT_THAT_TIME);
+            throw new BusinessException(BusinessErrorCode.RESERVATION_ALREADY_EXIST_AT_THAT_TIME);
         }
 
         Member member = memberDao.findById(authId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.MEMBER_NOT_FOUND));
         Reservation newReservation = new Reservation(schedule, member.getName());
 
         return reservationDao.save(newReservation);
@@ -44,18 +44,18 @@ public class ReservationService {
 
     public List<Reservation> findAllByThemeIdAndDate(long themeId, String date) {
         themeDao.findById(themeId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.THEME_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.THEME_NOT_FOUND));
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
     public void cancel(long authId, long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESERVATION_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.RESERVATION_NOT_FOUND));
         Member me = memberDao.findById(authId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.MEMBER_NOT_FOUND));
         if (!reservation.isMyReservation(me)) {
-            throw new BusinessException(ErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION);
+            throw new BusinessException(BusinessErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION);
         }
         reservationDao.deleteById(reservationId);
     }

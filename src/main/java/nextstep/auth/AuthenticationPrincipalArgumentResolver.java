@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -36,7 +36,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         try {
             return Long.parseLong(jwtTokenProvider.getPrincipal(token));
         } catch (NumberFormatException e) {
-            throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
+            throw new BusinessException(BusinessErrorCode.TOKEN_NOT_AVAILABLE);
         }
     }
 }

@@ -2,7 +2,7 @@ package nextstep.reservation;
 
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ class ReservationControllerTest {
         @Test
         @DisplayName("유효한 토큰이고, 자신의 예약이 아닐 경우 401을 응답해야 한다.")
         void should_401UnAuthorization_when_notMyReservation() throws Exception {
-            doThrow(new BusinessException(ErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION))
+            doThrow(new BusinessException(BusinessErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION))
                     .when(reservationService)
                     .cancel(userId, reservationId);
 
@@ -72,7 +72,7 @@ class ReservationControllerTest {
         @Test
         @DisplayName("유효한 토큰이 아닐 경우 401을 응답해야 한다.")
         void should_401UnAuthorization_when_invalidToken() throws Exception {
-            doThrow(new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE))
+            doThrow(new BusinessException(BusinessErrorCode.TOKEN_NOT_AVAILABLE))
                     .when(reservationService)
                     .cancel(userId, reservationId);
 

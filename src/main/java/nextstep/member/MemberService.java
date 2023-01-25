@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +15,7 @@ public class MemberService {
 
     public long create(MemberRequest memberRequest) {
         if (isAlreadyExistMember(memberRequest.getUsername())) {
-            throw new BusinessException(ErrorCode.MEMBER_ALREADY_EXIST_BY_USERNAME);
+            throw new BusinessException(BusinessErrorCode.MEMBER_ALREADY_EXIST_BY_USERNAME);
         }
         return memberDao.save(memberRequest.toEntity());
     }
@@ -26,6 +26,6 @@ public class MemberService {
 
     public Member findById(long id) {
         return memberDao.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(BusinessErrorCode.MEMBER_NOT_FOUND));
     }
 }

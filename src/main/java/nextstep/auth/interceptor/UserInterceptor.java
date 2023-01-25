@@ -2,7 +2,7 @@ package nextstep.auth.interceptor;
 
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -27,12 +27,12 @@ public class UserInterceptor implements HandlerInterceptor {
         }
         String accessToken = jwtTokenProvider.resolveToken(request);
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new BusinessException(ErrorCode.TOKEN_NOT_AVAILABLE);
+            throw new BusinessException(BusinessErrorCode.TOKEN_NOT_AVAILABLE);
         }
         if (hasUserRole(accessToken)) {
             return true;
         }
-        throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        throw new BusinessException(BusinessErrorCode.ACCESS_DENIED);
     }
 
     private boolean hasUserRole(String accessToken) {

@@ -3,7 +3,7 @@ package nextstep.auth;
 import io.jsonwebtoken.*;
 import nextstep.auth.role.Role;
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -59,13 +59,13 @@ JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest request) {
         if (request.getCookies() == null) {
-            throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
+            throw new BusinessException(BusinessErrorCode.TOKEN_NOT_EXIST);
         }
         Optional<Cookie> accessToken = Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals(ACCESS_TOKEN))
                 .findFirst();
         if (accessToken.isEmpty()) {
-            throw new BusinessException(ErrorCode.TOKEN_NOT_EXIST);
+            throw new BusinessException(BusinessErrorCode.TOKEN_NOT_EXIST);
         }
         return accessToken.get().getValue();
     }

@@ -2,7 +2,7 @@ package nextstep.auth.interceptor;
 
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
+import nextstep.exception.BusinessErrorCode;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         if (hasAdminRole(accessToken)) {
             return true;
         }
-        throw new BusinessException(ErrorCode.ACCESS_DENIED);
+        throw new BusinessException(BusinessErrorCode.ACCESS_DENIED);
     }
 
     private boolean hasAdminRole(String accessToken) {

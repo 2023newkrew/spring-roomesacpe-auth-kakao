@@ -1,7 +1,5 @@
 package nextstep.theme;
 
-import nextstep.exception.BusinessException;
-import nextstep.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
