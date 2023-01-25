@@ -26,7 +26,7 @@ public class AuthService {
     public TokenResponse login(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
                 .orElseThrow(NotExistEntityException::new);
-        if(!passwordEncoder.matches(tokenRequest.getPassword(), member.getPassword())) {
+        if (!passwordEncoder.matches(tokenRequest.getPassword(), member.getPassword())) {
             throw new WrongPasswordException();
         }
         return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(member.getId())));

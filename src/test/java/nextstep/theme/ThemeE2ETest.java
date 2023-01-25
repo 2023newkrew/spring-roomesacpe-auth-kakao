@@ -21,6 +21,7 @@ import static org.hamcrest.core.Is.is;
 @Sql("/init.sql")
 public class ThemeE2ETest {
     private String adminAccessToken;
+
     @BeforeEach
     void setUp() {
         MemberCreateRequest adminBody = new MemberCreateRequest("admin", "admin", "name", "010-1234-5678");

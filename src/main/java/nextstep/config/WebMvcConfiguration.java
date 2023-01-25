@@ -16,7 +16,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     private final AuthorityInterceptor authorityInterceptor;
     private final AuthenticationInterceptor authenticationInterceptor;
 
-    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver, AuthorityInterceptor authorityInterceptor, AuthenticationInterceptor authenticationInterceptor) {
+    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver,
+                               AuthorityInterceptor authorityInterceptor,
+                               AuthenticationInterceptor authenticationInterceptor) {
         this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
         this.authorityInterceptor = authorityInterceptor;
         this.authenticationInterceptor = authenticationInterceptor;

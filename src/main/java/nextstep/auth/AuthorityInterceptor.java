@@ -21,7 +21,8 @@ public class AuthorityInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         String authorization = request.getHeader("Authorization");
         String token = AuthenticationUtil.extractToken(authorization);
         validateAuthority(token);
@@ -32,7 +33,7 @@ public class AuthorityInterceptor implements HandlerInterceptor {
     private void validateAuthority(String token) {
         Long principal = Long.parseLong(getPrincipalFromToken(token));
         Member member = memberService.findById(principal);
-        if(member.getRole() != MemberRole.ADMIN) {
+        if (member.getRole() != MemberRole.ADMIN) {
             throw new AuthorityException();
         }
     }

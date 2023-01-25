@@ -16,7 +16,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         String authorization = request.getHeader("Authorization");
         String token = AuthenticationUtil.extractToken(authorization);
         validateAuthentication(token);

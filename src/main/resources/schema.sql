@@ -26,12 +26,12 @@ CREATE TABLE schedule
 
 CREATE TABLE member
 (
-    id       bigint      not null,
-    username varchar(20) not null,
+    id       bigint       not null,
+    username varchar(20)  not null,
     password varchar(100) not null,
-    name     varchar(20) not null,
-    phone    varchar(20) not null,
-    role     varchar(20) not null,
+    name     varchar(20)  not null,
+    phone    varchar(20)  not null,
+    role     varchar(20)  not null,
     primary key (id)
 );
 
