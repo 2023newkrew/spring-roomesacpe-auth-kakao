@@ -1,6 +1,8 @@
 package nextstep.member;
 
 import nextstep.support.Role;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -51,5 +53,14 @@ public class MemberDao {
     public Member findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
+    }
+
+    public Member findByUsernamePassword(String username, String password) {
+        try {
+            String sql = "SELECT id, username, password, name, phone, role from member where username = ? AND password = ?;";
+            return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 }

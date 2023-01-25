@@ -16,9 +16,9 @@ public class AuthService {
     }
 
     public String createToken(TokenRequest tokenRequest) {
-        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+        Member member = memberDao.findByUsernamePassword(tokenRequest.getUsername(), tokenRequest.getPassword());
 
-        if (!member.getUsername().equals(tokenRequest.getUsername()) || member.checkWrongPassword(tokenRequest.getPassword())) {
+        if (member == null) {
             throw new AuthorizationExcpetion();
         }
 
