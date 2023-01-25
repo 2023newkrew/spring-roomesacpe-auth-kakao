@@ -37,6 +37,7 @@ public class MemberDao {
                     }
                 });
     }
+
     public Long save(Member member) {
         String sql = "INSERT INTO member (id, username, password, name, phone, role) VALUES (?, ?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();

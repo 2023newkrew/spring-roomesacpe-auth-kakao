@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import java.sql.SQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -23,15 +24,28 @@ public class ThemeDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private Long getIdFromSequence() {
+        String sql = "SELECT nextval('seq_theme')";
+        return jdbcTemplate.query(sql,
+                rs -> {
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    } else {
+                        throw new SQLException();
+                    }
+                });
+    }
+
     public Long save(Theme theme) {
-        String sql = "INSERT INTO theme (name, desc, price) VALUES (?, ?, ?);";
+        String sql = "INSERT INTO theme (id, name, desc, price) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, theme.getName());
-            ps.setString(2, theme.getDesc());
-            ps.setInt(3, theme.getPrice());
+            ps.setLong(1, getIdFromSequence());
+            ps.setString(2, theme.getName());
+            ps.setString(3, theme.getDesc());
+            ps.setInt(4, theme.getPrice());
             return ps;
 
         }, keyHolder);
