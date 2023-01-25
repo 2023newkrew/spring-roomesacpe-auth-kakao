@@ -23,7 +23,7 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        this.accessToken = jwtTokenProvider.createToken("1");// 1번 멤버는 관리자이다
+        this.accessToken = jwtTokenProvider.createToken("1"); // 1번 멤버는 관리자이다
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
