@@ -1,4 +1,4 @@
-package nextstep.Mapper;
+package nextstep.dbmapper;
 
 import nextstep.member.Member;
 import nextstep.reservation.Reservation;

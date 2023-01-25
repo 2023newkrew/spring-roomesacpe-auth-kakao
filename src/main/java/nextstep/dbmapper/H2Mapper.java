@@ -1,11 +1,9 @@
-package nextstep.Mapper;
-
+package nextstep.dbmapper;
 import nextstep.member.Member;
 import nextstep.reservation.Reservation;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.RowMapper;
-
 
 public class H2Mapper implements DatabaseMapper {
     public RowMapper<Member> memberRowMapper() {

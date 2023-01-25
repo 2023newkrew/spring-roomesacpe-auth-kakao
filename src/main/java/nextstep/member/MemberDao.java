@@ -1,7 +1,7 @@
 package nextstep.member;
 
-import nextstep.Mapper.DatabaseMapper;
-import nextstep.Mapper.H2Mapper;
+import nextstep.dbmapper.DatabaseMapper;
+import nextstep.dbmapper.H2Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
