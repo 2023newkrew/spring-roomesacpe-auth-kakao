@@ -1,12 +1,17 @@
 package nextstep.reservations;
 
 import io.restassured.RestAssured;
+import nextstep.reservations.dto.auth.TokenReponseDto;
+import nextstep.reservations.dto.auth.TokenRequestDto;
 import nextstep.reservations.dto.member.MemberRequestDto;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -26,19 +31,18 @@ public class AuthTest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-//    @DisplayName("토큰을 생성한다")
-//    @Test
-//    public void create() {
-//        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-//        var response = RestAssured
-//                .given().log().all()
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .body(body)
-//                .when().post("/login/token")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value())
-//                .extract();
-//
-//        assertThat(response.as(TokenResponse.class)).isNotNull();
-//    }
+    @Test
+    public void 토큰을_생성한다() {
+        TokenRequestDto body = new TokenRequestDto(USERNAME, PASSWORD);
+        var response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        assertThat(response.as(TokenReponseDto.class)).isNotNull();
+    }
 }
