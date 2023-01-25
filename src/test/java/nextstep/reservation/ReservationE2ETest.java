@@ -237,7 +237,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, BEARER_TYPE + accessToken)
-                .when().delete("/reservations/1")
+                .when().delete("/reservations/0")
                 .then().log().all()
                 .extract();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());

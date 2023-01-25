@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.AuthorizationException;
 import nextstep.exception.ForbiddenAccessException;
+import nextstep.exception.NotLoggedInException;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class AdminInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = AuthorizationExtractor.extract(request);
         if (token == null) {
-            throw new AuthorizationException();
+            throw new NotLoggedInException();
         }
         tokenProvider.validate(token);
 

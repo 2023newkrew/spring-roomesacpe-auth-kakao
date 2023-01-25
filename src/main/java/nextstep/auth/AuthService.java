@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.exception.LoginInformationException;
+import nextstep.exception.LoginFailException;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class AuthService {
 
     private void validateLoginInformation(String username, String password) {
         if (!memberDao.countByUsernameAndPassword(username, password)) {
-            throw new LoginInformationException();
+            throw new LoginFailException();
         }
     }
 }

@@ -18,3 +18,7 @@ spring:
   sql:
     init:
       mode: always
+server:
+  error:
+    include-message: always
+    include-binding-errors: always

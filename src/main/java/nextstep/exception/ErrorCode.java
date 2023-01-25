@@ -1,27 +1,22 @@
 package nextstep.exception;
 
-import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
 
-    INVALID_PARAMS(500, "InvalidParams", "필수 데이터 누락");
+    NOT_LOGGED_IN(401, "Unauthorized", "로그인이 필요합니다."),
+    FORBIDDEN_ACCESS(403, "Forbidden", "권한이 없습니다."),
+    LOGIN_FAIL(400, "Bad Request", "로그인에 실패하였습니다."),
+    DUPLICATED_ENTITY(400, "Bad Request", "이미 존재하여 생성할 수 없습니다."),
+    NOT_EXIST_ENTITY(400, "Bad Request", "이미 존재하여 생성할 수 없습니다.");
 
-    private int status;
-    private String code;
-    private String message;
+
+    private final int status;
+    private final ErrorResult errorResult;
 
     ErrorCode(int status, String code, String message) {
         this.status = status;
-        this.code = code;
-        this.message = message;
-    }
-
-    public static ErrorCode valueOfCode(String errorCode) {
-        return Arrays.stream(values())
-                .filter(value -> value.code.equals(errorCode))
-                .findAny()
-                .orElse(null);
+        this.errorResult = new ErrorResult(status, code, message);
     }
 }

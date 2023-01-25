@@ -2,7 +2,7 @@ package nextstep.member;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.NotLoggedInException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +26,7 @@ public class MemberService {
 
     public Member findByToken(String token) {
         if (token == null) {
-            throw new AuthorizationException();
+            throw new NotLoggedInException();
         }
         String principal = jwtTokenProvider.getPrincipal(token);
         return findByUsername(principal);
