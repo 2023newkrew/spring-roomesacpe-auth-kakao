@@ -53,7 +53,6 @@ public class MemberDao {
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, username);
         } catch (Exception e) {
-            //e.printStackTrace();
             return null;
         }
     }
