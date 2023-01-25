@@ -2,6 +2,8 @@ package nextstep.member;
 
 import lombok.*;
 
+import static nextstep.member.MemberRole.USER;
+
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
@@ -12,7 +14,7 @@ public class Member {
     private String password;
     private String name;
     private String phone;
-    private Integer role;
+    private MemberRole role;
 
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
@@ -20,7 +22,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = 1;
+        this.role = USER;
     }
 
     public Member(String username, String password, String name, String phone) {
@@ -28,10 +30,10 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = 1;
+        this.role = USER;
     }
 
-    public Member(Long id, String username, String password, String name, String phone, int role) {
+    public Member(Long id, String username, String password, String name, String phone, MemberRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
