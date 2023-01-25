@@ -54,9 +54,9 @@ public class ReservationService {
     public void deleteById(String memberName, Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+            throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
-        if(!Objects.equals(reservation.getName(), memberName)) {
+        if (!Objects.equals(reservation.getName(), memberName)) {
             throw new BusinessException(CommonErrorCode.SERVER_ERROR);
         }
 

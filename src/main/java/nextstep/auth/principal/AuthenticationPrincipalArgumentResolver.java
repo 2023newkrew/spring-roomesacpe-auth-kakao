@@ -1,10 +1,12 @@
 package nextstep.auth.principal;
 
 import nextstep.auth.AuthorizationExtractor;
+import nextstep.auth.domain.LoginMember;
 import nextstep.auth.jwt.JwtTokenProvider;
 import nextstep.exception.BusinessException;
 import nextstep.exception.CommonErrorCode;
-import nextstep.member.MemberDao;
+import nextstep.member.Member;
+import nextstep.member.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -19,16 +21,18 @@ import java.util.Objects;
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberDao memberDao;
+    private final MemberService memberService;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
+        this.memberService = memberService;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
+        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class)
+                && parameter.getParameterType()
+                .equals(LoginMember.class);
     }
 
     @Override
@@ -38,7 +42,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
         Long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
-
-        return memberDao.findById(id);
+        Member member = memberService.findById(id);
+        return LoginMember.from(member);
     }
 }

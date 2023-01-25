@@ -18,20 +18,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        System.out.println(e.getMessage());
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode.getHttpStatus()
+                        .value(), errorCode.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-        System.out.println(e.toString());
         ErrorCode errorCode = CommonErrorCode.SERVER_ERROR;
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode.getHttpStatus()
+                        .value(), errorCode.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,7 +48,8 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), message));
+                .body(new ErrorResponse(errorCode.getHttpStatus()
+                        .value(), message));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -58,6 +59,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode.getHttpStatus()
+                        .value(), errorCode.getMessage()));
     }
 }
