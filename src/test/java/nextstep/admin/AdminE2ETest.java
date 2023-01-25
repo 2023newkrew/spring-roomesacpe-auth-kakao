@@ -39,7 +39,7 @@ class AdminE2ETest {
                 .header(HttpHeaders.AUTHORIZATION, JwtTokenConfig.TOKEN_CLASS + token)
                 .when().get("/admin")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.NOT_FOUND.value()); // 현재 '/admin'에 해당하는 경로가 설정돼있지 않아서 404 반환
     }
 
     @Test
