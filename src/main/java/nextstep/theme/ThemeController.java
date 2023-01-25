@@ -14,13 +14,6 @@ import java.util.List;
 public class ThemeController {
     private final ThemeService themeService;
 
-    @PostMapping
-    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequestDto themeRequestDto) {
-        Long id = themeService.create(themeRequestDto);
-        return ResponseEntity.created(URI.create("/themes/" + id))
-                .build();
-    }
-
     @GetMapping
     public ResponseEntity<List<Theme>> showThemes() {
         List<Theme> results = themeService.findAll();
@@ -28,11 +21,4 @@ public class ThemeController {
                 .body(results);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
-        themeService.delete(id);
-
-        return ResponseEntity.noContent()
-                .build();
-    }
 }
