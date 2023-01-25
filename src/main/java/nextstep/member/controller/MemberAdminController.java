@@ -5,7 +5,6 @@ import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.domain.Member;
 import nextstep.member.service.MemberAdminService;
-import nextstep.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;

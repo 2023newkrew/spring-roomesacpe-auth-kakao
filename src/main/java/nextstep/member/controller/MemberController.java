@@ -4,7 +4,6 @@ import java.net.URI;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nextstep.annotation.AuthenticationPrincipal;
-import nextstep.auth.AuthService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.dto.request.MemberRequest;

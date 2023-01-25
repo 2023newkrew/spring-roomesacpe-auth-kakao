@@ -2,8 +2,8 @@ package nextstep.schedule.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nextstep.schedule.repository.ScheduleDao;
 import nextstep.schedule.domain.Schedule;
+import nextstep.schedule.repository.ScheduleDao;
 import org.springframework.stereotype.Service;
 
 @Service

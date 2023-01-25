@@ -1,13 +1,12 @@
 package nextstep.member.service;
 
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
-import nextstep.member.repository.MemberDao;
 import nextstep.member.domain.Member;
 import nextstep.member.dto.request.MemberRequest;
+import nextstep.member.repository.MemberDao;
 import org.springframework.stereotype.Service;
 
 @Service

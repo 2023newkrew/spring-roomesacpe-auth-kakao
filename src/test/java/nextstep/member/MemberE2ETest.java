@@ -3,9 +3,9 @@ package nextstep.member;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import nextstep.auth.E2ETestAuthUtils;
 import nextstep.member.domain.Member;
 import nextstep.member.dto.request.MemberRequest;
-import nextstep.auth.E2ETestAuthUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,8 +1,8 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
-import nextstep.theme.dto.request.ThemeRequest;
 import nextstep.auth.E2ETestAuthUtils;
+import nextstep.theme.dto.request.ThemeRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
