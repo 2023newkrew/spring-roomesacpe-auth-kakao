@@ -28,6 +28,7 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String NAME = "name";
 
+    private String accessToken;
     private ReservationRequest request;
     private long themeId;
     private long scheduleId;
@@ -35,7 +36,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        String accessToken = RestAssured
+        accessToken = RestAssured
                 .given().log().all()
                 .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -74,6 +75,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
@@ -134,6 +136,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -146,14 +149,6 @@ class ReservationE2ETest {
     @Test
     void delete() {
         var reservation = createReservation();
-
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("admin", "admin"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .getCookie(ACCESS_TOKEN);
 
         var response = RestAssured
                 .given().log().all()
@@ -169,14 +164,6 @@ class ReservationE2ETest {
     @Test
     void createDuplicateReservation() {
         createReservation();
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("admin", "admin"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .getCookie(ACCESS_TOKEN);
-
         var response = RestAssured
                 .given().log().all()
                 .cookie(ACCESS_TOKEN, accessToken)
@@ -196,6 +183,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -207,14 +195,6 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("admin", "admin"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .getCookie(ACCESS_TOKEN);
-
         var response = RestAssured
                 .given().log().all()
                 .cookie(ACCESS_TOKEN, accessToken)
@@ -226,14 +206,6 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> createReservation() {
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("admin", "admin"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .getCookie(ACCESS_TOKEN);
-
         return RestAssured
                 .given().log().all()
                 .cookie(ACCESS_TOKEN, accessToken)

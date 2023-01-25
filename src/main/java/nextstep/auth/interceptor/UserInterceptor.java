@@ -3,7 +3,6 @@ package nextstep.auth.interceptor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.auth.AuthErrorCode;
 import nextstep.exception.auth.AuthException;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +20,6 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String method = request.getMethod();
-        if (HttpMethod.GET.name().equals(method)) {
-            return true;
-        }
         String accessToken = jwtTokenProvider.resolveToken(request);
         if (!jwtTokenProvider.validateToken(accessToken)) {
             throw new AuthException(AuthErrorCode.TOKEN_NOT_AVAILABLE);
