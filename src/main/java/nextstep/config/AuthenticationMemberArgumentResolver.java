@@ -36,6 +36,6 @@ public class AuthenticationMemberArgumentResolver implements HandlerMethodArgume
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
-        return jwtTokenProvider.getUsername(token);
+        return jwtTokenProvider.getAuthMember(token);
     }
 }

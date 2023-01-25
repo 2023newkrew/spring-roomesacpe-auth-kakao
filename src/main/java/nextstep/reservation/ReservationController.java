@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.AuthMemberDTO;
 import nextstep.config.AuthenticationMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,8 +25,8 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Void> createReservation(@RequestBody @Valid ReservationRequest reservationRequest,
-            @AuthenticationMember String username) {
-        Long id = reservationService.create(reservationRequest, username);
+            @AuthenticationMember AuthMemberDTO authMemberDTO) {
+        Long id = reservationService.create(reservationRequest, authMemberDTO.getUsername());
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -36,8 +37,9 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthenticationMember String username) {
-        reservationService.deleteById(id, username);
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id,
+            @AuthenticationMember AuthMemberDTO authMemberDTO) {
+        reservationService.deleteById(id, authMemberDTO.getUsername());
         return ResponseEntity.noContent().build();
     }
 }
