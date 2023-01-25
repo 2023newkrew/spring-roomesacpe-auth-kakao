@@ -22,11 +22,21 @@ public class ScheduleE2ETest {
 
     private String adminToken;
 
+    private String accessToken;
+
     @BeforeEach
     void setUp() {
         adminToken = RestAssured
                 .given().log().all()
                 .body(new TokenRequest("admin", "admin"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
+        accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("user", "user"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
@@ -60,6 +70,20 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("admin이 아니면 스케줄을 생성하지 못한다")
+    @Test
+    public void userCannotCreateSchedule() {
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .auth().oauth2(accessToken)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
     @DisplayName("스케줄을 조회한다")
     @Test
     public void showSchedules() {
@@ -77,7 +101,7 @@ public class ScheduleE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("스케줄을 삭제한다")
     @Test
     void delete() {
         String location = requestCreateSchedule();
@@ -90,6 +114,21 @@ public class ScheduleE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("admin이 아니면 스케줄을 삭제하지 못한다")
+    @Test
+    void userCannotDeleteSchedule() {
+        String location = requestCreateSchedule();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(location)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     public String requestCreateSchedule() {
