@@ -1,11 +1,14 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -20,12 +23,15 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
+        String adminToken = createBearerToken("admin", "admin");
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -88,5 +94,20 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .header("Location");
+    }
+
+    private String createBearerToken(String username, String password) {
+        TokenRequest request = new TokenRequest(username, password);
+
+        TokenResponse response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().log().all()
+                .post("/login/token")
+                .then().log().all()
+                .extract()
+                .as(TokenResponse.class);
+
+        return "Bearer " + response.getAccessToken();
     }
 }

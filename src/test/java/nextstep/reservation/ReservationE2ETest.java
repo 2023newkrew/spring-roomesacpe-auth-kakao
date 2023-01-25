@@ -38,12 +38,15 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        String adminToken = createBearerToken("admin", "admin");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

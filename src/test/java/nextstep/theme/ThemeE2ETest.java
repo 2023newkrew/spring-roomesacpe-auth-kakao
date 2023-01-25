@@ -1,9 +1,12 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -16,12 +19,15 @@ public class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
+        String adminToken = createBearerToken("admin", "admin");
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
         RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -45,10 +51,12 @@ public class ThemeE2ETest {
     @Test
     void delete() {
         Long id = createTheme();
+        String adminToken = createBearerToken("admin", "admin");
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -56,15 +64,33 @@ public class ThemeE2ETest {
     }
 
     public Long createTheme() {
+        String adminToken = createBearerToken("admin", "admin");
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
         String location = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
+    }
+
+    private String createBearerToken(String username, String password) {
+        TokenRequest request = new TokenRequest(username, password);
+
+        TokenResponse response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().log().all()
+                .post("/login/token")
+                .then().log().all()
+                .extract()
+                .as(TokenResponse.class);
+
+        return "Bearer " + response.getAccessToken();
     }
 }
