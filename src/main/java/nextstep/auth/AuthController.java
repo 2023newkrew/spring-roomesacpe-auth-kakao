@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +17,9 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
-        memberService.validateToken(tokenRequestDto);
-        String token = authService.login(tokenRequestDto);
+        Member foundMember = Member.of(memberService.findByUsername(tokenRequestDto.getUsername()));
+        memberService.validatePassword(foundMember, tokenRequestDto);
+        String token = authService.login(foundMember, tokenRequestDto);
         return ResponseEntity.ok()
                 .body(new TokenResponseDto(token));
     }

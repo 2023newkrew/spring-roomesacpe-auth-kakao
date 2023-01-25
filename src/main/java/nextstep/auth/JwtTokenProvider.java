@@ -1,57 +1,80 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.*;
-import nextstep.support.exception.NoAccessTokenException;
+import nextstep.member.Role;
+import nextstep.support.exception.InvalidAccessTokenException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private final String secretKey = "learning-test-spring";
-    private final Long validityInMilliseconds = 3600000L;
+    private static final String SECRET_KEY = "learning-test-spring";
+    private static final Long VALIDITY_IN_MILLISECONDS = 3600000L;
+
 
     public String createToken(String principal) {
         Claims claims = Jwts.claims()
                 .setSubject(principal);
+        claims.put("role", Role.USER);
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + VALIDITY_IN_MILLISECONDS);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
+    public String createAdminToken(String principal) {
+        Claims claims = Jwts.claims();
+        claims.setSubject(principal);
+        claims.put("role", Role.ADMIN);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + VALIDITY_IN_MILLISECONDS);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
     public String getPrincipal(String token) {
-        String parsedToken = null;
-        try {
-            parsedToken = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-        } catch (JwtException jwtException) {
-            throw new JwtException("유효하지 않은 토큰입니다.");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            throw new NoAccessTokenException("액세스 토큰이 존재하지 않습니다.");
-        }
-        return parsedToken;
+        validateToken(token);
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public Boolean isAdmin(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role")
+                .toString()
+                .equals(Role.ADMIN.name());
+    }
+
+    public void validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(secretKey)
+                    .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token);
 
-            return !claims.getBody()
+            if (claims.getBody()
                     .getExpiration()
-                    .before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+                    .before(new Date())) {
+                throw new InvalidAccessTokenException();
+            }
+        } catch (JwtException | IllegalArgumentException exception) {
+            throw new InvalidAccessTokenException();
         }
     }
 }

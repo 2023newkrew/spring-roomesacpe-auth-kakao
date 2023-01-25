@@ -1,21 +1,22 @@
 package nextstep.member;
 
 import nextstep.auth.TokenRequestDto;
-import nextstep.support.exception.DuplicateEntityException;
-import nextstep.support.exception.NotExistEntityException;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.DuplicateReservationException;
+import nextstep.support.exception.InvalidAccessTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class MemberServiceTest {
+class MemberServiceTest {
     public static final Member MEMBER = Member.builder()
             .id(1L)
             .username("username")
@@ -31,7 +32,7 @@ public class MemberServiceTest {
     @Test
     @DisplayName("username으로 멤버 찾기 테스트")
     void findByUsernameTest() {
-        when(memberDao.findByUsername(anyString())).thenReturn(MEMBER);
+        when(memberDao.findByUsername(anyString())).thenReturn(Optional.ofNullable(MEMBER));
         MemberResponseDto memberResponseDto = MemberResponseDto.toDto(MEMBER);
         assertThat(memberService.findByUsername(MEMBER.getUsername()))
                 .isEqualTo(memberResponseDto);
@@ -42,25 +43,24 @@ public class MemberServiceTest {
     void validateTokenTest() {
         when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(MEMBER);
         TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
-        memberService.validateToken(tokenRequestDto);
+        memberService.validatePassword(MEMBER, tokenRequestDto);
         assertThatNoException();
     }
 
     @Test
     @DisplayName("tokenRequest 유효성 확인 실패시 예외 발생 테스트")
     void validateTokenThrowNotExistEntityExceptionTest() {
-        when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(null);
-        TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
-        assertThatThrownBy(() -> memberService.validateToken(tokenRequestDto)).isInstanceOf(UnauthorizedException.class);
+        String wrongPassword = "wrong";
+        TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), wrongPassword);
+        assertThatThrownBy(() -> memberService.validatePassword(MEMBER, tokenRequestDto)).isInstanceOf(InvalidAccessTokenException.class);
     }
 
     @Test
     @DisplayName("member 생성 시 username 중복처리 테스트")
     void createDuplicateMemberTest() {
-
         MemberRequest memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
-        when(memberDao.findByUsername(anyString())).thenReturn(MEMBER);
+        when(memberDao.findByUsername(anyString())).thenReturn(Optional.ofNullable(MEMBER));
         assertThatCode(() -> memberService.create(memberRequest))
-                .isInstanceOf(DuplicateEntityException.class);
+                .isInstanceOf(DuplicateReservationException.class);
     }
 }

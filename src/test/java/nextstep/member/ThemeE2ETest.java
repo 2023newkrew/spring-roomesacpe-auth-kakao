@@ -10,10 +10,10 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+class ThemeE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
-    public void create() {
+    void create() {
         MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
         RestAssured
                 .given()

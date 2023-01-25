@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class MemberControllerTest {
+class MemberControllerTest {
 
     public static final String ACCESS_TOKEN = "token";
     @LocalServerPort
@@ -32,7 +32,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("토큰으로 멤버 조회 API 테스트")
     void findMemberByTokenTest() {
-        MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678");
+        MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678", Role.USER);
         when(authService.findUsernameByToken(anyString())).thenReturn("username");
         when(memberService.findByUsername("username")).thenReturn(memberResponseDto);
 
