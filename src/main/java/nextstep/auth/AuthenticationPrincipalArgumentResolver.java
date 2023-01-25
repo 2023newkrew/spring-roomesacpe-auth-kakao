@@ -1,7 +1,7 @@
 package nextstep.auth;
 
-import nextstep.exception.BusinessException;
-import nextstep.exception.BusinessErrorCode;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.business.BusinessErrorCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

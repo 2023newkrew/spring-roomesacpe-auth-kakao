@@ -1,7 +1,7 @@
 package nextstep.admin;
 
-import nextstep.exception.DataAccessErrorCode;
-import nextstep.exception.DataAccessException;
+import nextstep.exception.dataaccess.DataAccessErrorCode;
+import nextstep.exception.dataaccess.DataAccessException;
 import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;

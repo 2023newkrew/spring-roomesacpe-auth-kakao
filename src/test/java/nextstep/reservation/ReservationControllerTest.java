@@ -1,8 +1,8 @@
 package nextstep.reservation;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.BusinessException;
-import nextstep.exception.BusinessErrorCode;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.business.BusinessErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

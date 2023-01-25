@@ -1,8 +1,8 @@
 package nextstep.auth.interceptor;
 
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.BusinessException;
-import nextstep.exception.BusinessErrorCode;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.business.BusinessErrorCode;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 

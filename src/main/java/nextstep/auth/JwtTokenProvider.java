@@ -2,8 +2,8 @@ package nextstep.auth;
 
 import io.jsonwebtoken.*;
 import nextstep.auth.role.Role;
-import nextstep.exception.BusinessException;
-import nextstep.exception.BusinessErrorCode;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.business.BusinessErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

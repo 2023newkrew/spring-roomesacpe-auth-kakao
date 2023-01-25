@@ -1,9 +1,9 @@
 package nextstep.reservation;
 
-import nextstep.exception.BusinessErrorCode;
-import nextstep.exception.BusinessException;
-import nextstep.exception.DataAccessErrorCode;
-import nextstep.exception.DataAccessException;
+import nextstep.exception.business.BusinessErrorCode;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.dataaccess.DataAccessErrorCode;
+import nextstep.exception.dataaccess.DataAccessException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
