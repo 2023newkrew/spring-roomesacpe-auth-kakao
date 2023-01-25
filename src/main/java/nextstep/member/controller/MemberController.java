@@ -26,7 +26,7 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity me(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok().body(member);
+        return ResponseEntity.ok(member);
     }
 
 }
