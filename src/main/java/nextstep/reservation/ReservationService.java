@@ -3,7 +3,7 @@ package nextstep.reservation;
 import nextstep.error.ErrorCode;
 import nextstep.exception.DuplicateEntityException;
 import nextstep.exception.NotExistEntityException;
-import nextstep.exception.NotQualifiedMemberException;
+import nextstep.exception.UnauthorizedMemberException;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
@@ -47,7 +47,7 @@ public class ReservationService {
         Reservation reservation = reservationDao.findById(id)
                 .orElseThrow(() -> new NotExistEntityException(ErrorCode.RESERVATION_NOT_FOUND));
         if(!reservation.checkOwner(member)) {
-            throw new NotQualifiedMemberException(ErrorCode.FORBIDDEN);
+            throw new UnauthorizedMemberException(ErrorCode.FORBIDDEN);
         }
         reservationDao.deleteById(id);
     }
