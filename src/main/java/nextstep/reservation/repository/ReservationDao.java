@@ -1,9 +1,10 @@
-package nextstep.reservation;
+package nextstep.reservation.repository;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nextstep.reservation.domain.Reservation;
 import nextstep.schedule.domain.Schedule;
 import nextstep.theme.domain.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;

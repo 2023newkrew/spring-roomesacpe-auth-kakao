@@ -7,8 +7,8 @@ import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
 import nextstep.member.domain.Member;
 import nextstep.member.repository.MemberDao;
-import nextstep.reservation.Reservation;
-import nextstep.reservation.ReservationDao;
+import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.repository.ReservationDao;
 import org.springframework.stereotype.Service;
 
 @Service

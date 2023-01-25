@@ -1,10 +1,13 @@
-package nextstep.reservation;
+package nextstep.reservation.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nextstep.error.ErrorCode;
 import nextstep.error.exception.RoomReservationException;
 import nextstep.member.repository.MemberDao;
+import nextstep.reservation.domain.Reservation;
+import nextstep.reservation.dto.ReservationRequest;
+import nextstep.reservation.repository.ReservationDao;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.repository.ScheduleDao;
 import nextstep.theme.domain.Theme;

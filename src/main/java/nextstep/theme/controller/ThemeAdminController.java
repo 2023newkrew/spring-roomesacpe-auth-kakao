@@ -1,6 +1,7 @@
 package nextstep.theme.controller;
 
 import java.net.URI;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import nextstep.theme.dto.request.ThemeRequest;
@@ -23,7 +24,7 @@ public class ThemeAdminController {
     private final ThemeAdminService themeAdminService;
 
     @PostMapping
-    public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
+    public ResponseEntity<Void> createTheme(@RequestBody @Valid ThemeRequest themeRequest) {
         Long id = themeAdminService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }

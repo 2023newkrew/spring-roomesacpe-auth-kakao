@@ -1,4 +1,4 @@
-package nextstep.reservation;
+package nextstep.reservation.domain;
 
 import java.util.Objects;
 import lombok.AccessLevel;
