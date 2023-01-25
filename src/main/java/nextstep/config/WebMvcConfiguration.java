@@ -17,7 +17,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final AuthenticationMemberArgumentResolver authenticationMemberArgumentResolver;
 
-    private final static String[] ADMIN_URLS = {"/themes/*", "/admin/*"};
+    private final static String[] ADMIN_URLS = {"/themes/*", "/admin/*", "/schedules/*"};
 
     private final static String[] MEMBER_URLS = {"/reservations/*"};
 

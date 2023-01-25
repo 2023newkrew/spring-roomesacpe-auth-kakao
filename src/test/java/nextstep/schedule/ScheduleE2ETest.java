@@ -20,9 +20,11 @@ public class ScheduleE2ETest {
 
     private Long themeId;
 
+    private String adminToken;
+
     @BeforeEach
     void setUp() {
-        String adminToken = RestAssured
+        adminToken = RestAssured
                 .given().log().all()
                 .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -52,6 +54,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(adminToken)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -81,6 +84,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminToken)
                 .when().delete(location)
                 .then().log().all()
                 .extract();
@@ -88,12 +92,13 @@ public class ScheduleE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static String requestCreateSchedule() {
+    public String requestCreateSchedule() {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(adminToken)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())

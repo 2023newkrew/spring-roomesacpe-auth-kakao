@@ -65,6 +65,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
+                .auth().oauth2(adminToken)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
