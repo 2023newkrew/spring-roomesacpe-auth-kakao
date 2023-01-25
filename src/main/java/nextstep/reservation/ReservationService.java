@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.auth.LoggedInMember;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
@@ -26,7 +27,7 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(Member loggedInMember, ReservationRequest reservationRequest) {
+    public Long create(LoggedInMember loggedInMember, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
             throw new NullPointerException();
@@ -54,7 +55,7 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Member loggedInMember, Long id) {
+    public void deleteById(LoggedInMember loggedInMember, Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new NullPointerException();

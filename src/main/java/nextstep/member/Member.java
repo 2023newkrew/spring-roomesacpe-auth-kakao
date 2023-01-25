@@ -6,20 +6,25 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private Role role;
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member() {}
+
+    public Member(Long id, String username, String password, String name, String phone, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
-    public Member(String username, String password, String name, String phone) {
+    public Member(String username, String password, String name, String phone, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
     public Long getId() {
@@ -40,6 +45,10 @@ public class Member {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     public boolean checkWrongPassword(String password) {

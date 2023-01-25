@@ -5,17 +5,21 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.member.Member;
+import nextstep.member.Role;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(TokenGenDto tokenGenDto) {
+        Claims claims = Jwts.claims().setSubject(tokenGenDto.getId().toString());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 

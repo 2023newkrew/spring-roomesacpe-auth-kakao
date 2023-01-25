@@ -31,6 +31,6 @@ public class AuthService {
     }
 
     private String generateTokenForMember(Member member) {
-        return tokenProvider.createToken(member.getId().toString());
+        return tokenProvider.createToken(new TokenGenDto(member));
     }
 }
