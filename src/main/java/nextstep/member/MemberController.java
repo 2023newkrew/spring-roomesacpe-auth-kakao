@@ -22,13 +22,13 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody @Valid MemberRequest memberRequest) {
+    public ResponseEntity<Void> createMember(@RequestBody @Valid MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id)).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest request) {
+    public ResponseEntity<Member> me(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
         Member member = memberService.findMemberByToken(token);
         return ResponseEntity.ok(member);
