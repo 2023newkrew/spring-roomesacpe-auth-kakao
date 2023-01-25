@@ -12,6 +12,7 @@ import java.util.List;
 @RequestMapping("/themes")
 @RequiredArgsConstructor
 public class ThemeController {
+
     private final ThemeService themeService;
 
     @GetMapping

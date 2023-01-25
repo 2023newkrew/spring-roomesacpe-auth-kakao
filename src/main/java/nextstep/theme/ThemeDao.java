@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ThemeDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     public ThemeDao(DataSource dataSource) {

@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+
     private final String secretKey = "learning-test-spring";
     private final long validityInMilliseconds = 3600000;
 

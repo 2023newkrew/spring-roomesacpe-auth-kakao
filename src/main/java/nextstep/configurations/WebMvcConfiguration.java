@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
     private final LoginInterceptor loginInterceptor;
     private final AdminInterceptor adminInterceptor;
 

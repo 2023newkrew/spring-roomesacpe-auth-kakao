@@ -12,6 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleRequest {
+
     private Long themeId;
     private String date;
     private String time;

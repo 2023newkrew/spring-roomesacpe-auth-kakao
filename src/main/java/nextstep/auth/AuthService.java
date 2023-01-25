@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
 
@@ -18,7 +19,7 @@ public class AuthService {
     }
 
     private void validateLoginInformation(String username, String password) {
-        if (!memberDao.hasUserWith(username, password)) {
+        if (!memberDao.countByUsernameAndPassword(username, password)) {
             throw new LoginInformationException();
         }
     }

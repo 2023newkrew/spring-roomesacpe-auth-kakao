@@ -7,6 +7,7 @@ import nextstep.auth.Role;
 @Builder
 @Getter
 public class Member {
+
     private Long id;
     private String username;
     private String password;
@@ -17,6 +18,7 @@ public class Member {
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }
+
     public boolean isAdmin() {
         return role.equals(Role.ADMIN);
     }

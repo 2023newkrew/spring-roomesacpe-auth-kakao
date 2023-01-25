@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class MemberResponse {
+
     private Long id;
     private String username;
     private String password;
@@ -20,6 +21,7 @@ public class MemberResponse {
                 .username(member.getUsername())
                 .password(member.getPassword())
                 .name(member.getName())
-                .phone(member.getPhone()).build();
+                .phone(member.getPhone())
+                .build();
     }
 }

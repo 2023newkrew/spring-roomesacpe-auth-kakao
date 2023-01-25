@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+
     INVALID_PARAMS(500, "InvalidParams", "필수 데이터 누락");
 
     private int status;

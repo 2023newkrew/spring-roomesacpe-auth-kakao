@@ -10,6 +10,7 @@ import java.util.List;
 @RequestMapping("/schedules")
 @RequiredArgsConstructor
 public class ScheduleController {
+
     private final ScheduleService scheduleService;
 
     @GetMapping

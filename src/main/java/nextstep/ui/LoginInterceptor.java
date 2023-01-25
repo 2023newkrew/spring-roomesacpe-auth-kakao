@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 @RequiredArgsConstructor
 public class LoginInterceptor implements HandlerInterceptor {
+
     private final JwtTokenProvider tokenProvider;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

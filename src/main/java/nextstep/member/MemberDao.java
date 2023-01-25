@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MemberDao {
+
     public final JdbcTemplate jdbcTemplate;
 
     public MemberDao(DataSource dataSource) {
