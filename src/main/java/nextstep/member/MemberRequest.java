@@ -1,9 +1,19 @@
 package nextstep.member;
 
+import javax.validation.constraints.NotNull;
+
 public class MemberRequest {
+
+    @NotNull
     private String username;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private String phone;
 
     public MemberRequest(String username, String password, String name, String phone) {

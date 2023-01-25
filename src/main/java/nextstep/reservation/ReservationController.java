@@ -2,6 +2,7 @@ package nextstep.reservation;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nextstep.config.AuthenticationMember;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<Void> createReservation(@RequestBody ReservationRequest reservationRequest,
+    public ResponseEntity<Void> createReservation(@RequestBody @Valid ReservationRequest reservationRequest,
             @AuthenticationMember String username) {
         Long id = reservationService.create(reservationRequest, username);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
