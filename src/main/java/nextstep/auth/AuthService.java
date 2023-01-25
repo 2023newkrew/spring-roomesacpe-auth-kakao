@@ -1,8 +1,10 @@
 package nextstep.auth;
 
 import nextstep.auth.role.Role;
-import nextstep.exception.BusinessException;
 import nextstep.exception.BusinessErrorCode;
+import nextstep.exception.BusinessException;
+import nextstep.exception.DataAccessErrorCode;
+import nextstep.exception.DataAccessException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,7 @@ public class AuthService {
 
     private Member login(String username, String password) {
         Member member = memberDao.findByUsername(username)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.MEMBER_NOT_FOUND));
         if (member.isWrongPassword(password)) {
             throw new BusinessException(BusinessErrorCode.LOGIN_FAILED_WRONG_USERNAME_PASSWORD);
         }

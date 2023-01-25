@@ -1,7 +1,9 @@
 package nextstep.member;
 
-import nextstep.exception.BusinessException;
 import nextstep.exception.BusinessErrorCode;
+import nextstep.exception.BusinessException;
+import nextstep.exception.DataAccessErrorCode;
+import nextstep.exception.DataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +28,6 @@ public class MemberService {
 
     public Member findById(long id) {
         return memberDao.findById(id)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.MEMBER_NOT_FOUND));
     }
 }

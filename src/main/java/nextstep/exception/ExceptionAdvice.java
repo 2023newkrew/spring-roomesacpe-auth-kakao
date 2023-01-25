@@ -36,4 +36,10 @@ public class ExceptionAdvice {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(ErrorResponse.from(e.getMessage()));
     }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getMessage()));
+    }
 }
