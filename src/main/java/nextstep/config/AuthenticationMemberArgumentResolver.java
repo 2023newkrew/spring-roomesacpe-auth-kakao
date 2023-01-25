@@ -4,7 +4,7 @@ import static nextstep.auth.AuthorizationExtractor.getTokenFromHeader;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.support.AuthorizationException;
+import nextstep.exception.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

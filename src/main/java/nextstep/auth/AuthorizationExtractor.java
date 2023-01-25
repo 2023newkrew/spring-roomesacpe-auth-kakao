@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-import nextstep.support.AuthorizationException;
+import nextstep.exception.AuthorizationException;
 
 public class AuthorizationExtractor {
 

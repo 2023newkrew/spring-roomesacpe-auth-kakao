@@ -1,10 +1,10 @@
 package nextstep.reservation;
 
 import java.util.List;
+import nextstep.exception.DuplicateEntityException;
+import nextstep.exception.ForbiddenException;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.ForbiddenException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;

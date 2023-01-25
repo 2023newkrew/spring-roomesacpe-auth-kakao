@@ -2,7 +2,7 @@ package nextstep.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextstep.support.AuthorizationException;
+import nextstep.exception.AuthorizationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
