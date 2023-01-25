@@ -6,7 +6,7 @@ public class Member {
     private String password;
     private String name;
     private String phone;
-    private String role;
+    private MemberRole role;
 
     public Member() {
     }
@@ -17,7 +17,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = role;
+        this.role = MemberRole.getRole(role);
     }
 
     public Member(String username, String password, String name, String phone, String role) {
@@ -25,7 +25,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = role;
+        this.role = MemberRole.getRole(role);
     }
 
     public Long getId() {
@@ -48,7 +48,7 @@ public class Member {
         return phone;
     }
 
-    public String getRole() {
+    public MemberRole getRole() {
         return role;
     }
 

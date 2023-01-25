@@ -4,6 +4,7 @@ import nextstep.auth.Administrator;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
+import nextstep.member.MemberRole;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,9 +20,9 @@ public class AuthInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) throws Exception {
 
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        String userRole = jwtTokenProvider.getRole(parseToken(request.getHeader("Authorization")));
+        MemberRole memberRole = jwtTokenProvider.getRole(parseToken(request.getHeader("Authorization")));
 
-        if (((HandlerMethod) handler).hasMethodAnnotation(Administrator.class) && !userRole.equals("admin")) {
+        if (((HandlerMethod) handler).hasMethodAnnotation(Administrator.class) && memberRole!=MemberRole.ADMIN) {
             throw new BusinessException(ErrorCode.NOT_AUTHENTICATED);
         }
 

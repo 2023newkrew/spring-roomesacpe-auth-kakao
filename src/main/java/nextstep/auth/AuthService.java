@@ -4,6 +4,7 @@ import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.MemberRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class AuthService {
         return actualMember.getPassword().equals(password);
     }
 
-    private String getRole(TokenRequest tokenRequest) {
+    private MemberRole getRole(TokenRequest tokenRequest) {
         return memberDao.findByUsername(tokenRequest.getUsername()).getRole();
     }
 }
