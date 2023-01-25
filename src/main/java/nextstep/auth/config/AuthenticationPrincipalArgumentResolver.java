@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    MemberDao memberDao;
-    JwtTokenProvider jwtTokenProvider;
+    private final MemberDao memberDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JdbcTemplate jdbcTemplate) {
         memberDao = new MemberDao(jdbcTemplate);
