@@ -1,6 +1,6 @@
 package nextstep.theme.service;
 
-import nextstep.support.NotExistEntityException;
+import nextstep.global.exception.NotExistEntityException;
 import nextstep.theme.domain.Theme;
 import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;

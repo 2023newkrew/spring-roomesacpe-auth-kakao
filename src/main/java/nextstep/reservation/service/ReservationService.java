@@ -1,11 +1,11 @@
 package nextstep.reservation.service;
 
+import nextstep.global.exception.DuplicateEntityException;
+import nextstep.global.exception.NotExistEntityException;
 import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.repository.ReservationRepository;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.repository.ScheduleRepository;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.NotExistEntityException;
 import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

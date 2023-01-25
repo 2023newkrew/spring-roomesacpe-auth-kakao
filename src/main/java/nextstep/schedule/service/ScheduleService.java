@@ -1,8 +1,8 @@
 package nextstep.schedule.service;
 
+import nextstep.global.exception.NotExistEntityException;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.repository.ScheduleRepository;
-import nextstep.support.NotExistEntityException;
 import nextstep.theme.domain.Theme;
 import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
