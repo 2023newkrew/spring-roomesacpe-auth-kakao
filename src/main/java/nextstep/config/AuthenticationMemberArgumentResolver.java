@@ -33,8 +33,8 @@ public class AuthenticationMemberArgumentResolver implements HandlerMethodArgume
         String token = authorization.split(" ")[1];
 
         // LoginMember로 반환
-        String username = jwtTokenProvider.getPrincipal(token);
-        Member member = memberDao.findByUsername(username);
+        Long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
+        Member member = memberDao.findById(id);
         return new LoginMember(member);
     }
 }

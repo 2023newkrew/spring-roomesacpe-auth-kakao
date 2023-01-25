@@ -20,7 +20,7 @@ public class MemberService {
     }
 
     public Member findMemberByToken(String token) {
-        String username = jwtTokenProvider.getPrincipal(token);
-        return memberDao.findByUsername(username);
+        Long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
+        return memberDao.findById(id);
     }
 }
