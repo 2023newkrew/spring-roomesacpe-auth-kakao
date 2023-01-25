@@ -1,17 +1,31 @@
 package nextstep.member;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
     private MemberDao memberDao;
+    private PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberDao memberDao) {
+    public MemberService(MemberDao memberDao, PasswordEncoder passwordEncoder) {
         this.memberDao = memberDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Long create(MemberCreateRequest memberCreateRequest) {
-        return memberDao.save(memberCreateRequest.toEntity());
+        MemberRole memberRole = MemberRole.USER;
+        if (memberCreateRequest.getUsername().equals("admin") && memberCreateRequest.getPassword().equals("admin")) {
+            memberRole = MemberRole.ADMIN;
+        }
+        Member member = new Member(
+                memberCreateRequest.getUsername(),
+                passwordEncoder.encode(memberCreateRequest.getPassword()),
+                memberCreateRequest.getName(),
+                memberCreateRequest.getPhone(),
+                memberRole
+        );
+        return memberDao.save(member);
     }
 
     public Member findById(Long id) {

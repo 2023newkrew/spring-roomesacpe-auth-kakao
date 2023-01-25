@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.core.Is.is;
 
@@ -42,20 +43,6 @@ public class MemberE2ETest {
     @DisplayName("내 정보 조회")
     @Test
     void show() {
-        String accessToken = createMemberAndGetToken();
-        RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .body("username", is("username"))
-                .body("password", is("password"))
-                .body("name", is("name"))
-                .body("phone", is("010-1234-5678"));
-    }
-
-    private String createMemberAndGetToken() {
         RestAssured
                 .given().log().all()
                 .body(memberCreateRequest)
@@ -75,6 +62,15 @@ public class MemberE2ETest {
                 .extract()
                 .as(TokenResponse.class);
 
-        return tokenResponse.getAccessToken();
+        String accessToken = tokenResponse.getAccessToken();
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("username", is("username"))
+                .body("name", is("name"))
+                .body("phone", is("010-1234-5678"));
     }
 }

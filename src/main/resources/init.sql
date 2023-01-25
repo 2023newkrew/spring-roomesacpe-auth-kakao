@@ -11,6 +11,3 @@ ALTER TABLE SCHEDULE
     ALTER COLUMN ID RESTART WITH 1;
 ALTER TABLE THEME
     ALTER COLUMN ID RESTART WITH 1;
-
-
-INSERT INTO member (username, password, name, phone, role) VALUES ('admin', 'admin', 'admin', 'admin', 'ADMIN');

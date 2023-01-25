@@ -28,11 +28,9 @@ CREATE TABLE member
 (
     id       bigint      not null auto_increment,
     username varchar(20) not null,
-    password varchar(20) not null,
+    password varchar(100) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
     role     varchar(20) not null,
     primary key (id)
 );
-
-INSERT INTO member (username, password, name, phone, role) VALUES ('admin', 'admin', 'admin', 'admin', 'ADMIN');

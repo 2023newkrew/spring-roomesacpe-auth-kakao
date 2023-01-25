@@ -3,6 +3,7 @@ package nextstep.theme;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.member.MemberCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,16 @@ public class ThemeE2ETest {
     private String adminAccessToken;
     @BeforeEach
     void setUp() {
+        MemberCreateRequest adminBody = new MemberCreateRequest("admin", "admin", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
         TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
         var adminTokenResponse = RestAssured
                 .given().log().all()

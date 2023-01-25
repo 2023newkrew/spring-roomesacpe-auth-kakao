@@ -26,6 +26,7 @@ public class MemberDao {
     }
 
     public Long save(Member member) {
+        // String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, HASH('SHA3-512', ?), ?, ?, ?);";
         String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -47,9 +48,9 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone, role from member where username = ? and password = ?;";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username, password));
+    public Optional<Member> findByUsername(String username) {
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
     }
 
     public void updateRole(Long id, MemberRole memberRole) {
