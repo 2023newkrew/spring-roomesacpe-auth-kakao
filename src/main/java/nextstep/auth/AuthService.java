@@ -1,7 +1,8 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.CustomException;
+import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());

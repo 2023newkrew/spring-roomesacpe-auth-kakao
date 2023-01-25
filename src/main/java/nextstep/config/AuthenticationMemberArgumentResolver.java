@@ -4,7 +4,8 @@ import static nextstep.auth.AuthorizationExtractor.getTokenFromHeader;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.CustomException;
+import nextstep.exception.ErrorCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -31,7 +32,7 @@ public class AuthenticationMemberArgumentResolver implements HandlerMethodArgume
         boolean isValidToken = jwtTokenProvider.validateToken(token);
 
         if (!isValidToken) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         return jwtTokenProvider.getUsername(token);

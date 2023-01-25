@@ -2,7 +2,8 @@ package nextstep.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.CustomException;
+import nextstep.exception.ErrorCode;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -13,7 +14,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
         String accessToken = request.getHeader("Authorization");
         if (!HttpMethod.GET.matches(request.getMethod()) && accessToken == null) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         return super.preHandle(request, response, handler);

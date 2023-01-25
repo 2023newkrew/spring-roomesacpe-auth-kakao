@@ -2,7 +2,8 @@ package nextstep.auth;
 
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-import nextstep.exception.AuthorizationException;
+import nextstep.exception.CustomException;
+import nextstep.exception.ErrorCode;
 
 public class AuthorizationExtractor {
 
@@ -32,12 +33,12 @@ public class AuthorizationExtractor {
 
     public static String getTokenFromHeader(final String authHeader) {
         if (authHeader == null) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
         String[] authInfo = authHeader.split(" ");
 
         if (authInfo.length != 2) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         return authInfo[1];
