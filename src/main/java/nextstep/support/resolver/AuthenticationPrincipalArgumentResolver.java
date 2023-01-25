@@ -3,6 +3,8 @@ package nextstep.support.resolver;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenExtractor;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.member.LoginMember;
+import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.support.annotation.AuthorizationPrincipal;
 import nextstep.support.exception.AuthorizationExcpetion;
@@ -33,6 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN);
         }
-        return memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
+        Member member = memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
+        return LoginMember.from(member);
     }
 }

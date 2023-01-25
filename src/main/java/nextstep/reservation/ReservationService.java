@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.Member;
+import nextstep.member.LoginMember;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.*;
@@ -20,7 +20,7 @@ public class ReservationService {
     public final ThemeDao themeDao;
     public final ScheduleDao scheduleDao;
 
-    public Long create(ReservationRequest reservationRequest, Member member) {
+    public Long create(ReservationRequest reservationRequest, LoginMember member) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId()).orElseThrow(
                 () -> new ScheduleException(RoomEscapeExceptionCode.NOT_FOUND_SCHEDULE)
         );
@@ -46,7 +46,7 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, Member member) {
+    public void deleteById(Long id, LoginMember member) {
         Reservation reservation = reservationDao.findById(id).orElseThrow(
                 () -> new ReservationException(RoomEscapeExceptionCode.NOT_FOUND_RESERVATION)
         );

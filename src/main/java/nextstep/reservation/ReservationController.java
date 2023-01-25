@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.Member;
+import nextstep.member.LoginMember;
 import nextstep.support.annotation.AuthorizationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ public class ReservationController {
     public final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<Void> createReservation(@RequestBody ReservationRequest reservationRequest, @AuthorizationPrincipal Member member) {
+    public ResponseEntity<Void> createReservation(@RequestBody ReservationRequest reservationRequest, @AuthorizationPrincipal LoginMember member) {
         Long id = reservationService.create(reservationRequest, member);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
@@ -31,7 +31,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthorizationPrincipal Member member) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthorizationPrincipal LoginMember member) {
         reservationService.deleteById(id, member);
         return ResponseEntity.noContent().build();
     }
