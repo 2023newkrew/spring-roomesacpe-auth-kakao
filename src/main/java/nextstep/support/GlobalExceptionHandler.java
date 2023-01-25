@@ -1,42 +1,54 @@
 package nextstep.support;
 
 import io.jsonwebtoken.JwtException;
+import nextstep.support.error.ErrorCode;
+import nextstep.support.error.ErrorResponse;
 import nextstep.support.exception.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(DuplicateEntityException.class)
-    public ResponseEntity<String> duplicateEntityExceptionHandler(Exception exception) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(exception.getMessage());
+    @ExceptionHandler(DuplicateThemeException.class)
+    public ResponseEntity<ErrorResponse> duplicateThemeExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.DUPLICATE_THEME);
     }
 
-    @ExceptionHandler({NoAccessTokenException.class, JwtException.class})
-    public ResponseEntity<String> accessTokenExceptionHandler(Exception exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(exception.getMessage());
+    @ExceptionHandler(DuplicateReservationException.class)
+    public ResponseEntity<ErrorResponse> duplicateReservationExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.DUPLICATE_RESERVATION);
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<String> unauthorizedExceptionHandler(Exception exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(exception.getMessage());
+    @ExceptionHandler({JwtException.class, InvalidAccessTokenException.class})
+    public ResponseEntity<ErrorResponse> accessTokenExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.INVALID_ACCESS_TOKEN);
     }
 
-    @ExceptionHandler(NotExistEntityException.class)
-    public ResponseEntity<String> notExistEntityExceptionHandler(Exception exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+    @ExceptionHandler(NotAdminException.class)
+    public ResponseEntity<ErrorResponse> notAdminExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.NOT_ADMIN);
     }
 
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<String> ForbiddenExceptionHandler(Exception exception) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(exception.getMessage());
+    @ExceptionHandler(NotExistReservationException.class)
+    public ResponseEntity<ErrorResponse> notExistReservationExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.NOT_EXISTS_RESERVATION);
+    }
+
+    @ExceptionHandler(NotExistMemberException.class)
+    public ResponseEntity<ErrorResponse> notExistMemberExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.NOT_EXISTS_RESERVATION);
+    }
+
+    @ExceptionHandler(NotExistThemeException.class)
+    public ResponseEntity<ErrorResponse> notExistThemeExceptionHandler() {
+        return ErrorResponse.toResponseEntity(ErrorCode.NOT_EXISTS_THEME);
+    }
+
+    @ExceptionHandler(NotUserOwnReservationException.class)
+    public ResponseEntity<ErrorResponse> ForbiddenExceptionHandler(Exception exception) {
+        return ErrorResponse.toResponseEntity(ErrorCode.NOT_USER_OWN_RESERVATION);
     }
 }

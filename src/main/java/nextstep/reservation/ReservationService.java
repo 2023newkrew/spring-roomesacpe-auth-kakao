@@ -2,9 +2,10 @@ package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.exception.DuplicateEntityException;
-import nextstep.support.exception.ForbiddenException;
-import nextstep.support.exception.NotExistEntityException;
+import nextstep.support.exception.DuplicateReservationException;
+import nextstep.support.exception.NotExistReservationException;
+import nextstep.support.exception.NotExistThemeException;
+import nextstep.support.exception.NotUserOwnReservationException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateReservationException();
         }
 
         Reservation newReservation = new Reservation(
@@ -44,7 +45,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NotExistEntityException("해당 테마가 존재하지 않습니다.");
+            throw new NotExistThemeException();
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
@@ -54,11 +55,11 @@ public class ReservationService {
         Reservation reservation = reservationDao.findById(id);
 
         if (reservation == null) {
-            throw new NotExistEntityException("예약번호가 유효하지 않습니다.");
+            throw new NotExistReservationException();
         }
         if (!reservation.getName()
                 .equals(username)) {
-            throw new ForbiddenException("자신의 예약이 아닙니다.");
+            throw new NotUserOwnReservationException();
         }
 
         reservationDao.deleteById(id);
@@ -68,7 +69,7 @@ public class ReservationService {
         Reservation reservation = reservationDao.findById(id);
 
         if (reservation == null) {
-            throw new NotExistEntityException("예약번호가 유효하지 않습니다.");
+            throw new NotExistReservationException();
         }
 
         reservationDao.deleteById(id);

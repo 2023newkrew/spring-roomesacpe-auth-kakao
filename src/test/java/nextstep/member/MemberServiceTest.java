@@ -1,8 +1,8 @@
 package nextstep.member;
 
 import nextstep.auth.TokenRequestDto;
-import nextstep.support.exception.DuplicateEntityException;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.DuplicateReservationException;
+import nextstep.support.exception.InvalidAccessTokenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -50,9 +50,9 @@ class MemberServiceTest {
     @Test
     @DisplayName("tokenRequest 유효성 확인 실패시 예외 발생 테스트")
     void validateTokenThrowNotExistEntityExceptionTest() {
-        when(memberDao.findByUsernameAndPassword(anyString(), anyString())).thenReturn(null);
-        TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), MEMBER.getPassword());
-        assertThatThrownBy(() -> memberService.validatePassword(MEMBER, tokenRequestDto)).isInstanceOf(UnauthorizedException.class);
+        String wrongPassword = "wrong";
+        TokenRequestDto tokenRequestDto = new TokenRequestDto(MEMBER.getUsername(), wrongPassword);
+        assertThatThrownBy(() -> memberService.validatePassword(MEMBER, tokenRequestDto)).isInstanceOf(InvalidAccessTokenException.class);
     }
 
     @Test
@@ -61,6 +61,6 @@ class MemberServiceTest {
         MemberRequest memberRequest = new MemberRequest("username", "password", "name", "010-1234-5678");
         when(memberDao.findByUsername(anyString())).thenReturn(Optional.ofNullable(MEMBER));
         assertThatCode(() -> memberService.create(memberRequest))
-                .isInstanceOf(DuplicateEntityException.class);
+                .isInstanceOf(DuplicateReservationException.class);
     }
 }

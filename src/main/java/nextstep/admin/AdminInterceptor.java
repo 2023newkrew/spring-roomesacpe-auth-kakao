@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.infrastructure.AuthorizationExtractor;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.NotAdminException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class AdminInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = AuthorizationExtractor.extract(request);
         if (Boolean.FALSE.equals(jwtTokenProvider.isAdmin(accessToken))) {
-            throw new UnauthorizedException("관리자 권한이 없습니다.");
+            throw new NotAdminException();
         }
         return true;
     }

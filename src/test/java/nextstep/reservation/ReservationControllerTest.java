@@ -4,8 +4,8 @@ package nextstep.reservation;
 import io.jsonwebtoken.JwtException;
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
-import nextstep.support.exception.NotExistEntityException;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.NotExistReservationException;
+import nextstep.support.exception.NotAdminException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,7 +110,7 @@ class ReservationControllerTest {
     void deleteWithInvalidAccessTokenTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
-        doThrow(UnauthorizedException.class).when(reservationService)
+        doThrow(NotAdminException.class).when(reservationService)
                 .deleteById(1L, "username");
 
         RestAssured
@@ -132,7 +132,7 @@ class ReservationControllerTest {
     void deleteNotExistReservationTest() {
         when(jwtTokenProvider.getPrincipal(validAccessToken))
                 .thenReturn("username");
-        doThrow(NotExistEntityException.class).when(reservationService)
+        doThrow(NotExistReservationException.class).when(reservationService)
                 .deleteById(1L, "username");
 
         RestAssured

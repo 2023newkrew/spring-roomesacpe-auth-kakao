@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import nextstep.member.Member;
 import nextstep.member.MemberResponseDto;
 import nextstep.member.MemberService;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.NotAdminException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class AuthControllerTest {
 
         when(memberService.findByUsername(tokenRequestDto.getUsername())).thenReturn(MemberResponseDto.toDto(member));
 
-        doThrow(UnauthorizedException.class).when(memberService)
+        doThrow(NotAdminException.class).when(memberService)
                 .validatePassword(any(Member.class), any(TokenRequestDto.class));
 
         RestAssured.given()

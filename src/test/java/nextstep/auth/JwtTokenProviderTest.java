@@ -1,6 +1,7 @@
 package nextstep.auth;
 
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.InvalidAccessTokenException;
+import nextstep.support.exception.NotAdminException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,12 +38,12 @@ class JwtTokenProviderTest {
     }
 
     @Test
-    @DisplayName("액세스 토큰이 유효하지 않다면 UnauthorizedException 발생")
+    @DisplayName("액세스 토큰이 유효하지 않다면 InvalidAccessTokenException 발생")
     void getPrincipalThrowJwtExceptionTest() {
         assertThatThrownBy(() -> JWT_TOKEN_PROVIDER.getPrincipal("token"))
-                .isInstanceOf(UnauthorizedException.class);
+                .isInstanceOf(InvalidAccessTokenException.class);
 
         assertThatThrownBy(() -> JWT_TOKEN_PROVIDER.getPrincipal(""))
-                .isInstanceOf(UnauthorizedException.class);
+                .isInstanceOf(InvalidAccessTokenException.class);
     }
 }

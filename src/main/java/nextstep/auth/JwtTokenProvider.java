@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import io.jsonwebtoken.*;
 import nextstep.member.Role;
-import nextstep.support.exception.UnauthorizedException;
+import nextstep.support.exception.InvalidAccessTokenException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -71,14 +71,10 @@ public class JwtTokenProvider {
             if (claims.getBody()
                     .getExpiration()
                     .before(new Date())) {
-                throw new UnauthorizedException("토큰이 만료되었습니다.");
+                throw new InvalidAccessTokenException();
             }
-        } catch (ExpiredJwtException expiredJwtException) {
-            throw new UnauthorizedException("토큰이 만료되었습니다.");
-        } catch (JwtException jwtException) {
-            throw new UnauthorizedException("유효하지 않은 토큰입니다.");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            throw new UnauthorizedException("액세스 토큰이 존재하지 않습니다.");
+        } catch (JwtException | IllegalArgumentException exception) {
+            throw new InvalidAccessTokenException();
         }
     }
 }

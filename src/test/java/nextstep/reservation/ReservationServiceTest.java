@@ -1,8 +1,8 @@
 package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
-import nextstep.support.exception.ForbiddenException;
-import nextstep.support.exception.NotExistEntityException;
+import nextstep.support.exception.NotUserOwnReservationException;
+import nextstep.support.exception.NotExistReservationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ class ReservationServiceTest {
     void deleteNotExistReservationTest() {
         when(reservationDao.findById(anyLong())).thenReturn(null);
         assertThatThrownBy(() -> reservationService.deleteById(1L, "username"))
-                .isInstanceOf(NotExistEntityException.class);
+                .isInstanceOf(NotExistReservationException.class);
     }
 
     @Test
@@ -35,7 +35,7 @@ class ReservationServiceTest {
         Reservation reservation = new Reservation(1L, new Schedule(), "differentUsername");
         when(reservationDao.findById(anyLong())).thenReturn(reservation);
         assertThatThrownBy(() -> reservationService.deleteById(1L, "username"))
-                .isInstanceOf(ForbiddenException.class);
+                .isInstanceOf(NotUserOwnReservationException.class);
     }
 
     @Test
