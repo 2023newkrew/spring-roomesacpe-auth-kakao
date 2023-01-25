@@ -37,9 +37,11 @@ class ReservationE2ETest {
 
     private String accessToken;
 
+    private String adminToken;
+
     @BeforeEach
     void setUp() {
-        String adminToken = RestAssured
+        adminToken = RestAssured
                 .given().log().all()
                 .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -130,7 +132,7 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("본인의 예약을 삭제한다")
     @Test
     void delete() {
         var reservation = createReservation();
@@ -138,6 +140,21 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("admin은 다른 사람의 예약을 삭제할 수 있다.")
+    @Test
+    void adminCanDeleteReservation() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(adminToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();

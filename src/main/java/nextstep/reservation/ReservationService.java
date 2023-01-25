@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
 import java.util.List;
+import nextstep.auth.AuthMemberDTO;
 import nextstep.exception.CustomException;
 import nextstep.exception.ErrorCode;
 import nextstep.schedule.Schedule;
@@ -52,16 +53,20 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id, String username) {
+    public void deleteById(Long id, AuthMemberDTO authMemberDTO) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
             throw new CustomException(ErrorCode.NO_SUCH_ENTITY);
         }
 
-        if (!reservation.isOwner(username)) {
+        if (!hasPermission(authMemberDTO, reservation)) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
         reservationDao.deleteById(id);
+    }
+
+    private boolean hasPermission(AuthMemberDTO authMemberDTO, Reservation reservation) {
+        return authMemberDTO.isIsAdmin() || reservation.isOwner(authMemberDTO.getUsername());
     }
 }
