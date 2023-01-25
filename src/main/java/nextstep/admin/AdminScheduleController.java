@@ -1,5 +1,8 @@
-package nextstep.schedule;
+package nextstep.admin;
 
+import nextstep.schedule.Schedule;
+import nextstep.schedule.ScheduleRequest;
+import nextstep.schedule.ScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,11 +10,11 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/schedules")
-public class ScheduleController {
+@RequestMapping("/admin/schedules")
+public class AdminScheduleController {
     private ScheduleService scheduleService;
 
-    public ScheduleController(ScheduleService scheduleService) {
+    public AdminScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
 

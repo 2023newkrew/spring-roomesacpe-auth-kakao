@@ -1,8 +1,12 @@
 package nextstep.config;
 
+import nextstep.admin.AdminInterceptor;
+import nextstep.auth.AuthInterceptor;
 import nextstep.auth.AuthenticationPrincipalArgumentResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -11,13 +15,30 @@ import java.util.List;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver;
+    private final AuthInterceptor authInterceptor;
+    private final AdminInterceptor adminInterceptor;
 
-    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver) {
+    @Autowired
+    public WebMvcConfiguration(AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver, AuthInterceptor authInterceptor, AdminInterceptor adminInterceptor) {
         this.authenticationPrincipalArgumentResolver = authenticationPrincipalArgumentResolver;
+        this.authInterceptor = authInterceptor;
+        this.adminInterceptor = adminInterceptor;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(authenticationPrincipalArgumentResolver);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .order(1)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/", "/members", "/login/**");
+
+        registry.addInterceptor(adminInterceptor)
+                .order(2)
+                .addPathPatterns("/admin/**");
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,11 +22,12 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -34,6 +36,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setString(5, member.getRole().name());
             return ps;
 
         }, keyHolder);
@@ -42,12 +45,22 @@ public class MemberDao {
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
+
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
     public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
+
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, username);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
     }
 }

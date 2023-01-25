@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import nextstep.theme.Theme;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -54,8 +55,11 @@ public class ScheduleDao {
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
-
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

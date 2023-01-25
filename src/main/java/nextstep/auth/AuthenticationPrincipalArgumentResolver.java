@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.support.AuthorizationException;
+import nextstep.support.exception.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
