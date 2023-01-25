@@ -31,5 +31,8 @@ CREATE TABLE member
     password varchar(20) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
+    role     int         not null,
     primary key (id)
 );
+
+INSERT INTO MEMBER VALUES(1, '관리자', 'admin', '관리자', '01012345678', 0);
