@@ -17,7 +17,7 @@ public class ThemeDaoTest {
     @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-        Long id = themeDao.save(new Theme("테마 이름", "테마 설명", 22_000));
-        assertThat(id).isNotNull();
+        Theme theme = themeDao.save(new Theme("테마 이름", "테마 설명", 22_000));
+        assertThat(theme).isNotNull();
     }
 }

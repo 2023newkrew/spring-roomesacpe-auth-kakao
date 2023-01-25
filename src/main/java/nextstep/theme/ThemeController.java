@@ -20,9 +20,9 @@ public class ThemeController {
 
     @PostMapping
     public ResponseEntity<ThemeResponse> createTheme(@Valid @RequestBody ThemeRequest themeRequest) {
-        Long id = themeService.create(themeRequest);
-        ThemeResponse res = new ThemeResponse(id, themeRequest.getName(), themeRequest.getDesc(), themeRequest.getPrice());
-        return ResponseEntity.created(URI.create("/themes/").resolve(id.toString())).body(res);
+        Theme theme = themeService.create(themeRequest);
+        ThemeResponse res = new ThemeResponse(theme.getId(), theme.getName(), theme.getDesc(), theme.getPrice());
+        return ResponseEntity.created(URI.create("/themes/").resolve(theme.getId().toString())).body(res);
     }
 
     @GetMapping

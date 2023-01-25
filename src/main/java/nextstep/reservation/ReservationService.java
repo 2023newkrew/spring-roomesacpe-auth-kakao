@@ -38,13 +38,10 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Reservation newReservation = new Reservation(
+        return reservationDao.save(new Reservation(
                 schedule,
                 reservationRequest.getName()
-        );
-
-        reservationDao.save(newReservation);
-        return newReservation;
+        ));
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {

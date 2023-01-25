@@ -24,7 +24,7 @@ public class MemberDao {
             resultSet.getString("phone")
     );
 
-    public Long save(Member member) {
+    public Member save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -38,7 +38,8 @@ public class MemberDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Long id = keyHolder.getKey().longValue();
+        return new Member(id, member.getUsername(), member.getPassword(), member.getName(), member.getPhone());
     }
 
     public Member findById(Long id) {

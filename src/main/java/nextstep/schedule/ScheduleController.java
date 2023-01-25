@@ -20,9 +20,9 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity<ScheduleResponse> createSchedule(@Valid @RequestBody ScheduleRequest scheduleRequest) {
-        Long id = scheduleService.create(scheduleRequest);
-        ScheduleResponse res = new ScheduleResponse(id, scheduleRequest.getThemeId(), scheduleRequest.getDate(), scheduleRequest.getTime());
-        return ResponseEntity.created(URI.create("/schedules/").resolve(id.toString())).body(res);
+        Schedule schedule = scheduleService.create(scheduleRequest);
+        ScheduleResponse res = new ScheduleResponse(schedule.getId(), schedule.getTheme().getId(), schedule.getDate().toString(), schedule.getTime().toString());
+        return ResponseEntity.created(URI.create("/schedules/").resolve(schedule.getId().toString())).body(res);
     }
 
     @GetMapping

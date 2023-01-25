@@ -24,7 +24,7 @@ public class ThemeDao {
             resultSet.getInt("price")
     );
 
-    public Long save(Theme theme) {
+    public Theme save(Theme theme) {
         String sql = "INSERT INTO theme (name, desc, price) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -37,7 +37,8 @@ public class ThemeDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Long id = keyHolder.getKey().longValue();
+        return new Theme(id, theme.getName(), theme.getDesc(), theme.getPrice());
     }
 
     public Theme findById(Long id) {

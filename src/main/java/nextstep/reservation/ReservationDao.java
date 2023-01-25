@@ -37,7 +37,7 @@ public class ReservationDao {
             resultSet.getString("reservation.name")
     );
 
-    public Long save(Reservation reservation) {
+    public Reservation save(Reservation reservation) {
         String sql = "INSERT INTO reservation (schedule_id, name) VALUES (?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -49,7 +49,8 @@ public class ReservationDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        Long id =  keyHolder.getKey().longValue();
+        return new Reservation(id, reservation.getSchedule(), reservation.getName());
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {

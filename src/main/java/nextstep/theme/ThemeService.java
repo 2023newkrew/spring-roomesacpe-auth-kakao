@@ -13,7 +13,7 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
+    public Theme create(ThemeRequest themeRequest) {
         return themeDao.save(themeRequest.toEntity());
     }
 

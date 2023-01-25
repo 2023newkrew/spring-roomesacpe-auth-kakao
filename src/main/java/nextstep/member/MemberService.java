@@ -11,7 +11,7 @@ public class MemberService {
     @Autowired
     private MemberDao memberDao;
 
-    public Long create(MemberRequest memberRequest) {
+    public Member create(MemberRequest memberRequest) {
         return memberDao.save(memberRequest.toEntity());
     }
 
