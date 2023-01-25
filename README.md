@@ -216,10 +216,16 @@ Content-Type: application/json
 
 ## 기능 구현 목록
 
-### 관리자 추가
-- [ ] RoomEscapeAdmin 도메인 추가
-  - [ ] id, username, password, name, phoneNumber 필드
-  - [ ] DB에 Admin 테이블 추가
+### Role 추가
+- [ ] DB에 Role 테이블 추가
+  - [ ] id, name 컬럼
+  - [ ] data.sql에 ADMIN, USER Role 추가하는 insert문 추가
+- [ ] enum Role 추가
+  - [ ] `ADMIN("ADMIN")`
+  - [ ] `USER("USER")`
+- [ ] Member 테이블에 role_id 컬럼 추가
+  - [ ] Role 테이블의 id를 참조하는 외래키
+- [ ] Member 도메인 객체에 Role 필드 추가
 
 ### 관리자 로그인 기능
 - [ ] username password가 DB의 값과 일치하는지 검증
