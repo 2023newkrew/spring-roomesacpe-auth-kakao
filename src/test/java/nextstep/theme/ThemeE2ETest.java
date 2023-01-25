@@ -84,6 +84,24 @@ class ThemeE2ETest {
                 .body("code", is(ErrorCode.THEME_NOT_FOUND.getCode()));
     }
 
+    @DisplayName("일반 사용자가 테마 생성 요청을 하면 404 코드 반환")
+    @Test
+    void create_unauthorized() {
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
+        String token = jwtTokenProvider.createToken("member");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .body(body)
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
+    }
+
     private Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
 
