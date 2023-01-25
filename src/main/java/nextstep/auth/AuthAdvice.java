@@ -1,7 +1,7 @@
 package nextstep.auth;
 
-import nextstep.support.InvalidLoginException;
-import nextstep.support.UnauthorizedException;
+import nextstep.exception.InvalidLoginException;
+import nextstep.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

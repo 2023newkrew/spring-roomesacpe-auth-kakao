@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.support.DuplicateEntityException;
+import nextstep.exception.DuplicateEntityException;
 import org.springframework.stereotype.Service;
 
 @Service

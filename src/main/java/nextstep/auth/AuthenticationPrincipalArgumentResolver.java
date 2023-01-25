@@ -1,7 +1,6 @@
 package nextstep.auth;
 
-import nextstep.support.InvalidLoginException;
-import nextstep.support.UnauthorizedException;
+import nextstep.exception.UnauthorizedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

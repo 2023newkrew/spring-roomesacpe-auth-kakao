@@ -2,9 +2,9 @@ package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.NotExistEntityException;
-import nextstep.support.UnauthorizedException;
+import nextstep.exception.DuplicateEntityException;
+import nextstep.exception.NotExistEntityException;
+import nextstep.exception.UnauthorizedException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;

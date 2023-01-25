@@ -2,9 +2,9 @@ package nextstep.reservation;
 
 import java.util.stream.Collectors;
 import nextstep.auth.AuthenticationPrincipal;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.NotExistEntityException;
-import nextstep.support.UnauthorizedException;
+import nextstep.exception.DuplicateEntityException;
+import nextstep.exception.NotExistEntityException;
+import nextstep.exception.UnauthorizedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

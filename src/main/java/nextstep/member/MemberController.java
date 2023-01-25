@@ -1,7 +1,7 @@
 package nextstep.member;
 
 import nextstep.auth.AuthenticationPrincipal;
-import nextstep.support.DuplicateEntityException;
+import nextstep.exception.DuplicateEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
