@@ -8,9 +8,12 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ThemeDao {
+
+    private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Theme> rowMapper = (resultSet, rowNum) -> new Theme(
             resultSet.getLong("id"),
@@ -18,7 +21,7 @@ public class ThemeDao {
             resultSet.getString("desc"),
             resultSet.getInt("price")
     );
-    private JdbcTemplate jdbcTemplate;
+
 
     public ThemeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -36,7 +39,7 @@ public class ThemeDao {
             return ps;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     public Theme findById(Long id) {

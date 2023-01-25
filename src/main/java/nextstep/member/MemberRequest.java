@@ -2,11 +2,11 @@ package nextstep.member;
 
 public class MemberRequest {
 
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
-    private Role role;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
+    private final Role role;
 
     public MemberRequest(String username, String password, String name, String phone, Role role) {
         this.username = username;

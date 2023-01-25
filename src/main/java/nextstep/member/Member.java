@@ -2,12 +2,12 @@ package nextstep.member;
 
 public class Member {
 
-    private Long id;
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
-    private Role role;
+    private final Long id;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
+    private final Role role;
 
     public Member(String username, String password, String name, String phone, Role role) {
         this(null, username, password, name, phone, role);

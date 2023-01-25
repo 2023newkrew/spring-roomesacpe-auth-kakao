@@ -20,13 +20,13 @@ public enum Role {
         return Arrays.stream(Role.values())
                 .filter(v -> v.getValue() == role)
                 .findFirst()
-                .orElseThrow(() -> new IllegalAccessError("권한이 올바르지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("권한이 올바르지 않습니다."));
     }
 
     public static Role getRole(String role) {
         return Arrays.stream(Role.values())
                 .filter(v -> v.name().equals(role))
                 .findFirst()
-                .orElseThrow(() -> new IllegalAccessError("권한이 올바르지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("권한이 올바르지 않습니다."));
     }
 }

@@ -1,14 +1,14 @@
 package nextstep.auth;
 
 import nextstep.member.Role;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class AdminInterceptor extends HandlerInterceptorAdapter {
+public class AdminInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -20,7 +20,7 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String accessToken = request.getHeader("Authorization");
         checkIsValidToken(request, response, accessToken);
-        return super.preHandle(request, response, handler);
+        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
     private void checkIsValidToken(HttpServletRequest request, HttpServletResponse response, String accessToken) throws ServletException, IOException {

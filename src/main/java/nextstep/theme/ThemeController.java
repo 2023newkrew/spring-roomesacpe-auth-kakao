@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/themes")
 public class ThemeController {
 
-    private ThemeService themeService;
+    private final ThemeService themeService;
 
     public ThemeController(ThemeService themeService) {
         this.themeService = themeService;
