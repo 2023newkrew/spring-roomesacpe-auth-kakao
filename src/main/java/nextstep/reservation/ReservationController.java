@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.config.AuthenticationMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,10 +39,5 @@ public class ReservationController {
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id, @AuthenticationMember String username) {
         reservationService.deleteById(id, username);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<Void> handleNullPointer() {
-        return ResponseEntity.badRequest().build();
     }
 }
