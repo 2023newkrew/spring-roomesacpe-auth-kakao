@@ -40,6 +40,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         String username = jwtTokenProvider.getPrincipal(token);
 
-        return memberDao.findByUsername(username);
+        return memberDao.findByUsername(username).orElseThrow(
+                () -> new AuthorizationException("해당 유저네임을 가진 멤버가 없습니다.")
+        );
     }
 }

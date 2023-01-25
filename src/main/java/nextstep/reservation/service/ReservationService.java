@@ -14,6 +14,7 @@ import nextstep.theme.repository.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -61,7 +62,7 @@ public class ReservationService {
             throw new NotExistEntityException();
         }
 
-        if (!member.getUsername().equals(reservation.getName())) {
+        if (!Objects.equals(member.getUsername(), reservation.getName())) {
             throw new AuthorizationException();
         }
 

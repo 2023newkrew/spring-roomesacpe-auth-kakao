@@ -40,6 +40,6 @@ public class AuthService {
                         () -> new AuthorizationException("해당 username을 가진 맴버가 없습니다.")
                 );
 
-        return actualMember.getPassword().equals(password);
+        return Objects.equals(actualMember.getPassword(), password);
     }
 }
