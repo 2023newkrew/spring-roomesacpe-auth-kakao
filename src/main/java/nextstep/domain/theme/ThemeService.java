@@ -1,7 +1,7 @@
 package nextstep.domain.theme;
 
 import nextstep.interfaces.theme.dto.ThemeRequest;
-import nextstep.support.NotExistEntityException;
+import nextstep.interfaces.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

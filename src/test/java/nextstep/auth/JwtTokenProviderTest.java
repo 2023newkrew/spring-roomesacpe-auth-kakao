@@ -13,7 +13,7 @@ class JwtTokenProviderTest {
     void createToken() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken("1","MEMBER");
 
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
@@ -22,8 +22,8 @@ class JwtTokenProviderTest {
     void getPrincipal() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken("1","MEMBER");
 
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        assertThat(jwtTokenProvider.getMemberId(token)).isEqualTo("1");
     }
 }
