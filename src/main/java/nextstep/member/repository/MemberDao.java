@@ -48,12 +48,12 @@ public class MemberDao {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
-    public Member findByUsername(String username) {
+    public Optional<Member> findByUsername(String username) {
         String sql = "SELECT id, username, password, name, phone from member where username = ?;";
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, username);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 }

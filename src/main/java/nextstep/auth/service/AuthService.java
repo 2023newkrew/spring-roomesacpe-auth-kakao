@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -32,11 +33,13 @@ public class AuthService {
     public boolean checkPassword(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
-        Member actualMember = memberDao.findByUsername(username);
 
-        if (Objects.isNull(actualMember)) {
-            return false;
-        }
+        Member actualMember = memberDao
+                .findByUsername(username)
+                .orElseThrow(
+                        () -> new AuthorizationException("해당 username을 가진 맴버가 없습니다.")
+                );
+
         return actualMember.getPassword().equals(password);
     }
 }

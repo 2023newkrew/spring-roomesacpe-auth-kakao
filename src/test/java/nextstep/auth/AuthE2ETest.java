@@ -49,6 +49,18 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
+    @DisplayName("유저네임에 해당하는 멤버가 없는 경우, 예외 발생")
+    @Test
+    public void notExistOfMember() {
+        TokenRequest body = new TokenRequest("notmember", PASSWORD);
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("내정보 조회하기")
     @Test
     public void showInformation() {
