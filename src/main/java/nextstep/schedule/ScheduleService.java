@@ -5,6 +5,7 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -21,8 +22,8 @@ public class ScheduleService {
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 
-    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
-        return scheduleDao.findByThemeIdAndDate(themeId, date);
+    public List<ScheduleResponse> findByThemeIdAndDate(Long themeId, String date) {
+        return scheduleDao.findByThemeIdAndDate(themeId, date).stream().map(e->e.toResponse()).collect(Collectors.toList());
     }
 
     public void deleteById(Long id) {

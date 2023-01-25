@@ -14,7 +14,7 @@ public class MemberService {
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
-        return memberDao.findById(id);
+    public MemberResponse findById(Long id) {
+        return memberDao.findById(id).toResponse();
     }
 }

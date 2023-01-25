@@ -22,7 +22,7 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<ScheduleResponse>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 

@@ -28,8 +28,8 @@ public class ThemeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Theme>> showThemes() {
-        List<Theme> results = themeService.findAll();
+    public ResponseEntity<List<ThemeResponse>> showThemes() {
+        List<ThemeResponse> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
     }
 

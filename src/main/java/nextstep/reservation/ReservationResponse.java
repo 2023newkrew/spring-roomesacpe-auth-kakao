@@ -2,20 +2,12 @@ package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
 
-public class Reservation {
+public class ReservationResponse {
     private Long id;
     private Schedule schedule;
     private String name;
 
-    public Reservation() {
-    }
-
-    public Reservation(Schedule schedule, String name) {
-        this.schedule = schedule;
-        this.name = name;
-    }
-
-    public Reservation(Long id, Schedule schedule, String name) {
+    public ReservationResponse(Long id, Schedule schedule, String name) {
         this.id = id;
         this.schedule = schedule;
         this.name = name;
@@ -32,6 +24,4 @@ public class Reservation {
     public String getName() {
         return name;
     }
-
-    public ReservationResponse toResponse() { return new ReservationResponse(id, schedule, name); }
 }

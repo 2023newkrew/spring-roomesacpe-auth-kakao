@@ -10,6 +10,7 @@ import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -45,13 +46,15 @@ public class ReservationService {
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
+    public List<ReservationResponse> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
             throw new NullPointerException();
         }
 
-        return reservationDao.findAllByThemeIdAndDate(themeId, date);
+        List<Reservation> results = reservationDao.findAllByThemeIdAndDate(themeId, date);
+
+        return results.stream().map(e->e.toResponse()).collect(Collectors.toList());
     }
 
     public void deleteById(Long id, Long memberId) {
