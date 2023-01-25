@@ -32,7 +32,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public FilterRegistrationBean<ExceptionFilter> exceptionFilterFilterRegistrationBean() {
         FilterRegistrationBean<ExceptionFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new ExceptionFilter());
-        registrationBean.setOrder(1);
+        registrationBean.setOrder(Integer.MIN_VALUE);
         return registrationBean;
     }
 }
