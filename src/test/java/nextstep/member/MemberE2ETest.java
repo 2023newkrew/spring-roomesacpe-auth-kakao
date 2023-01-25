@@ -3,6 +3,7 @@ package nextstep.member;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,6 +31,21 @@ public class MemberE2ETest {
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("중복된 사용자 이름으로 멤버를 생성할 수 없다.")
+    @Test
+    void createDuplicatedUsername() {
+        createMember("username", "password", "name", "010-1234-5678");
+
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("멤버를 조회한다")

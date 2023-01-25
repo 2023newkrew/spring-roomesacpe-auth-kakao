@@ -1,8 +1,7 @@
 package nextstep.member;
 
-import javax.swing.JWindow;
 import nextstep.auth.AuthenticationPrincipal;
-import nextstep.auth.JwtTokenProvider;
+import nextstep.support.DuplicateEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +11,9 @@ import java.net.URI;
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping
@@ -26,11 +23,16 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal Long id) {
-        Member member = memberService.findById(id);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal Long memberId) {
+        Member member = memberService.findById(memberId);
         MemberResponse memberResponse = new MemberResponse(
                 member.getId(), member.getUsername(), member.getName(), member.getPhone()
         );
         return ResponseEntity.ok(memberResponse);
+    }
+
+    @ExceptionHandler(DuplicateEntityException.class)
+    public ResponseEntity onException(Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
