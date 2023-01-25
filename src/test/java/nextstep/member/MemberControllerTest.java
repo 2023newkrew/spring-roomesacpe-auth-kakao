@@ -42,7 +42,7 @@ class MemberControllerTest {
         private String password = "password";
         private String name = "name";
         private String phone = "010-1234-5678";
-        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId));
+        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), Role.USER);
 
         @Test
         @DisplayName("유효한 토큰일 경우 200과 자신의 정보를 응답해야 한다.")

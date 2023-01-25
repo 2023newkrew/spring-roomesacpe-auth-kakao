@@ -7,6 +7,11 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private Role role;
+
+    public Member(String username, String password, String name, String phone) {
+        this(null, username, password, name, phone);
+    }
 
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
@@ -14,13 +19,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
-    }
-
-    public Member(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
+        this.role = Role.USER;
     }
 
     public Long getId() {
@@ -41,6 +40,14 @@ public class Member {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public boolean isWrongPassword(String password) {
