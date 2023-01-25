@@ -2,6 +2,7 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.support.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,11 @@ public class MemberE2ETest {
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(1))
+                .body("id", equalTo(2))
                 .body("username", equalTo("username"))
                 .body("password", equalTo("password"))
                 .body("name", equalTo("name"))
-                .body("phone", equalTo("010-1234-5678"));
+                .body("phone", equalTo("010-1234-5678"))
+                .body("role", equalTo("USER"));
     }
 }
