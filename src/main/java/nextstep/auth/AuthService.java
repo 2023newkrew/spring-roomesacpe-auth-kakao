@@ -34,7 +34,7 @@ public class AuthService {
         }
 
         // 기본키인 id를 principal로 하여 accessToken을 생성.
-        String accessToken = jwtTokenProvider.createToken(member.getId().toString());
+        String accessToken = jwtTokenProvider.createToken(member.getId().toString(), member.getAuthority());
         return new TokenResponse(accessToken);
     }
 
@@ -49,10 +49,19 @@ public class AuthService {
      * @throws AuthorizationException when validation failed.
      * @return id of member.
      */
-    public Long validateToken(String token){
+    public Long getMemberIdFromToken(String token){
+        validateToken(token);
+        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
+    }
+
+    public Authority getAuthorityFromToken(String token){
+        validateToken(token);
+        return Authority.valueOf(jwtTokenProvider.getAuthority(token));
+    }
+
+    private void validateToken(String token){
         if (!jwtTokenProvider.validateToken(token)){
             throw new AuthorizationException();
         }
-        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
     }
 }

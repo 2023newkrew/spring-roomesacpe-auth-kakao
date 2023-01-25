@@ -1,0 +1,1 @@
+INSERT INTO member(username, password, name, phone, authority) VALUES('admin', 'admin', 'Administrator', '0', 'ADMIN');

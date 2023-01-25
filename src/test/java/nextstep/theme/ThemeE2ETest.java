@@ -1,6 +1,9 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +16,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
+    String adminToken;
+    @BeforeEach
+    void setUp(){
+        TokenRequest body = new TokenRequest("admin", "admin");
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+        adminToken = tokenResponse.getAccessToken();
+    }
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
@@ -20,8 +38,9 @@ public class ThemeE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminToken)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -48,7 +67,8 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .auth().oauth2(adminToken)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -60,8 +80,9 @@ public class ThemeE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminToken)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

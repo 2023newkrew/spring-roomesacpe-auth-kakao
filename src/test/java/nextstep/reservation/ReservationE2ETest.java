@@ -35,15 +35,28 @@ class ReservationE2ETest {
     private Long memberId;
 
     private String accessToken;
+    private String adminToken;
 
     @BeforeEach
     void setUp() {
+        TokenRequest tokenBody = new TokenRequest("admin", "admin");
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+        adminToken = tokenResponse.getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(adminToken)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -55,7 +68,8 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .auth().oauth2(adminToken)
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -118,6 +132,36 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("관리자 권한의 경우 예약을 임의로 생성할 수 있다.")
+    @Test
+    void createWithAdminAuth() {
+        ReservationAdminRequest adminRequest = new ReservationAdminRequest(request.getScheduleId(), memberId);
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(adminToken)
+                .body(adminRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("권한이 없는 경우 예약을 생성하지 못한다.")
+    @Test
+    void createWithNoAuth() {
+        var response = RestAssured
+                .given().log().all()
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
 
     @DisplayName("예약을 조회한다")
     @Test
@@ -154,6 +198,20 @@ class ReservationE2ETest {
     @DisplayName("권한없는 예약을 삭제한다")
     @Test
     void deleteWithNoAuth() {
+        var reservation = createReservation();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete(reservation.header("Location"))
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("관리자는 어떤 예약이던 삭제할 수 있다.")
+    @Test
+    void deleteWithAdminAuth() {
         var reservation = createReservation();
 
         var response = RestAssured
