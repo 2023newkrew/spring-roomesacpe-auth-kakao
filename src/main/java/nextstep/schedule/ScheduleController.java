@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import java.util.Collections;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +36,8 @@ public class ScheduleController {
 
     @DeleteMapping("/admin/schedules/{id}")
     public ResponseEntity deleteReservation(@PathVariable Long id) {
-        scheduleService.deleteById(id);
+        int deletedRowCount = scheduleService.deleteById(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(Collections.singletonMap("deletedScheduleCount", deletedRowCount));
     }
 }

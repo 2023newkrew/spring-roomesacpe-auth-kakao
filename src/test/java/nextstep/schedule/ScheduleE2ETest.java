@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -97,16 +98,15 @@ public class ScheduleE2ETest {
     @Test
     void delete() {
         String location = requestCreateSchedule();
-        System.out.println("-----------------------" + location);
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .auth().oauth2(adminAccessToken)
                 .when().delete(location)
                 .then().log().all()
-                .extract();
+                .statusCode(HttpStatus.OK.value())
+                .body("deletedScheduleCount", is(1));
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public String requestCreateSchedule() {
