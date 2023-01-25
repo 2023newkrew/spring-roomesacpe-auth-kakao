@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -79,14 +80,14 @@ public class ThemeE2ETest {
     void delete() {
         Long id = createTheme();
 
-        var response = RestAssured
+        RestAssured
                 .given().log().all()
                 .auth().oauth2(adminAccessToken)
                 .when().delete("/admin/themes/" + id)
                 .then().log().all()
-                .extract();
+                .statusCode(HttpStatus.OK.value())
+                .body("deletedThemeCount", is(1));
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public Long createTheme() {

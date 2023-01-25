@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import java.util.Collections;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
@@ -34,9 +36,9 @@ public class ThemeController {
     }
 
     @DeleteMapping("/admin/themes/{id}")
-    public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
-        themeService.delete(id);
+    public ResponseEntity deleteTheme(@PathVariable Long id) {
+        int deletedRowCount = themeService.delete(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(Collections.singletonMap("deletedThemeCount", deletedRowCount));
     }
 }

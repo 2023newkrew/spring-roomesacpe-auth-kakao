@@ -21,12 +21,12 @@ public class ThemeService {
         return themeDao.findAll();
     }
 
-    public void delete(Long id) {
+    public int delete(Long id) {
         Theme theme = themeDao.findById(id);
         if (theme == null) {
             throw new NotExistEntityException();
         }
 
-        themeDao.delete(id);
+        return themeDao.delete(id);
     }
 }
