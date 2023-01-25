@@ -24,7 +24,7 @@ public class AuthService {
         if (!checkPassword(tokenRequest)) {
             throw new BusinessException(ErrorCode.WRONG_PASSWORD);
         }
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), getRole(tokenRequest));
         return new TokenResponse(accessToken);
     }
 
@@ -37,5 +37,9 @@ public class AuthService {
             return false;
         }
         return actualMember.getPassword().equals(password);
+    }
+
+    private String getRole(TokenRequest tokenRequest) {
+        return memberDao.findByUsername(tokenRequest.getUsername()).getRole();
     }
 }
