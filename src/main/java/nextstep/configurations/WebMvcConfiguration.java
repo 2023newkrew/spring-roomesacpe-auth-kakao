@@ -36,7 +36,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     /**
      * https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-config-interceptors
      * <p>
-     * "/admin/**" 요청 시 LoginInterceptor 동작하게 하기
+     * "/admin/**" 요청 시 AdminInterceptor 동작하게 하기
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
