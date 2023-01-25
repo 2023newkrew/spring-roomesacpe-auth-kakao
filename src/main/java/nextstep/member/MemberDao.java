@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import java.sql.PreparedStatement;
+import javax.sql.DataSource;
 import nextstep.auth.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,14 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-
 @Component
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
 
-    public MemberDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public MemberDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> Member.builder()
@@ -40,7 +40,6 @@ public class MemberDao {
             return ps;
 
         }, keyHolder);
-
         return keyHolder.getKey().longValue();
     }
 
@@ -54,8 +53,8 @@ public class MemberDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 
-    public boolean hasUserWith(String username, String password) {
+    public boolean countByUsernameAndPassword(String username, String password) {
         String sql = "SELECT count(*) from member where username = ? and password = ?";
-        return jdbcTemplate.queryForObject(sql, Integer.class, username, password) == 1;
+        return jdbcTemplate.queryForObject(sql, Integer.class, username, password) != 0;
     }
 }
