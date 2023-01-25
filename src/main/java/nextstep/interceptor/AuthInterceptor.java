@@ -1,6 +1,6 @@
 package nextstep.interceptor;
 
-import nextstep.auth.Administrator;
+import nextstep.auth.AccessType;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
@@ -20,13 +20,17 @@ public class AuthInterceptor implements HandlerInterceptor {
                              HttpServletResponse response, Object handler) throws Exception {
 
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-        MemberRole memberRole = jwtTokenProvider.getRole(parseToken(request.getHeader("Authorization")));
+        MemberRole loginMemberRole = jwtTokenProvider.getRole(parseToken(request.getHeader("Authorization")));//현재 로그인한 멤버의 권한
 
-        if (((HandlerMethod) handler).hasMethodAnnotation(Administrator.class) && memberRole!=MemberRole.ADMIN) {
-            throw new BusinessException(ErrorCode.NOT_AUTHENTICATED);
-        }
+        MemberRole accessRole = ((HandlerMethod) handler).getMethodAnnotation(AccessType.class).role(); //접근 권한
 
-        return true;
+        if (accessRole == MemberRole.ADMIN && loginMemberRole == MemberRole.ADMIN)
+            return true;
+
+        if (accessRole == MemberRole.USER && loginMemberRole != null)
+            return true;
+
+        throw new BusinessException(ErrorCode.NOT_AUTHENTICATED);
     }
 
     private String parseToken(String authHeader) {

@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
-import nextstep.auth.Administrator;
+import nextstep.auth.AccessType;
+import nextstep.member.MemberRole;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/admin/schedules")
-    @Administrator
+    @AccessType(role = MemberRole.ADMIN)
     public ResponseEntity<Void> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
@@ -28,7 +29,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/admin/schedules/{id}")
-    @Administrator
+    @AccessType(role = MemberRole.ADMIN)
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
         return ResponseEntity.noContent().build();
