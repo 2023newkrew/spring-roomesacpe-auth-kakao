@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.TestPropertySource;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
-@TestPropertySource("classpath:/application.yml")
 class JwtTokenProviderTest {
 
     @Test
