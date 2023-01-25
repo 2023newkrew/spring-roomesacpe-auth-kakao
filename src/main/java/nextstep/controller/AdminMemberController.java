@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/admin")
+@RequestMapping("/admin/member/")
 @RestController
 public class AdminMemberController {
 
@@ -17,7 +17,7 @@ public class AdminMemberController {
         this.memberService = memberService;
     }
 
-    @DeleteMapping("/member/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Long> deleteMember(@PathVariable Long id) {
         return ResponseEntity.ok(memberService.deleteById(id));
     }
