@@ -4,6 +4,7 @@ import nextstep.theme.Theme;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import static nextstep.config.Messages.EMPTY_VALUE;
 
 public class Schedule {
     private Long id;
@@ -15,6 +16,7 @@ public class Schedule {
     }
 
     public Schedule(Long id, Theme theme, LocalDate date, LocalTime time) {
+        checkEmptyValue(date, time);
         this.id = id;
         this.theme = theme;
         this.date = date;
@@ -22,6 +24,7 @@ public class Schedule {
     }
 
     public Schedule(Theme theme, LocalDate date, LocalTime time) {
+        checkEmptyValue(date, time);
         this.theme = theme;
         this.date = date;
         this.time = time;
@@ -41,5 +44,11 @@ public class Schedule {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    private void checkEmptyValue(LocalDate date, LocalTime time){
+        if (date == null || time == null) {
+            throw new NullPointerException(EMPTY_VALUE.getMessage());
+        }
     }
 }

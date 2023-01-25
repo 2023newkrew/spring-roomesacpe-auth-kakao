@@ -4,6 +4,7 @@ public enum Messages {
     LOGIN_NEEDS("Needs to be login"),
     EMPTY_TOKEN("token must have a value"),
     PASSWORD_INCORRECT("Password incorrect"),
+    EMPTY_VALUE("Value must not be empty"),
     MEMBER_NOT_FOUND("Not found member"),
     THEME_NOT_FOUND("Not found theme"),
     SCHEDULE_NOT_FOUND("Not found schedule"),
