@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.schedule.Schedule;
+import nextstep.schedule.domain.Schedule;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

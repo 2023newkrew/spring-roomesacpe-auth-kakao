@@ -3,8 +3,8 @@ package nextstep.schedule;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import nextstep.schedule.dto.request.ScheduleRequest;
 import nextstep.theme.E2ETestThemeUtils;
-import nextstep.theme.dto.request.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,23 +24,10 @@ public class ScheduleE2ETest {
         themeId = E2ETestThemeUtils.createTheme();
     }
 
-    @DisplayName("스케줄을 생성한다")
-    @Test
-    public void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
-
     @DisplayName("스케줄을 조회한다")
     @Test
     public void showSchedules() {
-        requestCreateSchedule();
+        E2ETestScheduleUtils.createSchedule(themeId);
 
         var response = RestAssured
                 .given().log().all()
@@ -52,32 +39,5 @@ public class ScheduleE2ETest {
                 .extract();
 
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("예약을 삭제한다")
-    @Test
-    void delete() {
-        String location = requestCreateSchedule();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete(location)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .header("Location");
     }
 }

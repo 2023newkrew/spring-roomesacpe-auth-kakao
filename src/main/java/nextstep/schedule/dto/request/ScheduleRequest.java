@@ -1,4 +1,4 @@
-package nextstep.schedule;
+package nextstep.schedule.dto.request;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.schedule.domain.Schedule;
 import nextstep.theme.domain.Theme;
 
 @Getter

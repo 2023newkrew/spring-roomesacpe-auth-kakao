@@ -7,10 +7,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import nextstep.auth.TokenRequest;
+import nextstep.member.E2ETestMemberUtils;
 import nextstep.member.dto.request.MemberRequest;
-import nextstep.schedule.ScheduleRequest;
+import nextstep.schedule.E2ETestScheduleUtils;
+import nextstep.schedule.dto.request.ScheduleRequest;
 import nextstep.theme.E2ETestThemeUtils;
-import nextstep.theme.dto.request.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,32 +37,8 @@ class ReservationE2ETest {
     @BeforeEach
     void setUp() {
         themeId = E2ETestThemeUtils.createTheme();
-
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
+        scheduleId = E2ETestScheduleUtils.createSchedule(themeId);
+        memberId = E2ETestMemberUtils.createMember();
         request = new ReservationRequest(
                 scheduleId,
                 "브라운"

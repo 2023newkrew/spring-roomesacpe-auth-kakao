@@ -1,4 +1,4 @@
-package nextstep.schedule;
+package nextstep.schedule.repository;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nextstep.schedule.domain.Schedule;
 import nextstep.theme.domain.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
