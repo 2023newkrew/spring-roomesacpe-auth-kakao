@@ -34,5 +34,3 @@ CREATE TABLE member
     role     int         not null,
     primary key (id)
 );
-
-INSERT INTO MEMBER VALUES(1, '관리자', 'admin', '관리자', '01012345678', 0);
