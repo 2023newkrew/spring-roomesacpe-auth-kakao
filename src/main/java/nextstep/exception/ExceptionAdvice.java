@@ -1,5 +1,6 @@
 package nextstep.exception;
 
+import nextstep.exception.auth.AuthException;
 import nextstep.exception.business.BusinessException;
 import nextstep.exception.dataaccess.DataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,12 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(AuthException e) {
         return ResponseEntity.status(e.getHttpStatus())
                 .body(ErrorResponse.from(e.getMessage()));
     }
