@@ -26,7 +26,7 @@ CREATE TABLE schedule
 
 CREATE TABLE member
 (
-    id       bigint      not null auto_increment,
+    id       bigint      not null,
     username varchar(20) not null,
     password varchar(100) not null,
     name     varchar(20) not null,
@@ -34,3 +34,5 @@ CREATE TABLE member
     role     varchar(20) not null,
     primary key (id)
 );
+
+CREATE SEQUENCE seq_member START WITH 1 INCREMENT BY 1;

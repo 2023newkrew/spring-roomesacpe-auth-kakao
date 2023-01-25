@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import java.sql.SQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,7 +14,7 @@ import java.util.Optional;
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
+            Long.parseLong(resultSet.getString("id")),
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
@@ -25,18 +26,29 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private Long getIdFromSequence() {
+        String sql = "SELECT nextval('seq_member')";
+        return jdbcTemplate.query(sql,
+                rs -> {
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    } else {
+                        throw new SQLException();
+                    }
+                });
+    }
     public Long save(Member member) {
-        // String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, HASH('SHA3-512', ?), ?, ?, ?);";
-        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO member (id, username, password, name, phone, role) VALUES (?, ?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, member.getUsername());
-            ps.setString(2, member.getPassword());
-            ps.setString(3, member.getName());
-            ps.setString(4, member.getPhone());
-            ps.setString(5, member.getRole().name());
+            ps.setLong(1, getIdFromSequence());
+            ps.setString(2, member.getUsername());
+            ps.setString(3, member.getPassword());
+            ps.setString(4, member.getName());
+            ps.setString(5, member.getPhone());
+            ps.setString(6, member.getRole().name());
             return ps;
         }, keyHolder);
 
