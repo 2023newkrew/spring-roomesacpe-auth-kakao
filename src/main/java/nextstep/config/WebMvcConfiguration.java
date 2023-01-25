@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import nextstep.member.MemberService;
 import nextstep.ui.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -9,8 +10,15 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+    private final MemberService memberService;
+
+    public WebMvcConfiguration(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new AuthenticationPrincipalArgumentResolver());
+        resolvers.add(new AuthenticationPrincipalArgumentResolver(memberService));
     }
 }

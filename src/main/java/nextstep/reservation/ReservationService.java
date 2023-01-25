@@ -2,6 +2,7 @@ package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
+import nextstep.support.PermissionException;
 import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
@@ -59,12 +60,14 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
+    public void deleteById(Long reservationId, String username) {
+
+        Reservation reservation = reservationDao.findById(reservationId);
+
+        if (!reservation.getName().equals(username)) {
+            throw new PermissionException();
         }
 
-        reservationDao.deleteById(id);
+        reservationDao.deleteById(reservationId);
     }
 }
