@@ -1,7 +1,5 @@
 package nextstep.reservation;
 
-import java.util.List;
-import java.util.Objects;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
@@ -10,6 +8,9 @@ import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ReservationService {

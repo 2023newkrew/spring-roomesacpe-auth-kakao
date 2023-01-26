@@ -3,6 +3,8 @@ package nextstep.auth;
 public class TokenResponse {
     public String accessToken;
 
+    /* RestAssured에서 사용 */
+    @SuppressWarnings("unused")
     public TokenResponse() {
     }
 
@@ -10,6 +12,8 @@ public class TokenResponse {
         this.accessToken = accessToken;
     }
 
+    /* RestAssured에서 사용 */
+    @SuppressWarnings("unused")
     public String getAccessToken() {
         return accessToken;
     }

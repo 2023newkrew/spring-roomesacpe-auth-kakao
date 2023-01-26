@@ -1,19 +1,17 @@
 package nextstep.auth;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring";
-    private long validityInMilliseconds = 3600000;
+    private final String secretKey = "learning-test-spring";
 
     public String createToken(String principal) {
+        final long validityInMilliseconds = 3_600_000;
+
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);

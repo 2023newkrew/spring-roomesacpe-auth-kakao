@@ -4,6 +4,8 @@ public class ReservationRequest {
     private Long scheduleId;
     private String name;
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public ReservationRequest() {
     }
 

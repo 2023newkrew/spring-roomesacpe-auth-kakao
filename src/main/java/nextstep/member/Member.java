@@ -22,10 +22,8 @@ public class Member {
         this.phone = phone;
     }
 
-    public Member(Long id) {
-        this.id = id;
-    }
-
+    /* RestAssured에서 사용 */
+    @SuppressWarnings("unused")
     public Member() {
     }
 

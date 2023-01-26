@@ -1,7 +1,5 @@
 package nextstep.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -56,24 +56,9 @@ public class MemberE2ETest {
         assertThat(response.as(Member.class)).isNotNull();
     }
 
-    //
-//    @DisplayName("테마를 삭제한다")
-//    @Test
-//    void delete() {
-//        Long id = createTheme();
-//
-//        var response = RestAssured
-//                .given().log().all()
-//                .when().delete("/themes/" + id)
-//                .then().log().all()
-//                .extract();
-//
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-//    }
-//
-    public Long createMember() {
+    public void createMember() {
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        String location = RestAssured
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -81,6 +66,5 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
     }
 }

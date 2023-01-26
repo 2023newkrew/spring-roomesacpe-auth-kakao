@@ -1,8 +1,9 @@
 package nextstep.schedule;
 
+import nextstep.theme.Theme;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import nextstep.theme.Theme;
 
 public class Schedule {
     private Long id;
@@ -10,6 +11,8 @@ public class Schedule {
     private LocalDate date;
     private LocalTime time;
 
+    /* RestAssured에서 사용 */
+    @SuppressWarnings("unused")
     public Schedule() {
     }
 

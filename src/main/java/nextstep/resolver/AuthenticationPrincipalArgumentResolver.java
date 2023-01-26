@@ -1,14 +1,14 @@
 package nextstep.resolver;
 
-import javax.servlet.http.HttpServletRequest;
 import nextstep.annotation.AuthenticationPrincipal;
 import nextstep.member.LoginMember;
-import nextstep.member.Member;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -25,7 +25,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        Member member = (Member) request.getAttribute("member");
-        return new LoginMember(member);
+        Long loginId = (Long) request.getAttribute("loginId");
+
+        return new LoginMember(loginId);
     }
 }

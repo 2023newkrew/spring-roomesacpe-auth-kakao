@@ -1,33 +1,35 @@
 package nextstep.interceptor;
 
+import nextstep.auth.AuthService;
+import nextstep.support.NotValidateTokenException;
+import org.springframework.web.servlet.HandlerInterceptor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import nextstep.auth.AuthService;
-import nextstep.member.Member;
-import nextstep.member.MemberService;
-import nextstep.support.AuthorizationException;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 public class LoginInterceptor implements HandlerInterceptor {
     private final AuthService authService;
 
-    private final MemberService memberService;
-
-    public LoginInterceptor(AuthService authService, MemberService memberService) {
+    public LoginInterceptor(AuthService authService) {
         this.authService = authService;
-        this.memberService = memberService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = request.getHeader("authorization").split(" ")[1];
+
         if (accessToken == null) {
-            throw new AuthorizationException();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return false;
         }
-        String principal = authService.getPrincipal(accessToken);
-        Member member = memberService.findById(Long.parseLong(principal));
-        request.setAttribute("member", member);
+        try {
+            String principal = authService.getPrincipal(accessToken);
+            request.setAttribute("loginId", Long.parseLong(principal));
+        }
+        catch (NotValidateTokenException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return false;
+        }
         return true;
     }
-
 }

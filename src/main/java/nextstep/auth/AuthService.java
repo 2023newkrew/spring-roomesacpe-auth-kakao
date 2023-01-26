@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.support.NotExistEntityException;
+import nextstep.support.NotValidateTokenException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +23,7 @@ public class AuthService {
 
     public String getPrincipal(String accessToken) {
         if (!jwtTokenProvider.validateToken(accessToken)) {
-            throw new RuntimeException();
+            throw new NotValidateTokenException();
         }
         return jwtTokenProvider.getPrincipal(accessToken);
     }

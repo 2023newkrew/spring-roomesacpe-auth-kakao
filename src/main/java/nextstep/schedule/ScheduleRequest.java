@@ -1,14 +1,17 @@
 package nextstep.schedule;
 
+import nextstep.theme.Theme;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import nextstep.theme.Theme;
 
 public class ScheduleRequest {
     private Long themeId;
     private String date;
     private String time;
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public ScheduleRequest() {
     }
 
@@ -18,14 +21,20 @@ public class ScheduleRequest {
         this.time = time;
     }
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public Long getThemeId() {
         return themeId;
     }
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public String getDate() {
         return date;
     }
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public String getTime() {
         return time;
     }

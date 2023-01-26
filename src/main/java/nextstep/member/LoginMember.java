@@ -1,13 +1,10 @@
 package nextstep.member;
 
 public class LoginMember {
-    private Long id;
+    private final Long id;
 
-    public LoginMember() {
-    }
-
-    public LoginMember(Member member) {
-        this.id = member.getId();
+    public LoginMember(Long id) {
+        this.id = id;
     }
 
     public Long getId() {

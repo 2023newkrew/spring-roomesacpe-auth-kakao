@@ -9,6 +9,8 @@ public class Reservation {
 
     private Long memberId;
 
+    /* RestAssured에서 사용 */
+    @SuppressWarnings("unused")
     public Reservation() {
     }
 
