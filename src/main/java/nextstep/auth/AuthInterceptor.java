@@ -2,13 +2,13 @@ package nextstep.auth;
 
 import nextstep.support.AuthorizationException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class AuthInterceptor extends HandlerInterceptorAdapter {
+public class AuthInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION = "Authorization";
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -24,6 +24,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
-        return super.preHandle(request, response, handler);
+        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 }
