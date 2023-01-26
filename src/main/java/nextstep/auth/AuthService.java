@@ -15,11 +15,12 @@ import static nextstep.config.Messages.*;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
-
+    private final PasswordEncoder passwordEncoder;
 
     public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
+        this.passwordEncoder = getPasswordEncoder();
     }
 
     public TokenResponse issueToken(TokenRequest tokenRequest) {
@@ -31,7 +32,6 @@ public class AuthService {
     private void validateMember(TokenRequest tokenRequest) {
         String username = tokenRequest.getUsername();
         String password = tokenRequest.getPassword();
-        PasswordEncoder passwordEncoder = getPasswordEncoder();
         List<Member> member = memberDao.findByUsername(username);
         if (member.isEmpty()) {
             throw new NullPointerException(MEMBER_NOT_FOUND.getMessage());

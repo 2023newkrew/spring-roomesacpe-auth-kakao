@@ -12,16 +12,16 @@ import static nextstep.config.Messages.*;
 @Service
 public class MemberService {
     private final MemberDao memberDao;
-
+    private final PasswordEncoder passwordEncoder;
     public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
+        this.passwordEncoder = getPasswordEncoder();
     }
 
     public Long create(MemberRequest memberRequest) {
         if (!memberDao.findByUsername(memberRequest.getUsername()).isEmpty()){
             throw new DuplicateKeyException(ALREADY_USER.getMessage());
         }
-        PasswordEncoder passwordEncoder = getPasswordEncoder();
         Member member = new Member(memberRequest.getUsername(), passwordEncoder.encode(memberRequest.getPassword()),
                 memberRequest.getName(), memberRequest.getPhone());
         return memberDao.save(member);

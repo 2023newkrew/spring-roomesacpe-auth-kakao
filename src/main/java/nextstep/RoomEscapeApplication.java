@@ -13,8 +13,7 @@ public class RoomEscapeApplication {
     }
 
     @Bean
-    public static PasswordEncoder
-    getPasswordEncoder() {
+    public static PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
