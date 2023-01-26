@@ -6,16 +6,18 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private String userlevel;
 
     public Member() {
     }
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member(Long id, String username, String password, String name, String phone, String userlevel) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.userlevel = userlevel;
     }
 
     public Member(String username, String password, String name, String phone) {
@@ -23,6 +25,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.userlevel = "member";
     }
 
     public Long getId() {
@@ -43,6 +46,10 @@ public class Member {
 
     public String getPhone() {
         return phone;
+    }
+
+    public String getUserlevel() {
+        return userlevel;
     }
 
     public boolean checkWrongPassword(String password) {
