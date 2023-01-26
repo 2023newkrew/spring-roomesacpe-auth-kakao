@@ -21,7 +21,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String headerValue = AuthorizationExtractor.extract(request);
         if (headerValue == null) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("토큰이 존재하지 않습니다.");
         }
         try {
             String payload = new JwtTokenProvider().getPrincipal(headerValue);
@@ -30,8 +30,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             }
             return Long.parseLong(payload);
         }
-        catch (Exception ex){
-            throw new UnauthorizedException();
+        catch (RuntimeException ex){
+            throw new UnauthorizedException("잘못된 토큰입니다.");
         }
     }
 }

@@ -17,7 +17,7 @@ public class AuthService {
     public TokenResponse getToken(TokenRequest request) {
         Member member = memberDao.findByUsername(request.getUsername());
         if (member.getPassword().equals(request.getPassword())) {
-            return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
+            return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString(), member.getUserlevel()));
         }
         return null;
     }
