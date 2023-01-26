@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final MemberService memberService;
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
-        memberService.validateUsernameAndPassword(tokenRequestDto);
+        authService.validateUsernameAndPassword(tokenRequestDto);
         String token = authService.login(tokenRequestDto);
         return ResponseEntity.ok()
             .body(new TokenResponseDto(token));

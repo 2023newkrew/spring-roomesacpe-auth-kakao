@@ -36,10 +36,10 @@ public class AuthControllerTest {
     @Test
     @DisplayName("로그인 API 테스트")
     void loginTest() {
-        TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1", MemberRole.GENERAL.getName());
+        TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1", MemberRole.GENERAL.toString());
 
         when(authService.login(any(TokenRequestDto.class))).thenReturn("token");
-        doNothing().when(memberService).validateUsernameAndPassword(any());
+        doNothing().when(authService).validateUsernameAndPassword(any());
 
         RestAssured.given()
                 .log()
