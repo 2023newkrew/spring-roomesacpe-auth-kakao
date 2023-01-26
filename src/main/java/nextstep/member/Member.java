@@ -23,7 +23,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
-        this.role = MemberRole.findBy(roleName);
+        this.role = MemberRole.valueOf(roleName);
     }
 
     public boolean isMyPassword(String password) {

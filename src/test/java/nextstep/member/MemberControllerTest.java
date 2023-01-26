@@ -36,7 +36,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("토큰으로 멤버 조회 API 테스트")
     void findMemberByTokenTest() {
-        MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678");
+        MemberResponseDto memberResponseDto = new MemberResponseDto(1L, "username", "password", "name", "010-1234-5678", MemberRole.GENERAL.toString());
         when(authService.findUsernameByToken(anyString())).thenReturn("username");
         when(memberService.findByUsername("username")).thenReturn(memberResponseDto);
         when(jwtTokenProvider.getUsername(ACCESS_TOKEN)).thenReturn("username");

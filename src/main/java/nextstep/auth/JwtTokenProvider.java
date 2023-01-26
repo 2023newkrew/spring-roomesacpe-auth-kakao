@@ -23,10 +23,10 @@ public class JwtTokenProvider {
     private String secretKey;
 
     @Value("${jwt.key.role}")
-    private String ROLE_KEY;
+    private String roleKey;
 
     @Value("${jwt.key.username}")
-    private String USERNAME_KEY;
+    private String usernameKey;
 
     @Value("${jwt.expire-time}")
     private Long validityInMilliseconds;
@@ -45,19 +45,19 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         Claims claims = getClaims(token);
-        return claims.get(USERNAME_KEY).toString();
+        return claims.get(usernameKey).toString();
     }
 
     public MemberRole getRole(String token) {
         Claims claims = getClaims(token);
-        String roleName = claims.get(ROLE_KEY).toString();
-        return MemberRole.findBy(roleName);
+        String roleName = claims.get(roleKey).toString();
+        return MemberRole.valueOf(roleName);
     }
 
     private Map<String, Object> getClaimMap(TokenRequestDto tokenRequestDto) {
         Map<String, Object> map = new HashMap<>();
-        map.put(ROLE_KEY, tokenRequestDto.getRole());
-        map.put(USERNAME_KEY, tokenRequestDto.getUsername());
+        map.put(roleKey, tokenRequestDto.getRole());
+        map.put(usernameKey, tokenRequestDto.getUsername());
         return map;
     }
 

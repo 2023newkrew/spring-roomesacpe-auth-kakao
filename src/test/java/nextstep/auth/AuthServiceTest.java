@@ -27,7 +27,7 @@ public class AuthServiceTest {
     @Test
     void loginTest() {
         // given
-        TokenRequestDto tokenRequestDto = new TokenRequestDto(USERNAME, PASSWORD, MemberRole.GENERAL.getName());
+        TokenRequestDto tokenRequestDto = new TokenRequestDto(USERNAME, PASSWORD, MemberRole.GENERAL.toString());
 
         when(jwtTokenProvider.createToken(tokenRequestDto)).thenReturn(TOKEN);
 

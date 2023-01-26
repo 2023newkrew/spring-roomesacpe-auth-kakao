@@ -21,7 +21,7 @@ public class MemberDao {
         resultSet.getString("password"),
         resultSet.getString("name"),
         resultSet.getString("phone"),
-        MemberRole.findBy(resultSet.getString("role"))
+        MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public Long save(Member member) {
@@ -34,7 +34,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
-            ps.setString(5, member.getRole().getName());
+            ps.setString(5, member.getRole().toString());
             return ps;
 
         }, keyHolder);

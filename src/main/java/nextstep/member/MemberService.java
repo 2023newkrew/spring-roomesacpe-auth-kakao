@@ -27,7 +27,7 @@ public class MemberService {
         return memberDao.save(memberRequestDto.toEntity());
     }
 
-    public MemberResponseDto findByUsername(String username) {
+    public MemberResponseDto findByUsername(final String username) {
         Member findUser = memberDao.findByUsername((username))
             .orElseThrow(() -> new NotExistEntityException(NOT_EXIST_MEMBER.getMessage()));
         return MemberResponseDto.toDto(findUser);
