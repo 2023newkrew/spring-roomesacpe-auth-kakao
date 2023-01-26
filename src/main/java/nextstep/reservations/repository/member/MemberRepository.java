@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public class MemberRepository {
     public static final String INSERT_ONE_QUERY = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?)";
+
+    public static final String FIND_BY_ID = "SELECT * FROM member WHERE id = ?";
     public static final String FIND_BY_USERNAME = "SELECT * FROM member WHERE username = ?";
     private final JdbcTemplate jdbcTemplate;
 
@@ -44,8 +46,11 @@ public class MemberRepository {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public Optional<Member> findByUsername(String username) {
-        Member member = jdbcTemplate.queryForObject(FIND_BY_USERNAME, rowMapper, username);
-        return Optional.ofNullable(member);
+    public Member findById(Long id) {
+        return jdbcTemplate.queryForObject(FIND_BY_ID, rowMapper, id);
+    }
+
+    public Member findByUsername(String username) {
+        return jdbcTemplate.queryForObject(FIND_BY_USERNAME, rowMapper, username);
     }
 }

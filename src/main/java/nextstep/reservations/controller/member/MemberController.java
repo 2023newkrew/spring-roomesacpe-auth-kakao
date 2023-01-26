@@ -1,12 +1,13 @@
 package nextstep.reservations.controller.member;
 
+import nextstep.reservations.domain.entity.member.LoginMember;
+import nextstep.reservations.domain.entity.member.Member;
 import nextstep.reservations.domain.service.member.MemberService;
 import nextstep.reservations.dto.member.MemberRequestDto;
+import nextstep.reservations.util.annotation.AuthenticationPrincipal;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -25,5 +26,13 @@ public class MemberController {
         return ResponseEntity
                 .created(URI.create("/members/" + memberId))
                 .build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Member> showMe(@AuthenticationPrincipal LoginMember loginMember) {
+        Member member = memberService.findById(loginMember.getId());
+        return ResponseEntity
+                .ok()
+                .body(member);
     }
 }

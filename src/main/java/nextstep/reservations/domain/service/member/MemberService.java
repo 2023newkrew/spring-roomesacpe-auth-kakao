@@ -5,9 +5,8 @@ import nextstep.reservations.dto.member.MemberRequestDto;
 import nextstep.reservations.exceptions.member.exception.NotExistMemberException;
 import nextstep.reservations.repository.member.MemberRepository;
 import nextstep.reservations.util.mapper.MemberMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -25,12 +24,21 @@ public class MemberService {
         return memberId;
     }
 
-    public Member findByUsername(final String username) {
-        Optional<Member> member = memberRepository.findByUsername(username);
-
-        if (member.isEmpty()) {
+    public Member findById(final Long id) {
+        try {
+            return memberRepository.findById(id);
+        }
+        catch (EmptyResultDataAccessException e) {
             throw new NotExistMemberException();
         }
-        return member.get();
+    }
+
+    public Member findByUsername(final String username) {
+        try {
+            return memberRepository.findByUsername(username);
+        }
+        catch (EmptyResultDataAccessException e) {
+            throw new NotExistMemberException();
+        }
     }
 }
