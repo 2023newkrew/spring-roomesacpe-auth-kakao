@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import org.h2.util.StringUtils;
+
 import static nextstep.config.Messages.EMPTY_VALUE;
 
 public class Member {
@@ -50,7 +52,7 @@ public class Member {
     }
 
     private void checkEmptyValue(String username, String password){
-        if (username.isEmpty() || password.isEmpty()) {
+        if (StringUtils.isNullOrEmpty(username) || StringUtils.isNullOrEmpty(password)) {
             throw new NullPointerException(EMPTY_VALUE.getMessage());
         }
     }

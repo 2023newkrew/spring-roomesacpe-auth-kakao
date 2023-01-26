@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import org.h2.util.StringUtils;
+
 import static nextstep.config.Messages.EMPTY_VALUE;
 
 public class Theme {
@@ -43,7 +45,7 @@ public class Theme {
     }
 
     private void checkEmptyValue(String name, int price){
-        if (name.isEmpty() || price == 0) {
+        if (StringUtils.isNullOrEmpty(name)  || price == 0) {
             throw new NullPointerException(EMPTY_VALUE.getMessage());
         }
     }

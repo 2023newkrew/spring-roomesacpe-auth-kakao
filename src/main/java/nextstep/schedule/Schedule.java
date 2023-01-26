@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import nextstep.theme.Theme;
+import org.h2.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,7 +48,7 @@ public class Schedule {
     }
 
     private void checkEmptyValue(LocalDate date, LocalTime time){
-        if (date == null || time == null) {
+        if (StringUtils.isNullOrEmpty(String.valueOf(date))  || StringUtils.isNullOrEmpty(String.valueOf(time))) {
             throw new NullPointerException(EMPTY_VALUE.getMessage());
         }
     }
