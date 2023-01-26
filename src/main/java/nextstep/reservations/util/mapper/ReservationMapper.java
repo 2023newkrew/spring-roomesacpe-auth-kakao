@@ -1,5 +1,7 @@
 package nextstep.reservations.util.mapper;
 
+import nextstep.reservations.domain.entity.member.LoginMember;
+import nextstep.reservations.domain.entity.member.Member;
 import nextstep.reservations.domain.entity.reservation.Reservation;
 import nextstep.reservations.domain.entity.theme.Theme;
 import nextstep.reservations.dto.reservation.ReservationRequestDto;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReservationMapper {
-    public Reservation requestDtoToReservation(ReservationRequestDto requestDto) {
+    public Reservation requestDtoToReservation(LoginMember loginMember, ReservationRequestDto requestDto) {
         return Reservation.builder()
                 .date(requestDto.getDate())
                 .time(requestDto.getTime())
@@ -17,6 +19,9 @@ public class ReservationMapper {
                         .name(requestDto.getThemeName())
                         .desc(requestDto.getThemeDesc())
                         .price(requestDto.getThemePrice())
+                        .build())
+                .member(Member.builder()
+                        .id(loginMember.getId())
                         .build())
                 .build();
     }

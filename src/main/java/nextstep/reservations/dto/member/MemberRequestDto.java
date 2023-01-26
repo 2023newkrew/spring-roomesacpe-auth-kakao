@@ -6,6 +6,8 @@ public class MemberRequestDto {
     private String name;
     private String phone;
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public MemberRequestDto() {
     }
 

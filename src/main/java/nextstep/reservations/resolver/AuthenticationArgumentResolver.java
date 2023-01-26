@@ -1,6 +1,8 @@
 package nextstep.reservations.resolver;
 
 import nextstep.reservations.domain.entity.member.LoginMember;
+import nextstep.reservations.exceptions.auth.exception.AuthorizationException;
+import nextstep.reservations.exceptions.member.exception.NotExistMemberException;
 import nextstep.reservations.util.annotation.AuthenticationPrincipal;
 import nextstep.reservations.util.jwt.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
@@ -26,9 +28,16 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
     @Override
     public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
-        String accessToken = httpServletRequest.getHeader("authorization").split(" ")[1];
-        jwtTokenProvider.validateToken(accessToken);
-
+        String accessToken = null;
+        try {
+            accessToken = httpServletRequest.getHeader("authorization").split(" ")[1];
+        }
+        catch (NullPointerException e) {
+            throw new AuthorizationException();
+        }
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new NotExistMemberException();
+        }
         return new LoginMember(Long.parseLong(jwtTokenProvider.getPrincipal(accessToken)));
     }
 }

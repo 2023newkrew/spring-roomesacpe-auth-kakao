@@ -4,6 +4,8 @@ public class TokenRequestDto {
     String username;
     String password;
 
+    /* RequestBody에서 사용 */
+    @SuppressWarnings("unused")
     public TokenRequestDto() {
     }
 

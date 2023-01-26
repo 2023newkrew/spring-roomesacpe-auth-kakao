@@ -20,8 +20,7 @@ public class MemberService {
     }
 
     public Long addMember(final MemberRequestDto memberRequestDto) {
-        Long memberId = memberRepository.add(memberMapper.requestDtoToMember(memberRequestDto));
-        return memberId;
+        return memberRepository.add(memberMapper.requestDtoToMember(memberRequestDto));
     }
 
     public Member findById(final Long id) {

@@ -1,5 +1,6 @@
 package nextstep.reservations.repository.reservation;
 
+import nextstep.reservations.domain.entity.member.Member;
 import nextstep.reservations.domain.entity.reservation.Reservation;
 import nextstep.reservations.domain.entity.theme.Theme;
 import org.springframework.context.annotation.Primary;
@@ -49,6 +50,9 @@ public class JdbcTemplateReservationRepository extends ReservationSqlRepository{
                         .name(rs.getString("theme_name"))
                         .desc(rs.getString("theme_desc"))
                         .price(rs.getInt("theme_price"))
+                        .build())
+                .member(Member.builder()
+                        .id(rs.getLong("member_id"))
                         .build())
                 .build();
     }

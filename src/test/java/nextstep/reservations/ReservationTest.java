@@ -1,6 +1,8 @@
 package nextstep.reservations;
 
 import io.restassured.RestAssured;
+import nextstep.reservations.dto.auth.TokenRequestDto;
+import nextstep.reservations.dto.member.MemberRequestDto;
 import nextstep.reservations.repository.reservation.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +23,9 @@ import static org.hamcrest.core.IsNull.notNullValue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"classpath:schema/schema.sql", "classpath:data/init.sql"})
 public class ReservationTest {
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+
     @LocalServerPort
     int port;
 
@@ -42,9 +47,11 @@ public class ReservationTest {
         reservationRequest.put("themeDesc", "병맛 어드벤처 회사 코믹물");
         reservationRequest.put("themePrice", 29_000);
 
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
 
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + accessToken)
                 .body(reservationRequest)
                 .when().post("/reservations")
                 .then().log().all()
@@ -70,10 +77,34 @@ public class ReservationTest {
 
     @Test
     void 예약_삭제() {
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
+
         RestAssured.given().log().all()
+                .header("authorization", "Bearer " + accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 타인의_예약_삭제() {
+        MemberRequestDto body = new MemberRequestDto("사용자1", "1234", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        String accessToken = getAccessToken("사용자1", "1234");
+
+        RestAssured.given().log().all()
+                .header("authorization", "Bearer " + accessToken)
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(is("권한이 없습니다."));
     }
 
     @Test
@@ -86,8 +117,11 @@ public class ReservationTest {
         reservationRequest.put("themeDesc", "병맛 어드벤처 회사 코믹물");
         reservationRequest.put("themePrice", 29_000);
 
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
+
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + accessToken)
                 .body(reservationRequest)
                 .when().post("/reservations")
                 .then().log().all()
@@ -105,9 +139,11 @@ public class ReservationTest {
         reservationRequest.put("themeDesc", "병맛 어드벤처 회사 코믹물");
         reservationRequest.put("themePrice", 29_000);
 
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
 
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + accessToken)
                 .body(reservationRequest)
                 .when().post("/reservations")
                 .then().log().all()
@@ -117,7 +153,10 @@ public class ReservationTest {
 
     @Test
     void 존재하지_않는_예약_조회_오류() {
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
+
         RestAssured.given().log().all()
+                .header("authorization", "Bearer " + accessToken)
                 .when().get("/reservations/100")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -126,7 +165,10 @@ public class ReservationTest {
 
     @Test
     void 존재하지_않는_예약_삭제_오류() {
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
+
         RestAssured.given().log().all()
+                .header("authorization", "Bearer " + accessToken)
                 .when().delete("/reservations/100")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
@@ -143,6 +185,47 @@ public class ReservationTest {
         reservationRequest.put("themeDesc", "카카오 어드벤처");
         reservationRequest.put("themePrice", 29_000);
 
+        String accessToken = getAccessToken(USERNAME, PASSWORD);
+
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + accessToken)
+                .body(reservationRequest)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(is("존재하지 않는 테마입니다."));
+    }
+
+    @Test
+    void 잘못된_토큰으로_예약_시도() {
+        Map<String, Object> reservationRequest = new HashMap<>();
+        reservationRequest.put("date", "2022-08-01");
+        reservationRequest.put("time", "13:00");
+        reservationRequest.put("name", "name");
+        reservationRequest.put("themeName", "워너고홈");
+        reservationRequest.put("themeDesc", "병맛 어드벤처 회사 코믹물");
+        reservationRequest.put("themePrice", 29_000);
+
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + "wrongtoken")
+                .body(reservationRequest)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(is("존재하지 않는 사용자입니다."));
+    }
+
+    @Test
+    void 토큰_없이_예약_시도() {
+        Map<String, Object> reservationRequest = new HashMap<>();
+        reservationRequest.put("date", "2022-08-01");
+        reservationRequest.put("time", "13:00");
+        reservationRequest.put("name", "name");
+        reservationRequest.put("themeName", "워너고홈");
+        reservationRequest.put("themeDesc", "병맛 어드벤처 회사 코믹물");
+        reservationRequest.put("themePrice", 29_000);
 
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -150,6 +233,19 @@ public class ReservationTest {
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(is("존재하지 않는 테마입니다."));
+                .body(is("권한이 없습니다."));
+    }
+
+    private static String getAccessToken(String username, String password) {
+        TokenRequestDto body = new TokenRequestDto(username, password);
+        String accessToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().get("accessToken");
+        return accessToken;
     }
 }

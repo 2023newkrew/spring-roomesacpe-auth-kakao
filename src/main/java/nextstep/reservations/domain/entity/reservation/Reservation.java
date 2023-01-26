@@ -1,5 +1,6 @@
 package nextstep.reservations.domain.entity.reservation;
 
+import nextstep.reservations.domain.entity.member.Member;
 import nextstep.reservations.domain.entity.theme.Theme;
 
 import java.time.LocalDate;
@@ -11,13 +12,15 @@ public class Reservation {
     private final LocalTime time;
     private final String name;
     private final Theme theme;
+    private final Member member;
 
-    public Reservation(final Long id, final LocalDate date, final LocalTime time, final String name, final Theme theme) {
+    public Reservation(final Long id, final LocalDate date, final LocalTime time, final String name, final Theme theme, final Member member) {
         this.id = id;
         this.date = date;
         this.time = time;
         this.name = name;
         this.theme = theme;
+        this.member = member;
     }
 
     public static ReservationBuilder builder() {
@@ -44,12 +47,17 @@ public class Reservation {
         return this.theme;
     }
 
+    public Member getMember() {
+        return this.member;
+    }
+
     public static class ReservationBuilder {
         private Long id;
         private LocalDate date;
         private LocalTime time;
         private String name;
         private Theme theme;
+        private Member member;
 
         ReservationBuilder() {
         }
@@ -79,8 +87,13 @@ public class Reservation {
             return this;
         }
 
+        public ReservationBuilder member(Member member) {
+            this.member = member;
+            return this;
+        }
+
         public Reservation build() {
-            return new Reservation(id, date, time, name, theme);
+            return new Reservation(id, date, time, name, theme, member);
         }
     }
 }

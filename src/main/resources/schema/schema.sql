@@ -1,8 +1,9 @@
-DROP TABLE IF EXISTS MEMBER;
-
 DROP TABLE IF EXISTS RESERVATION;
 
 DROP TABLE IF EXISTS THEME;
+
+DROP TABLE IF EXISTS MEMBER;
+
 
 CREATE TABLE MEMBER
 (
@@ -33,7 +34,9 @@ CREATE TABLE RESERVATION
     theme_name  varchar(20),
     theme_desc  varchar(255),
     theme_price int,
+    member_id   bigint not null,
     primary key (id),
     foreign key (theme_name) references THEME(name) on delete cascade,
+    foreign key (member_id) references MEMBER(id) on delete cascade,
     unique (date, time, theme_name)
 );

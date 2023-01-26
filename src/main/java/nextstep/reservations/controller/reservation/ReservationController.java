@@ -1,10 +1,10 @@
 package nextstep.reservations.controller.reservation;
 
+import nextstep.reservations.domain.entity.member.LoginMember;
 import nextstep.reservations.domain.service.reservation.ReservationService;
 import nextstep.reservations.dto.reservation.ReservationRequestDto;
 import nextstep.reservations.dto.reservation.ReservationResponseDto;
-import nextstep.reservations.dto.reservation.TimeTable;
-import nextstep.reservations.exceptions.reservation.exception.NotAvailableTimeException;
+import nextstep.reservations.util.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +21,8 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addReservation(@RequestBody ReservationRequestDto requestDto) {
-        if (!TimeTable.values.contains(requestDto.getTime())) {
-            throw new NotAvailableTimeException();
-        }
-        Long id = reservationService.addReservation(requestDto);
+    public ResponseEntity<Object> addReservation(@AuthenticationPrincipal LoginMember loginMember, @RequestBody ReservationRequestDto requestDto) {
+        Long id = reservationService.addReservation(loginMember, requestDto);
         return ResponseEntity
                 .created(URI.create("/reservations/" + id))
                 .build();
@@ -39,8 +36,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> cancelReservation(@PathVariable Long id) {
-        reservationService.deleteReservation(id);
+    public ResponseEntity<Object> cancelReservation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+        reservationService.deleteReservation(loginMember, id);
         return ResponseEntity
                 .noContent()
                 .build();

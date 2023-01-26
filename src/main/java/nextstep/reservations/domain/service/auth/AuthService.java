@@ -4,6 +4,7 @@ import nextstep.reservations.domain.entity.member.Member;
 import nextstep.reservations.domain.service.member.MemberService;
 import nextstep.reservations.dto.auth.TokenReponseDto;
 import nextstep.reservations.dto.auth.TokenRequestDto;
+import nextstep.reservations.exceptions.auth.exception.AuthorizationException;
 import nextstep.reservations.util.jwt.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,9 @@ public class AuthService {
 
     public TokenReponseDto createAccessToken(TokenRequestDto tokenRequestDto) {
         Member member = memberService.findByUsername(tokenRequestDto.getUsername());
+        if (member.checkWrongPassword(tokenRequestDto.getPassword())) {
+            throw new AuthorizationException();
+        }
         return new TokenReponseDto(jwtTokenProvider.createToken(member.getId().toString()));
     }
 }

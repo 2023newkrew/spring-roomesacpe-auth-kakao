@@ -5,7 +5,6 @@ import nextstep.reservations.domain.entity.member.Member;
 import nextstep.reservations.domain.service.member.MemberService;
 import nextstep.reservations.dto.member.MemberRequestDto;
 import nextstep.reservations.util.annotation.AuthenticationPrincipal;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

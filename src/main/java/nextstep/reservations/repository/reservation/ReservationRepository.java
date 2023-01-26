@@ -19,6 +19,7 @@ public interface ReservationRepository {
         pstmt.setString(4, reservation.getTheme().getName());
         pstmt.setString(5, reservation.getTheme().getDesc());
         pstmt.setInt(6, reservation.getTheme().getPrice());
+        pstmt.setLong(7, reservation.getMember().getId());
 
         return pstmt;
     }

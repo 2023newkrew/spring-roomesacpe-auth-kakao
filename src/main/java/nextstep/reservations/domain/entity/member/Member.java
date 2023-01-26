@@ -41,13 +41,12 @@ public class Member {
 
     public static class MemberBuilder {
         private Long id;
-
         private String username;
         private String password;
         private String name;
         private String phone;
 
-        public MemberBuilder id() {
+        public MemberBuilder id(final Long id) {
             this.id = id;
             return this;
         }
