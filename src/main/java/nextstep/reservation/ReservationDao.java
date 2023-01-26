@@ -1,5 +1,8 @@
 package nextstep.reservation;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nextstep.schedule.Schedule;
@@ -9,10 +12,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

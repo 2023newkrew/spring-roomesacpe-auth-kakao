@@ -2,10 +2,9 @@ package nextstep.auth;
 
 import static nextstep.common.exception.ExceptionMessage.ACCESSTOKEN_IS_NULL;
 
-import nextstep.common.exception.NoAccessTokenException;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+import javax.servlet.http.HttpServletRequest;
+import nextstep.common.exception.NoAccessTokenException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +24,8 @@ public class AuthorizationExtractor {
             String value = headers.nextElement();
             if ((value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {
                 String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
-                request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, BEARER_TYPE.length()).trim());
+                request.setAttribute(ACCESS_TOKEN_TYPE,
+                    value.substring(0, BEARER_TYPE.length()).trim());
                 int commaIndex = authHeaderValue.indexOf(',');
                 if (commaIndex > 0) {
                     authHeaderValue = authHeaderValue.substring(0, commaIndex);

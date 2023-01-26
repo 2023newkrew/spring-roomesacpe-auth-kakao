@@ -16,24 +16,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateEntityException.class)
     public ResponseEntity<String> duplicateEntityExceptionHandler(Exception exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(exception.getMessage());
+            .body(exception.getMessage());
     }
 
     @ExceptionHandler({NoAccessTokenException.class, JwtException.class})
     public ResponseEntity<String> accessTokenExceptionHandler(Exception exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(exception.getMessage());
+            .body(exception.getMessage());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> unauthorizedExceptionHandler(Exception exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(exception.getMessage());
+            .body(exception.getMessage());
     }
 
     @ExceptionHandler(NotExistEntityException.class)
     public ResponseEntity<String> notExistEntityExceptionHandler(Exception exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+            .body(exception.getMessage());
     }
 }

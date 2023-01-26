@@ -6,7 +6,7 @@ import nextstep.theme.Theme;
 
 @Getter
 @AllArgsConstructor
-public class ThemeRequestDto {
+public final class ThemeRequestDto {
 
     private String name;
     private String desc;

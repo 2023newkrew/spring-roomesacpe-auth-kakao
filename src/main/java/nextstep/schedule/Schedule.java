@@ -1,17 +1,17 @@
 package nextstep.schedule;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.theme.Theme;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
+
     private Long id;
     private Theme theme;
     private LocalDate date;

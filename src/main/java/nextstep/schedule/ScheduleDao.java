@@ -1,5 +1,10 @@
 package nextstep.schedule;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nextstep.theme.Theme;
@@ -9,27 +14,22 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Time;
-import java.time.LocalDate;
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class ScheduleDao {
+
     private final RowMapper<Schedule> rowMapper = (resultSet, rowNum) -> new Schedule(
-            resultSet.getLong("schedule.id"),
-            new Theme(
-                    resultSet.getLong("theme.id"),
-                    resultSet.getString("theme.name"),
-                    resultSet.getString("theme.desc"),
-                    resultSet.getInt("theme.price")
-            ),
-            resultSet.getDate("schedule.date")
-                    .toLocalDate(),
-            resultSet.getTime("schedule.time")
-                    .toLocalTime()
+        resultSet.getLong("schedule.id"),
+        new Theme(
+            resultSet.getLong("theme.id"),
+            resultSet.getString("theme.name"),
+            resultSet.getString("theme.desc"),
+            resultSet.getInt("theme.price")
+        ),
+        resultSet.getDate("schedule.date")
+            .toLocalDate(),
+        resultSet.getTime("schedule.time")
+            .toLocalTime()
     );
     private final JdbcTemplate jdbcTemplate;
 
@@ -40,7 +40,7 @@ public class ScheduleDao {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, schedule.getTheme()
-                    .getId());
+                .getId());
             ps.setDate(2, Date.valueOf(schedule.getDate()));
             ps.setTime(3, Time.valueOf(schedule.getTime()));
             return ps;
@@ -48,11 +48,13 @@ public class ScheduleDao {
         }, keyHolder);
 
         return keyHolder.getKey()
-                .longValue();
+            .longValue();
     }
 
     public Optional<Schedule> findById(Long id) {
-        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql =
+            "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price "
+                +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
@@ -61,7 +63,9 @@ public class ScheduleDao {
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
-        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql =
+            "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price "
+                +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.theme_id = ? and schedule.date = ?;";

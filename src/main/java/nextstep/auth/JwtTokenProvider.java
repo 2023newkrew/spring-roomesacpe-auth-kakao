@@ -3,7 +3,11 @@ package nextstep.auth;
 import static nextstep.common.exception.ExceptionMessage.ACCESSTOKEN_IS_NULL;
 import static nextstep.common.exception.ExceptionMessage.INVALID_TOKEN;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import nextstep.auth.dto.TokenRequestDto;
@@ -11,8 +15,6 @@ import nextstep.common.exception.NoAccessTokenException;
 import nextstep.member.MemberRole;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
@@ -59,7 +61,7 @@ public class JwtTokenProvider {
         return map;
     }
 
-    private Claims getClaims(String token){
+    private Claims getClaims(String token) {
         try {
             return Jwts.parser()
                 .setSigningKey(secretKey)

@@ -2,14 +2,13 @@ package nextstep.schedule;
 
 import static nextstep.common.exception.ExceptionMessage.INVALID_THEME_ID;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nextstep.common.exception.NotExistEntityException;
 import nextstep.schedule.dto.ScheduleRequestDto;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -26,7 +26,7 @@ public class Member {
         this.role = MemberRole.findBy(roleName);
     }
 
-    public boolean isMyPassword(String password){
-        return this.password == password;
+    public boolean isMyPassword(String password) {
+        return this.password.equals(password);
     }
 }

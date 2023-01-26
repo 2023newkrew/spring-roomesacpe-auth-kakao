@@ -5,17 +5,16 @@ import static nextstep.common.exception.ExceptionMessage.INVALID_SCHEDULE_ID;
 import static nextstep.common.exception.ExceptionMessage.INVALID_THEME_ID;
 import static nextstep.common.exception.ExceptionMessage.UNAUTHORIZED_RESERVATION;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nextstep.reservation.dto.ReservationRequestDto;
-import nextstep.schedule.Schedule;
-import nextstep.schedule.ScheduleDao;
 import nextstep.common.exception.DuplicateEntityException;
 import nextstep.common.exception.NotExistEntityException;
 import nextstep.common.exception.UnauthorizedException;
+import nextstep.reservation.dto.ReservationRequestDto;
+import nextstep.schedule.Schedule;
+import nextstep.schedule.ScheduleDao;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

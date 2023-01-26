@@ -1,23 +1,25 @@
 package nextstep.schedule;
 
-import lombok.AllArgsConstructor;
-import nextstep.schedule.dto.ScheduleRequestDto;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/schedules")
 @AllArgsConstructor
 public class ScheduleController {
+
     private final ScheduleService scheduleService;
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
+    public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId,
+        @RequestParam String date) {
         return ResponseEntity.ok()
-                .body(scheduleService.findByThemeIdAndDate(themeId, date));
+            .body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
 }

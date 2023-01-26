@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/themes")
 @RequiredArgsConstructor
 public class ThemeAdminController {
+
     private final ThemeService themeService;
 
     @PostMapping

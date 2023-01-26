@@ -3,6 +3,7 @@ package nextstep.auth;
 import io.restassured.RestAssured;
 import nextstep.auth.dto.TokenRequestDto;
 import nextstep.member.MemberDao;
+import nextstep.member.MemberRole;
 import nextstep.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +36,7 @@ public class AuthControllerTest {
     @Test
     @DisplayName("로그인 API 테스트")
     void loginTest() {
-        TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1");
+        TokenRequestDto tokenRequestDto = new TokenRequestDto("username1", "password1", MemberRole.GENERAL.getName());
 
         when(authService.login(any(TokenRequestDto.class))).thenReturn("token");
         doNothing().when(memberService).validateUsernameAndPassword(any());

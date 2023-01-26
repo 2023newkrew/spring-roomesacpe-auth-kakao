@@ -1,6 +1,5 @@
 package nextstep.member;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;

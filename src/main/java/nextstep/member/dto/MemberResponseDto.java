@@ -8,7 +8,8 @@ import nextstep.member.Member;
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
-public class MemberResponseDto {
+public final class MemberResponseDto {
+
     private Long id;
     private String username;
     private String password;
@@ -16,6 +17,7 @@ public class MemberResponseDto {
     private String phone;
 
     public static MemberResponseDto toDto(Member member) {
-        return new MemberResponseDto(member.getId(), member.getUsername(), member.getPassword(), member.getName(), member.getPhone());
+        return new MemberResponseDto(member.getId(), member.getUsername(), member.getPassword(),
+            member.getName(), member.getPhone());
     }
 }

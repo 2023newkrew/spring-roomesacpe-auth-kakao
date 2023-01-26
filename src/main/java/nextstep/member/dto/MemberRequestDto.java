@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.member.Member;
-import nextstep.member.MemberRole;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberRequestDto {
+public final class MemberRequestDto {
+
     private String username;
     private String password;
     private String name;

@@ -6,10 +6,10 @@ import static nextstep.common.exception.ExceptionMessage.WRONG_PASSWORD;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.dto.TokenRequestDto;
-import nextstep.member.dto.MemberRequestDto;
-import nextstep.member.dto.MemberResponseDto;
 import nextstep.common.exception.DuplicateEntityException;
 import nextstep.common.exception.NotExistEntityException;
+import nextstep.member.dto.MemberRequestDto;
+import nextstep.member.dto.MemberResponseDto;
 import org.springframework.stereotype.Service;
 
 @Service
