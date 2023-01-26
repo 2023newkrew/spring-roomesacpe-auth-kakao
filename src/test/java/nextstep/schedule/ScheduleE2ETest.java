@@ -1,32 +1,46 @@
 package nextstep.schedule;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
-import nextstep.schedule.dto.ScheduleRequest;
-import nextstep.theme.dto.ThemeRequest;
+import nextstep.E2ETest;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.dto.schedule.ScheduleRequest;
+import nextstep.dto.theme.ThemeRequest;
+import nextstep.entity.Member;
+import nextstep.entity.MemberRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@E2ETest
 public class ScheduleE2ETest {
 
     private Long themeId;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @BeforeEach
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        Member member = Member.builder().role(MemberRole.ADMIN)
+                .username("USERNAME")
+                .name("NAME")
+                .phone("PHONE")
+                .password("PASSWORD").build();
+        Member.giveId(member, 1L);
+        String token = jwtTokenProvider.createToken(member);
+
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .auth().oauth2(token)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

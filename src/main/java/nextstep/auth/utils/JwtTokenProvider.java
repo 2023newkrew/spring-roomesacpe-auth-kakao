@@ -8,8 +8,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import nextstep.member.Member;
-import nextstep.member.dto.LoginMember;
+import nextstep.dto.member.LoginMember;
+import nextstep.entity.Member;
+import nextstep.entity.MemberRole;
 import org.springframework.beans.factory.annotation.Value;
 
 public class JwtTokenProvider {
@@ -25,6 +26,7 @@ public class JwtTokenProvider {
         parameters.put("username", member.getUsername());
         parameters.put("name", member.getName());
         parameters.put("id", member.getId());
+        parameters.put("role", member.getRole());
         Claims claims = Jwts.claims(parameters);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -40,7 +42,7 @@ public class JwtTokenProvider {
     public LoginMember getPrincipal(String token) {
         Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         return new LoginMember(body.get("id", Long.class), body.get("username", String.class),
-                body.get("name", String.class));
+                body.get("name", String.class), MemberRole.valueOf(body.get("role", String.class)));
     }
 
     public boolean validateToken(String token) {

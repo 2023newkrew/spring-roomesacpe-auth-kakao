@@ -12,16 +12,26 @@ repositories {
 }
 
 dependencies {
+
+    // product
+
+    // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // jdbc
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
+    // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
+    // logback
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
 
+    //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
+    // h2 embedded db
     runtimeOnly 'com.h2database:h2'
 }
 test {

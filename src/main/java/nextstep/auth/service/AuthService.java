@@ -5,9 +5,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.dto.member.LoginMember;
+import nextstep.entity.Member;
 import nextstep.exception.UnauthorizedAccessException;
-import nextstep.member.Member;
-import nextstep.member.dto.LoginMember;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,10 +16,6 @@ public class AuthService {
 
     public AuthService(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    private Member validate(Optional<Member> member) {
-        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
     }
 
     public void validateLoginMember(LoginMember loginMember) {
@@ -43,4 +39,13 @@ public class AuthService {
         }
     }
 
+    private Member validate(Optional<Member> member) {
+        return member.orElseThrow(() -> new UnauthorizedAccessException("사용자 정보가 올바르지 않습니다."));
+    }
+
+    public void validateId(Long expectedId, Long actualId) {
+        if(!expectedId.equals(actualId)){
+            throw new UnauthorizedAccessException("Id 정보가 일치하지 않습니다");
+        }
+    }
 }

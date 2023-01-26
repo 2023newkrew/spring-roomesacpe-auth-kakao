@@ -1,31 +1,31 @@
 package nextstep.reservation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import nextstep.E2ETest;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
-import nextstep.member.dto.MemberRequest;
-import nextstep.reservation.dto.ReservationRequest;
-import nextstep.reservation.dto.ReservationResponse;
-import nextstep.schedule.dto.ScheduleRequest;
-import nextstep.theme.dto.ThemeRequest;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.dto.member.MemberRequest;
+import nextstep.dto.reservation.ReservationRequest;
+import nextstep.dto.reservation.ReservationResponse;
+import nextstep.dto.schedule.ScheduleRequest;
+import nextstep.dto.theme.ThemeRequest;
+import nextstep.entity.Member;
+import nextstep.entity.MemberRole;
+import nextstep.entity.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@E2ETest
 class ReservationE2ETest {
     private static final String DATE = "2022-08-11";
     private static final String TIME = "13:00";
@@ -36,9 +36,8 @@ class ReservationE2ETest {
 
     private String accessToken;
 
-
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private JwtTokenProvider jwtTokenProvider;
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
@@ -50,8 +49,9 @@ class ReservationE2ETest {
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(createToken(MemberRole.ADMIN))
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -94,16 +94,11 @@ class ReservationE2ETest {
                 .extract().as(TokenResponse.class).getAccessToken();
 
 
-        request = new ReservationRequest(
+        request = ReservationRequest.createReservationRequest(
                 scheduleId,
                 memberId
         );
     }
-
-//    @BeforeEach
-//    void tearDown() {
-//        jdbcTemplate.update("DELETE FROM reservation");
-//    }
 
     @DisplayName("예약을 생성한다")
     @Test
@@ -153,7 +148,7 @@ class ReservationE2ETest {
                 .extract();
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-        ReservationRequest reservationRequest = new ReservationRequest(scheduleId, memberId);
+        ReservationRequest reservationRequest = ReservationRequest.createReservationRequest(scheduleId, memberId);
         createReservation(reservationRequest);
 
         var response = RestAssured
@@ -276,6 +271,9 @@ class ReservationE2ETest {
     }
 
     private ExtractableResponse<Response> createReservation() {
+        System.out.println("#################");
+        System.out.println(request.getScheduleId());
+        System.out.println("#################");
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -295,6 +293,16 @@ class ReservationE2ETest {
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private String createToken(MemberRole role) {
+        Member member = Member.builder().role(role)
+                .username("USERNAME")
+                .name("NAME")
+                .phone("PHONE")
+                .password("PASSWORD").build();
+        Member.giveId(member, 1L);
+        return jwtTokenProvider.createToken(member);
     }
 
 }

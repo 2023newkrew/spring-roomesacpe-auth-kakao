@@ -1,12 +1,13 @@
 package nextstep.theme;
 
-import nextstep.theme.repository.ThemeDao;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import nextstep.entity.Theme;
+import nextstep.repository.ThemeDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 public class ThemeDaoTest {
@@ -16,7 +17,11 @@ public class ThemeDaoTest {
     @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-        Long id = themeDao.save(new Theme("테마 이름", "테마 설명", 22_000));
+        Long id = themeDao.save(Theme.builder()
+                .name("테마 이름")
+                .desc("테마 설명")
+                .price(22_000)
+                .build());
         assertThat(id).isNotNull();
     }
 }

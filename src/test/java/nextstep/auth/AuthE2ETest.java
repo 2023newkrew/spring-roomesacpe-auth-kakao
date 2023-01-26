@@ -1,28 +1,31 @@
 package nextstep.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
+import nextstep.E2ETest;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
-import nextstep.member.dto.MemberRequest;
-import nextstep.member.dto.MemberResponse;
+import nextstep.auth.utils.JwtTokenProvider;
+import nextstep.dto.member.MemberRequest;
+import nextstep.dto.member.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@E2ETest
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String NAME = "name";
     public static final String PHONE = "010-1234-5678";
     private Long memberId;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
     @BeforeEach
     void setUp() {
@@ -67,17 +70,17 @@ public class AuthE2ETest {
                 .extract().as(TokenResponse.class).getAccessToken();
 
         // when
-        MemberResponse response =  RestAssured
+        MemberResponse response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
-                .when().get("/members/me")
+                .when().get("/members/"+ jwtTokenProvider.getPrincipal(token).getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(MemberResponse.class);
 
         // then
-        assertThat(response.getId()).isNotNull();
+        assertThat(response.getId()).isEqualTo(jwtTokenProvider.getPrincipal(token).getId());
         assertThat(response.getUsername()).isEqualTo(USERNAME);
         assertThat(response.getPassword()).isEqualTo(PASSWORD);
         assertThat(response.getName()).isEqualTo(NAME);

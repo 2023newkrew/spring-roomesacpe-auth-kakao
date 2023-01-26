@@ -3,7 +3,7 @@ package nextstep.auth.controller;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.auth.service.AuthService;
-import nextstep.member.service.MemberService;
+import nextstep.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
