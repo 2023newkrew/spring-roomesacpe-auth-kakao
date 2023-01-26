@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 public class AuthorizationExtractor {
+
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER_TYPE = "Bearer";
     private static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";

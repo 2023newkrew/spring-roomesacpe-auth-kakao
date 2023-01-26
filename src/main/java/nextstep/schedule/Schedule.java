@@ -9,6 +9,7 @@ import nextstep.theme.Theme;
 @Builder
 @Getter
 public class Schedule {
+
     private Long id;
     private Theme theme;
     private LocalDate date;

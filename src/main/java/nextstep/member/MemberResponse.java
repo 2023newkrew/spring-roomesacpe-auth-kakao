@@ -1,11 +1,14 @@
 package nextstep.member;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @AllArgsConstructor
+@Builder
 @Getter
 public class MemberResponse {
+
     private Long id;
     private String username;
     private String password;
@@ -13,7 +16,12 @@ public class MemberResponse {
     private String phone;
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getUsername(), member.getPassword(), member.getName(),
-                member.getPhone());
+        return MemberResponse.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .password(member.getPassword())
+                .name(member.getName())
+                .phone(member.getPhone())
+                .build();
     }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class ReservationRequest {
+
     private Long scheduleId;
     private String name;
 }

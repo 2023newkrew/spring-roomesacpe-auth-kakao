@@ -1,11 +1,18 @@
 package nextstep.member;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.auth.Role;
 
-@Builder
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class MemberRequest {
+
     private String username;
     private String password;
     private String name;
@@ -15,6 +22,7 @@ public class MemberRequest {
         return Member.builder()
                 .username(username)
                 .password(password)
+                .role(Role.USER)
                 .name(name)
                 .phone(phone)
                 .build();

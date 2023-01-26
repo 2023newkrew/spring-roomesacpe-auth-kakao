@@ -2,14 +2,17 @@ package nextstep.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.theme.Theme;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@AllArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ScheduleRequest {
+
     private Long themeId;
     private String date;
     private String time;

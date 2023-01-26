@@ -2,10 +2,13 @@ package nextstep.theme;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class ThemeRequest {
+
     private String name;
     private String desc;
     private int price;

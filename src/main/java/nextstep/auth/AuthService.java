@@ -1,18 +1,16 @@
 package nextstep.auth;
 
-import nextstep.exception.LoginInformationException;
+import lombok.RequiredArgsConstructor;
+import nextstep.exception.LoginFailException;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
+
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
-
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.memberDao = memberDao;
-    }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         validateLoginInformation(tokenRequest.getUsername(), tokenRequest.getPassword());
@@ -21,8 +19,8 @@ public class AuthService {
     }
 
     private void validateLoginInformation(String username, String password) {
-        if (!memberDao.hasUserWith(username, password)) {
-            throw new LoginInformationException();
+        if (!memberDao.countByUsernameAndPassword(username, password)) {
+            throw new LoginFailException();
         }
     }
 }

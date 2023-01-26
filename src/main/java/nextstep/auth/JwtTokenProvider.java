@@ -5,13 +5,13 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String secretKey = "learning-test-spring";
-    private long validityInMilliseconds = 3600000;
+
+    private final String secretKey = "learning-test-spring";
+    private final long validityInMilliseconds = 3600000;
 
     public String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);
@@ -26,7 +26,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
+    public String getPrincipal(String token) throws JwtException, IllegalArgumentException {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
