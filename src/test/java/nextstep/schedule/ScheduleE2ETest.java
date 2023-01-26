@@ -4,8 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,33 +11,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Sql(scripts = {"/test.sql"})
 public class ScheduleE2ETest {
 
-    private Long themeId;
     private String adminToken;
     private String userToken;
 
     @BeforeEach
     void setUp() {
-        //어드민 멤버, 유저 멤버 생성
-        RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new MemberRequest("kayla", "password1", "kbpark", "010-1234-5678", "admin"))
-                .when().post("/members")
-                .then();
-
-        RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new MemberRequest("userA", "qwer12345", "june", "010-1234-5678", "user"))
-                .when().post("/members")
-                .then();
 
         //어드민 멤버, 유저 멤버 로그인
         adminToken = RestAssured
@@ -57,19 +42,6 @@ public class ScheduleE2ETest {
                 .when().post("/login/token")
                 .then()
                 .extract().as(TokenResponse.class).getAccessToken();
-
-        //테마 생성
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = response.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
     }
 
     @DisplayName("스케줄을 생성한다")
@@ -89,12 +61,11 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 조회한다")
     @Test
     public void showSchedules() {
-        requestCreateSchedule(adminToken);
 
         var response = RestAssured
                 .given().log().all()
-                .param("themeId", themeId)
-                .param("date", "2022-08-11")
+                .param("themeId", 3)
+                .param("date", "2023-02-01")
                 .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
