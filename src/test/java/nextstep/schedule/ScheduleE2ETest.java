@@ -1,6 +1,9 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
+import nextstep.member.MemberRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,15 +20,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScheduleE2ETest {
 
     private Long themeId;
+    private Long memberId;
+    private String accessToken;
+    private String adminToken;
 
     @BeforeEach
     void setUp() {
+        // 관리자 토큰 발급
+        TokenRequest adminTokenRequest = new TokenRequest("admin", "password");
+        adminToken = RestAssured
+                .given().contentType(MediaType.APPLICATION_JSON_VALUE).body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().statusCode(HttpStatus.OK.value()).extract().as(TokenResponse.class).getAccessToken();
+
+        // 테마 생성
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .auth().oauth2(adminToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

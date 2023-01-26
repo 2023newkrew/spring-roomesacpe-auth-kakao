@@ -64,7 +64,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(adminToken)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -77,7 +77,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(adminToken)
-                .when().delete("/themes/" + id)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -109,7 +109,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(accessToken)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -122,7 +122,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/themes/" + id)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -137,7 +137,7 @@ public class ThemeE2ETest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .auth().oauth2(adminToken)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
