@@ -3,6 +3,7 @@ package nextstep.auth;
 import static nextstep.common.exception.ExceptionMessage.NOT_EXIST_MEMBER;
 import static nextstep.common.exception.ExceptionMessage.WRONG_PASSWORD;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.dto.TokenRequestDto;
 import nextstep.common.exception.NotExistEntityException;
@@ -33,6 +34,10 @@ public class AuthService {
 
         if (!findUser.isMyPassword(tokenRequestDto.getPassword())) {
             throw new NotExistEntityException(WRONG_PASSWORD.getMessage());
+        }
+
+        if (!Objects.equals(findUser.getRole(), MemberRole.valueOf(tokenRequestDto.getRole()))) {
+            throw new NotExistEntityException("잘못된 권한으로 로그인할 수 없습니다");
         }
     }
 }
