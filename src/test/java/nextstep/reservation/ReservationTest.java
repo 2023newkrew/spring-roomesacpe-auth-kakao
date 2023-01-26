@@ -130,7 +130,7 @@ class ReservationTest {
             .body(request)
             .when().post("/reservations")
             .then().log().all()
-            .statusCode(HttpStatus.LENGTH_REQUIRED.value());
+            .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("중복 예약을 생성할 경우, 에러가 발생한다")

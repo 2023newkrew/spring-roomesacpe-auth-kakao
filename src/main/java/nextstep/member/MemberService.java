@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import com.sun.jdi.request.DuplicateRequestException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class MemberService {
 
     public Long create(MemberRequest memberRequest) {
         if (!memberDao.findByUsername(memberRequest.getUsername()).isEmpty()){
-            throw new DuplicateRequestException(ALREADY_USER.getMessage());
+            throw new DuplicateKeyException(ALREADY_USER.getMessage());
         }
         PasswordEncoder passwordEncoder = getPasswordEncoder();
         Member member = new Member(memberRequest.getUsername(), passwordEncoder.encode(memberRequest.getPassword()),

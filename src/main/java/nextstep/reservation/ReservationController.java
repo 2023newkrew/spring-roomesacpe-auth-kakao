@@ -3,7 +3,6 @@ package nextstep.reservation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.NotContextException;
 import java.net.URI;
 import java.util.List;
 
@@ -36,8 +35,7 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id,
-                                            @RequestHeader(value = "Authorization") String authorization)
-                                            throws NotContextException {
+                                            @RequestHeader(value = "Authorization") String authorization) {
         reservationService.deleteById(id, authorization);
         return ResponseEntity.noContent().build();
     }

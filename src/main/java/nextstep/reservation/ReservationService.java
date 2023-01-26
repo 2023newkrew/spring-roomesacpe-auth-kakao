@@ -1,15 +1,14 @@
 package nextstep.reservation;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
-import javax.naming.NotContextException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,7 +41,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedules.get(0).getId());
         if (!reservation.isEmpty()) {  // <- 하나만 수용.. / -> size()
-            throw new DuplicateRequestException(ALREADY_REGISTERED_RESERVATION.getMessage());
+            throw new DuplicateKeyException(ALREADY_REGISTERED_RESERVATION.getMessage());
         }
 
         String accessToken = authorization.substring(bearer.length());
@@ -66,13 +65,13 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(username, themeId, date);
     }
 
-    public void deleteById(Long id, String authorization) throws NotContextException {
+    public void deleteById(Long id, String authorization) {
         String accessToken = authorization.substring(bearer.length());
         String username = jwtTokenProvider.getPrincipal(accessToken);
 
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NotContextException(RESERVATION_NOT_FOUND.getMessage());
+            throw new NullPointerException(RESERVATION_NOT_FOUND.getMessage());
         }
        if (!Objects.equals(reservation.getName(), username)){
             throw new AuthorizationServiceException(NOT_PERMISSION_DELETE.getMessage());

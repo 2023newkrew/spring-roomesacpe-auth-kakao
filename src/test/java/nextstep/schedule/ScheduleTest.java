@@ -91,7 +91,7 @@ public class ScheduleTest {
                 .body(body)
                 .when().post("/schedules")
                 .then().log().all()
-                .statusCode(HttpStatus.LENGTH_REQUIRED.value())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
                 .header("Location");
     }

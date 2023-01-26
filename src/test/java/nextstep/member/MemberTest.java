@@ -34,7 +34,7 @@ public class MemberTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.LENGTH_REQUIRED.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("잘못된 토큰을 입력하는 경우, 에러 발생")

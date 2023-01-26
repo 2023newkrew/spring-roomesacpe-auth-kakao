@@ -1,14 +1,12 @@
 package nextstep.schedule;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import nextstep.reservation.Reservation;
 import nextstep.reservation.ReservationDao;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
-import javax.naming.NotContextException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +31,7 @@ public class ScheduleService {
             throw new NullPointerException(THEME_NOT_FOUND.getMessage());
         }
         if (scheduleDao.isExistsByTimeAndDate(scheduleRequest.getTime(), scheduleRequest.getDate())) {
-            throw new DuplicateRequestException(ALREADY_REGISTERED_SCHEDULE.getMessage());
+            throw new DuplicateKeyException(ALREADY_REGISTERED_SCHEDULE.getMessage());
         }
         return scheduleDao.save(scheduleRequest.toEntity(themeList.get().get(0)));
     }
@@ -42,13 +40,13 @@ public class ScheduleService {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) throws NotContextException {
+    public void deleteById(Long id) {
         List<Reservation> reservationList = reservationDao.findByScheduleId(id);
         if (scheduleDao.findById(id).isEmpty()){
-            throw new NotContextException(SCHEDULE_NOT_FOUND.getMessage());
+            throw new NullPointerException(SCHEDULE_NOT_FOUND.getMessage());
         }
         if (Objects.requireNonNull(reservationList).size() != 0) {
-            throw new KeyAlreadyExistsException(ALREADY_REGISTERED_RESERVATION.getMessage());
+            throw new DuplicateKeyException(ALREADY_REGISTERED_RESERVATION.getMessage());
         }
         scheduleDao.deleteById(id);
     }
