@@ -17,20 +17,22 @@ public class ThemeDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-     @Test
+    @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-         themeDao.save(new Theme("테마 이름100", "테마 설명", 22_000));
-         themeDao.save(new Theme("테마 이름200", "테마 설명", 22_000));
-         themeDao.save(new Theme("테마 이름300", "테마 설명", 22_000));
+        Long prevId = themeDao.save(new Theme("테마 이름100", "테마 설명", 22_000));
+        themeDao.save(new Theme("테마 이름200", "테마 설명", 22_000));
+        themeDao.save(new Theme("테마 이름300", "테마 설명", 22_000));
 
-         Long id = themeDao.save(new Theme("테마 이름400", "테마 설명", 22_000));
+        Long id = themeDao.save(new Theme("테마 이름400", "테마 설명", 22_000));
 
         List<Theme> themes = themeDao.findAll();
 
-        for(Theme theme : themes) {
+        for (Theme theme : themes) {
             System.out.println(theme.getId() + " " + theme.getName());
         }
-        assertThat(id).isEqualTo(4);
+
+
+        assertThat(id).isEqualTo(prevId + 3);
     }
 }
