@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -8,8 +9,8 @@ import java.util.List;
 
 @Service
 public class ScheduleService {
-    private ScheduleDao scheduleDao;
-    private ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+    private final ThemeDao themeDao;
 
     public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao) {
         this.scheduleDao = scheduleDao;
@@ -17,7 +18,7 @@ public class ScheduleService {
     }
 
     public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
+        Theme theme = themeDao.findById(scheduleRequest.getThemeId()).orElseThrow(NotExistEntityException::new);
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 

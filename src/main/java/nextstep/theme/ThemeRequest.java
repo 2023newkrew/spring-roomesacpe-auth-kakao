@@ -1,14 +1,23 @@
 package nextstep.theme;
 
+import nextstep.support.InvalidInputException;
+
 public class ThemeRequest {
-    private String name;
-    private String desc;
-    private int price;
+    private final String name;
+    private final String desc;
+    private final int price;
 
     public ThemeRequest(String name, String desc, int price) {
+        validatePrice(price);
         this.name = name;
         this.desc = desc;
         this.price = price;
+    }
+
+    private static void validatePrice(int price) {
+        if (price < 0) {
+            throw new InvalidInputException();
+        }
     }
 
     public String getName() {
