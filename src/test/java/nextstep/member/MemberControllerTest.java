@@ -13,9 +13,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
+import javax.servlet.http.Cookie;
+import java.util.List;
 
+import static nextstep.auth.role.Role.ROLE_USER;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,19 +42,19 @@ class MemberControllerTest {
     @DisplayName("토큰을 사용해 내 정보 열람 테스트")
     class GetMyInfoByToken {
 
-        private Long userId = 1L;
+        private long userId = 1L;
         private String username = "username";
         private String password = "password";
         private String name = "name";
         private String phone = "010-1234-5678";
-        private String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), new ArrayList<>());
+        private String userToken = jwtTokenProvider.createToken(String.valueOf(userId), List.of(ROLE_USER));
 
         @Test
         @DisplayName("유효한 토큰일 경우 200과 자신의 정보를 응답해야 한다.")
         void should_successfully_when_validToken() throws Exception {
             when(memberService.findById(userId)).thenReturn(new Member(userId, username, password, name, phone));
             mockMvc.perform(get("/members/me")
-                            .header("authorization", userToken))
+                            .cookie(new Cookie(JwtTokenProvider.ACCESS_TOKEN, userToken)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(userId))
                     .andExpect(jsonPath("$.username").value(username))
@@ -65,7 +68,7 @@ class MemberControllerTest {
         void should_401UnAuthorization_when_invalidToken() throws Exception {
             when(memberService.findById(userId)).thenReturn(new Member(userId, username, password, name, phone));
             mockMvc.perform(get("/members/me")
-                            .header("authorization", ""))
+                            .header(AUTHORIZATION, ""))
                     .andExpect(status().isUnauthorized());
         }
     }

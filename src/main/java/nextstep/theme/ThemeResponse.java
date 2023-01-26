@@ -2,12 +2,12 @@ package nextstep.theme;
 
 public class ThemeResponse {
 
-    private Long id;
+    private long id;
     private String name;
     private String desc;
     private int price;
 
-    public ThemeResponse(Long id, String name, String desc, int price) {
+    public ThemeResponse(long id, String name, String desc, int price) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -18,7 +18,7 @@ public class ThemeResponse {
         return new ThemeResponse(theme.getId(), theme.getName(), theme.getDesc(), theme.getPrice());
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

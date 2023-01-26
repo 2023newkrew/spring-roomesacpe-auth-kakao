@@ -1,7 +1,9 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
-import nextstep.theme.ThemeRequest;
+import nextstep.admin.AdminThemeRequest;
+import nextstep.admin.ScheduleRequest;
+import nextstep.auth.TokenRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,21 +12,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.auth.JwtTokenProvider.ACCESS_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScheduleE2ETest {
 
-    private Long themeId;
+    private long themeId;
+    private String accessToken = RestAssured
+            .given().log().all()
+            .body(new TokenRequest("admin", "admin"))
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/login/token")
+            .getCookie(ACCESS_TOKEN);
 
-    public static String requestCreateSchedule() {
+    public String requestCreateSchedule() {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         return RestAssured
                 .given().log().all()
+                .cookie(ACCESS_TOKEN, accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -33,12 +44,13 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        AdminThemeRequest adminThemeRequest = new AdminThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
+                .cookie(ACCESS_TOKEN, accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
+                .body(adminThemeRequest)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -52,9 +64,10 @@ public class ScheduleE2ETest {
         ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
         RestAssured
                 .given().log().all()
+                .cookie(ACCESS_TOKEN, accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -66,6 +79,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .cookie(ACCESS_TOKEN, accessToken)
                 .param("themeId", themeId)
                 .param("date", "2022-08-11")
                 .when().get("/schedules")
@@ -83,7 +97,8 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .cookie(ACCESS_TOKEN, accessToken)
+                .when().delete("/admin" + location)
                 .then().log().all()
                 .extract();
 

@@ -1,33 +1,54 @@
 package nextstep.exception;
 
-import nextstep.auth.UnAuthorizationException;
-import nextstep.support.DuplicateEntityException;
-import org.apache.tomcat.websocket.AuthenticationException;
-import org.springframework.http.HttpStatus;
+import nextstep.exception.auth.AuthException;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.dataaccess.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> handleAuthenticationException() {
-        return ResponseEntity.badRequest().body("인증에 실패했습니다.");
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(RuntimeException ignore) {
+        return ResponseEntity.internalServerError()
+                .body(ErrorResponse.from("서버에 문제가 생겼습니다."));
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<String> handleNullPointerException() {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String errorMessage = e.getBindingResult()
+                .getAllErrors()
+                .get(0)
+                .getDefaultMessage();
+        return ResponseEntity.badRequest()
+                .body(ErrorResponse.from(errorMessage));
     }
 
-    @ExceptionHandler(DuplicateEntityException.class)
-    public ResponseEntity<String> handleDuplicateEntityException() {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(HttpMessageNotReadableException e) {
+        return ResponseEntity.badRequest()
+                .body(ErrorResponse.from(e.getMessage()));
     }
 
-    @ExceptionHandler(UnAuthorizationException.class)
-    public ResponseEntity<String> handleUnAuthorizationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getMessage()));
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(AuthException e) {
+        return ResponseEntity.status(e.getHttpStatus())
+                .body(ErrorResponse.from(e.getMessage()));
     }
 }

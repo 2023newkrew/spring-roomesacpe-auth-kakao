@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.exception.auth.AuthErrorCode;
+import nextstep.exception.auth.AuthException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -26,16 +28,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        String authorizationHeader = request.getHeader("authorization");
-        if (authorizationHeader == null ||
-                authorizationHeader.length() < "Bearer ".length()) {
-            throw new UnAuthorizationException();
-        }
-        String token = authorizationHeader.substring("Bearer ".length());
+        String token = jwtTokenProvider.resolveToken(request);
+        return tryGetMyIdBy(token);
+    }
 
-        if (jwtTokenProvider.validateToken(token)) {
-            return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+    private long tryGetMyIdBy(String token) {
+        try {
+            return Long.parseLong(jwtTokenProvider.getPrincipal(token));
+        } catch (NumberFormatException e) {
+            throw new AuthException(AuthErrorCode.TOKEN_NOT_AVAILABLE);
         }
-        throw new UnAuthorizationException();
     }
 }

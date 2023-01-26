@@ -3,11 +3,10 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.admin.AdminThemeRequest;
+import nextstep.admin.ScheduleRequest;
 import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
-import nextstep.schedule.ScheduleRequest;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
+import static nextstep.auth.JwtTokenProvider.ACCESS_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -28,19 +28,29 @@ class ReservationE2ETest {
     public static final String TIME = "13:00";
     public static final String NAME = "name";
 
+    private String accessToken;
     private ReservationRequest request;
-    private Long themeId;
-    private Long scheduleId;
-    private Long memberId;
+    private long themeId;
+    private long scheduleId;
+    private long memberId;
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("admin", "admin"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .getCookie(ACCESS_TOKEN);
+
+        AdminThemeRequest adminThemeRequest = new AdminThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
+                .body(adminThemeRequest)
+                .cookie(ACCESS_TOKEN, accessToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -52,7 +62,8 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .cookie(ACCESS_TOKEN, accessToken)
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -64,6 +75,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
@@ -82,15 +94,15 @@ class ReservationE2ETest {
     void create() {
         String accessToken = RestAssured
                 .given().log().all()
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("admin", "admin"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+                .getCookie(ACCESS_TOKEN);
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -124,6 +136,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -137,17 +150,9 @@ class ReservationE2ETest {
     void delete() {
         var reservation = createReservation();
 
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("username", "password"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -159,24 +164,16 @@ class ReservationE2ETest {
     @Test
     void createDuplicateReservation() {
         createReservation();
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("username", "password"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
     }
 
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
@@ -186,6 +183,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", DATE)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().get("/reservations")
                 .then().log().all()
                 .extract();
@@ -197,36 +195,20 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제한다")
     @Test
     void createNotExistReservation() {
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("username", "password"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private ExtractableResponse<Response> createReservation() {
-        String accessToken = RestAssured
-                .given().log().all()
-                .body(new TokenRequest("username", "password"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
-
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .cookie(ACCESS_TOKEN, accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

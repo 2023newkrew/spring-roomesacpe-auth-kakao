@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
+import java.util.Optional;
 
 @Component
 public class MemberDao {
@@ -24,7 +25,7 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long save(Member member) {
+    public long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -41,13 +42,17 @@ public class MemberDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Member findById(Long id) {
+    public Optional<Member> findById(long id) {
         String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+    public Optional<Member> findByUsername(String username) {
+        try {
+            String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

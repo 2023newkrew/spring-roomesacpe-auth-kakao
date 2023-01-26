@@ -1,7 +1,5 @@
 package nextstep.schedule;
 
-import nextstep.theme.Theme;
-import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,24 +7,13 @@ import java.util.List;
 @Service
 public class ScheduleService {
 
-    private ScheduleDao scheduleDao;
-    private ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
 
-    public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao) {
+    public ScheduleService(ScheduleDao scheduleDao) {
         this.scheduleDao = scheduleDao;
-        this.themeDao = themeDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
-    }
-
-    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
+    public List<Schedule> findByThemeIdAndDate(long themeId, String date) {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
-    }
-
-    public void deleteById(Long id) {
-        scheduleDao.deleteById(id);
     }
 }

@@ -2,16 +2,16 @@ package nextstep.reservation;
 
 public class ReservationRequest {
 
-    private Long scheduleId;
+    private long scheduleId;
 
     private ReservationRequest() {
     }
 
-    public ReservationRequest(Long scheduleId) {
+    public ReservationRequest(long scheduleId) {
         this.scheduleId = scheduleId;
     }
 
-    public Long getScheduleId() {
+    public long getScheduleId() {
         return scheduleId;
     }
 

@@ -1,8 +1,8 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.admin.AdminThemeRequest;
 import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import static nextstep.auth.JwtTokenProvider.ACCESS_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -19,7 +20,7 @@ public class AuthE2ETest {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
+    private long memberId;
 
     @BeforeEach
     void setUp() {
@@ -43,20 +44,28 @@ public class AuthE2ETest {
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(response.cookie(ACCESS_TOKEN)).isNotNull();
     }
 
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
-        createTheme();
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("admin", "admin"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .getCookie(ACCESS_TOKEN);
+        createTheme(accessToken);
 
         var response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
+                .cookie(ACCESS_TOKEN, accessToken)
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -67,24 +76,33 @@ public class AuthE2ETest {
     @DisplayName("테마를 삭제한다")
     @Test
     void delete() {
-        Long id = createTheme();
+        String accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("admin", "admin"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .getCookie(ACCESS_TOKEN);
+        long id = createTheme(accessToken);
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .cookie(ACCESS_TOKEN, accessToken)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+    public long createTheme(String accessToken) {
+        AdminThemeRequest body = new AdminThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given().log().all()
+                .cookie(ACCESS_TOKEN, accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

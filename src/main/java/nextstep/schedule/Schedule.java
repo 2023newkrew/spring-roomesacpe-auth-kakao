@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 public class Schedule {
 
-    private Long id;
+    private long id;
     private Theme theme;
     private LocalDate date;
     private LocalTime time;
@@ -15,7 +15,7 @@ public class Schedule {
     public Schedule() {
     }
 
-    public Schedule(Long id, Theme theme, LocalDate date, LocalTime time) {
+    public Schedule(long id, Theme theme, LocalDate date, LocalTime time) {
         this.id = id;
         this.theme = theme;
         this.date = date;
@@ -28,7 +28,7 @@ public class Schedule {
         this.time = time;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

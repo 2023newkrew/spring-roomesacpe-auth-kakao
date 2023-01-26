@@ -1,12 +1,13 @@
 package nextstep.reservation;
 
-import nextstep.auth.UnAuthorizationException;
+import nextstep.exception.business.BusinessErrorCode;
+import nextstep.exception.business.BusinessException;
+import nextstep.exception.dataaccess.DataAccessErrorCode;
+import nextstep.exception.dataaccess.DataAccessException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
@@ -27,43 +28,36 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(Long authId, ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
-        }
+    public long create(long authId, ReservationRequest reservationRequest) {
+        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId())
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.SCHEDULE_NOT_FOUND));
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new BusinessException(BusinessErrorCode.RESERVATION_ALREADY_EXIST_AT_THAT_TIME);
         }
 
-        Member member = memberDao.findById(authId);
-        Reservation newReservation = new Reservation(
-                schedule,
-                member.getName()
-        );
+        Member member = memberDao.findById(authId)
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.MEMBER_NOT_FOUND));
+        Reservation newReservation = new Reservation(schedule, member.getName());
 
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
-            throw new NullPointerException();
-        }
+    public List<Reservation> findAllByThemeIdAndDate(long themeId, String date) {
+        themeDao.findById(themeId)
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.THEME_NOT_FOUND));
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long authId, Long reservationId) {
-        Reservation reservation = reservationDao.findById(reservationId);
-        if (reservation == null) {
-            throw new NullPointerException();
-        }
-        Member me = memberDao.findById(authId);
+    public void cancel(long authId, long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.RESERVATION_NOT_FOUND));
+        Member me = memberDao.findById(authId)
+                .orElseThrow(() -> new DataAccessException(DataAccessErrorCode.MEMBER_NOT_FOUND));
         if (!reservation.isMyReservation(me)) {
-            throw new UnAuthorizationException();
+            throw new BusinessException(BusinessErrorCode.DELETE_FAILED_WHEN_NOT_MY_RESERVATION);
         }
         reservationDao.deleteById(reservationId);
     }
