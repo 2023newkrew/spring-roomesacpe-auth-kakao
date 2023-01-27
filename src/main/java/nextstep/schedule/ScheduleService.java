@@ -4,6 +4,8 @@ import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -16,9 +18,9 @@ public class ScheduleService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
+    public Long create(Long themeId, String date, String time) {
+        Theme theme = themeDao.findById(themeId);
+        return scheduleDao.save(new Schedule(theme, LocalDate.parse(date), LocalTime.parse(time)));
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
