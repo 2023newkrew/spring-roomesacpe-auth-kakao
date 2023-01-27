@@ -25,4 +25,25 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
+
+    @DisplayName("username이 겹치는 멤버를 생성한다")
+    @Test
+    public void create_with_existing_username() {
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value());
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 }
