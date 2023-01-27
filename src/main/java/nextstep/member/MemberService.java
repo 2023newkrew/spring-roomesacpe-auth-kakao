@@ -8,20 +8,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberService {
     private MemberDao memberDao;
-    private JwtTokenProvider jwtTokenProvider;
 
-    public MemberService(MemberDao memberDao, JwtTokenProvider jwtTokenProvider) {
+    public MemberService(MemberDao memberDao) {
         this.memberDao = memberDao;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Long create(String username, String password, String name, String phone) {
+    public Long create(MemberRequest memberRequest) {
         try {
             // 해당 username을 가진 유저가 이미 존재하는지 확인
-            memberDao.findByUsername(username);
+            memberDao.findByUsername(memberRequest.getUsername());
             throw new IllegalArgumentException("이미 해당 이름을 가진 계정이 존재합니다.");
         } catch (EmptyResultDataAccessException e) {
-            return memberDao.save(new Member(username, password, name, phone));
+            return memberDao.save(memberRequest.toEntity());
         }
     }
 

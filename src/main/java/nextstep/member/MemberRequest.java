@@ -1,5 +1,7 @@
 package nextstep.member;
 
+import nextstep.theme.Theme;
+
 public class MemberRequest {
     private final String username;
     private final String password;
@@ -27,6 +29,15 @@ public class MemberRequest {
 
     public String getPhone() {
         return phone;
+    }
+
+    public Member toEntity() {
+        return new Member(
+                this.username,
+                this.password,
+                this.name,
+                this.phone
+        );
     }
 
     @Override

@@ -18,9 +18,9 @@ public class ScheduleService {
         this.themeDao = themeDao;
     }
 
-    public Long create(Long themeId, String date, String time) {
-        Theme theme = themeDao.findById(themeId);
-        return scheduleDao.save(new Schedule(theme, LocalDate.parse(date), LocalTime.parse(time)));
+    public Long create(ScheduleRequest scheduleRequest) {
+        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
+        return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
