@@ -1,8 +1,8 @@
 package nextstep.ui;
 
+import nextstep.auth.AuthService;
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.member.Member;
-import nextstep.member.MemberService;
 import nextstep.support.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberService memberService;
+    private final AuthService authService;
 
-    public AuthenticationPrincipalArgumentResolver(MemberService memberService) {
-        this.memberService = memberService;
+    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
+        this.authService = authService;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new AuthenticationException();
         }
 
-        Member member = memberService.findByToken(token);
+        Member member = authService.getMemberFromToken(token);
 
         return member;
     }

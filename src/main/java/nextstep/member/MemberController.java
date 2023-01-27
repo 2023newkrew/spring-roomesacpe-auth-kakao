@@ -1,10 +1,9 @@
 package nextstep.member;
 
-import nextstep.auth.AuthorizationExtractor;
+import nextstep.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 @RestController
@@ -24,9 +23,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(HttpServletRequest request) {
-        String token = AuthorizationExtractor.extract(request);
-        MemberResponse response = MemberResponse.of(memberService.findByToken(token));
+    public ResponseEntity me(@AuthenticationPrincipal Member member) {
+        MemberResponse response = MemberResponse.of(member);
         return ResponseEntity.ok(response);
     }
 }

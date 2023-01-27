@@ -36,9 +36,4 @@ public class MemberService {
         }
         return member;
     }
-
-    public Member findByToken(String token) {
-        String principal = jwtTokenProvider.getPrincipal(token);
-        return findByUsername(principal);
-    }
 }
