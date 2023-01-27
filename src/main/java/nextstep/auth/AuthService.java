@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +26,7 @@ public class AuthService {
     private void validateTokenRequest(String username, String password) {
         Member member = memberDao.findByUsername(username);
         if (member == null) {
-            throw new NullPointerException("유저가 존재하지 않습니다.");
+            throw new NotExistEntityException();
         }
         if (member.checkWrongPassword(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
