@@ -15,19 +15,19 @@ public class AuthService {
         this.memberDao = memberDao;
     }
 
-    public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateTokenRequest(tokenRequest);
+    public TokenResponse createToken(String username, String password) {
+        validateTokenRequest(username, password);
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(username);
         return new TokenResponse(accessToken);
     }
 
-    private void validateTokenRequest(TokenRequest tokenRequest) {
-        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+    private void validateTokenRequest(String username, String password) {
+        Member member = memberDao.findByUsername(username);
         if (member == null) {
             throw new NullPointerException("유저가 존재하지 않습니다.");
         }
-        if (member.checkWrongPassword(tokenRequest.getPassword())) {
+        if (member.checkWrongPassword(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
