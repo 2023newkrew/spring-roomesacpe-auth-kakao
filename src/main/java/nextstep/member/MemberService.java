@@ -1,6 +1,5 @@
 package nextstep.member;
 
-import nextstep.auth.JwtTokenProvider;
 import nextstep.support.NotExistEntityException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;

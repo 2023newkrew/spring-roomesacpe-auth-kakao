@@ -1,7 +1,5 @@
 package nextstep.member;
 
-import nextstep.theme.Theme;
-
 public class MemberRequest {
     private final String username;
     private final String password;
