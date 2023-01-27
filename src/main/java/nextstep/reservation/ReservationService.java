@@ -23,8 +23,8 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+    public Long create(Long scheduleId, String name) {
+        Schedule schedule = scheduleDao.findById(scheduleId);
         if (schedule == null) {
             throw new NotExistEntityException();
         }
@@ -35,10 +35,7 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName()
-        );
+        Reservation newReservation = new Reservation(schedule, name);
 
         return reservationDao.save(newReservation);
     }
