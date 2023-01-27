@@ -1,6 +1,5 @@
 package nextstep.global.resolver;
 
-import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import nextstep.global.annotation.AuthenticationPrincipal;
 import nextstep.global.util.AuthorizationHeaderExtractor;

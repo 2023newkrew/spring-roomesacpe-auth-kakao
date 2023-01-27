@@ -3,7 +3,6 @@ package nextstep.global.util;
 import java.util.Enumeration;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.logging.log4j.util.Strings;
 
 public class AuthorizationHeaderExtractor {
     private static final String AUTHORIZATION = "Authorization";

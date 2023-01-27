@@ -1,13 +1,18 @@
 package nextstep.global.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.SignatureException;
 import java.util.Date;
+import nextstep.global.exception.ExpiredTokenException;
+import nextstep.global.exception.MalformedTokenException;
+import nextstep.global.exception.SecretKeyMismatchException;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
@@ -31,13 +36,27 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+    public void validateToken(String token) {
+        Jws<Claims> jwt = tokenToJws(token);
 
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
+        validateJwsExpiration(jwt);
+    }
+
+    private Jws<Claims> tokenToJws(String token) {
+        try {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+        } catch (IllegalArgumentException | MalformedJwtException e) {
+            throw new MalformedTokenException();
+        } catch (SignatureException e) {
+            throw new SecretKeyMismatchException();
+        } catch (ExpiredJwtException e) {
+            throw new ExpiredTokenException();
+        }
+    }
+
+    private void validateJwsExpiration(Jws<Claims> claims) {
+        if (claims.getBody().getExpiration().before(new Date())) {
+            throw new ExpiredTokenException();
         }
     }
 }
