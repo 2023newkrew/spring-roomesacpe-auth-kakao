@@ -1,6 +1,10 @@
 package nextstep.global.resolver;
 
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
 import nextstep.global.annotation.AuthenticationPrincipal;
+import nextstep.global.util.AuthorizationHeaderExtractor;
+import nextstep.global.util.AuthorizationHeaderExtractor.TokenType;
 import nextstep.global.util.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -15,6 +19,7 @@ import java.util.Optional;
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private final JwtTokenProvider jwtTokenProvider;
 
+
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -26,16 +31,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String token = extractToken(webRequest.getHeader("authorization"));
+        HttpServletRequest request = Optional.ofNullable(webRequest.getNativeRequest(HttpServletRequest.class))
+            .orElseThrow();
+
+        String token = AuthorizationHeaderExtractor.extract(request, TokenType.BEARER)
+            .orElseThrow();
+
         validateToken(token);
 
         return getPrincipleFromToken(token);
-    }
-
-    private String extractToken(String authorization) {
-        return Optional.ofNullable(authorization)
-                .map(auth -> auth.split("Bearer ")[1])
-                .orElseThrow();
     }
 
     private void validateToken(String token) {
