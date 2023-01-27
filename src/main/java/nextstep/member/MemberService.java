@@ -1,6 +1,7 @@
 package nextstep.member;
 
 import nextstep.auth.JwtTokenProvider;
+import nextstep.support.NotExistEntityException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class MemberService {
     public Member findByUsername(String username) {
         Member member = memberDao.findByUsername(username);
         if (member == null) {
-            throw new NullPointerException("유저가 존재하지 않습니다.");
+            throw new NotExistEntityException();
         }
         return member;
     }

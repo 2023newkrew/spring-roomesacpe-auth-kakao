@@ -2,8 +2,9 @@ package nextstep.reservation;
 
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.PermissionException;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
+import nextstep.support.PermissionException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class ReservationService {
     public Long create(ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         // 이미 해당 스케쥴로 예약이 있다면 예외 던짐
@@ -45,7 +46,7 @@ public class ReservationService {
     public Reservation findById(Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         return reservation;
@@ -54,7 +55,7 @@ public class ReservationService {
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException("테마가 존재하지 않습니다.");
+            throw new NotExistEntityException();
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
