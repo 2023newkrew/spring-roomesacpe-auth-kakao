@@ -15,13 +15,13 @@ public class MemberService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Long create(MemberRequest memberRequest) {
+    public Long create(String username, String password, String name, String phone) {
         try {
             // 해당 username을 가진 유저가 이미 존재하는지 확인
-            memberDao.findByUsername(memberRequest.getUsername());
+            memberDao.findByUsername(username);
             throw new IllegalArgumentException("이미 해당 이름을 가진 계정이 존재합니다.");
         } catch (EmptyResultDataAccessException e) {
-            return memberDao.save(memberRequest.toEntity());
+            return memberDao.save(new Member(username, password, name, phone));
         }
     }
 
