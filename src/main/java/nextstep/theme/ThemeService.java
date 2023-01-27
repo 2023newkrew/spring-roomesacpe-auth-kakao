@@ -13,8 +13,8 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
-        return themeDao.save(themeRequest.toEntity());
+    public Long create(String name, String desc, int price) {
+        return themeDao.save(new Theme(name, desc, price));
     }
 
     public List<Theme> findAll() {
