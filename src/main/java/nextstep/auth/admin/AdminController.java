@@ -15,7 +15,7 @@ public class AdminController {
 
     private final ThemeService themeService;
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/themes/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
         themeService.delete(id);
 
