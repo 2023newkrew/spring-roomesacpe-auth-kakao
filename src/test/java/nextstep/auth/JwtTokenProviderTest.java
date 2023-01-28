@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
+import nextstep.config.SecurityConfig;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import org.assertj.core.api.Assertions;
@@ -15,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static nextstep.RoomEscapeApplication.getPasswordEncoder;
 import static nextstep.auth.Interceptor.LoginInterceptor.authorization;
 import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +39,7 @@ public class JwtTokenProviderTest {
     public static final String PASSWORD = "password";
     @InjectMocks
     JwtTokenProvider jwtTokenProvider;
+
 
     @Autowired
     Environment env;
@@ -77,7 +80,8 @@ public class JwtTokenProviderTest {
     }
 
     public static void saveMember(JdbcTemplate jdbcTemplate, String username, String password){
-        PasswordEncoder passwordEncoder = getPasswordEncoder();
+        ApplicationContext ac = new AnnotationConfigApplicationContext(SecurityConfig.class);
+        PasswordEncoder passwordEncoder = ac.getBean(PasswordEncoder.class);
         Member member = new Member(username, passwordEncoder.encode(password), "name", "010");
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static nextstep.RoomEscapeApplication.getPasswordEncoder;
 import static nextstep.config.Messages.*;
 
 @Service
@@ -17,10 +16,10 @@ public class AuthService {
     private final MemberDao memberDao;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public AuthService(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, PasswordEncoder passwordEncoder) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
-        this.passwordEncoder = getPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     public TokenResponse issueToken(TokenRequest tokenRequest) {
