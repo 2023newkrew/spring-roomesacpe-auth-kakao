@@ -24,7 +24,7 @@ public class ThemeService {
     public void delete(Long id) {
         Theme theme = themeDao.findById(id);
         if (theme == null) {
-            throw new NotExistEntityException();
+            throw new NotExistEntityException("");
         }
 
         themeDao.delete(id);
