@@ -10,7 +10,9 @@ import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -35,7 +37,7 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Reservation nextReservation = Reservation.of(targetSchedule, memberId);
+        Reservation nextReservation = Reservation.of(targetSchedule.getId(), memberId);
 
         return reservationRepository.save(nextReservation);
     }
@@ -44,7 +46,14 @@ public class ReservationService {
         themeRepository.findById(themeId)
                 .orElseThrow(NotExistEntityException::new);
 
-        return reservationRepository.findAllByThemeIdAndDate(themeId, date);
+        List<Schedule> scheduleList = scheduleRepository.findByThemeIdAndDate(themeId, date);
+
+        return scheduleList.stream()
+                .map(schedule -> reservationRepository.findByScheduleId(schedule.getId()))
+                .flatMap(List::stream)
+                .sorted(Comparator.comparingLong(Reservation::getId))
+                .collect(Collectors.toList())
+                ;
     }
 
     public void delete(Long id) {

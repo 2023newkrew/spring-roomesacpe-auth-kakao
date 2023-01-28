@@ -28,7 +28,7 @@ public class ScheduleService {
         Theme targetTheme = themeRepository.findById(themeId)
                 .orElseThrow(NotExistEntityException::new);
 
-        return scheduleRepository.save(Schedule.of(targetTheme, date, time));
+        return scheduleRepository.save(Schedule.of(targetTheme.getId(), date, time));
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

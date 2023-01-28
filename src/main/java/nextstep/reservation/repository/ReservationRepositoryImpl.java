@@ -26,12 +26,6 @@ public class ReservationRepositoryImpl implements ReservationRepository {
     }
 
     @Override
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-
-        return ReservationMapper.INSTANCE.entityListToDomainList(reservationDao.findAllByThemeIdAndDate(themeId, date));
-    }
-
-    @Override
     public Optional<Reservation> findById(Long id) {
 
         return Optional.ofNullable(ReservationMapper.INSTANCE.entityToDomain(reservationDao.findById(id)));

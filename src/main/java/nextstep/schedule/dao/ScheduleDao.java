@@ -1,7 +1,6 @@
 package nextstep.schedule.dao;
 
 import nextstep.schedule.entity.ScheduleEntity;
-import nextstep.theme.entity.ThemeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,12 +21,7 @@ public class ScheduleDao {
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<ScheduleEntity> rowMapper = (resultSet, rowNum) -> new ScheduleEntity(
             resultSet.getLong("schedule.id"),
-            new ThemeEntity(
-                    resultSet.getLong("theme.id"),
-                    resultSet.getString("theme.name"),
-                    resultSet.getString("theme.desc"),
-                    resultSet.getInt("theme.price")
-            ),
+            resultSet.getLong("schedule.theme_id"),
             resultSet.getDate("schedule.date").toLocalDate(),
             resultSet.getTime("schedule.time").toLocalTime()
     );
@@ -43,7 +37,7 @@ public class ScheduleDao {
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, scheduleEntity.getTheme().getId());
+            ps.setLong(1, scheduleEntity.getThemeId());
             ps.setDate(2, Date.valueOf(scheduleEntity.getDate()));
             ps.setTime(3, Time.valueOf(scheduleEntity.getTime()));
             return ps;
@@ -56,18 +50,16 @@ public class ScheduleDao {
     }
 
     public ScheduleEntity findById(Long id) {
-        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time " +
                 "FROM schedule " +
-                "INNER JOIN theme ON schedule.theme_id = theme.id " +
                 "WHERE schedule.id = ?;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public List<ScheduleEntity> findByThemeIdAndDate(Long themeId, String date) {
-        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time " +
                 "FROM schedule " +
-                "INNER JOIN theme ON schedule.theme_id = theme.id " +
                 "WHERE schedule.theme_id = ? AND schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));

@@ -3,7 +3,6 @@ package nextstep.reservation.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.schedule.dto.ScheduleResponse;
 
 @Getter
 @NoArgsConstructor
@@ -11,6 +10,6 @@ import nextstep.schedule.dto.ScheduleResponse;
 public class ReservationResponse {
 
     private Long id;
-    private ScheduleResponse schedule;
+    private Long scheduleId;
     private Long memberId;
 }
