@@ -1,4 +1,4 @@
-package nextstep.config;
+package nextstep.support;
 
 public enum Messages {
     LOGIN_NEEDS("Needs to be login"),
@@ -17,6 +17,7 @@ public enum Messages {
     ALREADY_REGISTERED_THEME("Theme already exists"),
     ALREADY_REGISTERED_SCHEDULE("Schedule already exists"),
     NOT_PERMISSION_DELETE("Not permission to delete"),
+    NOT_ALLOWED_SERVICE("Only allowed to ADMIN USERS")
 ;
 
     private final String message;

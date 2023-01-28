@@ -87,7 +87,7 @@ class ReservationTest {
 
         request = new ReservationRequest(
                 scheduleId,
-                jwtTokenProvider.getPrincipal(token)
+                jwtTokenProvider.getPrincipal(bearer + token)
         );
     }
 
@@ -121,7 +121,7 @@ class ReservationTest {
     void createError() {
         request = new ReservationRequest(
                 scheduleId+2,
-                jwtTokenProvider.getPrincipal(token)
+                jwtTokenProvider.getPrincipal(bearer + token)
         );
         RestAssured
             .given().log().all()

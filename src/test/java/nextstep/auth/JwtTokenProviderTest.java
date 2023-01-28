@@ -69,7 +69,7 @@ public class JwtTokenProviderTest {
         ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
 
         String accessToken = response.body().jsonPath().getString("accessToken");
-        String username = jwtTokenProvider.getPrincipal(accessToken);
+        String username = jwtTokenProvider.getPrincipal(bearer + accessToken);
         Assertions.assertThat(username).isEqualTo(USERNAME);
 
         RestAssured.given().log().all()
@@ -83,7 +83,7 @@ public class JwtTokenProviderTest {
     public static void saveMember(JdbcTemplate jdbcTemplate, String username, String password){
         ApplicationContext ac = new AnnotationConfigApplicationContext(SecurityConfig.class);
         PasswordEncoder passwordEncoder = ac.getBean(PasswordEncoder.class);
-        Member member = new Member(username, passwordEncoder.encode(password), "name", "010", Role.MEMBER);
+        Member member = new Member(username, passwordEncoder.encode(password), "name", "010", Role.ADMIN);
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);
     }

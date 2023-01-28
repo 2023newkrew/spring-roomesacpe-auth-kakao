@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static nextstep.config.Messages.*;
+import static nextstep.support.Messages.*;
 
 @Service
 public class MemberService {
@@ -22,7 +22,7 @@ public class MemberService {
             throw new DuplicateKeyException(ALREADY_USER.getMessage());
         }
         Member member = new Member(memberRequest.getUsername(), passwordEncoder.encode(memberRequest.getPassword()),
-                memberRequest.getName(), memberRequest.getPhone(), Role.MEMBER);
+                memberRequest.getName(), memberRequest.getPhone(), Role.ADMIN);
         return memberDao.save(member);
     }
 

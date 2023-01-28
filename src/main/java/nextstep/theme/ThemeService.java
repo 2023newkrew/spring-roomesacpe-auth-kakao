@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static nextstep.config.Messages.*;
+import static nextstep.support.Messages.*;
 
 @Service
 public class ThemeService {

@@ -2,7 +2,7 @@ package nextstep.theme;
 
 import org.h2.util.StringUtils;
 
-import static nextstep.config.Messages.EMPTY_VALUE;
+import static nextstep.support.Messages.EMPTY_VALUE;
 
 public class Theme {
     private Long id;
