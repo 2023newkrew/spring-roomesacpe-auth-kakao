@@ -27,6 +27,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        e.printStackTrace();
         ErrorCode errorCode = CommonErrorCode.SERVER_ERROR;
         return ResponseEntity
                 .status(errorCode.getHttpStatus())

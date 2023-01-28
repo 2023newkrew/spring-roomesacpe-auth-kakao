@@ -14,6 +14,10 @@ public class AuthenticationProvider {
 
     public LoginMember authenticate(DecodedJwtToken token) {
         Long memberId = token.getPrincipal();
+        if (memberId == null) {
+            return null;
+        }
+
         return LoginMember.from(
                 memberService.findById(memberId)
         );

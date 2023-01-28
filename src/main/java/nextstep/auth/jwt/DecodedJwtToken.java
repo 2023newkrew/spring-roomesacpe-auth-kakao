@@ -15,6 +15,10 @@ public class DecodedJwtToken {
     }
 
     public Long getPrincipal() {
+        if (rawToken == null) {
+            return null;
+        }
+
         return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .build()
