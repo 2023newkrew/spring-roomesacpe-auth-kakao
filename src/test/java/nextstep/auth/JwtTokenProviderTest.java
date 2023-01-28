@@ -7,6 +7,7 @@ import nextstep.AcceptanceTestExecutionListener;
 import nextstep.config.SecurityConfig;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +83,7 @@ public class JwtTokenProviderTest {
     public static void saveMember(JdbcTemplate jdbcTemplate, String username, String password){
         ApplicationContext ac = new AnnotationConfigApplicationContext(SecurityConfig.class);
         PasswordEncoder passwordEncoder = ac.getBean(PasswordEncoder.class);
-        Member member = new Member(username, passwordEncoder.encode(password), "name", "010");
+        Member member = new Member(username, passwordEncoder.encode(password), "name", "010", Role.MEMBER);
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);
     }

@@ -22,7 +22,7 @@ public class MemberService {
             throw new DuplicateKeyException(ALREADY_USER.getMessage());
         }
         Member member = new Member(memberRequest.getUsername(), passwordEncoder.encode(memberRequest.getPassword()),
-                memberRequest.getName(), memberRequest.getPhone());
+                memberRequest.getName(), memberRequest.getPhone(), Role.MEMBER);
         return memberDao.save(member);
     }
 

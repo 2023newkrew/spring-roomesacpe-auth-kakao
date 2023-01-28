@@ -1,5 +1,6 @@
 package nextstep.dbmapper;
 import nextstep.member.Member;
+import nextstep.member.Role;
 import nextstep.reservation.Reservation;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
@@ -13,7 +14,8 @@ public class H2Mapper implements DatabaseMapper {
                     resultSet.getString("username"),
                     resultSet.getString("password"),
                     resultSet.getString("name"),
-                    resultSet.getString("phone")
+                    resultSet.getString("phone"),
+                    Role.valueOf(resultSet.getString("role"))
             );
     }
 
