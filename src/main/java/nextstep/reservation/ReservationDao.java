@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +62,7 @@ public class ReservationDao {
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where theme.id = ? and schedule.date = ?;";
 
-        return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
+        return jdbcTemplate.query(sql, rowMapper, themeId, LocalDate.parse(date));
     }
 
     public Optional<Reservation> findById(Long id) {

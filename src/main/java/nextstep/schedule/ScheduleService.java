@@ -23,11 +23,11 @@ public class ScheduleService {
         return scheduleDao.save(scheduleRequestDto.toEntity(theme));
     }
 
-    public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
+    public List<Schedule> findByThemeIdAndDate(final Long themeId, final String date) {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         scheduleDao.deleteById(id);
     }
 }

@@ -7,7 +7,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import nextstep.auth.dto.TokenRequestDto;
@@ -32,23 +33,24 @@ public class JwtTokenProvider {
     private Long validityInMilliseconds;
 
     public String createToken(TokenRequestDto tokenRequestDto) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Long validityInSeconds = validityInMilliseconds / 1000;
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime validity = now.plusSeconds(validityInSeconds);
 
         return Jwts.builder()
             .setClaims(getClaimMap(tokenRequestDto))
-            .setIssuedAt(now)
-            .setExpiration(validity)
+            .setIssuedAt(Timestamp.valueOf(now))
+            .setExpiration(Timestamp.valueOf(validity))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }
 
-    public String getUsername(String token) {
+    public String getUsername(final String token) {
         Claims claims = getClaims(token);
         return claims.get(usernameKey).toString();
     }
 
-    public MemberRole getRole(String token) {
+    public MemberRole getRole(final String token) {
         Claims claims = getClaims(token);
         String roleName = claims.get(roleKey).toString();
         return MemberRole.valueOf(roleName);
@@ -61,7 +63,7 @@ public class JwtTokenProvider {
         return map;
     }
 
-    private Claims getClaims(String token) {
+    private Claims getClaims(final String token) {
         try {
             return Jwts.parser()
                 .setSigningKey(secretKey)

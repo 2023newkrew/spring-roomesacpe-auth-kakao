@@ -4,7 +4,6 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.dto.TokenRequestDto;
 import nextstep.auth.dto.TokenResponseDto;
-import nextstep.member.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,7 @@ public class AuthController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
         authService.validateUsernameAndPassword(tokenRequestDto);
-        String token = authService.login(tokenRequestDto);
+        final String token = authService.login(tokenRequestDto);
         return ResponseEntity.ok()
             .body(new TokenResponseDto(token));
     }

@@ -41,8 +41,8 @@ public class ScheduleDao {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, schedule.getTheme()
                 .getId());
-            ps.setDate(2, Date.valueOf(schedule.getDate()));
-            ps.setTime(3, Time.valueOf(schedule.getTime()));
+            ps.setObject(2, schedule.getDate());
+            ps.setObject(3, schedule.getTime());
             return ps;
 
         }, keyHolder);
@@ -70,7 +70,7 @@ public class ScheduleDao {
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.theme_id = ? and schedule.date = ?;";
 
-        return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
+        return jdbcTemplate.query(sql, rowMapper, themeId, LocalDate.parse(date));
     }
 
     public void deleteById(Long id) {

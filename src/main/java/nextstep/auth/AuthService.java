@@ -24,7 +24,7 @@ public class AuthService {
         return jwtTokenProvider.createToken(tokenRequestDto);
     }
 
-    public String findUsernameByToken(String token) {
+    public String findUsernameByToken(final String token) {
         return jwtTokenProvider.getUsername(token);
     }
 
