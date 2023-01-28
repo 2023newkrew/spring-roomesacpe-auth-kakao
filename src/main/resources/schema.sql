@@ -31,5 +31,9 @@ CREATE TABLE member
     password varchar(20) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
+    role     varchar(20) not null default 'NORMAL',
     primary key (id)
 );
+
+INSERT INTO member (username, password, name, phone, role)
+VALUES ('admin_member','password','name','010-1234-5678','ADMIN');

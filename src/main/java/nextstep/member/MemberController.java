@@ -31,16 +31,7 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity me(@LoginMember Member member) {
-        return ResponseEntity.ok(memberService.findByUserName(member.getUsername()));
+        return ResponseEntity.ok().body(member);
     }
 
-    @ExceptionHandler()
-    public ResponseEntity handleBadRequestException(NotExistMemberException ex) {
-        return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler()
-    public ResponseEntity handleUnauthorizedException(InvalidAuthorizationTokenException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 }

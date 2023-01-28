@@ -141,3 +141,36 @@ HTTP/1.1 204
 
 ### 토큰 인증 과정 공통 관심사 분리
 - [x] `HandlerMethodArgumentResolver` 와 어노테이션을 활용
+
+---
+
+### 리팩토링 목록
+- [x] AuthServiceTest 접근 제어자 수정
+- [x] AuthorizationTokenExtractorTest 메서드명 카멜 케이스로 수정
+- [x] 토큰 암호화 시 id값 포함하고 인증할 때 토큰의 id를 활용해서 member 정보 조회 
+- [x] MemberController 사용하지 않는 코드 제거 
+- [x] ExceptionHandler 예외 로그 출력
+- [x] 401, 403 코드 구분
+
+---
+# step3
+
+## 기능 요구사항
+- 관리자 역할을 추가한다.
+  - 일반 멤버와 관리자 멤버를 구분한다.
+- 관리자 기능을 보호한다.
+  - 관리자 관련 기능 API는 /admin 붙이고 interceptor로 검증한다.
+  - 관리자 관련 기능 API는 authorization 헤더를 이용하여 인증과 인가를 진행한다.
+  - 그 외 관리자 API는 자유롭게 설계하고 적용한다.
+
+## 프로그래밍 요구사항
+- 관리자를 등록하도록 하기 보다는 애플리케이션이 동작할 때 관리자는 추가될 수 있도록 한다
+
+### 기능 구현 목록
+- [x] member 스키마에 role 속성 추가, 그에 따른 리팩토링
+  - [x] memberDao 수정
+  - [x] memberRole enum 타입 추가
+- [x] /admin/** 경로로 들어오는 요청에 인터셉터 적용
+  - [x] Admin 검증을 위한 인터셉터 구현
+  - [x] WebMvcConfiguration에 인터셉터 등록
+- [x] 테마 테스트 수정 - 어드민 권한 테스트 포함

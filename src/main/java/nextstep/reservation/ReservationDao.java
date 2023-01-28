@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.member.Member;
+import nextstep.member.MemberRole;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.dao.DataAccessException;
@@ -42,7 +43,8 @@ public class ReservationDao {
                     resultSet.getString("member.username"),
                     resultSet.getString("member.password"),
                     resultSet.getString("member.name"),
-                    resultSet.getString("member.phone")
+                    resultSet.getString("member.phone"),
+                    MemberRole.valueOf(resultSet.getString("member.role"))
             )
 
     );

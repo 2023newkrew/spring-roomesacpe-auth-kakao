@@ -1,10 +1,13 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.AuthorizationTokenExtractor;
+import nextstep.auth.JwtTokenProvider;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +21,9 @@ public class ScheduleE2ETest {
 
     private Long themeId;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @BeforeEach
     void setUp() {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
@@ -25,7 +31,8 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .header(AuthorizationTokenExtractor.AUTHORIZATION, AuthorizationTokenExtractor.BEARER_TYPE+ " " + jwtTokenProvider.createToken("admin_member"))
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

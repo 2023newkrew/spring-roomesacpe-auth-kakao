@@ -11,7 +11,7 @@ public class AuthorizationTokenExtractorTest {
 
     @DisplayName("토큰을 추출한다")
     @Test
-    void extract_single() {
+    void extractSingle() {
         String accessToken = "token";
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(
@@ -26,7 +26,7 @@ public class AuthorizationTokenExtractorTest {
 
     @DisplayName("여러개의 토큰이 있을 경우 맨 처음 토큰만 추출한다")
     @Test
-    void extract_multi() {
+    void extractMulti() {
         String accessTokens = "token1,token2";
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(
@@ -41,7 +41,7 @@ public class AuthorizationTokenExtractorTest {
 
     @DisplayName("Authorization 헤더가 없는 경우 Optional.empty() 반환")
     @Test
-    void extract_empty() {
+    void extractEmpty() {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         Optional<String> token = AuthorizationTokenExtractor.extract(request.getHeader(AuthorizationTokenExtractor.AUTHORIZATION));
@@ -51,7 +51,7 @@ public class AuthorizationTokenExtractorTest {
 
     @DisplayName("토큰 scheme이 Bearer가 아닐 경우 Optional.empty() 반환")
     @Test
-    void extract_wrongScheme() {
+    void extractWrongScheme() {
         String accessToken = "token";
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(

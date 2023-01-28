@@ -43,7 +43,8 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .header(AuthorizationTokenExtractor.AUTHORIZATION, AuthorizationTokenExtractor.BEARER_TYPE+" "+jwtTokenProvider.createToken("admin_member"))
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -186,7 +187,7 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    @DisplayName("다른 사람의 예약을 삭제하면 401 코드 반환")
+    @DisplayName("다른 사람의 예약을 삭제하면 403 코드 반환")
     @Test
     void tryDeleteNotMyReservation() {
         createReservation();
@@ -198,7 +199,7 @@ class ReservationE2ETest {
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().delete("/reservations/1")
                 .then().log().all()
-                        .statusCode(HttpStatus.UNAUTHORIZED.value());
+                        .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("잘못된 인증 토큰이 들어오면 401 코드 반환")
