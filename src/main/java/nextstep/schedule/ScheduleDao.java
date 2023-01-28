@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import java.util.Optional;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Component
 public class ScheduleDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -49,13 +50,13 @@ public class ScheduleDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Schedule findById(Long id) {
+    public Optional<Schedule> findById(Long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id).stream().findAny();
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
@@ -65,6 +66,21 @@ public class ScheduleDao {
                 "where schedule.theme_id = ? and schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
+    }
+
+    public Optional<Schedule> findBySchedule(Schedule schedule) {
+        String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
+                "from schedule " +
+                "inner join theme on schedule.theme_id = theme.id " +
+                "where schedule.theme_id = ? and schedule.date = ? and schedule.time = ?";
+
+        return jdbcTemplate.query(
+                sql,
+                rowMapper,
+                schedule.getTheme().getId(),
+                Date.valueOf(schedule.getDate()),
+                Time.valueOf(schedule.getTime()))
+                .stream().findAny();
     }
 
     public void deleteById(Long id) {

@@ -1,35 +1,30 @@
 package nextstep.member;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class MemberRequest {
     private String username;
     private String password;
     private String name;
     private String phone;
 
-    public MemberRequest(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
     public Member toEntity() {
         return new Member(username, password, name, phone);
+    }
+
+    public MemberRequest(Member member) {
+        this.username = member.getUsername();
+        this.password = member.getPassword();
+        this.name = member.getName();
+        this.phone = member.getPhone();
     }
 }

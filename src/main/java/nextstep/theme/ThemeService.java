@@ -1,20 +1,28 @@
 package nextstep.theme;
 
-import nextstep.support.NotExistEntityException;
+import nextstep.exceptions.exception.duplicate.DuplicatedThemeException;
+import nextstep.exceptions.exception.notFound.ThemeNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ThemeService {
-    private ThemeDao themeDao;
+    private final ThemeDao themeDao;
 
     public ThemeService(ThemeDao themeDao) {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
-        return themeDao.save(themeRequest.toEntity());
+    public Long create(Theme theme) {
+        themeDao.findByName(theme.getName()).ifPresent((existTheme) -> {
+            throw new DuplicatedThemeException();
+        });
+        return themeDao.save(theme);
+    }
+
+    public Theme findById(Long id) {
+        return themeDao.findById(id).orElseThrow(ThemeNotFoundException::new);
     }
 
     public List<Theme> findAll() {
@@ -22,11 +30,7 @@ public class ThemeService {
     }
 
     public void delete(Long id) {
-        Theme theme = themeDao.findById(id);
-        if (theme == null) {
-            throw new NotExistEntityException();
-        }
-
+        themeDao.findById(id).orElseThrow(ThemeNotFoundException::new);
         themeDao.delete(id);
     }
 }

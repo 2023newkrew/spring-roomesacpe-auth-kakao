@@ -1,8 +1,12 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.DisplayName;
+import nextstep.auth.JwtTokenProvider;
+import nextstep.member.Member;
+import nextstep.member.MemberRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,27 +17,57 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
-    @DisplayName("테마를 생성한다")
-    @Test
-    public void create() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        RestAssured
-                .given().log().all()
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    private final Member member = Member.builder()
+            .username("username")
+            .password("password")
+            .phone("010-1234-5678")
+            .name("name")
+            .build();
+
+    private final Theme theme = Theme.builder()
+            .name("themeName")
+            .desc("themeDesc")
+            .price(10000)
+            .build();
+    private String token;
+
+    @BeforeEach
+    void setUp() {
+        MemberRequest memberRequest = new MemberRequest(member);
+        String location = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        member.setId(getIdFromLocation(location));
+        token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+
+        ThemeRequest themeRequest = new ThemeRequest(theme);
+        location = RestAssured.given().auth().oauth2(token).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(themeRequest)
                 .when().post("/themes")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        theme.setId(getIdFromLocation(location));
     }
 
-    @DisplayName("테마 목록을 조회한다")
-    @Test
-    public void showThemes() {
-        createTheme();
 
+    private Long getIdFromLocation(String location) {
+        return Long.parseLong(location.split("/")[2]);
+    }
+
+    @Test
+    void 테마_목록을_조회한다() {
         var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
+                .given().auth().oauth2(token).log().all()
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -41,30 +75,15 @@ public class ThemeE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
     @Test
-    void delete() {
-        Long id = createTheme();
-
+    void 테마를_삭제한다() {
         var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
+                .given().auth().oauth2(token).log().all()
+                .when().delete("/themes/" + theme.getId())
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
-    }
 }

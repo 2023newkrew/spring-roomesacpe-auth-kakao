@@ -1,11 +1,13 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.member.Member;
 import nextstep.member.MemberRequest;
+import nextstep.reservation.ReservationRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,77 +18,89 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    private Long memberId;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    private String token;
+    private final Member member = Member.builder()
+            .username("username")
+            .password("password")
+            .name("name")
+            .phone("010-1234-5678")
+            .build();
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
+        MemberRequest memberRequest = new MemberRequest(member);
+        String location = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(memberRequest)
                 .when().post("/members")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+        member.setId(Long.parseLong(location.split("/")[2]));
+        token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        assertThat(Long.parseLong(jwtTokenProvider.getPrincipal(token))).isEqualTo(member.getId());
 
-    @DisplayName("토큰을 생성한다")
-    @Test
-    public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(member.getId(), member.getPassword());
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        String tokenPrinciple = jwtTokenProvider.getPrincipal(
+                response.as(TokenResponse.class)
+                        .getAccessToken()
+        );
+        assertThat(Long.parseLong(tokenPrinciple)).isEqualTo(member.getId());
     }
 
-    @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
-        createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
+    void 토큰_없이_테마를_조회할_수_없다() {
+        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .body(themeRequest)
                 .when().post("/themes")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+
+    }
+
+    @Test
+    void 토큰_없이_테마를_삭제할_수_없다() {
+        RestAssured
+                .given().log().all()
+                .when().delete("/themes/" + 1L)
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+
+    @Test
+    void 토큰_없이_예약을_할_수_없다() {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new ReservationRequest())
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    void 토큰_없이_예약을_삭제할_수_없다() {
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/reservations" + 1L)
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
