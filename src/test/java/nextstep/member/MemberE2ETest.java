@@ -2,7 +2,6 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.jwt.TokenRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,11 +15,6 @@ import static org.hamcrest.Matchers.is;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MemberE2ETest {
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @DisplayName("멤버를 생성한다")
     @Test
