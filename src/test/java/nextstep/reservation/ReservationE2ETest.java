@@ -4,7 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.TokenData;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberRole;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,9 +42,10 @@ class ReservationE2ETest {
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.ADMIN.toString())))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -61,7 +64,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", MemberRole.NORMAL);
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -84,7 +87,7 @@ class ReservationE2ETest {
     void create() {
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1"))
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -118,7 +121,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1"))
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
                 .when().delete(reservation.header("Location"))
                 .then().log().all()
                 .extract();
@@ -172,7 +175,7 @@ class ReservationE2ETest {
     private ExtractableResponse<Response> createReservation() {
         return RestAssured
                 .given().log().all()
-                .auth().oauth2(jwtTokenProvider.createToken("1"))
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.NORMAL.toString())))
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")

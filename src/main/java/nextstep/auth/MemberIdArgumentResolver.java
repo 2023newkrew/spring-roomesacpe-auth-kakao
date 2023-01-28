@@ -35,10 +35,10 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) {
-        var bearerToken = webRequest.getHeader(ACCESS_TOKEN_NAME);
-        var accessToken = provider.getValidToken(bearerToken);
-        String principal = provider.getPrincipal(accessToken);
+        String bearerToken = webRequest.getHeader(ACCESS_TOKEN_NAME);
+        String accessToken = provider.getValidToken(bearerToken);
+        TokenData tokenData = provider.getTokenData(accessToken);
 
-        return Long.parseLong(principal);
+        return tokenData.getId();
     }
 }

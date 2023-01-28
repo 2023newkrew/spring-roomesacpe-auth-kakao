@@ -2,10 +2,12 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
+import nextstep.member.MemberRole;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,11 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", MemberRole.NORMAL);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -70,7 +73,8 @@ public class AuthE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.ADMIN.toString())))
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -82,8 +86,9 @@ public class AuthE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(jwtTokenProvider.createToken(new TokenData(1L, MemberRole.ADMIN.toString())))
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

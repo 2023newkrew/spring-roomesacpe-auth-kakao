@@ -2,9 +2,8 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.MemberRole;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 public class AuthService {
@@ -23,7 +22,8 @@ public class AuthService {
         if (member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new AuthenticationException();
         }
-
-        return new TokenResponse(jwtTokenProvider.createToken(member.getId().toString()));
+        MemberRole role = member.getRole();
+        TokenData tokenData = new TokenData(member.getId(), role.toString());
+        return new TokenResponse(jwtTokenProvider.createToken(tokenData));
     }
 }
