@@ -18,7 +18,7 @@ class AccessTokenTest {
     @DisplayName("새로운 토큰을 생성한다.")
     @Test
     void createToken() {
-        AccessToken token = AccessToken.create("1");
+        AccessToken token = AccessToken.create("1", "USER");
 
         assertThat(token.isValid()).isTrue();
     }
@@ -26,7 +26,7 @@ class AccessTokenTest {
     @DisplayName("토큰에서 memberId를 가져온다.")
     @Test
     void getPrincipal() {
-        AccessToken token = AccessToken.create("1");
+        AccessToken token = AccessToken.create("1", "USER");
 
         assertThat(token.getSub()).isEqualTo("1");
     }

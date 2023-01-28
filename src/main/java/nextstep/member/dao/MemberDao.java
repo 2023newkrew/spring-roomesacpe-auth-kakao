@@ -21,7 +21,8 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            resultSet.getString("role")
     );
 
     @Autowired
@@ -30,7 +31,7 @@ public class MemberDao {
     }
 
     public Long save(MemberEntity memberEntity) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -39,6 +40,7 @@ public class MemberDao {
             ps.setString(2, memberEntity.getPassword());
             ps.setString(3, memberEntity.getName());
             ps.setString(4, memberEntity.getPhone());
+            ps.setString(5, Optional.ofNullable(memberEntity.getRole()).orElse("USER"));
             return ps;
         }, keyHolder);
 
@@ -48,20 +50,14 @@ public class MemberDao {
     }
 
     public MemberEntity findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone FROM member WHERE id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role FROM member WHERE id = ?;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public MemberEntity findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone FROM member WHERE username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role FROM member WHERE username = ?;";
 
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
-    }
-
-    public MemberEntity findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone FROM member WHERE username = ? AND password = ?;";
-
-        return jdbcTemplate.queryForObject(sql, rowMapper, username, password);
     }
 }

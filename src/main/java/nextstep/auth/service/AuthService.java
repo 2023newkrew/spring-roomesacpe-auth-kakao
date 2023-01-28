@@ -30,6 +30,6 @@ public class AuthService {
             throw new UnauthenticatedException();
         }
 
-        return AccessToken.create(String.valueOf(existMember.getId()));
+        return AccessToken.create(String.valueOf(existMember.getId()), existMember.getRole());
     }
 }

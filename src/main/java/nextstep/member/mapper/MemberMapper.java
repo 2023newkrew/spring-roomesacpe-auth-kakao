@@ -27,7 +27,8 @@ public interface MemberMapper {
         String password = member.getPassword();
         String name = member.getName();
         String phone = member.getPhone();
+        String role = member.getRole();
 
-        return new MemberResponse(id, username, password, name, phone);
+        return new MemberResponse(id, username, password, name, phone, role);
     }
 }
