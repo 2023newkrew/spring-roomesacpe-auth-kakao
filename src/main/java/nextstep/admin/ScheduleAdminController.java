@@ -1,6 +1,7 @@
 package nextstep.admin;
 
 import java.net.URI;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nextstep.schedule.ScheduleService;
 import nextstep.schedule.dto.ScheduleRequestDto;
@@ -20,7 +21,7 @@ public class ScheduleAdminController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
+    public ResponseEntity createSchedule(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto) {
         Long id = scheduleService.create(scheduleRequestDto);
         return ResponseEntity.created(URI.create("/schedules/" + id))
             .build();

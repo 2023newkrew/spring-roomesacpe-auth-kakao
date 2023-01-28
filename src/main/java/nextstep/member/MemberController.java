@@ -1,6 +1,7 @@
 package nextstep.member;
 
 import java.net.URI;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import nextstep.common.AuthenticationPrincipal;
 import nextstep.member.dto.MemberRequestDto;
@@ -20,7 +21,7 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequestDto memberRequestDto) {
+    public ResponseEntity createMember(@RequestBody @Valid MemberRequestDto memberRequestDto) {
         Long id = memberService.create(memberRequestDto);
         return ResponseEntity.created(URI.create("/members/" + id))
             .build();
