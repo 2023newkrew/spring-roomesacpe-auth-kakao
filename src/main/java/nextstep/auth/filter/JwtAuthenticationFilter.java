@@ -2,10 +2,10 @@ package nextstep.auth.filter;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthenticationProvider;
-import nextstep.auth.AuthorizationExtractor;
 import nextstep.auth.LoginMemberContextHolder;
 import nextstep.auth.domain.LoginMember;
 import nextstep.auth.jwt.DecodedJwtToken;
+import nextstep.auth.util.AuthorizationExtractor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 

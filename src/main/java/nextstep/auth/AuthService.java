@@ -1,6 +1,8 @@
 package nextstep.auth;
 
 import nextstep.auth.jwt.EncodedJwtToken;
+import nextstep.auth.jwt.TokenRequest;
+import nextstep.auth.jwt.TokenResponse;
 import nextstep.exception.AuthErrorCode;
 import nextstep.exception.BusinessException;
 import nextstep.member.Member;

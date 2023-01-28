@@ -23,6 +23,11 @@ public class MemberController {
                 .build();
     }
 
+    @GetMapping("/hello")
+    public String hello(@AuthenticationPrincipal LoginMember member) {
+        return "hello";
+    }
+
     @GetMapping("/me")
     public ResponseEntity<Member> me(@AuthenticationPrincipal LoginMember member) {
         return ResponseEntity.ok(

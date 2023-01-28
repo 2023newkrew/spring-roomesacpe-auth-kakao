@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nextstep.member.Member;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class LoginMember {
@@ -18,15 +15,15 @@ public class LoginMember {
 
     private final String name;
 
-    private final List<Role> roles = new ArrayList<>(List.of(Role.USER));
+    private final Role role;
 
     public static LoginMember from(Member member) {
         return new LoginMember(
-                member.getId(), member.getUsername(), member.getName()
+                member.getId(), member.getUsername(), member.getName(), member.getRole()
         );
     }
 
-    public boolean hasRole(Role role) {
-        return roles.contains(role);
+    public boolean isAdmin() {
+        return Role.ADMIN.equals(role);
     }
 }
