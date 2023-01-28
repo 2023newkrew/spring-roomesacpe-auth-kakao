@@ -6,7 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 
 public class EncodedJwtToken {
-    private static final String secretKey = "learning-test-spring";
+    private static final String secretKey = "learning-test-spring-learning-test-spring";
     private static final Long validityInMilliseconds = 3600000L;
 
     private final String principal;

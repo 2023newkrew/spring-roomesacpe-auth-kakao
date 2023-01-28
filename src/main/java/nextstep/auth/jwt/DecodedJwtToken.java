@@ -7,7 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 public class DecodedJwtToken {
-    private static final String secretKey = "learning-test-spring";
+    private static final String secretKey = "learning-test-spring-learning-test-spring";
     private final String rawToken;
 
     public DecodedJwtToken(String rawToken) {
