@@ -5,6 +5,7 @@ import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.common.ValidMemberRole;
 import nextstep.member.Member;
 
 @Getter
@@ -20,6 +21,7 @@ public final class MemberRequestDto {
     private String name;
     @Pattern(regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$", message = "올바른 전화번호 양식이 아닙니다.")
     private String phone;
+    @ValidMemberRole
     private String role;
 
     public Member toEntity() {

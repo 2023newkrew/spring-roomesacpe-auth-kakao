@@ -7,6 +7,8 @@ import nextstep.common.exception.NotExistEntityException;
 import nextstep.common.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -35,5 +37,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> notExistEntityExceptionHandler(Exception exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(exception.getBindingResult().getFieldError().getDefaultMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<String> HttpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("올바른 형식을 입력해주세요.");
     }
 }
