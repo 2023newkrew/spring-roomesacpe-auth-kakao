@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,10 +32,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-class ReservationTest {
-    public static final String DATE = "2022-08-11";
-    public static final String TIME = "13:00";
-    public static final String NAME = "name";
+public class ReservationTest {
+    public static final String TEST_DATE = "2022-08-11";
+    public static final String TEST_TIME = "13:00";
+    public static final String TEST_NAME = "name";
 
     private ReservationRequest request;
     private Long themeId;
@@ -55,7 +56,7 @@ class ReservationTest {
         ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", env.getProperty("jwt.secret"));
         ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", env.getProperty("jwt.validateMilliSeconds"));
 
-        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> tokenResponse = generateToken(USERNAME, PASSWORD);
         token = tokenResponse.body().jsonPath().getString("accessToken");
 
@@ -65,20 +66,20 @@ class ReservationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + token)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, TEST_DATE, TEST_TIME);
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + token)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -150,7 +151,7 @@ class ReservationTest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", DATE)
+                .param("date", TEST_DATE)
                 .header(authorization, bearer + token)
                 .when().get("/reservations")
                 .then().log().all()
@@ -166,7 +167,7 @@ class ReservationTest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", DATE)
+                .param("date", TEST_DATE)
                 .header(authorization, bearer + token)
                 .when().get("/reservations")
                 .then().log().all()
@@ -204,7 +205,7 @@ class ReservationTest {
     void otherUserDeleteTest(){
         var reservation = requestCreateReservation();
         String otherUserName = USERNAME + "22";
-        saveMember(jdbcTemplate, otherUserName, PASSWORD);
+        saveMember(jdbcTemplate, otherUserName, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> otherTokenResponse = generateToken(otherUserName, PASSWORD);
         String otherToken = otherTokenResponse.body().jsonPath().getString("accessToken");
 

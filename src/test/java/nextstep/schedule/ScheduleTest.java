@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
+import nextstep.member.Role;
 import nextstep.reservation.Reservation;
 import nextstep.reservation.ReservationDao;
 import nextstep.theme.Theme;
@@ -41,7 +42,7 @@ public class ScheduleTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
         accessToken = response.body().jsonPath().getString("accessToken");
 
@@ -51,7 +52,7 @@ public class ScheduleTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + accessToken)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -68,7 +69,7 @@ public class ScheduleTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -89,7 +90,7 @@ public class ScheduleTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + accessToken)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -118,10 +119,11 @@ public class ScheduleTest {
     void delete() {
         ExtractableResponse<Response> createSchedule = requestCreateSchedule();
         String location = getScheduleLocation(createSchedule);
+        String adminLocation = "/admin" + location;
         var response = RestAssured
                 .given().log().all()
                 .header(authorization, bearer + accessToken)
-                .when().delete(location)
+                .when().delete(adminLocation)
                 .then().log().all()
                 .extract();
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -151,11 +153,11 @@ public class ScheduleTest {
                 "testReservation"
         );
         reservationDao.save(reservation);
-
+        String adminLocation = "/admin" + location;
         RestAssured
                 .given().log().all()
                 .header(authorization, bearer + accessToken)
-                .when().delete(location)
+                .when().delete(adminLocation)
                 .then().log().all()
                 .statusCode(HttpStatus.CONFLICT.value());
     }
@@ -165,10 +167,12 @@ public class ScheduleTest {
     void emptyDeleteTest(){
         ExtractableResponse<Response> createSchedule = requestCreateSchedule();
         String location = getScheduleLocation(createSchedule) + "22";
+        String adminLocation = "/admin" + location;
+        System.out.println(location);
         RestAssured
                 .given().log().all()
                 .header(authorization, bearer + accessToken)
-                .when().delete(location)
+                .when().delete(adminLocation)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -181,7 +185,7 @@ public class ScheduleTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + accessToken)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .extract();
     }

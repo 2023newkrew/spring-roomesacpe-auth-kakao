@@ -41,7 +41,6 @@ public class JwtTokenProviderTest {
     @InjectMocks
     JwtTokenProvider jwtTokenProvider;
 
-
     @Autowired
     Environment env;
 
@@ -57,7 +56,7 @@ public class JwtTokenProviderTest {
     @DisplayName("토큰을 생성할 수 있다")
     @Test
     void createTokenTest() {
-        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
@@ -65,7 +64,7 @@ public class JwtTokenProviderTest {
     @Test
     @DisplayName("토큰을 이용하여 유저 정보를 가져올 수 있다.")
     void findByUsernameTest() {
-        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
 
         String accessToken = response.body().jsonPath().getString("accessToken");
@@ -80,10 +79,10 @@ public class JwtTokenProviderTest {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    public static void saveMember(JdbcTemplate jdbcTemplate, String username, String password){
+    public static void saveMember(JdbcTemplate jdbcTemplate, String username, String password, Role role){
         ApplicationContext ac = new AnnotationConfigApplicationContext(SecurityConfig.class);
         PasswordEncoder passwordEncoder = ac.getBean(PasswordEncoder.class);
-        Member member = new Member(username, passwordEncoder.encode(password), "name", "010", Role.ADMIN);
+        Member member = new Member(username, passwordEncoder.encode(password), username, "010", role);
         MemberDao memberDao = new MemberDao(jdbcTemplate);
         memberDao.save(member);
     }
