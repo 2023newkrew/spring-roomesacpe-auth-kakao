@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.dto.TokenRequestDto;
 import nextstep.auth.dto.TokenResponseDto;
@@ -16,7 +17,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
         authService.validateUsernameAndPassword(tokenRequestDto);
         String token = authService.login(tokenRequestDto);
         return ResponseEntity.ok()
