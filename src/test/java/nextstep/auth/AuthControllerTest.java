@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,8 @@ public class AuthControllerTest {
     private AuthService authService;
     @MockBean
     private MemberService memberService; // WebMvcConfigurer 생성을 위한 Mock
+    @MockBean
+    private MemberDao memberDao; // WebMvcConfigurer 생성을 위한 Mock
     @MockBean
     private JwtTokenProvider jwtTokenProvider; // WebMvcConfigurer 생성을 위한 Mock
     @MockBean
