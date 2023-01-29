@@ -30,6 +30,20 @@ public class MemberE2ETest {
         assertThat(member.getUsername()).isEqualTo(AuthUtil.RESERVATION_EXIST_USERNAME);
     }
 
+    @DisplayName("멤버를 관리자로 승격한다")
+    @Test
+    void updateUserRoleToAdmin() {
+        String accessToken = AuthUtil.createTokenForAdminUser();
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest(AuthUtil.RESERVATION_EXIST_USERNAME, "", "", ""))
+                .when().post("/admin/members/admin")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
     private static void createMember(MemberRequest memberRequest) {
         RestAssured
                 .given().log().all()
