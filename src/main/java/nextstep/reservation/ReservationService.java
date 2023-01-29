@@ -53,7 +53,7 @@ public class ReservationService {
 
         Long memberId = reservation.getMemberId();
         if (!Objects.equals(member.getId(), memberId)) {
-            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.NOT_OWN_RESERVATION);
+            throw new AuthorizationException(RoomEscapeExceptionCode.NOT_OWN_RESERVATION);
         }
 
         reservationDao.deleteById(id);

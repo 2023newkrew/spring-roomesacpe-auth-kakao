@@ -7,7 +7,7 @@ import nextstep.member.LoginMember;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import nextstep.support.annotation.AuthorizationPrincipal;
-import nextstep.support.exception.AuthorizationExcpetion;
+import nextstep.support.exception.AuthorizationException;
 import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
@@ -32,10 +32,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String token = jwtTokenExtractor.extractToken(webRequest.getHeader(HttpHeaders.AUTHORIZATION))
-                .orElseThrow(() -> new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN));
+                .orElseThrow(() -> new AuthorizationException(RoomEscapeExceptionCode.INVALID_TOKEN));
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN);
+            throw new AuthorizationException(RoomEscapeExceptionCode.INVALID_TOKEN);
         }
         Member member = memberService.findByUsername(jwtTokenProvider.getPrincipal(token));
         return LoginMember.from(member);
