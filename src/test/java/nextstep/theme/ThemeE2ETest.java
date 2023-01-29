@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.auth.AuthUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,15 +14,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
+    private static final String ADMIN_USER_ACCESS_TOKEN = AuthUtil.createTokenForAdminUser();
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_USER_ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -48,7 +52,8 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .auth().oauth2(ADMIN_USER_ACCESS_TOKEN)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -59,9 +64,10 @@ public class ThemeE2ETest {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_USER_ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

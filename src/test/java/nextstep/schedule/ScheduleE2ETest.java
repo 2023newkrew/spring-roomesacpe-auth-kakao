@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.AuthUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,16 +14,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScheduleE2ETest {
+    private static final String ADMIN_USER_ACCESS_TOKEN = AuthUtil.createTokenForAdminUser();
 
     @DisplayName("스케줄을 생성한다")
     @Test
     public void createSchedule() {
+        System.out.println(ADMIN_USER_ACCESS_TOKEN);
+
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_USER_ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -47,7 +52,8 @@ public class ScheduleE2ETest {
     void delete() {
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/schedules/2")
+                .auth().oauth2(ADMIN_USER_ACCESS_TOKEN)
+                .when().delete("/admin/schedules/2")
                 .then().log().all()
                 .extract();
 

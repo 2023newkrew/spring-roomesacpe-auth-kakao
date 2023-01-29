@@ -2,8 +2,6 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.AuthUtil;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,12 +24,10 @@ public class MemberE2ETest {
     @DisplayName("내 정보를 조회한다")
     @Test
     void me() {
-        TokenRequest tokenRequest = AuthUtil.RESERVATION_EXIST_USER_TOKEN_REQUEST;
-        final TokenResponse tokenResponse = AuthUtil.createToken(tokenRequest);
-        final String accessToken = tokenResponse.getAccessToken();
+        String accessToken = AuthUtil.createTokenForReservationExistUser();
 
         Member member = getMemberSelfInfo(accessToken);
-        assertThat(member.getUsername()).isEqualTo(tokenRequest.getUsername());
+        assertThat(member.getUsername()).isEqualTo(AuthUtil.RESERVATION_EXIST_USERNAME);
     }
 
     private static void createMember(MemberRequest memberRequest) {
