@@ -26,10 +26,16 @@ CREATE TABLE schedule
 
 CREATE TABLE member
 (
-    id       bigint      not null auto_increment,
-    username varchar(20) not null,
-    password varchar(20) not null,
-    name     varchar(20) not null,
-    phone    varchar(20) not null,
+    id       bigint       not null,
+    username varchar(20)  not null,
+    password varchar(100) not null,
+    name     varchar(20)  not null,
+    phone    varchar(20)  not null,
+    role     varchar(20)  not null,
     primary key (id)
 );
+
+CREATE SEQUENCE seq_member START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_reservation START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_theme START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_schedule START WITH 1 INCREMENT BY 1;

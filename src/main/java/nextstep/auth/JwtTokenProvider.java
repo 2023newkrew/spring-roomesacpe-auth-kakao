@@ -6,25 +6,27 @@ import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtTokenProvider {
 
-    private static final String secretKey = "lXH810veBaPOZAh5WN4cuo9BFRolED9ELuOuUa10lQCBcn0ckL";
+    private final String secretKey = "lXH810veBaPOZAh5WN4cuo9BFRolED9ELuOuUa10lQCBcn0ckL";
 
-    private static final SecretKey key;
+    private final SecretKey key;
 
-    private static final JwtParser parserBuilder;
+    private final JwtParser parserBuilder;
 
-    private static final long validityInMilliseconds = 3_600_000;
+    private final long validityInMilliseconds = 3_600_000;
 
-    static {
+    public JwtTokenProvider() {
         key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
         parserBuilder = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build();
     }
 
-    public static String createToken(String principal) {
+    public String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -37,14 +39,14 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public static String getPrincipal(String token) {
+    public String getPrincipal(String token) {
         return parserBuilder
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             parserBuilder
                     .parseClaimsJws(token);

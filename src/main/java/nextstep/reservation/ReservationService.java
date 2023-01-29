@@ -49,11 +49,11 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void delete(Long id, Long memberId) {
+    public int delete(Long id, Long memberId) {
         if (!reservationDao.existsByIdAndMemberId(id, memberId)) {
             throw new RuntimeException();
         }
 
-        reservationDao.deleteById(id);
+        return reservationDao.deleteById(id);
     }
 }

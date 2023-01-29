@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import java.sql.SQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,46 +14,60 @@ import java.util.Optional;
 public class MemberDao {
     public final JdbcTemplate jdbcTemplate;
     private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
+            Long.parseLong(resultSet.getString("id")),
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public MemberDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private Long getIdFromSequence() {
+        String sql = "SELECT nextval('seq_member')";
+        return jdbcTemplate.query(sql,
+                rs -> {
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    } else {
+                        throw new SQLException();
+                    }
+                });
+    }
+
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (id, username, password, name, phone, role) VALUES (?, ?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setString(1, member.getUsername());
-            ps.setString(2, member.getPassword());
-            ps.setString(3, member.getName());
-            ps.setString(4, member.getPhone());
+            ps.setLong(1, getIdFromSequence());
+            ps.setString(2, member.getUsername());
+            ps.setString(3, member.getPassword());
+            ps.setString(4, member.getName());
+            ps.setString(5, member.getPhone());
+            ps.setString(6, member.getRole().name());
             return ps;
-
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+    public Optional<Member> findByUsername(String username) {
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
     }
 
-    public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ? and password = ?;";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username, password));
+    public void updateRole(Long id, MemberRole memberRole) {
+        String sql = "UPDATE member SET role = ? where id = ?";
+        jdbcTemplate.update(sql, memberRole.name(), id);
     }
 }

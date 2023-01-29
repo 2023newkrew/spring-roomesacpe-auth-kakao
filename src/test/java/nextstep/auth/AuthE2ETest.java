@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.member.MemberRequest;
+import nextstep.member.MemberCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
+        MemberCreateRequest body = new MemberCreateRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

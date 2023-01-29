@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import java.sql.SQLException;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,14 +37,27 @@ public class ReservationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private Long getIdFromSequence() {
+        String sql = "SELECT nextval('seq_reservation')";
+        return jdbcTemplate.query(sql,
+                rs -> {
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    } else {
+                        throw new SQLException();
+                    }
+                });
+    }
+
     public Long save(Reservation reservation) {
-        String sql = "INSERT INTO reservation (schedule_id, member_id) VALUES (?, ?);";
+        String sql = "INSERT INTO reservation (id, schedule_id, member_id) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, reservation.getSchedule().getId());
-            ps.setLong(2, reservation.getMemberId());
+            ps.setLong(1, getIdFromSequence());
+            ps.setLong(2, reservation.getSchedule().getId());
+            ps.setLong(3, reservation.getMemberId());
             return ps;
 
         }, keyHolder);
@@ -103,8 +117,8 @@ public class ReservationDao {
         }
     }
 
-    public void deleteById(Long id) {
+    public int deleteById(Long id) {
         String sql = "DELETE FROM reservation where id = ?;";
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import java.sql.SQLException;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,15 +33,28 @@ public class ScheduleDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private Long getIdFromSequence() {
+        String sql = "SELECT nextval('seq_schedule')";
+        return jdbcTemplate.query(sql,
+                rs -> {
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    } else {
+                        throw new SQLException();
+                    }
+                });
+    }
+
     public Long save(Schedule schedule) {
-        String sql = "INSERT INTO schedule (theme_id, date, time) VALUES (?, ?, ?);";
+        String sql = "INSERT INTO schedule (id, theme_id, date, time) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, schedule.getTheme().getId());
-            ps.setDate(2, Date.valueOf(schedule.getDate()));
-            ps.setTime(3, Time.valueOf(schedule.getTime()));
+            ps.setLong(1, getIdFromSequence());
+            ps.setLong(2, schedule.getTheme().getId());
+            ps.setDate(3, Date.valueOf(schedule.getDate()));
+            ps.setTime(4, Time.valueOf(schedule.getTime()));
             return ps;
 
         }, keyHolder);
@@ -70,8 +84,8 @@ public class ScheduleDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
     }
 
 }
