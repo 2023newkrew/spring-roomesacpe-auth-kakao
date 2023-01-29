@@ -2,12 +2,14 @@ package nextstep.auth;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class JwtTokenExtractor {
-    public String extractToken(String tokenWithClass) {
+    public Optional<String> extractToken(String tokenWithClass) {
         if (tokenWithClass != null) {
-            return tokenWithClass.replace(JwtTokenConfig.TOKEN_CLASS, "");
+            return Optional.of(tokenWithClass.replace(JwtTokenConfig.TOKEN_CLASS, ""));
         }
-        return null;
+        return Optional.empty();
     }
 }

@@ -31,7 +31,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String token = jwtTokenExtractor.extractToken(webRequest.getHeader(HttpHeaders.AUTHORIZATION));
+        String token = jwtTokenExtractor.extractToken(webRequest.getHeader(HttpHeaders.AUTHORIZATION))
+                .orElseThrow(() -> new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN));
+
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationExcpetion(RoomEscapeExceptionCode.INVALID_TOKEN);
         }

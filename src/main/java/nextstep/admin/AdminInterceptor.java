@@ -13,6 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +23,13 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = jwtTokenExtractor.extractToken(request.getHeader(HttpHeaders.AUTHORIZATION));
+        Optional<String> tokenOptional = jwtTokenExtractor.extractToken(request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (tokenOptional.isEmpty()) {
+            setAbortContext(response, HttpStatus.UNAUTHORIZED, RoomEscapeExceptionCode.INVALID_TOKEN.getErrorMessage());
+            return false;
+        }
 
+        String token = tokenOptional.get();
         if (!isValidToken(token)) {
             setAbortContext(response, HttpStatus.UNAUTHORIZED, RoomEscapeExceptionCode.INVALID_TOKEN.getErrorMessage());
             return false;
