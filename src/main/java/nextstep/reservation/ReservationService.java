@@ -26,7 +26,7 @@ public class ReservationService {
         );
 
         if (!reservationDao.findByScheduleId(schedule.getId()).isEmpty()) {
-            throw new ScheduleException(RoomEscapeExceptionCode.SCHEDUL_ALREADY_RESERVED);
+            throw new ScheduleException(RoomEscapeExceptionCode.SCHEDULE_ALREADY_RESERVED);
         }
 
         Reservation reservation = Reservation.builder()

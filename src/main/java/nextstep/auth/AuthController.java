@@ -4,7 +4,7 @@ package nextstep.auth;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
-import nextstep.support.exception.AuthorizationExcpetion;
+import nextstep.support.exception.AuthenticationException;
 import nextstep.support.exception.MemberException;
 import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class AuthController {
         try {
             member = memberService.findByUsernameAndPassword(tokenRequest.getUsername(), tokenRequest.getPassword());
         } catch (MemberException e) {
-            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
+            throw new AuthenticationException(RoomEscapeExceptionCode.AUTHENTICATION_FAIL);
         }
 
         TokenResponse tokenResponse = authService.createToken(member);
