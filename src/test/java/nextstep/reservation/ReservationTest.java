@@ -11,9 +11,6 @@ import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -21,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -30,7 +26,6 @@ import static nextstep.auth.Interceptor.LoginInterceptor.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class ReservationTest {
     public static final String TEST_DATE = "2022-08-11";
@@ -41,21 +36,16 @@ public class ReservationTest {
     private Long themeId;
     private Long scheduleId;
 
-    @InjectMocks
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
-
     @Autowired
     Environment env;
-
     @Autowired
     JdbcTemplate jdbcTemplate;
     private String token;
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", env.getProperty("jwt.secret"));
-        ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", env.getProperty("jwt.validateMilliSeconds"));
-
         saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> tokenResponse = generateToken(USERNAME, PASSWORD);
         token = tokenResponse.body().jsonPath().getString("accessToken");

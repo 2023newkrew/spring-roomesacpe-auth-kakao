@@ -28,6 +28,7 @@ import static nextstep.auth.JwtTokenProviderTest.*;
 import static nextstep.reservation.ReservationTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Admin 권한 테스트")
 @SpringBootTest
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AdminAuthorizationTest {
