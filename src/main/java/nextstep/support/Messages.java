@@ -17,7 +17,10 @@ public enum Messages {
     ALREADY_REGISTERED_THEME("Theme already exists"),
     ALREADY_REGISTERED_SCHEDULE("Schedule already exists"),
     NOT_PERMISSION_DELETE("Not permission to delete"),
-    NOT_ALLOWED_SERVICE("Only allowed to ADMIN USERS")
+    NOT_ALLOWED_SERVICE("Only allowed to ADMIN USERS"),
+    CREATE_USER("User Create Success, Username: "),
+    UPDATE_ADMIN("Users Role updated to Admin, Username: "),
+    ALREADY_ADMIN("Role of member already admin level")
 ;
 
     private final String message;

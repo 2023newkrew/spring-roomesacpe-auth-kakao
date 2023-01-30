@@ -40,4 +40,9 @@ public class MemberDao {
         String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         return jdbcTemplate.query(sql, databaseMapper.memberRowMapper(), username);
     }
+
+    public void updateAdmin(String username) {
+        String sql = "UPDATE member SET ROLE='ADMIN' where username = ?;";
+        jdbcTemplate.update(sql, username);
+    }
 }

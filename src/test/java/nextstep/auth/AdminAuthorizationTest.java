@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
+import nextstep.member.MemberRequest;
 import nextstep.member.Role;
 import nextstep.reservation.Reservation;
 import nextstep.reservation.ReservationRequest;
@@ -177,6 +178,46 @@ public class AdminAuthorizationTest {
                 .extract();
     }
 
+    @DisplayName("Admin 유저는 일반 유저를 Admin으로 변경할 수 있다")
+    @Test
+    void createAdmin(){
+        saveMember(jdbcTemplate, "userAdmin", "1234", Role.ADMIN);
+        ExtractableResponse<Response> response = generateToken("userAdmin", "1234");
+        String accessToken = response.body().jsonPath().getString("accessToken");
+
+        saveMember(jdbcTemplate, "userMember", "1234", Role.MEMBER);
+        MemberRequest body = new MemberRequest("userMember", "1234", "name", "010-1234-5678");
+        ExtractableResponse<Response> result = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(authorization, bearer + accessToken)
+                .body(body)
+                .when().post("/admin/register/")
+                .then().log().all()
+                .extract();
+        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("일반 유저는 다른 일반 유저를 Admin으로 변경할 수 없다")
+    @Test
+    void nonCreateAdmin(){
+        saveMember(jdbcTemplate, "userAdmin", "1234", Role.MEMBER);
+        ExtractableResponse<Response> response = generateToken("userAdmin", "1234");
+        String accessToken = response.body().jsonPath().getString("accessToken");
+
+        saveMember(jdbcTemplate, "userMember", "1234", Role.MEMBER);
+        saveMember(jdbcTemplate, "userMember", "1234", Role.MEMBER);
+        MemberRequest body = new MemberRequest("userMember", "1234", "name", "010-1234-5678");
+        ExtractableResponse<Response> result = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(authorization, bearer + accessToken)
+                .body(body)
+                .when().post("/admin/register/")
+                .then().log().all()
+                .extract();
+        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 
     private ExtractableResponse<Response> requestCreateReservation() {
         request = new ReservationRequest(

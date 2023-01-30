@@ -22,7 +22,6 @@ public class ExceptionHandlers {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-
     @ExceptionHandler(NullPointerException.class )
     public ResponseEntity<Object> badRequestException(final NullPointerException ex) {
         logger.warn(ex.getMessage());
