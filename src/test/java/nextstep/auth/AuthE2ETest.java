@@ -19,9 +19,22 @@ public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     private Long memberId;
+    private String adminKey = "";
 
     @BeforeEach
     void setUp() {
+        TokenRequest tokenRequest = new TokenRequest("root", "1234");
+        var adminResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        adminKey = adminResponse.as(TokenResponse.class).getAccessToken();
+
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
@@ -98,7 +111,8 @@ public class AuthE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .header("authorization", "Bearer " + adminKey)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -110,8 +124,9 @@ public class AuthE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", "Bearer " + adminKey)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
