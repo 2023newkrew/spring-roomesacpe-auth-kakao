@@ -3,7 +3,6 @@ package nextstep.support;
 import nextstep.auth.util.AuthorizationTokenExtractor;
 import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
-import nextstep.exception.InvalidAuthorizationTokenException;
 import nextstep.exception.NotExistEntityException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
@@ -19,10 +18,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberDao memberDao;
+    private final AuthorizationTokenExtractor authorizationTokenExtractor;
 
-    public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberDao memberDao) {
+    public LoginMemberArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberDao memberDao, AuthorizationTokenExtractor authorizationTokenExtractor) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.memberDao = memberDao;
+        this.authorizationTokenExtractor = authorizationTokenExtractor;
     }
 
     @Override
@@ -35,16 +36,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
-        String token = AuthorizationTokenExtractor.extract(
-                webRequest.getHeader(AuthorizationTokenExtractor.AUTHORIZATION))
-                .orElseThrow(() -> new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN));
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new InvalidAuthorizationTokenException(ErrorCode.TOKEN_EXPIRED);
-        }
+        String token = authorizationTokenExtractor.extract(webRequest);
 
         String username = jwtTokenProvider.getPrincipal(token);
+
         return memberDao.findByUsername(username)
-                .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.USER_NOT_FOUND));
     }
 }

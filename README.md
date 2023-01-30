@@ -141,3 +141,101 @@ HTTP/1.1 204
 
 ### 토큰 인증 과정 공통 관심사 분리
 - [ ] `HandlerMethodArgumentResolver` 와 어노테이션을 활용
+
+---
+
+# step3
+
+## 기능 요구사항
+- 관리자 역할을 추가한다. 
+  - 일반 멤버와 관리자 멤버를 구분한다.
+- 관리자 기능을 보호한다. 
+  - 관리자 관련 기능 API는 `/admin` 붙이고 `HandlerInterceptor` 로 검증한다. 
+  - 관리자 관련 기능 API는 `Authorization` 헤더를 이용하여 인증과 인가를 진행한다. 
+  - 그 외 관리자 API는 자유롭게 설계하고 적용한다.
+
+## 프로그래밍 요구사항
+- 회원가입처럼 관리자 등록을 하는 것이 아니라 애플리케이션이 동작하면서 초기화 시킬 때 관리자가 추가될 수 있도록 한다
+  - [Quick Guide on Loading Initial Data with Spring Boot](https://www.baeldung.com/spring-boot-data-sql-and-schema-sql)
+
+## API 설계
+
+### 사용자 토큰 발급
+
+```http request
+POST /login/member HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+
+{
+    "username": "username",
+    "password": "password"
+}
+```
+
+```http request
+HTTP/1.1 200 
+Content-Type: application/json
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk4NTEwLCJleHAiOjE2NjMzMDIxMTAsInJvbGUiOiJBRE1JTiJ9.7pxE1cjS51snIrfk21m2Nw0v08HCjgkRD2WSxTK318M"
+}
+```
+
+### 관리자 토큰 발급
+
+```http request
+POST /login/admin HTTP/1.1
+accept: */*
+content-type: application/json; charset=UTF-8
+
+{
+    "username": "adminName",
+    "password": "password"
+}
+```
+
+```http request
+HTTP/1.1 200 
+Content-Type: application/json
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjYzMjk4NTEwLCJleHAiOjE2NjMzMDIxMTAsInJvbGUiOiJBRE1JTiJ9.7pxE1cjS51snIrfk21m2Nw0v08HCjgkRD2WSxTK318M"
+}
+```
+
+### 테마 생성/삭제
+
+- 기존 URI 앞에 `/admin` 추가
+- `Authorization` 헤더에 토큰을 담아서 요청
+
+### 스케줄 생성/삭제
+
+기존 URI 앞에 `/admin` 추가
+- `Authorization` 헤더에 토큰을 담아서 요청
+
+## 기능 구현 목록
+
+### Role 추가
+- [ ] DB에 Role 테이블 추가
+  - [ ] id, name 컬럼
+  - [ ] data.sql에 ADMIN, USER Role 추가하는 insert문 추가
+- [ ] enum Role 추가
+  - [ ] `ADMIN("ADMIN")`
+  - [ ] `USER("USER")`
+- [ ] Member 테이블에 role_id 컬럼 추가
+  - [ ] Role 테이블의 id를 참조하는 외래키
+- [ ] Member 도메인 객체에 Role 필드 추가
+
+### 관리자 로그인 기능
+- [ ] username password가 DB의 값과 일치하는지 검증
+  - [ ] 일치하면 토큰 반환
+  - [ ] 불일치시 예외 발생
+
+### 관리자 API 기능 보호
+- [ ] 테마 생성/삭제, 스케줄 생성/삭제 요청 URI 앞에 `/admin` 추가
+- [ ] `/admin/**` 에 대한 요청을 검증하는 `HandlerInterceptor` 구현
+  - [ ] `Authorization` 헤더에서 토큰 추출
+  - [ ] 토큰에서 adminName 추출해서 admin DB에 있는 값인지 확인
+  - [ ] 검증 실패하면 예외 발생
+- [ ] `HandlerInterceptor` 등록

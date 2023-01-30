@@ -17,13 +17,17 @@ import static org.hamcrest.Matchers.is;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    private static final String MEMBER_USERNAME = "username";
+    private static final String MEMBER_PASSWORD = "password";
+
+    private static final String ADMIN_USERNAME = "admin1";
+    private static final String ADMIN_PASSWORD = "admin1";
+
     private Long memberId;
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(MEMBER_USERNAME, MEMBER_PASSWORD, "name", "010-1234-5678");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -33,16 +37,16 @@ class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("일반 사용자가 로그인을 요청해서 로그인에 성공하면 토큰을 반환한다")
     @Test
-    void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+    void loginMember() {
+        TokenRequest body = new TokenRequest(MEMBER_USERNAME, MEMBER_PASSWORD);
 
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/token")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -50,32 +54,80 @@ class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("토큰 생성에 실패한다 - 비밀번호 불일치, 401 코드 반환")
+    @DisplayName("일반 사용자의 토큰 생성에 실패한다 - 비밀번호 불일치, 401 코드 반환")
     @Test
-    void createToken_wrongPassword() {
-        TokenRequest body = new TokenRequest(USERNAME, "wrongPassword");
+    void loginMember_wrongPassword() {
+        TokenRequest body = new TokenRequest(MEMBER_USERNAME, "wrongPassword");
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/token")
+                .when().post("/login/member")
                 .then().log().all()
                 .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
                 .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
     }
 
-    @DisplayName("토큰 생성에 실패한다 - 유저네임에 해당하는 멤버 없음, 404 코드 반환")
+    @DisplayName("일반 사용자의 토큰 생성에 실패한다 - 유저네임에 해당하는 Member 없음, 404 코드 반환")
     @Test
-    public void createTokenFailure() {
+    void loginMember_notFound() {
         TokenRequest body = new TokenRequest("notexistname", "wrongPassword");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/login/token")
+                .when().post("/login/member")
                 .then().log().all()
-                .statusCode(ErrorCode.MEMBER_NOT_FOUND.getStatus())
-                .body("code", is(ErrorCode.MEMBER_NOT_FOUND.getCode()));
+                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
     }
+
+    @DisplayName("관리자가 로그인을 요청해서 로그인에 성공하면 토큰을 반환한다")
+    @Test
+    void loginAdmin() {
+        TokenRequest body = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
+
+        var response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/member")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        assertThat(response.as(TokenResponse.class)).isNotNull();
+    }
+
+    @DisplayName("관리자의 토큰 생성에 실패한다 - 비밀번호 불일치, 401 코드 반환")
+    @Test
+    void loginAdmin_wrongPassword() {
+        TokenRequest body = new TokenRequest(ADMIN_USERNAME, "wrongPassword");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/member")
+                .then().log().all()
+                .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
+                .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
+    }
+
+    @DisplayName("관리자의 토큰 생성에 실패한다 - 유저네임에 해당하는 Admin 없음, 404 코드 반환")
+    @Test
+    void loginAdmin_notFound() {
+        TokenRequest body = new TokenRequest("notexistname", ADMIN_PASSWORD);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/member")
+                .then().log().all()
+                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
+    }
+
 }

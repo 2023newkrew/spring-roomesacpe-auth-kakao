@@ -1,11 +1,13 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.util.JwtTokenProvider;
 import nextstep.error.ErrorCode;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,18 +21,26 @@ import static org.hamcrest.Matchers.is;
 class ScheduleE2ETest {
 
     private Long themeId;
+    private String token;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     void setUp() {
+        token = jwtTokenProvider.createToken("admin1");
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
+
         String[] themeLocation = response.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
     }
@@ -42,8 +52,9 @@ class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -55,8 +66,9 @@ class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(ErrorCode.THEME_NOT_FOUND.getStatus())
                 .body("code", is(ErrorCode.THEME_NOT_FOUND.getCode()));
@@ -86,9 +98,28 @@ class ScheduleE2ETest {
 
         RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .auth().oauth2(token)
+                .when().delete("/admin" + location)
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("일반 사용자가 스케줄 생성 요청 시 404 코드 반환")
+    @Test
+    void createSchedule_unauthorized() {
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+
+        String token = jwtTokenProvider.createToken("user");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .body(body)
+                .when().post("/admin/schedules")
+                .then().log().all()
+                .statusCode(ErrorCode.UNAUTHORIZED.getStatus())
+                .body("code", is(ErrorCode.UNAUTHORIZED.getCode()));
     }
 
     private String requestCreateSchedule() {
@@ -96,8 +127,9 @@ class ScheduleE2ETest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()

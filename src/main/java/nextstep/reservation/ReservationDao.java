@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.member.Member;
+import nextstep.member.Role;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import org.springframework.dao.DataAccessException;
@@ -42,7 +43,8 @@ public class ReservationDao {
                     resultSet.getString("member.username"),
                     resultSet.getString("member.password"),
                     resultSet.getString("member.name"),
-                    resultSet.getString("member.phone")
+                    resultSet.getString("member.phone"),
+                    Role.valueOf(resultSet.getString("role.name"))
             )
 
     );
@@ -66,11 +68,13 @@ public class ReservationDao {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id," +
                 " schedule.id, schedule.theme_id, schedule.date, schedule.time," +
                 " theme.id, theme.name, theme.desc, theme.price," +
-                " member.id, member.username, member.password, member.name, member.phone " +
+                " member.id, member.username, member.password, member.name, member.phone, member.role_id, " +
+                " role.name " +
                 "from reservation " +
                 "inner join member on reservation.member_id = member.id " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
+                "inner join role on member.role_id = role.id " +
                 "where theme.id = ? and schedule.date = ?;";
 
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
@@ -80,11 +84,13 @@ public class ReservationDao {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id," +
                 " schedule.id, schedule.theme_id, schedule.date, schedule.time," +
                 " theme.id, theme.name, theme.desc, theme.price," +
-                " member.id, member.username, member.password, member.name, member.phone " +
+                " member.id, member.username, member.password, member.name, member.phone, member.role_id, " +
+                " role.name " +
                 "from reservation " +
                 "inner join member on reservation.member_id = member.id " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
+                "inner join role on member.role_id = role.id " +
                 "where reservation.id = ?;";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -97,11 +103,13 @@ public class ReservationDao {
         String sql = "SELECT reservation.id, reservation.schedule_id, reservation.member_id," +
                 " schedule.id, schedule.theme_id, schedule.date, schedule.time," +
                 " theme.id, theme.name, theme.desc, theme.price," +
-                " member.id, member.username, member.password, member.name, member.phone " +
+                " member.id, member.username, member.password, member.name, member.phone, member.role_id, " +
+                " role.name " +
                 "from reservation " +
                 "inner join member on reservation.member_id = member.id " +
                 "inner join schedule on reservation.schedule_id = schedule.id " +
                 "inner join theme on schedule.theme_id = theme.id " +
+                "inner join role on member.role_id = role.id " +
                 "where schedule.id = ?;";
 
         try {

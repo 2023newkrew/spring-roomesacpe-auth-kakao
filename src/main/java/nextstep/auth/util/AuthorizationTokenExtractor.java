@@ -1,27 +1,53 @@
 package nextstep.auth.util;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
+import nextstep.error.ErrorCode;
+import nextstep.exception.InvalidAuthorizationTokenException;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.NativeWebRequest;
 
+import javax.servlet.http.HttpServletRequest;
+
+@Component
 public class AuthorizationTokenExtractor {
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER_TYPE = "Bearer";
 
-    private AuthorizationTokenExtractor() {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public AuthorizationTokenExtractor(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public static Optional<String> extract(HttpServletRequest request) {
+    public String extract(HttpServletRequest request) {
         String authorization = request.getHeader(AUTHORIZATION);
         return extract(authorization);
     }
 
-    public static Optional<String> extract(String authorization) {
+    public String extract(NativeWebRequest request) {
+        String authorization = request.getHeader(AUTHORIZATION);
+        return extract(authorization);
+    }
+
+    public String extract(String authorization) {
+        validateAuthorizationHeader(authorization);
+        String token = authorization.substring(BEARER_TYPE.length()).split(",")[0].trim();
+        validateToken(token);
+        return token;
+    }
+
+    private void validateAuthorizationHeader(String authorization) {
         if (authorization == null) {
-            return Optional.empty();
+            throw new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN);
         }
-        if (authorization.toLowerCase().startsWith(BEARER_TYPE.toLowerCase())) {
-            return Optional.of(authorization.substring(BEARER_TYPE.length()).split(",")[0].trim());
+
+        if (!authorization.trim().toLowerCase().startsWith(BEARER_TYPE.toLowerCase())) {
+            throw new InvalidAuthorizationTokenException(ErrorCode.INVALID_TOKEN);
         }
-        return Optional.empty();
+    }
+
+    private void validateToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new InvalidAuthorizationTokenException(ErrorCode.TOKEN_EXPIRED);
+        }
     }
 }

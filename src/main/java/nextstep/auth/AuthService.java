@@ -21,7 +21,7 @@ public class AuthService {
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername())
-                .orElseThrow(() -> new NotExistEntityException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new NotExistEntityException(ErrorCode.USER_NOT_FOUND));
         if(member.checkWrongPassword(tokenRequest.getPassword())) {
             throw new NotCorrectPasswordException(ErrorCode.UNAUTHORIZED, "잘못된 ID 또는 비밀번호입니다.");
         }

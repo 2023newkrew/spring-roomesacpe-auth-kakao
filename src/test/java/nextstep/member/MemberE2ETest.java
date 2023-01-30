@@ -81,8 +81,8 @@ class MemberE2ETest {
                 .header("Authorization", AuthorizationTokenExtractor.BEARER_TYPE + " " + token)
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(ErrorCode.MEMBER_NOT_FOUND.getStatus())
-                .body("code", is(ErrorCode.MEMBER_NOT_FOUND.getCode()));
+                .statusCode(ErrorCode.USER_NOT_FOUND.getStatus())
+                .body("code", is(ErrorCode.USER_NOT_FOUND.getCode()));
     }
 
     private void createMember() {

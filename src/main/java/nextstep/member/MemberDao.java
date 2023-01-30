@@ -23,11 +23,13 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            Role.valueOf(resultSet.getString("role.name"))
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        Long userRoleId = findRoleId(member.getRole());
+        String sql = "INSERT INTO member (username, password, name, phone, role_id) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -36,24 +38,36 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setLong(5, userRoleId);
             return ps;
-
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKeyAs(Long.class);
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT m.id, m.username, m.password, m.name, m.phone, role.name " +
+                "from member as m " +
+                "inner join role on m.role_id = role.id " +
+                "where m.id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Optional<Member> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+//        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT m.id, m.username, m.password, m.name, m.phone, role.name " +
+                "from member as m " +
+                "inner join role on m.role_id = role.id " +
+                "where m.username = ?;";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
+    }
+
+    private Long findRoleId(Role role) {
+        String sql = "SELECT id FROM role where name = '" + role.getName() + "';";
+        return jdbcTemplate.queryForObject(sql, Long.class);
     }
 }
