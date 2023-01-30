@@ -12,6 +12,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class Member {
     private Long id;
@@ -36,15 +37,6 @@ public class Member {
         this.name = name;
         this.phone = phone;
         this.role = USER;
-    }
-
-    public Member(Long id, String username, String password, String name, String phone, MemberRole role) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
-        this.role = role;
     }
 
     public boolean checkWrongPassword(String password) {
