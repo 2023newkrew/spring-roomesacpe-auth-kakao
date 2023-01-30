@@ -86,7 +86,7 @@ public class MemberAdminE2ETest {
         assertThat(members.size()).isEqualTo(1);
     }
 
-    @DisplayName("일반 유저 권한으로는 전체 멤버를 조회할 수 없다.")
+    @DisplayName("일반 유저 권한으로는 전체 멤버를 삭제할 수 없다.")
     @Test
     public void deleteMemberWithUserAuthority() {
         Long generatedId = E2ETestMemberUtils.createMember();
@@ -101,7 +101,7 @@ public class MemberAdminE2ETest {
                 .extract();
     }
 
-    @DisplayName("로그인을 하지 않고 전체 멤버를 조회할 수 없다.")
+    @DisplayName("로그인을 하지 않고 전체 멤버를 삭제할 수 없다.")
     @Test
     public void deleteMemberWithNoneAuthority() {
         Long generatedId = E2ETestMemberUtils.createMember();
