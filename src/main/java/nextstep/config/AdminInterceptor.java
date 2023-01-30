@@ -5,6 +5,7 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.MemberRole;
+import nextstep.member.MemberService;
 import nextstep.support.AuthorizationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ import static nextstep.support.ErrorMessage.*;
 public class AdminInterceptor extends HandlerInterceptorAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberDao memberDao;
+    private final MemberService memberService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -37,7 +38,10 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
     }
 
     private void checkAdmin(String accessToken){
-        checkRole(accessToken);
+        Member member = getMemberByToken(accessToken);
+        if(member.getRole() != ADMIN){
+            throw new AuthorizationException(ADMIN_FAIL);
+        }
     }
 
     private void checkLogin(String accessToken){
@@ -45,14 +49,10 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
         checkTokenExpiration(accessToken);
     }
 
-    // 해당 유저의 Role이 관리자인지 확인
-    private void checkRole(String accessToken){
+    private Member getMemberByToken(String accessToken){
+        checkTokenExpiration(accessToken);
         String token = accessToken.split(" ")[1];
-        long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
-        Member member = memberDao.findById(id);
-        if(member.getRole() != ADMIN){
-            throw new AuthorizationException(ADMIN_FAIL);
-        }
+        return memberService.findMemberByToken(token);
     }
 
     // token 값이 비어있는지 확인
