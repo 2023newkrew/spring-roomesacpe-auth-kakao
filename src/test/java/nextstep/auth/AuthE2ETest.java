@@ -2,7 +2,7 @@ package nextstep.auth;
 
 import io.restassured.RestAssured;
 import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
+import nextstep.member.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String AUTHORIZATION = "Authorization";
+    public static String BEARER_TYPE = "Bearer";
     private Long memberId;
 
     @BeforeEach
@@ -36,57 +38,68 @@ public class AuthE2ETest {
     @Test
     public void create() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var response = RestAssured
+        TokenResponse tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .extract();
+                .extract().as(TokenResponse.class);
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(tokenResponse).isNotNull();
     }
 
-    @DisplayName("테마 목록을 조회한다")
+    @DisplayName("잘못된 username으로 토큰을 생성한다")
     @Test
-    public void showThemes() {
-        createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
+    public void create_token_with_wrong_username() {
+        TokenRequest body = new TokenRequest("wrong username", PASSWORD);
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("잘못된 비밀번호로 토큰을 생성한다")
+    @Test
+    public void create_token_with_wrong_password() {
+        TokenRequest body = new TokenRequest(USERNAME, "wrong password");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("토큰 정보로 회원 정보를 조회한다")
+    @Test
+    public void findMemberByToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+
+        String accessToken = tokenResponse.getAccessToken();
+        MemberResponse memberResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, BEARER_TYPE + accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(MemberResponse.class);
+
+        assertThat(memberResponse.getUsername()).isEqualTo(USERNAME);
+        assertThat(memberResponse.getPassword()).isEqualTo(PASSWORD);
     }
 }

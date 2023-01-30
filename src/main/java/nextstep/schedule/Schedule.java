@@ -42,4 +42,14 @@ public class Schedule {
     public LocalTime getTime() {
         return time;
     }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "id=" + id +
+                ", theme=" + theme +
+                ", date=" + date +
+                ", time=" + time +
+                '}';
+    }
 }

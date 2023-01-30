@@ -1,16 +1,27 @@
 package nextstep.member;
 
-public class MemberRequest {
+public class MemberResponse {
+    private final Long id;
     private final String username;
     private final String password;
     private final String name;
     private final String phone;
 
-    public MemberRequest(String username, String password, String name, String phone) {
+    public MemberResponse(Long id, String username, String password, String name, String phone) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+    }
+
+    public static MemberResponse of(Member member) {
+        return new MemberResponse(member.getId(), member.getUsername(), member.getPassword(), member.getName(),
+                member.getPhone());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -29,19 +40,11 @@ public class MemberRequest {
         return phone;
     }
 
-    public Member toEntity() {
-        return new Member(
-                this.username,
-                this.password,
-                this.name,
-                this.phone
-        );
-    }
-
     @Override
     public String toString() {
-        return "MemberRequest{" +
-                "username='" + username + '\'' +
+        return "MemberResponse{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +

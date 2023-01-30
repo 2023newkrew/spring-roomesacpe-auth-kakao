@@ -3,6 +3,8 @@ package nextstep.reservation;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
+import nextstep.support.PermissionException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -21,40 +23,49 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+    public Long create(Long scheduleId, String name) {
+        Schedule schedule = scheduleDao.findById(scheduleId);
         if (schedule == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
+        // 이미 해당 스케쥴로 예약이 있다면 예외 던짐
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
             throw new DuplicateEntityException();
         }
 
-        Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName()
-        );
+        Reservation newReservation = new Reservation(schedule, name);
 
         return reservationDao.save(newReservation);
+    }
+
+    public Reservation findById(Long id) {
+        Reservation reservation = reservationDao.findById(id);
+        if (reservation == null) {
+            throw new NotExistEntityException();
+        }
+
+        return reservation;
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         Theme theme = themeDao.findById(themeId);
         if (theme == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException();
         }
 
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        Reservation reservation = reservationDao.findById(id);
-        if (reservation == null) {
-            throw new NullPointerException();
+    public void deleteById(Long reservationId, String username) {
+
+        Reservation reservation = reservationDao.findById(reservationId);
+
+        if (!reservation.getName().equals(username)) {
+            throw new PermissionException();
         }
 
-        reservationDao.deleteById(id);
+        reservationDao.deleteById(reservationId);
     }
 }
