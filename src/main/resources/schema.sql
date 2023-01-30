@@ -1,3 +1,8 @@
+DROP TABLE if exists reservation;
+DROP TABLE if exists theme;
+DROP TABLE if exists member;
+DROP TABLE if exists schedule;
+
 CREATE TABLE reservation
 (
     id          bigint      not null auto_increment,
@@ -31,5 +36,6 @@ CREATE TABLE member
     password varchar(20) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
+    role     varchar(20) not null,
     primary key (id)
 );
