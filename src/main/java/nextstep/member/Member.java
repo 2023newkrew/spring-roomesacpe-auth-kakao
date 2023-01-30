@@ -4,6 +4,11 @@ import lombok.*;
 
 import static nextstep.member.MemberRole.USER;
 
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor

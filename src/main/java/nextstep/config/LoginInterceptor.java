@@ -27,18 +27,27 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         // GET 메서드가 아닐때 (GET은 예약 목록 조회에만 사용되고 있기 때문에 로그인 하지 않아도 가능해야 함)
         if(!HttpMethod.GET.matches(request.getMethod())) {
+<<<<<<< HEAD
             // 로그인 검증 로직
             checkLogin(accessToken);
+=======
+            // 검증 로직들
+            checkNullToken(accessToken);
+            checkTokenExpiration(accessToken);
+>>>>>>> kimtaehyun98
         }
 
         return super.preHandle(request, response, handler);
     }
 
+<<<<<<< HEAD
     private void checkLogin(String accessToken){
         checkNullToken(accessToken);
         checkTokenExpiration(accessToken);
     }
 
+=======
+>>>>>>> kimtaehyun98
     // token 값이 비어있는지 확인
     private void checkNullToken(String accessToken){
         if(accessToken == null) {
