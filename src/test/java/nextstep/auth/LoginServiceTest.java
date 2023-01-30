@@ -28,7 +28,7 @@ public class LoginServiceTest {
 
     @DisplayName("username으로 사용자를 조회하는 기능 예외 발생")
     @Test
-    void failToFindByUsername() {
+    void failToCreateTokenBecauseOfNotExistUsername() {
         String username = "username", password = "password";
         TokenRequest tokenRequest = new TokenRequest(username, password);
 
@@ -39,7 +39,7 @@ public class LoginServiceTest {
 
     @DisplayName("비밀번호가 일치하지 않을 경우 예외가 발생한다.")
     @Test
-    void checkWrongPassword() {
+    void failToCreateTokenBecauseOfWrongPassword() {
         String username = "username", password = "password", wrongPassword = "wrongPassword";
         TokenRequest tokenRequest = new TokenRequest(username, wrongPassword);
         Member member = new Member(username, password, "name", "010-0000-0000");
@@ -53,7 +53,7 @@ public class LoginServiceTest {
 
     @DisplayName("비밀번호가 일치할 경우 토큰이 반환된다.")
     @Test
-    void returnToken() {
+    void createToken() {
         String username = "username", password = "password", token = "TOKEN";
         TokenRequest tokenRequest = new TokenRequest(username, password);
         Member member = new Member(1L, username, password, "name", "010-0000-0000", false);

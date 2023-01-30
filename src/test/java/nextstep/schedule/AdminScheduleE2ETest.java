@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+@DisplayName("관리자 스케줄 E2E 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Transactional
@@ -30,9 +31,9 @@ public class AdminScheduleE2ETest {
         token = jwtTokenProvider.createToken("1", true);
     }
 
-    @DisplayName("스케줄을 생성한다")
+    @DisplayName("관리자용) 스케줄을 생성한다")
     @Test
-    public void createSchedule() {
+    public void createByAdmin() {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "14:00");
         RestAssured
                 .given().log().all()
@@ -44,9 +45,9 @@ public class AdminScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("스케줄을 조회한다")
+    @DisplayName("관리자용) 스케줄을 조회한다")
     @Test
-    public void showSchedules() {
+    public void showByAdmin() {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", 1L)
@@ -60,9 +61,9 @@ public class AdminScheduleE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(2);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("관리자용) 예약을 삭제한다")
     @Test
-    void delete() {
+    void deleteByAdmin() {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

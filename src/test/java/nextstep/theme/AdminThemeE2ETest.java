@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+@DisplayName("관리자 테마 E2E 테스트")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Transactional
@@ -30,9 +31,9 @@ public class AdminThemeE2ETest {
         token = jwtTokenProvider.createToken("1", true);
     }
 
-    @DisplayName("테마를 생성한다")
+    @DisplayName("관리자용) 테마를 생성한다")
     @Test
-    public void create() {
+    public void createByAdmin() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
@@ -44,9 +45,9 @@ public class AdminThemeE2ETest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("테마 목록을 조회한다")
+    @DisplayName("관리자용) 테마 목록을 조회한다")
     @Test
-    public void showThemes() {
+    public void showByAdmin() {
         var response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
@@ -58,9 +59,9 @@ public class AdminThemeE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
+    @DisplayName("관리자용) 테마를 삭제한다")
     @Test
-    void delete() {
+    void deleteByAdmin() {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @DisplayName("JwtTokenProvider 학습 테스트")
 class JwtTokenProviderTest {
 
+    @DisplayName("토큰 생성 테스트")
     @Test
     void createToken() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
@@ -19,6 +20,7 @@ class JwtTokenProviderTest {
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
 
+    @DisplayName("Principal 테스트")
     @Test
     void getPrincipal() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
@@ -28,6 +30,7 @@ class JwtTokenProviderTest {
         assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
     }
 
+    @DisplayName("어드민 테스트")
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void isAdmin(Boolean booleans) {

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+@DisplayName("스케줄 E2E 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Transactional
@@ -31,7 +32,7 @@ public class ScheduleE2ETest {
 
     @DisplayName("스케줄을 조회한다")
     @Test
-    public void showSchedules() {
+    public void show() {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", 1L)
