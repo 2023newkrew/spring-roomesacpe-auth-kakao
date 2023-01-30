@@ -63,7 +63,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if(!Objects.equals(reservation.getName(), user.getName())){
+        if(!Objects.equals(reservation.getName(), user.getUsername())){
             throw new ForbiddenAccessException();
         }
 
