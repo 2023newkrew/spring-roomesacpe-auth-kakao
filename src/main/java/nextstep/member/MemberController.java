@@ -2,10 +2,7 @@ package nextstep.member;
 
 import nextstep.auth.AuthPrincipal;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -31,6 +28,12 @@ public class MemberController {
     @PostMapping("/admin/members/admin")
     public ResponseEntity<Void> makeUserToAdmin(@RequestBody MemberRequest usernameRequest) {
         memberService.updateUserToAdmin(usernameRequest.getUsername());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/admin/members/admin")
+    public ResponseEntity<Void> makeAdminToUser(@RequestBody MemberRequest usernameRequest) {
+        memberService.updateAdminToUser(usernameRequest.getUsername());
         return ResponseEntity.noContent().build();
     }
 }

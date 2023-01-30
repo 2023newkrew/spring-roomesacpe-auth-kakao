@@ -44,6 +44,20 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("멤버를 관리자로 승격한다")
+    @Test
+    void updateAdminRoleToUser() {
+        String accessToken = AuthUtil.createTokenForAdminUser();
+        RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest("admin2", "", "", ""))
+                .when().delete("/admin/members/admin")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
     private static void createMember(MemberRequest memberRequest) {
         RestAssured
                 .given().log().all()

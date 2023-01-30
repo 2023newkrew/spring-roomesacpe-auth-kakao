@@ -1,6 +1,7 @@
 INSERT INTO member (username, password, name, phone) VALUES ('reservation_exist_user', 'password', 'name', '010-1234-5678');
 INSERT INTO member (username, password, name, phone) VALUES ('no_reservation_exist_user', 'password', 'name', '010-1234-5678');
 INSERT INTO member (username, password, name, phone, role) VALUES ('admin', 'password', 'name', '010-1234-5678', 'admin');
+INSERT INTO member (username, password, name, phone, role) VALUES ('admin2', 'password', 'name', '010-1234-5678', 'admin');
 
 INSERT INTO theme (name, desc, price) VALUES ('theme1', 'theme1', 1000);
 INSERT INTO theme (name, desc, price) VALUES ('theme2', 'theme2', 2000);

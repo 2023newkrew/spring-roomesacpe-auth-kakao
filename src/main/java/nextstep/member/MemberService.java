@@ -25,4 +25,8 @@ public class MemberService {
     public void updateUserToAdmin(String username) {
         memberDao.updateRoleByUsername(username, "admin");
     }
+
+    public void updateAdminToUser(String username) {
+        memberDao.updateRoleByUsername(username, "user");
+    }
 }
