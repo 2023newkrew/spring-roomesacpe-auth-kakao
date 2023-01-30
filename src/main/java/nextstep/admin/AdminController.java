@@ -1,5 +1,6 @@
 package nextstep.admin;
 
+import nextstep.support.exception.InvalidThemeException;
 import nextstep.theme.ThemeRequest;
 import nextstep.theme.ThemeService;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,13 @@ public class AdminController {
 
     @PostMapping("/themes")
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
-        long id = themeService.create(themeRequest);
-        
-        return ResponseEntity.created(URI.create("/themes/" + id)).build();
+        try {
+            long id = themeService.create(themeRequest);
+
+            return ResponseEntity.created(URI.create("/themes/" + id)).build();
+        } catch (InvalidThemeException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/themes/{id}")
