@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.MemberRole;
 import nextstep.support.AuthorizationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static nextstep.member.MemberRole.*;
 import static nextstep.support.ErrorMessage.*;
 
 @Component
@@ -43,12 +45,12 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
         checkTokenExpiration(accessToken);
     }
 
-    // 해당 유저의 Role이 관리자(= 0)인지 확인
+    // 해당 유저의 Role이 관리자인지 확인
     private void checkRole(String accessToken){
         String token = accessToken.split(" ")[1];
         long id = Long.parseLong(jwtTokenProvider.getPrincipal(token));
         Member member = memberDao.findById(id);
-        if(member.getRole() != 0){
+        if(member.getRole() != ADMIN){
             throw new AuthorizationException(ADMIN_FAIL);
         }
     }
