@@ -18,10 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AuthE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String NAME = "name";
-    public static final String PHONE = "010-1234-5678";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String NAME = "name";
+    private static final String PHONE = "010-1234-5678";
     private Long memberId;
 
     @BeforeEach

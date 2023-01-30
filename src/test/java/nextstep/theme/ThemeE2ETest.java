@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
-    public void create() {
+    void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
@@ -29,7 +29,7 @@ public class ThemeE2ETest {
 
     @DisplayName("테마 목록을 조회한다")
     @Test
-    public void showThemes() {
+    void showThemes() {
         createTheme();
 
         var response = RestAssured
@@ -56,7 +56,7 @@ public class ThemeE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
+    Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
                 .given().log().all()

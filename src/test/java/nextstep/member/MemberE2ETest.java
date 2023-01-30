@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
