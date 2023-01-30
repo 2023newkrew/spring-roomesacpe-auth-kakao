@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.support.LoginException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class AdminInterceptor implements HandlerInterceptor {
@@ -15,6 +16,9 @@ public class AdminInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = String.valueOf(request.getAttribute("accessToken"));
-        return jwtTokenProvider.isAdmin(token);
+        if (!jwtTokenProvider.isAdmin(token)) {
+            throw new LoginException();
+        }
+        return true;
     }
 }
