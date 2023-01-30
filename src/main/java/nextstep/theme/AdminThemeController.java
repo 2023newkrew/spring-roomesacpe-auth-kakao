@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +15,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/themes")
+@RequiredArgsConstructor
 public class AdminThemeController {
-    private ThemeService themeService;
-
-    public AdminThemeController(ThemeService themeService) {
-        this.themeService = themeService;
-    }
+    private final ThemeService themeService;
 
     @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {

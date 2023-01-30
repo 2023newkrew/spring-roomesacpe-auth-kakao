@@ -1,22 +1,13 @@
 package nextstep.reservation;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class ReservationRequest {
     private Long scheduleId;
     private Long memberId;
-
-    public ReservationRequest() {
-    }
-
-    public ReservationRequest(Long scheduleId, Long memberId) {
-        this.scheduleId = scheduleId;
-        this.memberId = memberId;
-    }
-
-    public Long getScheduleId() {
-        return scheduleId;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
 }

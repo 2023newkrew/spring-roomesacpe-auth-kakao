@@ -14,11 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("classpath:/test.sql")
+@Transactional
 class ReservationE2ETest {
 
     private String token;
@@ -28,7 +28,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        token = jwtTokenProvider.createToken("2");
+        token = jwtTokenProvider.createToken("2", false);
     }
 
     @DisplayName("예약을 생성한다")
@@ -80,7 +80,7 @@ class ReservationE2ETest {
     @DisplayName("자신의 예약이 아닌 경우 예약 취소가 불가능하다.")
     @Test
     void failToDelete() {
-        String wrongToken = jwtTokenProvider.createToken("2");
+        String wrongToken = jwtTokenProvider.createToken("2", false);
 
         var response = RestAssured
                 .given().log().all()

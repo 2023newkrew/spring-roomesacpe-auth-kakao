@@ -1,11 +1,11 @@
 package nextstep.auth;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 import nextstep.member.Member;
-import nextstep.member.MemberService;
+import nextstep.member.MemberDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ public class LoginServiceTest {
     JwtTokenProvider jwtTokenProvider;
 
     @Mock
-    private MemberService memberService;
+    private MemberDao memberDao;
 
     @InjectMocks
     private LoginService loginService;
@@ -32,7 +32,7 @@ public class LoginServiceTest {
         String username = "username", password = "password";
         TokenRequest tokenRequest = new TokenRequest(username, password);
 
-        given(memberService.findByUsername(username)).willThrow(RuntimeException.class);
+        given(memberDao.findByUsername(username)).willThrow(RuntimeException.class);
 
         assertThatThrownBy(() -> loginService.createToken(tokenRequest)).isInstanceOf(RuntimeException.class);
     }
@@ -44,7 +44,7 @@ public class LoginServiceTest {
         TokenRequest tokenRequest = new TokenRequest(username, wrongPassword);
         Member member = new Member(username, password, "name", "010-0000-0000");
 
-        given(memberService.findByUsername(member.getUsername()))
+        given(memberDao.findByUsername(member.getUsername()))
                 .willReturn(member);
 
         assertThatThrownBy(() -> loginService.createToken(tokenRequest))
@@ -56,11 +56,11 @@ public class LoginServiceTest {
     void returnToken() {
         String username = "username", password = "password", token = "TOKEN";
         TokenRequest tokenRequest = new TokenRequest(username, password);
-        Member member = new Member(1L, username, password, "name", "010-0000-0000");
+        Member member = new Member(1L, username, password, "name", "010-0000-0000", false);
 
-        given(memberService.findByUsername(member.getUsername()))
+        given(memberDao.findByUsername(member.getUsername()))
                 .willReturn(member);
-        given(jwtTokenProvider.createToken("1")).willReturn(token);
+        given(jwtTokenProvider.createToken("1", false)).willReturn(token);
 
         assertThat(loginService.createToken(tokenRequest).getAccessToken()).isEqualTo(token);
     }

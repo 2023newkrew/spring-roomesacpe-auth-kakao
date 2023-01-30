@@ -1,8 +1,9 @@
-package nextstep.auth;
+package nextstep.schedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import nextstep.auth.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,16 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @Transactional
-public class LoginE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+public class ScheduleE2ETest {
+
     private String token;
 
     @Autowired
@@ -27,23 +26,22 @@ public class LoginE2ETest {
 
     @BeforeEach
     void setUp() {
-        token = jwtTokenProvider.createToken("2", false);
+        token = jwtTokenProvider.createToken("1", false);
     }
 
-    @DisplayName("토큰을 생성한다")
+    @DisplayName("스케줄을 조회한다")
     @Test
-    public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+    public void showSchedules() {
         var response = RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
+                .param("themeId", 1L)
+                .param("date", "2022-08-11")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .when().post("/login/token")
+                .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        assertThat(response.as(TokenResponse.class)).isNotNull();
+        assertThat(response.jsonPath().getList(".").size()).isEqualTo(2);
     }
 }

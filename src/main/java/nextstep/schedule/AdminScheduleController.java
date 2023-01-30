@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,15 +9,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/schedules")
+@RequiredArgsConstructor
 public class AdminScheduleController {
-    private ScheduleService scheduleService;
-
-    public AdminScheduleController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
-    }
+    private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+    public ResponseEntity<Long> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest);
         return ResponseEntity.created(URI.create("/admin/schedules/" + id)).build();
     }
@@ -27,9 +25,8 @@ public class AdminScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
-
         return ResponseEntity.noContent().build();
     }
 }

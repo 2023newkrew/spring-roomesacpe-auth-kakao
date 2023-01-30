@@ -1,11 +1,13 @@
 package nextstep.member;
 
-import nextstep.auth.annotation.Authenticated;
-import nextstep.auth.LoginUser;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
+import nextstep.auth.Authenticated;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/members")
@@ -23,8 +25,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Member> me(@Authenticated LoginUser loginUser) {
-        Member member = memberService.findById(loginUser.getId());
+    public ResponseEntity<Member> me(@Authenticated Long memberId) {
+        Member member = memberService.findById(memberId);
         return ResponseEntity.ok(member);
     }
 }

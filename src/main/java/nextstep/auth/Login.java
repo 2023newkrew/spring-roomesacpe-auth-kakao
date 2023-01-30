@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class TokenRequest {
-    private final String username;
-    private final String password;
+public class Login {
+    private final Long id;
+    private final Boolean admin;
 }

@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,13 +13,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.transaction.annotation.Transactional;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("classpath:/test.sql")
+@Transactional
 public class AdminThemeE2ETest {
 
     private String token;
@@ -27,7 +27,7 @@ public class AdminThemeE2ETest {
 
     @BeforeEach
     void setUp() {
-        token = jwtTokenProvider.createToken("1");
+        token = jwtTokenProvider.createToken("1", true);
     }
 
     @DisplayName("테마를 생성한다")

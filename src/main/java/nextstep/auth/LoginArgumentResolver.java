@@ -1,6 +1,6 @@
 package nextstep.auth;
 
-import nextstep.auth.annotation.Authenticated;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -9,13 +9,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
+@RequiredArgsConstructor
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    public LoginArgumentResolver(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,7 +25,6 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         String token = (String) request.getAttribute("accessToken");
 
         String principal = jwtTokenProvider.getPrincipal(token);
-        return new LoginUser(Long.valueOf(principal));
+        return Long.valueOf(principal);
     }
-
 }

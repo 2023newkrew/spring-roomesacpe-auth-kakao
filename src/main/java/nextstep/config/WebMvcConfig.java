@@ -1,8 +1,8 @@
 package nextstep.config;
 
 import java.util.List;
-import nextstep.admin.AdminInterceptor;
-import nextstep.admin.AdminService;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.AdminInterceptor;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.LoginArgumentResolver;
 import nextstep.auth.LoginInterceptor;
@@ -13,15 +13,10 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AdminService adminService;
-
-    public WebMvcConfig(JwtTokenProvider jwtTokenProvider, AdminService adminService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.adminService = adminService;
-    }
 
     @Bean
     public LoginInterceptor loginInterceptor() {
@@ -30,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public AdminInterceptor adminInterceptor() {
-        return new AdminInterceptor(jwtTokenProvider, adminService);
+        return new AdminInterceptor(jwtTokenProvider);
     }
 
     @Bean

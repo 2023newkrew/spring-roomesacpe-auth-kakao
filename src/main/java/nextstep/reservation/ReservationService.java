@@ -1,31 +1,25 @@
 package nextstep.reservation;
 
-import nextstep.auth.AuthenticationException;
+import java.util.List;
+import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.LoginException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
     private final ReservationDao reservationDao;
     private final ThemeDao themeDao;
     private final ScheduleDao scheduleDao;
     private final MemberDao memberDao;
-
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao, MemberDao memberDao) {
-        this.reservationDao = reservationDao;
-        this.themeDao = themeDao;
-        this.scheduleDao = scheduleDao;
-        this.memberDao = memberDao;
-    }
 
     public Long create(ReservationRequest reservationRequest, Long memberId) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
@@ -34,7 +28,7 @@ public class ReservationService {
         }
         Member member = memberDao.findById(memberId);
         if (member == null) {
-            throw new AuthenticationException();
+            throw new LoginException();
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());

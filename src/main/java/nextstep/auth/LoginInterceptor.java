@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.support.LoginException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -7,13 +8,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RequiredArgsConstructor
 public class LoginInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    public LoginInterceptor(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -35,5 +33,4 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new LoginException();
         }
     }
-
 }
