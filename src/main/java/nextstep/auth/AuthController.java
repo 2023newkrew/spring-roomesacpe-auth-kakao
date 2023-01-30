@@ -1,8 +1,3 @@
-/**
- * 인증 이랑 컨트롤러 분리 정확하게 어떤 말인지 모르겠긴 한데..
- * 학습테스트 복붙해서 토큰 생성되는지만 확인해볼게요!!
- */
-
 package nextstep.auth;
 
 import org.springframework.http.ResponseEntity;
@@ -19,7 +14,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity tokenLogin(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> tokenLogin(@RequestBody TokenRequest tokenRequest) {
         TokenResponse tokenResponse = authService.createToken(tokenRequest);
         return ResponseEntity.ok().body(tokenResponse);
     }

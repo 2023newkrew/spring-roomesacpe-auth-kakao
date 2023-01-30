@@ -1,7 +1,9 @@
 package nextstep.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class ErrorResponse {
-    private int status;
+    private HttpStatus status;
     private String message;
 
     public ErrorResponse(ErrorCode errorCode) {

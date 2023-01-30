@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.member.MemberRole;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,8 +15,9 @@ public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
+    public String createToken(String principal, MemberRole role) {
         Claims claims = Jwts.claims().setSubject(principal);
+        claims.put("role", role.valueOf());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -29,6 +31,10 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public MemberRole getRole(String token) {
+        return MemberRole.getRole(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role", String.class));
     }
 
     public boolean validateToken(String token) {

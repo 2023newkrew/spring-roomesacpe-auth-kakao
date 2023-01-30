@@ -1,29 +1,61 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Sql(scripts = {"/test.sql"})
 public class ThemeE2ETest {
+
+    private String adminToken;
+    private String userToken;
+
+    @BeforeEach
+    void setUp() {
+
+        //어드민 멤버, 유저 멤버 로그인
+        adminToken = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("kayla", "password1"))
+                .when().post("/login/token")
+                .then()
+                .extract().as(TokenResponse.class).getAccessToken();
+
+        userToken = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("userA", "qwer12345"))
+                .when().post("/login/token")
+                .then()
+                .extract().as(TokenResponse.class).getAccessToken();
+    }
+
     @DisplayName("테마를 생성한다")
     @Test
-    public void create() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+    public void createTheme() {
+        ExtractableResponse response = requestCreateTheme(adminToken);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("관리자가 아닌 멤버는 테마를 생성할 수 없다")
+    @Test
+    public void rejectCreateTheme() {
+        ExtractableResponse response = requestCreateTheme(userToken);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -38,33 +70,43 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+        assertThat(response.jsonPath().getList(".").size()).isEqualTo(4);
     }
 
     @DisplayName("테마를 삭제한다")
     @Test
     void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
+        String location = requestCreateTheme(adminToken).header("Location");
+        ExtractableResponse response = requestDeleteTheme(adminToken, "/admin" + location);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
+    @DisplayName("관리자가 아닌 멤버는 스케줄을 삭제할 수 없다")
+    @Test
+    void rejectDelete() {
+        String location = requestCreateTheme(adminToken).header("Location");
+        ExtractableResponse response = requestDeleteTheme(userToken, "/admin" + location);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse requestCreateTheme(String token) {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
+        return RestAssured
+                .given()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .when().post("/admin/themes")
+                .then()
+                .extract();
+    }
+
+    private ExtractableResponse requestDeleteTheme(String token, String location) {
+        return RestAssured
+                .given()
+                .auth().oauth2(token)
+                .when().delete(location)
+                .then()
+                .extract();
     }
 }

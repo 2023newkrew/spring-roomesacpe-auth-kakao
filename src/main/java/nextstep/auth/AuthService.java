@@ -1,7 +1,10 @@
 package nextstep.auth;
 
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
+import nextstep.member.MemberRole;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +23,9 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
 
         if (!checkPassword(tokenRequest)) {
-            // TODO: throw exception
-            return null;
+            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
         }
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), getRole(tokenRequest));
         return new TokenResponse(accessToken);
     }
 
@@ -36,5 +38,9 @@ public class AuthService {
             return false;
         }
         return actualMember.getPassword().equals(password);
+    }
+
+    private MemberRole getRole(TokenRequest tokenRequest) {
+        return memberDao.findByUsername(tokenRequest.getUsername()).getRole();
     }
 }

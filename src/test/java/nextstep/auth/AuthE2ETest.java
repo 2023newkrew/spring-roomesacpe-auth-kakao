@@ -21,7 +21,7 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", "user");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,6 +83,16 @@ public class AuthE2ETest {
     @DisplayName("토큰 없을 떄")
     @Test
     public void nullToken() {
+        RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
+    }
+
+    @DisplayName("잘못된 비밀번호")
+    @Test
+    public void wrongPassword() {
         RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
