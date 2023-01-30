@@ -22,8 +22,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity me(@AuthenticationPrincipal String username) {
-        MemberMyInfoResponse member = MemberMyInfoResponse.fromEntity(memberService.findByUsername(username));
+    public ResponseEntity me(@AuthenticationPrincipal Long id) {
+        MemberMyInfoResponse member = MemberMyInfoResponse.fromEntity(memberService.findById(id));
         return ResponseEntity.ok(member);
     }
 }
