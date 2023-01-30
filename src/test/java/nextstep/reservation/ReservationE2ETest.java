@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Sql(value = "/create_admin.sql")
 class ReservationE2ETest {
 
     public static final String DATE = "2022-08-11";
@@ -39,12 +41,25 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        AuthRequest authRequest = new AuthRequest("admin", "admin");
+        var tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(authRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(AccessTokenResponse.class);
+        String adminToken = tokenResponse.getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -54,9 +69,10 @@ class ReservationE2ETest {
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, LocalDate.parse(DATE), LocalTime.parse(TIME));
         var scheduleResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -74,17 +90,17 @@ class ReservationE2ETest {
                 .extract();
         String[] memberLocation = memberResponse.header("Location").split("/");
 
-        AuthRequest authRequest = new AuthRequest("username", "password");
-        var tokenResponse = RestAssured
+        AuthRequest authRequest2 = new AuthRequest("username", "password");
+        var tokenResponse2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(authRequest)
+                .body(authRequest2)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(AccessTokenResponse.class);
-        accessToken = tokenResponse.getAccessToken();
+        accessToken = tokenResponse2.getAccessToken();
 
         request = new ReservationRequest(
                 scheduleId

@@ -1,16 +1,18 @@
 package nextstep.reservation.service;
 
+import nextstep.global.exception.DuplicateEntityException;
+import nextstep.global.exception.NotExistEntityException;
 import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.repository.ReservationRepository;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.repository.ScheduleRepository;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.NotExistEntityException;
 import nextstep.theme.repository.ThemeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -35,7 +37,7 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Reservation nextReservation = Reservation.of(targetSchedule, memberId);
+        Reservation nextReservation = Reservation.of(targetSchedule.getId(), memberId);
 
         return reservationRepository.save(nextReservation);
     }
@@ -44,7 +46,14 @@ public class ReservationService {
         themeRepository.findById(themeId)
                 .orElseThrow(NotExistEntityException::new);
 
-        return reservationRepository.findAllByThemeIdAndDate(themeId, date);
+        List<Schedule> scheduleList = scheduleRepository.findByThemeIdAndDate(themeId, date);
+
+        return scheduleList.stream()
+                .map(schedule -> reservationRepository.findByScheduleId(schedule.getId()))
+                .flatMap(List::stream)
+                .sorted(Comparator.comparingLong(Reservation::getId))
+                .collect(Collectors.toList())
+                ;
     }
 
     public void delete(Long id) {

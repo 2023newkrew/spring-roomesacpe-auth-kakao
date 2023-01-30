@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -23,21 +22,21 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
+    @PostMapping("/admin/schedules")
     public ResponseEntity createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(scheduleRequest.getThemeId(), scheduleRequest.getDate(), scheduleRequest.getTime());
 
         return ResponseEntity.created(URI.create("/schedules/" + id)).build();
     }
 
-    @GetMapping
+    @GetMapping("/schedules")
     public ResponseEntity<List<ScheduleResponse>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         List<Schedule> schedules = scheduleService.findByThemeIdAndDate(themeId, date);
 
         return ResponseEntity.ok().body(ScheduleMapper.INSTANCE.domainListToDtoResponseList(schedules));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/schedules/{id}")
     public ResponseEntity deleteReservation(@PathVariable Long id) {
         scheduleService.deleteById(id);
 

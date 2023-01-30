@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.Map;
 
 @Getter
 public class AccessToken extends Jwt {
@@ -13,6 +14,7 @@ public class AccessToken extends Jwt {
 
     private final String accessToken;
     private String sub;
+    private Role role;
     private boolean expired;
     private boolean unsupported;
     private boolean malformed;
@@ -22,6 +24,7 @@ public class AccessToken extends Jwt {
         validateToken();
         if (isValid()) {
             this.sub = extractSub();
+            this.role = extractRole();
         }
     }
 
@@ -30,13 +33,14 @@ public class AccessToken extends Jwt {
         return new AccessToken(token);
     }
 
-    public static AccessToken create(String sub) {
+    public static AccessToken create(String sub, String role) {
 
-        return new AccessToken(createToken(sub));
+        return new AccessToken(createToken(sub, role));
     }
 
-    private static String createToken(String sub) {
-        Claims claims = Jwts.claims().setSubject(sub);
+    private static String createToken(String sub, String role) {
+        Claims claims = Jwts.claims(Map.of("role", role))
+                .setSubject(sub);
         Date now = new Date();
         Date validity = new Date(now.getTime() + EXPIRATION_SECOND);
 
@@ -75,5 +79,14 @@ public class AccessToken extends Jwt {
                 .parseClaimsJws(this.accessToken)
                 .getBody()
                 .getSubject();
+    }
+
+    private Role extractRole() {
+
+        return Role.of(PARSER_BUILDER
+                .parseClaimsJws(this.accessToken)
+                .getBody()
+                .get("role")
+                .toString());
     }
 }

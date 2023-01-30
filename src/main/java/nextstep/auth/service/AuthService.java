@@ -1,10 +1,10 @@
 package nextstep.auth.service;
 
 import nextstep.auth.domain.AccessToken;
+import nextstep.global.exception.NotExistEntityException;
+import nextstep.global.exception.UnauthenticatedException;
 import nextstep.member.domain.Member;
 import nextstep.member.repository.MemberRepository;
-import nextstep.support.NotExistEntityException;
-import nextstep.support.UnauthenticatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +30,6 @@ public class AuthService {
             throw new UnauthenticatedException();
         }
 
-        return AccessToken.create(String.valueOf(existMember.getId()));
+        return AccessToken.create(String.valueOf(existMember.getId()), existMember.getRole());
     }
 }

@@ -3,8 +3,6 @@ package nextstep.reservation.mapper;
 import nextstep.reservation.domain.Reservation;
 import nextstep.reservation.dto.ReservationResponse;
 import nextstep.reservation.entity.ReservationEntity;
-import nextstep.schedule.dto.ScheduleResponse;
-import nextstep.schedule.mapper.ScheduleMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -21,10 +19,10 @@ public interface ReservationMapper {
         }
 
         Long id = reservation.getId();
-        ScheduleResponse scheduleResponse = ScheduleMapper.INSTANCE.domainToDtoResponse(reservation.getSchedule());
+        Long scheduleId = reservation.getScheduleId();
         Long memberId = reservation.getMemberId();
 
-        return new ReservationResponse(id, scheduleResponse, memberId);
+        return new ReservationResponse(id, scheduleId, memberId);
     }
 
     List<ReservationResponse> domainListToDtoList(List<Reservation> reservations);

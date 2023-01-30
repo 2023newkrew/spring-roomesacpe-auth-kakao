@@ -3,8 +3,6 @@ package nextstep.schedule.mapper;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.dto.ScheduleResponse;
 import nextstep.schedule.entity.ScheduleEntity;
-import nextstep.theme.domain.Theme;
-import nextstep.theme.mapper.ThemeMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -23,11 +21,11 @@ public interface ScheduleMapper {
         }
 
         Long id = schedule.getId();
-        Theme theme = schedule.getTheme();
+        Long themeId = schedule.getThemeId();
         LocalDate date = schedule.getDate();
         LocalTime time = schedule.getTime();
 
-        return new ScheduleResponse(id, ThemeMapper.INSTANCE.domainToDto(theme), date, time);
+        return new ScheduleResponse(id, themeId, date, time);
     }
 
     List<ScheduleResponse> domainListToDtoResponseList(List<Schedule> schedules);

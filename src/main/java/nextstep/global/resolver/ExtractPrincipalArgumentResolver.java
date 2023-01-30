@@ -2,7 +2,7 @@ package nextstep.global.resolver;
 
 import nextstep.auth.domain.AccessToken;
 import nextstep.global.annotation.ExtractPrincipal;
-import nextstep.support.UnauthenticatedException;
+import nextstep.global.exception.UnauthenticatedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

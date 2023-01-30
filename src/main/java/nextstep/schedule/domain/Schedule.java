@@ -2,7 +2,6 @@ package nextstep.schedule.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nextstep.theme.domain.Theme;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,12 +11,12 @@ import java.time.LocalTime;
 public class Schedule {
 
     private Long id;
-    private Theme theme;
+    private Long themeId;
     private LocalDate date;
     private LocalTime time;
 
-    public static Schedule of(Theme theme, LocalDate date, LocalTime time) {
+    public static Schedule of(Long themeId, LocalDate date, LocalTime time) {
 
-        return new Schedule(null, theme, date, time);
+        return new Schedule(null, themeId, date, time);
     }
 }

@@ -14,6 +14,7 @@ public class Member {
     private final Long id;
     private final String name;
     private final String phone;
+    private final String role;
     private final String username;
     private String password;
 

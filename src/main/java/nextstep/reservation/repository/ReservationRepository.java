@@ -9,8 +9,6 @@ public interface ReservationRepository {
 
     Long save(Reservation reservation);
 
-    List<Reservation> findAllByThemeIdAndDate(Long themeId, String date);
-
     Optional<Reservation> findById(Long id);
 
     List<Reservation> findByScheduleId(Long scheduleId);
