@@ -27,13 +27,13 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new InterceptorExcpetion(HttpStatus.UNAUTHORIZED, "invalid token");
+            throw new InterceptorExcpetion("invalid token", HttpStatus.UNAUTHORIZED);
         }
 
         Member member = memberService.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)));
 
         if (member.getRole() != Role.ADMIN) {
-            throw new InterceptorExcpetion(HttpStatus.FORBIDDEN, "forbidden access");
+            throw new InterceptorExcpetion("forbidden access", HttpStatus.FORBIDDEN);
         }
 
         return true;

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public class InterceptorExcpetion extends RuntimeException {
     private HttpStatus status;
 
-    public InterceptorExcpetion(HttpStatus status, String message) {
+    public InterceptorExcpetion(String message, HttpStatus status) {
         super(message);
         this.status = status;
     }
