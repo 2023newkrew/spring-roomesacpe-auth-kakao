@@ -44,6 +44,8 @@ public class JwtTokenProvider {
             throw new AuthorizationException("지원하지 않는 토큰입니다.");
         } catch (SignatureException e ){
             throw new AuthorizationException("시그니처 검증에 실패한 토큰입니다.");
+        } catch (IllegalArgumentException e){
+            throw new AuthorizationException("잘못된 토큰입니다.");
         }
     }
 }

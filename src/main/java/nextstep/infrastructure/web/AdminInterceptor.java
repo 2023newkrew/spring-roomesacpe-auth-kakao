@@ -21,10 +21,11 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
         String token = extractToken(request);
         jwtTokenProvider.validateToken(token);
 
+
         String memberId = jwtTokenProvider.getMemberId(token);
         MemberRole role = MemberRole.valueOf(jwtTokenProvider.getRole(token));
         if (memberId == null) {
-            throw new NotExistEntityException("해당 아이디가 존재하지 않습니다.");
+            throw new AuthorizationException("해당 아이디가 존재하지 않습니다.");
         } else if (!role.equals(MemberRole.ADMIN)) {
             throw new AuthorizationException("권한이 없습니다.");
         }
