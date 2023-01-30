@@ -26,27 +26,28 @@ public class MemberDao {
     );
 
     public Long save(Member member) {
+        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(MemberJdbcSql.INSERT.toString(), new String[]{"id"});
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setString(1, member.getUsername());
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
             return ps;
-
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
     }
 
     public Optional<Member> findById(Long id) {
-        return jdbcTemplate.query(MemberJdbcSql.SELECT_BY_ID.toString(), rowMapper, id).stream().findAny();
+        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        return jdbcTemplate.query(sql, rowMapper, id).stream().findAny();
     }
 
     public Optional<Member> findByUsernameAndPassword(String username, String password) {
-        return jdbcTemplate.query(MemberJdbcSql.SELECT_BY_USERNAME_AND_PASSWORD.toString(),
-                rowMapper, username, password).stream().findAny();
+        String sql = "SELECT id, username, password, name, phone from member where username = ? AND password = ?;";
+        return jdbcTemplate.query(sql, rowMapper, username, password).stream().findAny();
     }
 }

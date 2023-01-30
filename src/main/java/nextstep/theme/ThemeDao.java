@@ -27,7 +27,7 @@ public class ThemeDao {
     );
 
     public Long save(Theme theme) {
-        String sql = ThemeJdbcSql.INSERT.toString();
+        String sql = "INSERT INTO theme (name, desc, price) VALUES (?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -43,8 +43,8 @@ public class ThemeDao {
     }
 
     public Optional<Theme> findById(Long id) {
+        String sql = "SELECT id, name, desc, price from theme where id = ?;";
         try {
-            String sql = ThemeJdbcSql.SELECT_BY_ID.toString();
             Theme theme = jdbcTemplate.queryForObject(sql, rowMapper, id);
             return Optional.of(theme);
         } catch (EmptyResultDataAccessException e) {
@@ -53,12 +53,12 @@ public class ThemeDao {
     }
 
     public List<Theme> findAll() {
-        String sql = ThemeJdbcSql.SELECT_ALL.toString();
+        String sql = "SELECT id, name, desc, price from theme;";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public void delete(Long id) {
-        String sql = ThemeJdbcSql.DELETE_BY_ID.toString();
+        String sql = "DELETE FROM reservation where id = ?;";
         jdbcTemplate.update(sql, id);
     }
 }
