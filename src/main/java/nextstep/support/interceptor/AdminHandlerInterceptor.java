@@ -4,6 +4,7 @@ import nextstep.support.Role;
 import nextstep.auth.JwtTokenProvider;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
+import nextstep.support.exception.InterceptorExcpetion;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,15 +27,13 @@ public class AdminHandlerInterceptor implements HandlerInterceptor {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (!jwtTokenProvider.validateToken(token)) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return false;
+            throw new InterceptorExcpetion(HttpStatus.UNAUTHORIZED, "invalid token");
         }
 
         Member member = memberService.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)));
 
         if (member.getRole() != Role.ADMIN) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            return false;
+            throw new InterceptorExcpetion(HttpStatus.FORBIDDEN, "forbidden access");
         }
 
         return true;
