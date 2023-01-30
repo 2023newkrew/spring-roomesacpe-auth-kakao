@@ -3,21 +3,20 @@ package nextstep.member;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
-import nextstep.auth.TokenRequest;
+import nextstep.auth.E2ETestAuthUtils;
+import nextstep.member.domain.Member;
+import nextstep.member.dto.request.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class MemberE2ETest {
-
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
 
     @DisplayName("멤버를 생성한다")
     @Test
@@ -35,20 +34,12 @@ public class MemberE2ETest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     public void getMyInfo() {
-        createMember();
+        E2ETestMemberUtils.createMember();
 
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
-        var accessToken = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract().jsonPath().get("accessToken");
+        String accessToken = E2ETestAuthUtils.loginAndGetAccessToken();
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken.toString())
+                .auth().oauth2(accessToken)
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -60,7 +51,7 @@ public class MemberE2ETest {
     @DisplayName("로그인을 하지 않고 내 정보 조회는 불가능하다.")
     @Test
     public void getMyInfoWithNoToken() {
-        createMember();
+        E2ETestMemberUtils.createMember();
 
         RestAssured
                 .given().log().all()
@@ -68,18 +59,5 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value())
                 .extract();
-    }
-
-    public Long createMember() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
     }
 }

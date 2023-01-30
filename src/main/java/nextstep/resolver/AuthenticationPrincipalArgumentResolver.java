@@ -2,8 +2,8 @@ package nextstep.resolver;
 
 import javax.servlet.http.HttpServletRequest;
 import nextstep.annotation.AuthenticationPrincipal;
-import nextstep.member.LoginMember;
-import nextstep.member.Member;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

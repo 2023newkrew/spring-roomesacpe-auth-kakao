@@ -1,9 +1,11 @@
 package nextstep.config;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import nextstep.auth.AuthService;
+import nextstep.interceptor.AdminInterceptor;
 import nextstep.interceptor.LoginInterceptor;
-import nextstep.member.MemberService;
+import nextstep.member.service.MemberService;
 import nextstep.resolver.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +14,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
     private final AuthService authService;
 
     private final MemberService memberService;
-
-    public WebMvcConfig(AuthService authService, MemberService memberService) {
-        this.authService = authService;
-        this.memberService = memberService;
-    }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -33,6 +31,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor(authService, memberService))
                 .addPathPatterns("/reservations/**")
                 .addPathPatterns("/members/me");
+        registry.addInterceptor(adminInterceptor(authService, memberService))
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin/login");
     }
 
     @Bean
@@ -40,4 +41,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new LoginInterceptor(authService, memberService);
     }
 
+    @Bean
+    public AdminInterceptor adminInterceptor(AuthService authService, MemberService memberService) {
+        return new AdminInterceptor(authService, memberService);
+    }
 }
