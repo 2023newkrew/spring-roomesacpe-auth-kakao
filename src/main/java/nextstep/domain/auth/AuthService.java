@@ -25,7 +25,7 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
-        String accessToken = jwtTokenProvider.createToken(member.getId().toString(), member.getRole().toString());
+        String accessToken = jwtTokenProvider.createToken(member.getId().toString(), member.getRole().name());
         return new TokenResponse(accessToken);
     }
 
