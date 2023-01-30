@@ -1,17 +1,20 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@Sql("/truncate.sql")
 public class ThemeE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
