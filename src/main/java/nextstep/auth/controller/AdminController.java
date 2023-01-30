@@ -2,7 +2,8 @@ package nextstep.auth.controller;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.AuthenticatedMember;
+import nextstep.auth.annotation.AuthenticatedMember;
+import nextstep.auth.annotation.AdminOnly;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import nextstep.member.MemberService;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+@AdminOnly
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")

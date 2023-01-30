@@ -17,6 +17,7 @@ public class MemberResponse {
     private String password;
     private String name;
     private String phone;
+    private String role;
 
     public static MemberResponse from(Member member) {
         return MemberResponse.builder()
@@ -25,6 +26,7 @@ public class MemberResponse {
                 .password(member.getPassword())
                 .name(member.getName())
                 .phone(member.getPhone())
+                .role(member.getRole())
                 .build();
     }
 

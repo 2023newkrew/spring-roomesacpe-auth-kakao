@@ -1,5 +1,6 @@
 package nextstep.schedule;
 
+import nextstep.auth.annotation.LoginRequired;
 import nextstep.theme.ThemeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class ScheduleController {
     }
 
     @PostMapping
+    @LoginRequired
     public ResponseEntity<Object> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Long id = scheduleService.create(
                 scheduleRequest.toEntityWithTheme(
@@ -29,11 +31,13 @@ public class ScheduleController {
     }
 
     @GetMapping
+    @LoginRequired
     public ResponseEntity<List<Schedule>> showSchedules(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
     @DeleteMapping("/{id}")
+    @LoginRequired
     public ResponseEntity<Object> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteById(id);
 

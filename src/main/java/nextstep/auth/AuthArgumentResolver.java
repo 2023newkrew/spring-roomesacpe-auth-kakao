@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.annotation.AuthenticatedMember;
 import nextstep.member.Member;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

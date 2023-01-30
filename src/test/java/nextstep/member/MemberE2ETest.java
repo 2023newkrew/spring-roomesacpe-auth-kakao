@@ -2,6 +2,7 @@ package nextstep.member;
 
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.dto.TokenRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,7 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         member.setId(Long.valueOf(location.split("/")[2]));
-        token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-
+        token = jwtTokenProvider.createToken(new TokenRequest(member));
     }
 
 

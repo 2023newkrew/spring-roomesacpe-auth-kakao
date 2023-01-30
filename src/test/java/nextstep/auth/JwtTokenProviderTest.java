@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.auth.dto.TokenRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,13 +19,13 @@ class JwtTokenProviderTest {
 
     @Test
     void createToken() {
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(new TokenRequest(1L, "ADMIN"));
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
 
     @Test
     void getPrincipal() {
-        String token = jwtTokenProvider.createToken("1");
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        String token = jwtTokenProvider.createToken(new TokenRequest(1L, "ADMIN"));
+        assertThat(jwtTokenProvider.getSubject(token)).isEqualTo("1");
     }
 }

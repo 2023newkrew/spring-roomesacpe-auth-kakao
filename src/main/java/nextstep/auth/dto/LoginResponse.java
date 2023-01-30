@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -12,7 +12,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TokenResponse {
+public class LoginResponse {
     public String accessToken;
-
 }
