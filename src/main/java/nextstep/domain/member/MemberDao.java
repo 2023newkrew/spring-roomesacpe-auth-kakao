@@ -1,6 +1,6 @@
 package nextstep.domain.member;
 
-import nextstep.interfaces.DuplicateEntityException;
+import nextstep.interfaces.exception.DuplicateEntityException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -42,7 +42,7 @@ public class MemberDao {
 
             }, keyHolder);
         } catch (DataAccessException e) {
-            throw new DuplicateEntityException();
+            throw new DuplicateEntityException("이미 존재하는 맴버입니다.");
         }
 
         return keyHolder.getKey().longValue();

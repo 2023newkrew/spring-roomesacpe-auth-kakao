@@ -5,12 +5,12 @@ import nextstep.domain.schedule.ScheduleDao;
 import nextstep.domain.member.MemberDao;
 import nextstep.domain.member.Member;
 import nextstep.interfaces.reservation.dto.ReservationRequest;
-import nextstep.interfaces.DuplicateEntityException;
-import nextstep.interfaces.NotExistEntityException;
+import nextstep.interfaces.exception.DuplicateEntityException;
+import nextstep.interfaces.exception.NotExistEntityException;
 import nextstep.domain.theme.Theme;
 import nextstep.domain.theme.ThemeDao;
 import org.springframework.stereotype.Service;
-import nextstep.interfaces.AuthorizationException;
+import nextstep.interfaces.exception.AuthorizationException;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateEntityException("이미 존재하는 예약입니다.");
         }
 
         Reservation newReservation = new Reservation(
@@ -60,10 +60,10 @@ public class ReservationService {
         Reservation reservation = reservationDao.findById(id);
         Member member = memberDao.findById(memberId);
         if (reservation == null) {
-            throw new NotExistEntityException();
+            throw new NotExistEntityException("해당 아이디가 존재하지 않습니다.");
         }
         if (!reservation.getMember().getId().equals(member.getId())){
-            throw new AuthorizationException();
+            throw new AuthorizationException("권한이 없습니다.");
         }
         reservationDao.deleteById(id);
     }

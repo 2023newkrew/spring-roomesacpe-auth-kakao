@@ -1,6 +1,6 @@
 package nextstep.domain.member;
 
-import nextstep.interfaces.AuthorizationException;
+import nextstep.interfaces.exception.AuthorizationException;
 import nextstep.interfaces.member.dto.MemberRequest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class MemberService {
         try {
             return memberDao.findById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("해당 아이디가 존재하지 않습니다.");
         }
     }
 }

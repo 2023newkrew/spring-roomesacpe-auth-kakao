@@ -1,6 +1,6 @@
 package nextstep.infrastructure.web;
 
-import nextstep.interfaces.AuthorizationException;
+import nextstep.interfaces.exception.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -38,7 +38,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         try {
             return AuthorizationExtractor.extract(request);
         } catch (Exception e) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("잘못된 토큰입니다.");
         }
     }
 }

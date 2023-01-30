@@ -1,5 +1,8 @@
 package nextstep.interfaces;
 
+import nextstep.interfaces.exception.AuthorizationException;
+import nextstep.interfaces.exception.DuplicateEntityException;
+import nextstep.interfaces.exception.NotExistEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
