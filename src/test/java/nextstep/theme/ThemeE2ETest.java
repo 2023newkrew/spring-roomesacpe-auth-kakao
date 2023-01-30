@@ -19,23 +19,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    private static final String ROLE_USER = "ROLE_USER";
 
     @Autowired
     private MemberDao memberDao;
-    private String token;
+
+    private String adminToken;
+    private String userToken;
 
     @BeforeEach
     void setUp() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+        memberDao.save(new Member("username", "password", "name", "010-1234-5678", ROLE_USER));
 
-        TokenRequest loginBody = new TokenRequest(USERNAME, PASSWORD);
+        TokenRequest adminLoginBody = new TokenRequest("admin1", "admin1");
+        TokenRequest userLoginBody = new TokenRequest("username", "password");
 
-        token = RestAssured
+        adminToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginBody)
+                .body(adminLoginBody)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class).getAccessToken();
+
+        userToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(userLoginBody)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -50,10 +61,23 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .auth().oauth2(token)
-                .when().post("/themes")
+                .auth().oauth2(adminToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+    @DisplayName("유저가 테마 생성을 시도하면 실패한다.")
+    @Test
+    public void createThemeFail(){
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .auth().oauth2(userToken)
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -64,7 +88,7 @@ public class ThemeE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
-                .auth().oauth2(token)
+                .auth().oauth2(adminToken)
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -79,12 +103,27 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(token)
-                .when().delete("/themes/" + id)
+                .auth().oauth2(adminToken)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("유저가 테마 삭제를 시도하면 실패한다.")
+    @Test
+    public void deleteThemeFail(){
+        Long id = createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(userToken)
+                .when().delete("/admin/themes/" + id)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     public Long createTheme() {
@@ -92,9 +131,9 @@ public class ThemeE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(token)
+                .auth().oauth2(adminToken)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

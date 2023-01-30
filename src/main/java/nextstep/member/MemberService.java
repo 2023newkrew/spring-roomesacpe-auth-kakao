@@ -13,7 +13,7 @@ public class MemberService {
     private static final String BEARER = "Bearer ";
 
     public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
+        return memberDao.save(memberRequest.toEntity("ROLE_USER"));
     }
 
     public Member findById(Long id) {

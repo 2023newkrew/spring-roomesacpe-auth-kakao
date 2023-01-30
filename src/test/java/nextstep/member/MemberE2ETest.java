@@ -17,6 +17,8 @@ import org.springframework.test.annotation.DirtiesContext;
 public class MemberE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String ROLE_USER = "ROLE_USER";
+
     @Autowired
     private MemberDao memberDao;
 
@@ -36,7 +38,7 @@ public class MemberE2ETest {
     @DisplayName("멤버 정보를 조회한다")
     @Test
     public void findByToken() {
-        memberDao.save(new Member("username", "password", "name", "010-1234-5678"));
+        memberDao.save(new Member("username", "password", "name", "010-1234-5678", ROLE_USER));
 
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         String token = RestAssured
