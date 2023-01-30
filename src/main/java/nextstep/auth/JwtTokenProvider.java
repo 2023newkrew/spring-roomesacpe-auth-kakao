@@ -14,8 +14,11 @@ public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(String principal, Role role) {
+        Claims claims = Jwts.claims()
+                .setSubject(principal);
+        claims.put("role", role);
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -29,6 +32,10 @@ public class JwtTokenProvider {
 
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public Role getRole(String token) {
+        return Role.valueOf((String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role"));
     }
 
     public boolean validateToken(String token) {

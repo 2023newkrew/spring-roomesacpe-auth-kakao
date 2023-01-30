@@ -5,14 +5,13 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
-import nextstep.support.ForbiddenAccessException;
+import nextstep.support.exception.DuplicateEntityException;
+import nextstep.support.exception.ForbiddenAccessException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ReservationService {
@@ -69,7 +68,7 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        if(!Objects.equals(reservation.getMember().getUsername(), loginMember.getUsername())){
+        if(!loginMember.hasEditPermissionOf(reservation.getMember().getId())){
             throw new ForbiddenAccessException();
         }
 

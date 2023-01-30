@@ -36,6 +36,4 @@ public class ReservationController {
         reservationService.deleteById(id, loginMember);
         return ResponseEntity.noContent().build();
     }
-
-//
 }
