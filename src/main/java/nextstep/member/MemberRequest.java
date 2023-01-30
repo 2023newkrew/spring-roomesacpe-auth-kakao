@@ -6,6 +6,9 @@ public class MemberRequest {
     private String name;
     private String phone;
 
+    public MemberRequest() {
+    }
+
     public MemberRequest(String username, String password, String name, String phone) {
         this.username = username;
         this.password = password;
@@ -29,7 +32,4 @@ public class MemberRequest {
         return phone;
     }
 
-    public Member toEntity() {
-        return new Member(username, password, name, phone);
-    }
 }

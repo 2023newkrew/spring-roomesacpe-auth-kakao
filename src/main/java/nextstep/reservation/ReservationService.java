@@ -1,60 +1,81 @@
 package nextstep.reservation;
 
+import nextstep.auth.JwtTokenProvider;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.DuplicateEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
+import static nextstep.config.Messages.*;
+
 
 @Service
 public class ReservationService {
-    public final ReservationDao reservationDao;
-    public final ThemeDao themeDao;
-    public final ScheduleDao scheduleDao;
+    private final ReservationDao reservationDao;
+    private final ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao) {
+
+    public ReservationService(ReservationDao reservationDao, ThemeDao themeDao, ScheduleDao scheduleDao, JwtTokenProvider jwtTokenProvider) {
         this.reservationDao = reservationDao;
         this.themeDao = themeDao;
         this.scheduleDao = scheduleDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public Long create(ReservationRequest reservationRequest) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
-        if (schedule == null) {
-            throw new NullPointerException();
+    public Long create(ReservationRequest reservationRequest, String authorization) {
+        List<Schedule> schedules = scheduleDao.findById(reservationRequest.getScheduleId());
+
+        if (schedules.isEmpty()) {
+            throw new NullPointerException(NOT_FOUND_SCHEDULE.getMessage() + reservationRequest.getScheduleId());
         }
 
-        List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
-        if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+        List<Reservation> reservation = reservationDao.findByScheduleId(schedules.get(0).getId());
+        if (!reservation.isEmpty()) {  // <- 하나만 수용.. / -> size()
+            throw new DuplicateKeyException(ALREADY_REGISTERED_RESERVATION.getMessage());
         }
 
+        String accessToken = authorization.substring(bearer.length());
+        String username = jwtTokenProvider.getPrincipal(accessToken);
         Reservation newReservation = new Reservation(
-                schedule,
-                reservationRequest.getName()
+                schedules.get(0),
+                username
         );
-
         return reservationDao.save(newReservation);
     }
 
-    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
-        if (theme == null) {
+    public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date, String authorization) {
+        Optional<List<Theme>> themeList = themeDao.findById(themeId);
+        if (themeList.isEmpty() || themeList.get().isEmpty()) {
             throw new NullPointerException();
         }
 
-        return reservationDao.findAllByThemeIdAndDate(themeId, date);
+        String accessToken = authorization.substring(bearer.length());
+        String username = jwtTokenProvider.getPrincipal(accessToken);
+
+        return reservationDao.findAllByThemeIdAndDate(username, themeId, date);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, String authorization) {
+        String accessToken = authorization.substring(bearer.length());
+        String username = jwtTokenProvider.getPrincipal(accessToken);
+
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NullPointerException(RESERVATION_NOT_FOUND.getMessage());
         }
-
+       if (!Objects.equals(reservation.getName(), username)){
+            throw new AuthorizationServiceException(NOT_PERMISSION_DELETE.getMessage());
+        }
         reservationDao.deleteById(id);
     }
 }
