@@ -1,1 +1,1 @@
-INSERT INTO MEMBER VALUES(1, '관리자', 'admin', '관리자', '01012345678', 'ADMIN');
+INSERT INTO MEMBER(username, password, name, phone, role) VALUES('관리자', 'admin', '관리자', '01012345678', 'ADMIN');
