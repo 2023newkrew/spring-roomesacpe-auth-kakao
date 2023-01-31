@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.exception.ForbiddenException;
 import nextstep.exception.UnauthorizedException;
 import nextstep.member.MemberDao;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         long id = principalExtractor.extract(request);
 
         if (!memberDao.findById(id).isAdmin()) {
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         return true;

@@ -34,9 +34,4 @@ public class MemberController {
         );
         return ResponseEntity.ok(memberResponse);
     }
-
-    @ExceptionHandler(DuplicateEntityException.class)
-    public ResponseEntity onException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
 }

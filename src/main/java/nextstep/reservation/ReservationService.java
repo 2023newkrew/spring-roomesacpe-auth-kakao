@@ -2,6 +2,7 @@ package nextstep.reservation;
 
 import java.util.List;
 import nextstep.exception.DuplicateEntityException;
+import nextstep.exception.ForbiddenException;
 import nextstep.exception.NotExistEntityException;
 import nextstep.exception.UnauthorizedException;
 import nextstep.schedule.Schedule;
@@ -58,7 +59,7 @@ public class ReservationService {
         }
 
         if (!reservation.isCreatedBy(memberId)) {
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         reservationDao.deleteById(id);

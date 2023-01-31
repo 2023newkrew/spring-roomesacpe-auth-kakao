@@ -51,14 +51,4 @@ public class ReservationController {
 
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler({NotExistEntityException.class, DuplicateEntityException.class, UnauthorizedException.class})
-    public ResponseEntity onBadRequest(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity onInternalServerError() {
-        return ResponseEntity.internalServerError().body("요청을 처리할 수 없습니다.");
-    }
 }
