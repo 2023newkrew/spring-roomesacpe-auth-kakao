@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -36,5 +37,11 @@ public class ExceptionAdvice {
     public ResponseEntity<String> onInternalServerError(Exception e) {
         LOGGER.error(e.getMessage());
         return ResponseEntity.internalServerError().body("요청을 처리할 수 없습니다.");
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        LOGGER.debug(e.getMessage());
+        return ResponseEntity.badRequest().body(e.getFieldError().getDefaultMessage());
     }
 }

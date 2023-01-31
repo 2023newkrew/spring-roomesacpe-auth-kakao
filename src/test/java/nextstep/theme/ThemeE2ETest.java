@@ -3,10 +3,14 @@ package nextstep.theme;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import java.util.List;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -61,6 +65,31 @@ public class ThemeE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void createByInvalidFormatRequest(String name, String desc, int price) {
+        String adminToken = createBearerToken("admin", "admin");
+        ThemeRequest request = new ThemeRequest(name, desc, price);
+
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().log().all()
+                .post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private static List<Arguments> createByInvalidFormatRequest() {
+        return List.of(
+                Arguments.of("n".repeat(21), "desc", 10_000),
+                Arguments.of("name", "d".repeat(256), 10_000),
+                Arguments.of("name", "desc", -1),
+                Arguments.of("name", "desc", 100_001)
+        );
     }
 
     public Long createTheme() {

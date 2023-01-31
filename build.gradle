@@ -15,6 +15,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
+    implementation 'org.hibernate.validator:hibernate-validator'
+
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
