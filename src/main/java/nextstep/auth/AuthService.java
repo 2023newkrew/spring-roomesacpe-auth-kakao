@@ -56,4 +56,11 @@ public class AuthService {
         }
         return true;
     }
+
+    public Boolean isAdminToken(String token) {
+        if (!decodeToken(token).getRole().equals(Role.ADMIN)) {
+            throw new ForbiddenException("권한이 부족합니다.");
+        }
+        return true;
+    }
 }
