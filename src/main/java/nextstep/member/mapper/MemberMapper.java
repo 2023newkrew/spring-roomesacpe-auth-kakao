@@ -17,7 +17,8 @@ public class MemberMapper {
                 memberRequest.getUsername(),
                 passwordEncoder.encode(memberRequest.getPassword()),
                 memberRequest.getName(),
-                memberRequest.getPhone());
+                memberRequest.getPhone()
+        );
     }
 
     public MemberResponse entityToResponse(MemberEntity memberEntity) {
@@ -26,7 +27,8 @@ public class MemberMapper {
                 memberEntity.getUsername(),
                 memberEntity.getPassword(),
                 memberEntity.getName(),
-                memberEntity.getPhone()
+                memberEntity.getPhone(),
+                memberEntity.getRole()
         );
     }
 }
