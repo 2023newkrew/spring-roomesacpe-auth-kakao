@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request){
-       Member member = memberService.getByNameAndPassword(request.getUsername(), request.getPassword());
+       Member member = memberService.findByNameAndPassword(request.getUsername(), request.getPassword());
        TokenResponse response  = authService.createToken(member);
         return ResponseEntity.ok(response);
     }

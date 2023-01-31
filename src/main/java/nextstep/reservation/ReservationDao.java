@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.common.Role;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
@@ -41,7 +42,8 @@ public class ReservationDao {
                     resultSet.getString("member.username"),
                     resultSet.getString("member.password"),
                     resultSet.getString("member.name"),
-                    resultSet.getString("member.phone"))
+                    resultSet.getString("member.phone"),
+                    Role.valueOf(resultSet.getString("member.role")))
     );
 
     public Long save(Reservation reservation) {

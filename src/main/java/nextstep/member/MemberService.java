@@ -2,6 +2,7 @@ package nextstep.member;
 
 import nextstep.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class MemberService {
@@ -11,7 +12,7 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    public Member getByNameAndPassword(String username, String password) {
+    public Member findByNameAndPassword(String username, String password) {
         return this.memberDao.findByUsernameAndPassword(username, password)
                 .orElseThrow(() -> new NotExistEntityException("해당하는 정보의 사용자가 존재하지 않습니다."));
     }
@@ -20,7 +21,17 @@ public class MemberService {
         return memberDao.save(member);
     }
 
+    public List<Member> findAll() {
+        return this.memberDao.findAll();
+    }
+
     public Member findById(Long id) {
-        return memberDao.findById(id).orElseThrow( () -> new NotExistEntityException("존재하지 않는 아이디 입니다."));
+        return memberDao.findById(id)
+                .orElseThrow( () -> new NotExistEntityException("존재하지 않는 아이디 입니다."));
+    }
+
+    public Member findByUsernameAndPassword(String username, String password) {
+        return this.memberDao.findByUsernameAndPassword(username, password)
+                .orElseThrow(() -> new NotExistEntityException("해당하는 정보의 사용자가 존재하지 않습니다."));
     }
 }
