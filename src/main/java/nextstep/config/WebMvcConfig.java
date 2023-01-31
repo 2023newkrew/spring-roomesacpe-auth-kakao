@@ -1,6 +1,6 @@
 package nextstep.config;
 
-import nextstep.auth.AuthService;
+import nextstep.auth.domain.AuthService;
 import nextstep.interceptor.LoginInterceptor;
 import nextstep.resolver.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
