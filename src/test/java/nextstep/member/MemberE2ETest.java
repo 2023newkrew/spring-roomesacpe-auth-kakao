@@ -4,14 +4,14 @@ import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenConfig;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-
-import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -37,15 +37,18 @@ public class MemberE2ETest {
         String username = "username";
         String password = "password";
 
-        // 멤버 등록
+        // 멤버 등록, id 반환
         MemberRequest memberRequest = new MemberRequest(username, password, "name", "010-1234-5678");
-        RestAssured
+        String memberId = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().post("/members")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .header(HttpHeaders.LOCATION)
+                .split("/")[2];
 
         // token 가져오기
         TokenRequest tokenRequest = new TokenRequest(username, password);
@@ -61,17 +64,15 @@ public class MemberE2ETest {
                 .as(TokenResponse.class);
 
         // token을 통해 멤버 정보 조회하기
-        RestAssured
+        LoginMemberResponse loginMember = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("authorization", JwtTokenConfig.TOKEN_CLASS + tokenResponse.getAccessToken())
                 .when().get("/members/me")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(1))
-                .body("username", equalTo("username"))
-                .body("password", equalTo("password"))
-                .body("name", equalTo("name"))
-                .body("phone", equalTo("010-1234-5678"));
+                .extract()
+                .as(LoginMemberResponse.class);
+        Assertions.assertThat(loginMember.getId()).isEqualTo(Long.parseLong(memberId));
     }
 }

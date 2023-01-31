@@ -1,22 +1,15 @@
 package nextstep.auth;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.Member;
-import nextstep.support.exception.AuthorizationExcpetion;
-import nextstep.support.exception.RoomEscapeExceptionCode;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthService(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    public TokenResponse createToken(Member member, String tokenPassword) {
-        if (member.checkWrongPassword(tokenPassword)) {
-            throw new AuthorizationExcpetion(RoomEscapeExceptionCode.AUTHORIZATION_FAIL);
-        }
+    public TokenResponse createToken(Member member) {
         String token = jwtTokenProvider.createToken(member.getUsername());
         return new TokenResponse(token);
     }

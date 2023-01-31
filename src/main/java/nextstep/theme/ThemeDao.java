@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,12 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class ThemeDao {
     private final JdbcTemplate jdbcTemplate;
-
-    public ThemeDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     private final RowMapper<Theme> rowMapper = (resultSet, rowNum) -> new Theme(
             resultSet.getLong("id"),

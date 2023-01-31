@@ -2,6 +2,7 @@ package nextstep.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,11 @@ public class AuthControllerTest {
     @MockBean
     private MemberService memberService; // WebMvcConfigurer 생성을 위한 Mock
     @MockBean
+    private MemberDao memberDao; // WebMvcConfigurer 생성을 위한 Mock
+    @MockBean
     private JwtTokenProvider jwtTokenProvider; // WebMvcConfigurer 생성을 위한 Mock
+    @MockBean
+    private JwtTokenExtractor jwtTokenExtractor; // WebMvcConfigurer 생성을 위한 Mock
     @Autowired
     private ObjectMapper objectMapper;
     private final String DUMMY_TOKEN_STRING = "abcde";
@@ -40,8 +45,8 @@ public class AuthControllerTest {
         TokenRequest requestBody = new TokenRequest("username", "password");
         Member member = Member.builder().username("username").password("password").name("name").phone("010-1234-5678").build();
         String content = objectMapper.writeValueAsString(requestBody);
-        when(memberService.findByUsername(ArgumentMatchers.any(String.class))).thenReturn(member);
-        when(authService.createToken(ArgumentMatchers.any(Member.class), ArgumentMatchers.any(String.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
+        when(memberService.findByUsernameAndPassword(ArgumentMatchers.any(String.class), ArgumentMatchers.any(String.class))).thenReturn(member);
+        when(authService.createToken(ArgumentMatchers.any(Member.class))).thenReturn(new TokenResponse(DUMMY_TOKEN_STRING));
 
         //when
         String responseBody = mockMvc.perform(post("/login/token")

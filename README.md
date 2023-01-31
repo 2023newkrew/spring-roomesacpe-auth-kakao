@@ -1,4 +1,5 @@
 ## 기능 요구사항
+1,2단계
 - [x] 토큰 발급
 - [x] 멤버 정보 조회
 - [x] 예약 하기
@@ -6,6 +7,13 @@
   - 비로그인 사용자는 예약 불가
 - [x] 예약 삭제
   - 자신의 예약만 취소 가능
+  
+  
+3단계
+- [x] interceptor를 사용한 admin 기능 추가
+  - admin 권한이 있어야 가능한 작업 설정
+    - 테마 추가, 삭제
+    - 스케줄 추가, 삭제
 
 ## 사용자 인증 방법
 - JWT 기반 인증
@@ -19,11 +27,15 @@
 - GlobalExceptionHandler를 통해 발생하는 RoomEscapeException을 처리하도록 했습니다.
 
 ## 프로젝트 구조 (전체 파일)
+- admin
+  - AdminController
+  - AdminInterCeptor
 - auth
   - AuthController
   - AuthService
   - JwtTokenProvider
   - JwtTokenConfig
+  - JwtTokenExtractor
   - TokenRequest
   - TokenResponse
 - member
@@ -32,24 +44,30 @@
   - MemberDao
   - Member
   - MemberRequest
+  - LoginMember
+  - LoginMemberResponse
+  - Role
 - reservation
   - ReservationController
   - ReservationService
   - ReservationDao
   - Reservation
   - ReservationRequest
+  - ReservationResponse
 - schedule
   - ScheduleController
   - ScheduleService
   - ScheduleDao
   - Schedule
   - ScheduleRequest
+  - ScheduleResponse
 - theme
   - ThemeController
   - ThemeService
   - ThemeDao
   - Theme
   - ThemeRequest
+  - ThemeResponse
 - support
   - annotation
     - AuthorizationPrincipal
@@ -83,6 +101,8 @@
   - 전체 파일
 
 ## 추가한 테스트
+- AdminE2ETest
+  - admin 권한이 필요한 URI에 대한 엔드투엔드 테스트 입니다.
 - AuthE2ETest
   - auth 엔드투엔드 테스트 입니다.
 - AuthControllerTest

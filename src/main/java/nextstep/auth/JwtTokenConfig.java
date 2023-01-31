@@ -5,4 +5,6 @@ public class JwtTokenConfig {
     public static final long VALIDITY_IN_MILLISECONDS = 3600000L;
 
     public static final String TOKEN_CLASS = "BEARER ";
+
+    public static final String TOKEN_ROLE_KEY = "role";
 }

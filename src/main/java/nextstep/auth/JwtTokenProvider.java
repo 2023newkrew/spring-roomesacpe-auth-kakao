@@ -10,7 +10,6 @@ import static nextstep.auth.JwtTokenConfig.VALIDITY_IN_MILLISECONDS;
 
 @Component
 public class JwtTokenProvider {
-
     public String createToken(String principal) {
         Claims claims = Jwts.claims().setSubject(principal);
         Date now = new Date();
@@ -27,7 +26,6 @@ public class JwtTokenProvider {
     public String getPrincipal(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
     }
-
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
