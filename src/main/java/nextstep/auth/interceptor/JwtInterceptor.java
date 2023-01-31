@@ -24,21 +24,23 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String token = AuthorizationHeaderExtractor.extract(request, TokenType.BEARER)
             .orElse("");
+        Role role;
 
         try {
             jwtTokenProvider.validateToken(token);
-            Long memberId = Long.parseLong(jwtTokenProvider.getPrincipal(token));
-            MemberEntity member = memberDao.findById(memberId)
-                    .orElseThrow(NotExistEntityException::new);
-
-            if (!member.getRole().equals(Role.ADMIN)) {
-                throw new AuthFailException();
-            }
+            role = memberDao.findById(Long.parseLong(jwtTokenProvider.getPrincipal(token)))
+                    .orElseThrow(NotExistEntityException::new)
+                    .getRole();
         } catch (Exception e) {
             response.setStatus(401);
             return false;
         }
 
-        return true;
+        if (role.equals(Role.ADMIN)) {
+            return true;
+        }
+
+        response.setStatus(401);
+        return false;
     }
 }
