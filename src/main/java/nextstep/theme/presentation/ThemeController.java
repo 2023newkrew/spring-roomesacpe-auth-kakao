@@ -21,7 +21,7 @@ public class ThemeController {
 
     @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
-        if (themeRequest.validate()) {
+        if (!themeRequest.validate()) {
             return ResponseEntity.badRequest().build();
         }
         Long id = themeService.create(themeRequest);

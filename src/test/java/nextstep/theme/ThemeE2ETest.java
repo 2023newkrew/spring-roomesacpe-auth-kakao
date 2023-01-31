@@ -19,6 +19,7 @@ public class ThemeE2ETest {
 
     public static final int THEME_PRICE = 22000;
     public static final long WRONG_THEME_ID = 1000L;
+    public static final int MINUS_PRICE = -1;
 
     @DisplayName("테마를 생성한다")
     @Test
@@ -31,6 +32,97 @@ public class ThemeE2ETest {
                 .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("음수인 가격으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithMinusPrice() {
+        ThemeRequest body = new ThemeRequest(THEME_NAME, THEME_DESC, MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("null인 이름으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithNullName() {
+        ThemeRequest body = new ThemeRequest(null, THEME_DESC, MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("empty string인 이름으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithEmptyName() {
+        ThemeRequest body = new ThemeRequest("", THEME_DESC, MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("blank인 이름으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithBlankName() {
+        ThemeRequest body = new ThemeRequest("      ", THEME_DESC, MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("null인 설명으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithNullDesc() {
+        ThemeRequest body = new ThemeRequest(THEME_NAME, null, MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("empty string인 설명으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithEmptyDesc() {
+        ThemeRequest body = new ThemeRequest(THEME_NAME, "", MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("blank인 설명으로 테마를 생성할 수 없다.")
+    @Test
+    public void cannotCreateThemeWithBlankDesc() {
+        ThemeRequest body = new ThemeRequest(THEME_NAME, "     ", MINUS_PRICE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("테마 목록을 조회한다")

@@ -47,7 +47,7 @@ public class ThemeRequest {
     }
 
     public boolean validate() {
-        return price >= 0 && isNullOrEmptyOrBlank(name, desc);
+        return price >= 0 && !isNullOrEmptyOrBlank(name, desc);
     }
 
     private boolean isNullOrEmptyOrBlank(String... values) {
