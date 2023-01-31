@@ -5,7 +5,7 @@ import org.h2.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import static nextstep.config.Messages.EMPTY_VALUE;
+import static nextstep.support.Messages.EMPTY_VALUE;
 
 public class Schedule {
     private Long id;

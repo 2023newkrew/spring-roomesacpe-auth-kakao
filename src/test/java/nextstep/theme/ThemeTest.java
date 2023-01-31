@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
+import nextstep.member.Role;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +39,7 @@ public class ThemeTest {
 
     @BeforeEach
     void setUp() {
-        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> response = generateToken(USERNAME, PASSWORD);
         accessToken = response.body().jsonPath().getString("accessToken");
     }
@@ -51,7 +52,7 @@ public class ThemeTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -94,7 +95,7 @@ public class ThemeTest {
         RestAssured
             .given().log().all()
             .header(authorization, bearer + accessToken)
-            .when().delete("/themes/" + id)
+            .when().delete("/admin/themes/" + id)
             .then().log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -118,7 +119,7 @@ public class ThemeTest {
         RestAssured
                 .given().log().all()
                 .header(authorization, bearer + accessToken)
-                .when().delete("/themes/" + id)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .statusCode(HttpStatus.CONFLICT.value());
     }
@@ -129,7 +130,7 @@ public class ThemeTest {
         RestAssured
                 .given().log().all()
                 .header(authorization, bearer + accessToken)
-                .when().delete("/themes/" + 1212L)
+                .when().delete("/admin/themes/" + 1212L)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -141,7 +142,7 @@ public class ThemeTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + accessToken)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .extract();
     }

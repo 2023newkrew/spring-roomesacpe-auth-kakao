@@ -1,6 +1,7 @@
 package nextstep.auth.principal;
 
 import nextstep.auth.JwtTokenProvider;
+import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 import static nextstep.auth.Interceptor.LoginInterceptor.authorization;
 import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
-import static nextstep.config.Messages.*;
+import static nextstep.support.Messages.*;
 
 
 @Component
@@ -37,7 +38,11 @@ public class MemberAuthenticationPrincipalArgumentResolver implements HandlerMet
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String accessToken = Objects.requireNonNull(webRequest.getHeader(authorization),
                 LOGIN_NEEDS.getMessage()).substring(bearer.length());
-        String principal = jwtTokenProvider.getPrincipal(accessToken);
+        return getMemberByToken(accessToken);
+    }
+
+    public Member getMemberByToken(String accessToken){
+        String principal = jwtTokenProvider.getPrincipal(bearer + accessToken);
         return memberService.findByUsername(principal).get(0);
     }
 }

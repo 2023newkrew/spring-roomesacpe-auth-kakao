@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static nextstep.auth.Interceptor.LoginInterceptor.bearer;
-import static nextstep.config.Messages.*;
+import static nextstep.support.Messages.*;
 
 
 @Service
@@ -40,12 +39,11 @@ public class ReservationService {
         }
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedules.get(0).getId());
-        if (!reservation.isEmpty()) {  // <- 하나만 수용.. / -> size()
+        if (!reservation.isEmpty()) {
             throw new DuplicateKeyException(ALREADY_REGISTERED_RESERVATION.getMessage());
         }
 
-        String accessToken = authorization.substring(bearer.length());
-        String username = jwtTokenProvider.getPrincipal(accessToken);
+        String username = jwtTokenProvider.getPrincipal(authorization);
         Reservation newReservation = new Reservation(
                 schedules.get(0),
                 username
@@ -59,15 +57,13 @@ public class ReservationService {
             throw new NullPointerException();
         }
 
-        String accessToken = authorization.substring(bearer.length());
-        String username = jwtTokenProvider.getPrincipal(accessToken);
+        String username = jwtTokenProvider.getPrincipal(authorization);
 
         return reservationDao.findAllByThemeIdAndDate(username, themeId, date);
     }
 
     public void deleteById(Long id, String authorization) {
-        String accessToken = authorization.substring(bearer.length());
-        String username = jwtTokenProvider.getPrincipal(accessToken);
+        String username = jwtTokenProvider.getPrincipal(authorization);
 
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {

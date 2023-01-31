@@ -2,13 +2,13 @@ package nextstep.auth;
 
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static nextstep.config.Messages.*;
+import static nextstep.support.Messages.*;
 
 @Service
 public class AuthService {
@@ -36,7 +36,7 @@ public class AuthService {
             throw new NullPointerException(MEMBER_NOT_FOUND.getMessage());
         }
         if (passwordEncoder.matches(member.get(0).getPassword(), password)) {
-            throw new AuthorizationServiceException(PASSWORD_INCORRECT.getMessage());
+            throw new AuthenticationServiceException(PASSWORD_INCORRECT.getMessage());
         }
     }
 }

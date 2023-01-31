@@ -1,5 +1,6 @@
 package nextstep.config;
 
+import nextstep.auth.Interceptor.AdminInterceptor;
 import nextstep.auth.Interceptor.LoginInterceptor;
 import nextstep.auth.principal.MemberAuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/reservations/**")
                 .addPathPatterns("/schedules/**")
-                .addPathPatterns("/themes/**");
+                .addPathPatterns("/themes/**")
+                .addPathPatterns("/admin/**");
+        registry.addInterceptor(new AdminInterceptor())
+                .addPathPatterns("/admin/**");
     }
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

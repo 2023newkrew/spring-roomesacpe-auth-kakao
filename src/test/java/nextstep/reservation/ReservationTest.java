@@ -5,14 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.AcceptanceTestExecutionListener;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -20,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -29,33 +26,27 @@ import static nextstep.auth.Interceptor.LoginInterceptor.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 @TestExecutionListeners(value = {AcceptanceTestExecutionListener.class,}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-class ReservationTest {
-    public static final String DATE = "2022-08-11";
-    public static final String TIME = "13:00";
-    public static final String NAME = "name";
+public class ReservationTest {
+    public static final String TEST_DATE = "2022-08-11";
+    public static final String TEST_TIME = "13:00";
+    public static final String TEST_NAME = "name";
 
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
 
-    @InjectMocks
+    @Autowired
     JwtTokenProvider jwtTokenProvider;
-
     @Autowired
     Environment env;
-
     @Autowired
     JdbcTemplate jdbcTemplate;
     private String token;
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", env.getProperty("jwt.secret"));
-        ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", env.getProperty("jwt.validateMilliSeconds"));
-
-        saveMember(jdbcTemplate, USERNAME, PASSWORD);
+        saveMember(jdbcTemplate, USERNAME, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> tokenResponse = generateToken(USERNAME, PASSWORD);
         token = tokenResponse.body().jsonPath().getString("accessToken");
 
@@ -65,20 +56,20 @@ class ReservationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + token)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
         String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, TEST_DATE, TEST_TIME);
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(authorization, bearer + token)
                 .body(scheduleRequest)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -87,7 +78,7 @@ class ReservationTest {
 
         request = new ReservationRequest(
                 scheduleId,
-                jwtTokenProvider.getPrincipal(token)
+                jwtTokenProvider.getPrincipal(bearer + token)
         );
     }
 
@@ -121,7 +112,7 @@ class ReservationTest {
     void createError() {
         request = new ReservationRequest(
                 scheduleId+2,
-                jwtTokenProvider.getPrincipal(token)
+                jwtTokenProvider.getPrincipal(bearer + token)
         );
         RestAssured
             .given().log().all()
@@ -150,7 +141,7 @@ class ReservationTest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", DATE)
+                .param("date", TEST_DATE)
                 .header(authorization, bearer + token)
                 .when().get("/reservations")
                 .then().log().all()
@@ -166,7 +157,7 @@ class ReservationTest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", DATE)
+                .param("date", TEST_DATE)
                 .header(authorization, bearer + token)
                 .when().get("/reservations")
                 .then().log().all()
@@ -204,7 +195,7 @@ class ReservationTest {
     void otherUserDeleteTest(){
         var reservation = requestCreateReservation();
         String otherUserName = USERNAME + "22";
-        saveMember(jdbcTemplate, otherUserName, PASSWORD);
+        saveMember(jdbcTemplate, otherUserName, PASSWORD, Role.ADMIN);
         ExtractableResponse<Response> otherTokenResponse = generateToken(otherUserName, PASSWORD);
         String otherToken = otherTokenResponse.body().jsonPath().getString("accessToken");
 

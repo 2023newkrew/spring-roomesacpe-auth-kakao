@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static nextstep.config.Messages.*;
+import static nextstep.support.Messages.*;
 
 @Service
 public class ScheduleService {

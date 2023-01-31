@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+import static nextstep.support.Messages.CREATE_USER;
+
 @RestController
 @RequestMapping("/members")
 public class MemberController {
@@ -16,9 +18,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<String> createMember(@RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
-        return ResponseEntity.created(URI.create("/members/" + id)).build();
+        return ResponseEntity.created(URI.create("/members/" + id)).body(CREATE_USER.getMessage() + memberRequest.getName());
     }
 
     @GetMapping("/me")

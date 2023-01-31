@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandlers {
     private static final Logger logger =
             LoggerFactory.getLogger(ExceptionHandlers.class);
+
+    @ExceptionHandler(AuthenticationServiceException.class)
+    public ResponseEntity<Object> authenticationException(final AuthenticationServiceException ex) {
+        logger.warn(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(NullPointerException.class )
     public ResponseEntity<Object> badRequestException(final NullPointerException ex) {

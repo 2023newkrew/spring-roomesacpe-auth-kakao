@@ -47,6 +47,6 @@ public class MemberTest {
                 .header("Authorization", "Bearer " + "asda.asdasd.asdasd")
                 .when().get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 }
