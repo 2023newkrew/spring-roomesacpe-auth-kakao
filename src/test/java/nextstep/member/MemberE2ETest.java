@@ -4,17 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import nextstep.AbstractE2ETest;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
 public class MemberE2ETest extends AbstractE2ETest {
 
@@ -79,14 +75,4 @@ public class MemberE2ETest extends AbstractE2ETest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void createMember(String username, String password, String name, String phone) {
-        MemberRequest body = new MemberRequest(username, password, name, phone);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
 }

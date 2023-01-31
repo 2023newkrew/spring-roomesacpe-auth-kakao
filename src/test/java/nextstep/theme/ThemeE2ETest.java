@@ -5,18 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import java.util.List;
 import nextstep.AbstractE2ETest;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 
 public class ThemeE2ETest extends AbstractE2ETest {
     @DisplayName("테마를 생성한다")
@@ -33,6 +30,23 @@ public class ThemeE2ETest extends AbstractE2ETest {
                 .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("일반 회원은 테마를 생성할 수 없다.")
+    @Test
+    void createThemeByNormalMember() {
+        createMember("username", "password", "name", "010-1234-1234");
+        String normalMemberToken = createBearerToken("username", "password");
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
+        RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, normalMemberToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -64,6 +78,23 @@ public class ThemeE2ETest extends AbstractE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("일반 사용자는 테마를 삭제할 수 없다.")
+    @Test
+    void deleteThemeByNormalMember() {
+        Long id = createTheme();
+        createMember("username", "password", "name", "010-1234-1234");
+        String normalMemberToken = createBearerToken("username", "password");
+
+        var response = RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, normalMemberToken)
+                .when().delete("/admin/themes/" + id)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     @ParameterizedTest
