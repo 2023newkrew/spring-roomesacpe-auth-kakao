@@ -29,15 +29,15 @@ public class ScheduleE2ETest {
     @BeforeEach
     void setUp() {
         accessToken = jwtTokenProvider.createToken(2345L, Role.MEMBER);
-
+        String adminToken = jwtTokenProvider.createToken(23465L, Role.ADMIN);
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .auth().oauth2(adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();

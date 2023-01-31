@@ -27,27 +27,24 @@ public class ThemeE2ETest {
     @BeforeEach
     void setUp() {
         accessToken = jwtTokenProvider.createToken(123L, Role.MEMBER);
-    }
+        String adminToken = jwtTokenProvider.createToken(234L, Role.ADMIN);
 
-    @DisplayName("테마를 생성한다")
-    @Test
-    void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
-                .auth().oauth2(accessToken)
+                .auth().oauth2(adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
     }
+
 
     @DisplayName("테마 목록을 조회한다")
     @Test
     void showThemes() {
-        createTheme();
-
         var response = RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -57,34 +54,5 @@ public class ThemeE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract();
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
     }
 }

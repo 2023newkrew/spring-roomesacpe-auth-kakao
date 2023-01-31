@@ -36,6 +36,8 @@ public class AuthService {
         String token = extractToken(request);
         LoginMember loginMember = decodeToken(token);
 
+        System.out.println(loginMember.getRole());
+        System.out.println(Role.ADMIN.equals(loginMember.getRole()));
         if (!Role.ADMIN.equals(loginMember.getRole())) {
             throw new ForbiddenException("권한이 부족합니다.");
         }
