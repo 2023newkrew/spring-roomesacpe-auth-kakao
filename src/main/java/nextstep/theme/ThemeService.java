@@ -1,7 +1,6 @@
 package nextstep.theme;
 
 import nextstep.exception.NotExistEntityException;
-import nextstep.theme.dto.ThemeRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +13,8 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
-        return themeDao.save(themeRequest.toEntity());
+    public Long create(Theme theme) {
+        return themeDao.save(theme);
     }
 
     public List<Theme> findAll() {

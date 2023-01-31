@@ -1,10 +1,7 @@
 package nextstep.member;
 
 import nextstep.exception.NotExistEntityException;
-import nextstep.member.dto.MemberRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -19,8 +16,8 @@ public class MemberService {
                 .orElseThrow(() -> new NotExistEntityException("해당하는 정보의 사용자가 존재하지 않습니다."));
     }
 
-    public Long create(MemberRequest memberRequest) {
-        return memberDao.save(memberRequest.toEntity());
+    public Long create(Member member) {
+        return memberDao.save(member);
     }
 
     public Member findById(Long id) {

@@ -1,10 +1,7 @@
 package nextstep.schedule;
 
 import nextstep.exception.NotExistEntityException;
-import nextstep.schedule.dto.ScheduleRequest;
 import nextstep.theme.Theme;
-import nextstep.theme.ThemeDao;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +14,8 @@ public class ScheduleService {
         this.scheduleDao = scheduleDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest, Theme theme) {
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
+    public Long create(Schedule schedule, Theme theme) {
+        return scheduleDao.save(schedule);
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
