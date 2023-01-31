@@ -3,6 +3,7 @@ package nextstep.schedule;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import nextstep.AbstractE2ETest;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.theme.ThemeRequest;
@@ -16,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class ScheduleE2ETest {
+public class ScheduleE2ETest extends AbstractE2ETest {
 
     private Long themeId;
 
@@ -115,20 +114,5 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .header("Location");
-    }
-
-    private String createBearerToken(String username, String password) {
-        TokenRequest request = new TokenRequest(username, password);
-
-        TokenResponse response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().log().all()
-                .post("/login/token")
-                .then().log().all()
-                .extract()
-                .as(TokenResponse.class);
-
-        return "Bearer " + response.getAccessToken();
     }
 }

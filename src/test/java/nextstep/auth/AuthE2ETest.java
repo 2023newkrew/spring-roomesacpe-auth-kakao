@@ -3,6 +3,7 @@ package nextstep.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
+import nextstep.AbstractE2ETest;
 import nextstep.member.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,9 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AuthE2ETest {
+public class AuthE2ETest extends AbstractE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
 

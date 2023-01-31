@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import java.util.List;
+import nextstep.AbstractE2ETest;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -17,9 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+public class ThemeE2ETest extends AbstractE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
@@ -106,20 +105,5 @@ public class ThemeE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
-    }
-
-    private String createBearerToken(String username, String password) {
-        TokenRequest request = new TokenRequest(username, password);
-
-        TokenResponse response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().log().all()
-                .post("/login/token")
-                .then().log().all()
-                .extract()
-                .as(TokenResponse.class);
-
-        return "Bearer " + response.getAccessToken();
     }
 }

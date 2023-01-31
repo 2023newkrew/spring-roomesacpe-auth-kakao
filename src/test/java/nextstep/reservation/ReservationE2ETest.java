@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import nextstep.AbstractE2ETest;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
@@ -20,9 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class ReservationE2ETest {
+class ReservationE2ETest extends AbstractE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
@@ -211,20 +210,5 @@ class ReservationE2ETest {
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
-    }
-
-    private String createBearerToken(String username, String password) {
-        TokenRequest request = new TokenRequest(username, password);
-
-        TokenResponse response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().log().all()
-                .post("/login/token")
-                .then().log().all()
-                .extract()
-                .as(TokenResponse.class);
-
-        return "Bearer " + response.getAccessToken();
     }
 }
