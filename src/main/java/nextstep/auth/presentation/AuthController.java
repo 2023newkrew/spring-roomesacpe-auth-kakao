@@ -5,6 +5,7 @@ import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberService;
+import nextstep.support.NotExistEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,16 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
-        Member member = memberService.findByUsername(tokenRequest.getUsername());
-        String accessToken = authService.createAccessToken(member, tokenRequest.getPassword());
-        return ResponseEntity.ok(new TokenResponse(accessToken));
+        if (!tokenRequest.validate()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Member member = memberService.findByUsername(tokenRequest.getUsername());
+            String accessToken = authService.createAccessToken(member, tokenRequest.getPassword());
+            return ResponseEntity.ok(new TokenResponse(accessToken));
+        }
+        catch(NotExistEntityException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

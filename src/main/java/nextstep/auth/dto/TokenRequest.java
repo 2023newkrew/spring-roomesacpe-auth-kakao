@@ -1,5 +1,6 @@
 package nextstep.auth.dto;
 
+
 public class TokenRequest {
     private String username;
     private String password;
@@ -20,5 +21,9 @@ public class TokenRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean validate() {
+        return username != null && password != null;
     }
 }

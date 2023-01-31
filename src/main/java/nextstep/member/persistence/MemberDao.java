@@ -1,6 +1,7 @@
 package nextstep.member.persistence;
 
 import nextstep.member.domain.Member;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class MemberDao {
@@ -43,13 +45,21 @@ public class MemberDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<Member> findById(Long id) {
+        try {
+            String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
-        return jdbcTemplate.queryForObject(sql, rowMapper, username);
+    public Optional<Member> findByUsername(String username) {
+        try {
+            String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, username));
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
