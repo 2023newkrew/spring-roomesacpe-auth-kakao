@@ -1,8 +1,7 @@
 package nextstep.auth;
 
-import nextstep.exception.UnauthorizedException;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -12,11 +11,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    public static final String BEARER_TOKEN_PREFIX = "Bearer ";
-    private final JwtTokenProvider jwtTokenProvider;
+    private final PrincipalExtractor principalExtractor;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthenticationPrincipalArgumentResolver(PrincipalExtractor principalExtractor) {
+        this.principalExtractor = principalExtractor;
     }
 
     @Override
@@ -26,19 +24,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String authorizationValue = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorizationValue == null || !authorizationValue.startsWith(BEARER_TOKEN_PREFIX)) {
-            throw new UnauthorizedException();
-        }
-
-        String token = authorizationValue.substring(BEARER_TOKEN_PREFIX.length());
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new UnauthorizedException();
-        }
-
-        return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
+        return principalExtractor.extract(servletRequest);
     }
 }
