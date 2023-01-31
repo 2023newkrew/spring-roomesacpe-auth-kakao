@@ -2,6 +2,7 @@ package nextstep.member.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nextstep.member.enums.Role;
 
 @Getter
 @AllArgsConstructor
@@ -11,4 +12,5 @@ public class MemberEntity {
     private String password;
     private String name;
     private String phone;
+    private Role role;
 }
