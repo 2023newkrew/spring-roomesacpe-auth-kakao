@@ -15,7 +15,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = authService.extractToken(request);
-        return authService.isValidToken(token) && authService.isAdminToken(token);
+        return authService.isAdmin(request);
     }
 }

@@ -10,7 +10,6 @@ import nextstep.exception.UnauthorizedAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 
 @Service
 public class AuthService {
@@ -20,17 +19,28 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public void validateLoginMember(LoginMember loginMember) {
-        if (Objects.isNull(loginMember)) {
-            throw new UnauthorizedAccessException("인증되지 않은 사용자입니다.");
-        }
-    }
-
     public TokenResponse createToken(Member member) {
         String token = jwtTokenProvider.createToken(member.getId(), member.getRole());
         return new TokenResponse(token);
     }
 
+    public Boolean isValid(HttpServletRequest request) {
+        String token = extractToken(request);
+        if (!jwtTokenProvider.isValidToken(token)) {
+            throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
+        }
+        return true;
+    }
+
+    public Boolean isAdmin(HttpServletRequest request) {
+        String token = extractToken(request);
+        LoginMember loginMember = decodeToken(token);
+
+        if (!Role.ADMIN.equals(loginMember.getRole())) {
+            throw new ForbiddenException("권한이 부족합니다.");
+        }
+        return true;
+    }
 
     public String extractToken(HttpServletRequest request) {
         if (request.getHeader("Authorization") == null) {
@@ -48,19 +58,5 @@ public class AuthService {
         } catch (IllegalArgumentException e) {
             throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
         }
-    }
-
-    public Boolean isValidToken(String token) {
-        if (!jwtTokenProvider.isValidToken(token)) {
-            throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
-        }
-        return true;
-    }
-
-    public Boolean isAdminToken(String token) {
-        if (!decodeToken(token).getRole().equals(Role.ADMIN)) {
-            throw new ForbiddenException("권한이 부족합니다.");
-        }
-        return true;
     }
 }

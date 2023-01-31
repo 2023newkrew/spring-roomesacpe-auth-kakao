@@ -15,7 +15,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = authService.extractToken(request);
-        return authService.isValidToken(token);
+        return authService.isValid(request);
     }
 }
