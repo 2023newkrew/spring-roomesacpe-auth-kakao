@@ -1,5 +1,7 @@
 package nextstep.reservation.dto;
 
+import java.util.Arrays;
+
 public class ReservationRequest {
     private Long scheduleId;
     private String name;
@@ -20,5 +22,14 @@ public class ReservationRequest {
 
     public String getName() {
         return name;
+    }
+
+    public boolean validate() {
+        return scheduleId != null && scheduleId > 0 && !isNullOrEmptyOrBlank(name);
+    }
+
+    private boolean isNullOrEmptyOrBlank(String... values) {
+        return Arrays.stream(values)
+                .anyMatch(value -> value == null || value.isEmpty() || value.isBlank());
     }
 }

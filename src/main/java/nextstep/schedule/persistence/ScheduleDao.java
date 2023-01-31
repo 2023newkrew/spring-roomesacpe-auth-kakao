@@ -2,6 +2,7 @@ package nextstep.schedule.persistence;
 
 import nextstep.schedule.domain.Schedule;
 import nextstep.theme.domain.Theme;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ScheduleDao {
@@ -50,7 +52,7 @@ public class ScheduleDao {
         return keyHolder.getKey().longValue();
     }
 
-    public Schedule findById(Long id) {
+    public Optional<Schedule> findById(Long id) {
         String sql =
                 "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price "
                         +
@@ -58,7 +60,11 @@ public class ScheduleDao {
                         "inner join theme on schedule.theme_id = theme.id " +
                         "where schedule.id = ?;";
 
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
@@ -72,8 +78,7 @@ public class ScheduleDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
     }
-
 }

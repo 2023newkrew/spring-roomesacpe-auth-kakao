@@ -3,6 +3,7 @@ package nextstep.reservation.persistence;
 import nextstep.reservation.domain.Reservation;
 import nextstep.schedule.domain.Schedule;
 import nextstep.theme.domain.Theme;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReservationDao {
@@ -67,7 +69,7 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(date));
     }
 
-    public Reservation findById(Long id) {
+    public Optional<Reservation> findById(Long id) {
         String sql =
                 "SELECT reservation.id, reservation.schedule_id, reservation.name, reservation.member_id, schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price "
                         +
@@ -76,9 +78,9 @@ public class ReservationDao {
                         "inner join theme on schedule.theme_id = theme.id " +
                         "where reservation.id = ?;";
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        } catch (Exception e) {
-            return null;
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
     }
 

@@ -3,6 +3,7 @@ package nextstep.schedule.presentation;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.domain.ScheduleService;
 import nextstep.schedule.dto.ScheduleRequest;
+import nextstep.support.NotExistEntityException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,16 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity<Object> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-        Long id = scheduleService.create(scheduleRequest);
-        return ResponseEntity.created(URI.create("/schedules/" + id)).build();
+        if (!scheduleRequest.validate()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Long id = scheduleService.create(scheduleRequest);
+            return ResponseEntity.created(URI.create("/schedules/" + id)).build();
+        }
+        catch(NotExistEntityException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping
@@ -31,7 +40,10 @@ public class ScheduleController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteReservation(@PathVariable Long id) {
-        scheduleService.deleteById(id);
+        int deleteCount = scheduleService.deleteById(id);
+        if (deleteCount == 0) {
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseEntity.noContent().build();
     }

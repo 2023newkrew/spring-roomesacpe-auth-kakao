@@ -16,8 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ThemeE2ETest {
     public static final String THEME_NAME = "테마이름";
     public static final String THEME_DESC = "테마설명";
-    public static final String THEME_DATE = "2022-08-11";
+
     public static final int THEME_PRICE = 22000;
+    public static final long WRONG_THEME_ID = 1000L;
 
     @DisplayName("테마를 생성한다")
     @Test
@@ -39,7 +40,6 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .param("date", THEME_DATE)
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -59,6 +59,20 @@ public class ThemeE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("존재하지 않는 테마를 삭제할 수 없다.")
+    @Test
+    void cannotDeleteThemeIfNotExists() {
+        createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .when().delete("/themes/" + WRONG_THEME_ID)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public Long createTheme() {

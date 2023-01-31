@@ -1,8 +1,9 @@
 package nextstep.theme.presentation;
 
-import nextstep.theme.dto.ThemeRequest;
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.domain.Theme;
 import nextstep.theme.domain.ThemeService;
+import nextstep.theme.dto.ThemeRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,9 @@ public class ThemeController {
 
     @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
+        if (themeRequest.validate()) {
+            return ResponseEntity.badRequest().build();
+        }
         Long id = themeService.create(themeRequest);
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
@@ -32,8 +36,11 @@ public class ThemeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
-        themeService.delete(id);
-
-        return ResponseEntity.noContent().build();
+        try {
+            themeService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch(NotExistEntityException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

@@ -34,6 +34,10 @@ class ReservationE2ETest {
     public static final String NAME = "name";
     public static final String PHONE = "010-1234-5678";
     public static final String OTHER_USERNAME = "다른사람";
+    public static final long MINUS_SCHEDULE_ID = -1L;
+    public static final long NOT_EXIST_SCHEDULE_ID = 1000L;
+    public static final long RIGHT_SCHEDULE_ID = 1L;
+    public static final long NOT_EXIST_THEME_ID = 1000L;
 
     private ReservationRequest request;
     private Long themeId;
@@ -107,6 +111,93 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("음수 스케줄번호로 예약을 생성할 수 없다.")
+    @Test
+    void cannotCreateReservationWithMinusThemeId() {
+        String accessToken = loginAndGetAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", accessToken)
+                .body(new ReservationRequest(MINUS_SCHEDULE_ID, NAME))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("없는 스케줄번호로 예약을 생성할 수 없다.")
+    @Test
+    void cannotCreateReservationWithNotExistThemeId() {
+        String accessToken = loginAndGetAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", accessToken)
+                .body(new ReservationRequest(NOT_EXIST_SCHEDULE_ID, NAME))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("null인 이름으로 예약을 생성할 수 없다.")
+    @Test
+    void cannotCreateReservationWithNullName() {
+        String accessToken = loginAndGetAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", accessToken)
+                .body(new ReservationRequest(RIGHT_SCHEDULE_ID, null))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Empty String인 이름으로 예약을 생성할 수 없다.")
+    @Test
+    void cannotCreateReservationWithEmptyName() {
+        String accessToken = loginAndGetAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", accessToken)
+                .body(new ReservationRequest(RIGHT_SCHEDULE_ID, ""))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("Blank인 이름으로 예약을 생성할 수 없다.")
+    @Test
+    void cannotCreateReservationWithBlankName() {
+        String accessToken = loginAndGetAccessToken();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", accessToken)
+                .body(new ReservationRequest(RIGHT_SCHEDULE_ID, "    "))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
@@ -127,6 +218,25 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(1);
     }
 
+    @DisplayName("없는 테마의 예약은 조회할 수 없다.")
+    @Test
+    void cannotShowNotExistThemeReservation() {
+        String accessToken = loginAndGetAccessToken();
+
+        createReservation(accessToken);
+
+        var response = RestAssured
+                .given().log().all()
+                .param("themeId", NOT_EXIST_THEME_ID)
+                .param("date", RESERVATION_DATE)
+                .header("authorization", accessToken)
+                .when().get("/reservations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
@@ -144,9 +254,9 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("중복 예약을 생성한다")
+    @DisplayName("중복 예약을 생성할 수 없다.")
     @Test
-    void createDuplicateReservation() {
+    void cannotCreateDuplicateReservation() {
         String accessToken = loginAndGetAccessToken();
 
         createReservation(accessToken);
@@ -181,9 +291,9 @@ class ReservationE2ETest {
         assertThat(reservations.size()).isEqualTo(0);
     }
 
-    @DisplayName("없는 예약을 삭제한다")
+    @DisplayName("없는 예약을 삭제할 수 없다.")
     @Test
-    void createNotExistReservation() {
+    void cannotCreateNotExistReservation() {
         String accessToken = loginAndGetAccessToken();
 
         var response = RestAssured
@@ -196,9 +306,9 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("다른 사람의 예약을 삭제한다")
+    @DisplayName("다른 사람의 예약을 삭제할 수 없다.")
     @Test
-    void deleteNotMyReservation() {
+    void cannotDeleteNotMyReservation() {
         String accessToken = loginAndGetAccessToken();
 
         String otherAccessToken = loginAndGetOtherAccessToken();
@@ -215,9 +325,9 @@ class ReservationE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("비로그인 사용자가 예약을 생성한다")
+    @DisplayName("비로그인 사용자가 예약을 생성할 수 없다.")
     @Test
-    void createByNotLoginUser() {
+    void cannotCreateByNotLoginUser() {
         var response = RestAssured
                 .given().log().all()
                 .body(request)

@@ -1,7 +1,8 @@
 package nextstep.schedule.domain;
 
-import nextstep.schedule.persistence.ScheduleDao;
 import nextstep.schedule.dto.ScheduleRequest;
+import nextstep.schedule.persistence.ScheduleDao;
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.domain.Theme;
 import nextstep.theme.persistence.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class ScheduleService {
     }
 
     public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
+        Theme theme = themeDao.findById(scheduleRequest.getThemeId()).orElseThrow(NotExistEntityException::new);
         return scheduleDao.save(scheduleRequest.toEntity(theme));
     }
 
@@ -27,7 +28,7 @@ public class ScheduleService {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(Long id) {
-        scheduleDao.deleteById(id);
+    public int deleteById(Long id) {
+        return scheduleDao.deleteById(id);
     }
 }

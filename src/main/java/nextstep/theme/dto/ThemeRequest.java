@@ -2,6 +2,8 @@ package nextstep.theme.dto;
 
 import nextstep.theme.domain.Theme;
 
+import java.util.Arrays;
+
 public class ThemeRequest {
     private String name;
     private String desc;
@@ -42,5 +44,14 @@ public class ThemeRequest {
                 this.desc,
                 this.price
         );
+    }
+
+    public boolean validate() {
+        return price >= 0 && isNullOrEmptyOrBlank(name, desc);
+    }
+
+    private boolean isNullOrEmptyOrBlank(String... values) {
+        return Arrays.stream(values)
+                .anyMatch(value -> value == null || value.isEmpty() || value.isBlank());
     }
 }

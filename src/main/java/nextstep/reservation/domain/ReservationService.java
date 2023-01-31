@@ -1,12 +1,13 @@
 package nextstep.reservation.domain;
 
 import nextstep.member.persistence.MemberDao;
-import nextstep.reservation.persistence.ReservationDao;
 import nextstep.reservation.dto.ReservationRequest;
+import nextstep.reservation.persistence.ReservationDao;
 import nextstep.schedule.domain.Schedule;
 import nextstep.schedule.persistence.ScheduleDao;
 import nextstep.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.NotExistEntityException;
 import nextstep.theme.domain.Theme;
 import nextstep.theme.persistence.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ReservationService {
     }
 
     public Long create(ReservationRequest reservationRequest, Long memberId) {
-        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
+        Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId()).orElseThrow(NotExistEntityException::new);
         if (schedule == null) {
             throw new NullPointerException();
         }
@@ -51,7 +52,7 @@ public class ReservationService {
     }
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
-        Theme theme = themeDao.findById(themeId);
+        Theme theme = themeDao.findById(themeId).orElseThrow(NotExistEntityException::new);
         if (theme == null) {
             throw new NullPointerException();
         }
@@ -60,7 +61,7 @@ public class ReservationService {
     }
 
     public void deleteById(Long id, Long memberId) {
-        Reservation reservation = reservationDao.findById(id);
+        Reservation reservation = reservationDao.findById(id).orElseThrow(NotExistEntityException::new);
         if (reservation == null) {
             throw new NullPointerException();
         }

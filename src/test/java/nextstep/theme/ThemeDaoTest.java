@@ -13,13 +13,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ThemeDaoTest {
     public static final String THEME_NAME = "테마 이름";
     public static final String THEME_DESC = "테마 설명";
+    public static final int THEME_PRICE = 22_000;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Test
     void save() {
         ThemeDao themeDao = new ThemeDao(jdbcTemplate);
-        Long id = themeDao.save(new Theme(THEME_NAME, THEME_DESC, 22_000));
+        Long id = themeDao.save(new Theme(THEME_NAME, THEME_DESC, THEME_PRICE));
         assertThat(id).isNotNull();
     }
 }
