@@ -9,10 +9,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
 
-    public LoginMemberArgumentResolver(AuthService authService) {
+    public LoginArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 

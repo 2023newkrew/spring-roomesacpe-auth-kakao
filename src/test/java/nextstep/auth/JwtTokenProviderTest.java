@@ -14,7 +14,7 @@ class JwtTokenProviderTest {
 
         String token = jwtTokenProvider.createToken("1");
 
-        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
+        assertThat(jwtTokenProvider.isValidToken(token)).isTrue();
     }
 
     @Test

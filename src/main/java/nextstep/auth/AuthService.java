@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -46,4 +45,7 @@ public class AuthService {
         }
     }
 
+    public Boolean isValidToken(String token) {
+        return jwtTokenProvider.isValidToken(token);
+    }
 }

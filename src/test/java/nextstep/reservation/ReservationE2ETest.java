@@ -38,31 +38,6 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-        request = new ReservationRequest(scheduleId);
-
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
@@ -83,6 +58,33 @@ class ReservationE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class).getAccessToken();
+
+        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        var themeResponse = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(themeRequest)
+                .when().post("/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] themeLocation = themeResponse.header("Location").split("/");
+        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        var scheduleResponse = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(scheduleRequest)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        request = new ReservationRequest(scheduleId);
     }
 
     @DisplayName("예약을 생성한다")
@@ -107,6 +109,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -127,6 +130,7 @@ class ReservationE2ETest {
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, "11:00:00");
         var scheduleResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
                 .when().post("/schedules")
@@ -140,6 +144,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
@@ -236,6 +241,7 @@ class ReservationE2ETest {
     void showEmptyReservations() {
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .param("themeId", themeId)
                 .param("date", DATE)
                 .when().get("/reservations")
