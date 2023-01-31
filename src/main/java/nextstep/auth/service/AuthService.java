@@ -26,7 +26,7 @@ public class AuthService {
         if (!checkPassword(tokenRequest)) {
             throw new AuthorizationException("비밀번호를 잘못 입력했습니다.");
         }
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), tokenRequest.getRole());
         return new TokenResponse(accessToken);
     }
 

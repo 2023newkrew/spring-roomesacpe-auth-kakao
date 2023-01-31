@@ -82,7 +82,7 @@ class ReservationE2ETest {
         var accessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TokenRequest("username", "password"))
+                .body(new TokenRequest("username", "password", "member"))
                 .when().post("/login/token")
                 .then().log().all()
                 .extract().as(TokenResponse.class).getAccessToken();
