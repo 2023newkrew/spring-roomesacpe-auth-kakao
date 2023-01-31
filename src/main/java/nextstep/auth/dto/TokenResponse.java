@@ -1,11 +1,11 @@
-package nextstep.auth;
+package nextstep.auth.dto;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class TokenResponse {
-    public String accessToken;
+    public final String accessToken;
 
-    public TokenResponse() {
-    }
-
+    @JsonCreator
     public TokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }

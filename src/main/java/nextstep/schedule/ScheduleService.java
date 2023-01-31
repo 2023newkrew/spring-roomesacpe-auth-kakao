@@ -1,28 +1,30 @@
 package nextstep.schedule;
 
+import nextstep.exception.NotExistEntityException;
 import nextstep.theme.Theme;
-import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ScheduleService {
-    private ScheduleDao scheduleDao;
-    private ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
 
-    public ScheduleService(ScheduleDao scheduleDao, ThemeDao themeDao) {
+    public ScheduleService(ScheduleDao scheduleDao) {
         this.scheduleDao = scheduleDao;
-        this.themeDao = themeDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
+    public Long create(Schedule schedule, Theme theme) {
+        return scheduleDao.save(schedule);
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
         return scheduleDao.findByThemeIdAndDate(themeId, date);
+    }
+
+    public Schedule findById(Long id) {
+        return scheduleDao.findById(id)
+                .orElseThrow(() -> new NotExistEntityException("해당 스케쥴이 존재하지 않습니다."));
     }
 
     public void deleteById(Long id) {

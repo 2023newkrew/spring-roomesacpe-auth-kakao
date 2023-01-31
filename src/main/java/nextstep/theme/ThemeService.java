@@ -1,6 +1,6 @@
 package nextstep.theme;
 
-import nextstep.support.NotExistEntityException;
+import nextstep.exception.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,20 +13,21 @@ public class ThemeService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ThemeRequest themeRequest) {
-        return themeDao.save(themeRequest.toEntity());
+    public Long create(Theme theme) {
+        return themeDao.save(theme);
     }
 
     public List<Theme> findAll() {
         return themeDao.findAll();
     }
 
-    public void delete(Long id) {
-        Theme theme = themeDao.findById(id);
-        if (theme == null) {
-            throw new NotExistEntityException();
-        }
+    public Theme findById(Long id) {
+        return themeDao.findById(id)
+                .orElseThrow(()-> new NotExistEntityException("해당 테마가 존재하지 않습니다."));
+    }
 
+    public void delete(Long id) {
+        findById(id);
         themeDao.delete(id);
     }
 }

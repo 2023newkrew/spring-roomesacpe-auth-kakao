@@ -1,6 +1,7 @@
 package nextstep.schedule;
 
 import nextstep.theme.Theme;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,10 +13,11 @@ import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ScheduleDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public ScheduleDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -46,16 +48,21 @@ public class ScheduleDao {
 
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        return keyHolder.getKeyAs(Long.class);
     }
 
-    public Schedule findById(Long id) {
+    public Optional<Schedule> findById(Long id) {
         String sql = "SELECT schedule.id, schedule.theme_id, schedule.date, schedule.time, theme.id, theme.name, theme.desc, theme.price " +
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
-
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            Schedule schedule = jdbcTemplate.queryForObject(sql, rowMapper, id);
+            return Optional.of(schedule);
+        }
+        catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {
@@ -63,12 +70,12 @@ public class ScheduleDao {
                 "from schedule " +
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.theme_id = ? and schedule.date = ?;";
-
         return jdbcTemplate.query(sql, rowMapper, themeId, Date.valueOf(LocalDate.parse(date)));
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
+        String sql = "DELETE FROM schedule where id = ?;";
+        jdbcTemplate.update(sql, id);
     }
 
 }

@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import nextstep.theme.dto.ThemeRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class ThemeController {
 
     @PostMapping
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
-        Long id = themeService.create(themeRequest);
+        Long id = themeService.create(themeRequest.toEntity());
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
