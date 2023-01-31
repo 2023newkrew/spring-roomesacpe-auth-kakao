@@ -21,4 +21,12 @@ public class MemberService {
     public Member findByUserName(String username) {
         return memberDao.findByUsername(username);
     }
+
+    public void updateUserToAdmin(String username) {
+        memberDao.updateRoleByUsername(username, "admin");
+    }
+
+    public void updateAdminToUser(String username) {
+        memberDao.updateRoleByUsername(username, "user");
+    }
 }

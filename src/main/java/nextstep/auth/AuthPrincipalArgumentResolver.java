@@ -31,7 +31,7 @@ public class AuthPrincipalArgumentResolver implements HandlerMethodArgumentResol
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String authHeader = webRequest.getHeader(AUTHORIZATION);
         String token = jwtTokenProvider.parseTokenFromHeader(authHeader);
-        String principal = jwtTokenProvider.getPrincipal(token);
-        return memberService.findByUserName(principal);
+        UserPrincipal principal = jwtTokenProvider.getPrincipal(token);
+        return memberService.findByUserName(principal.getUsername());
     }
 }

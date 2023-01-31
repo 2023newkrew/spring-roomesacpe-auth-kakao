@@ -23,7 +23,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        RESERVATION_EXIST_USER_ACCESS_TOKEN = AuthUtil.createTokenForReservationExistUser().getAccessToken();
+        RESERVATION_EXIST_USER_ACCESS_TOKEN = AuthUtil.createTokenForReservationExistUser();
     }
 
     @DisplayName("예약을 생성한다")

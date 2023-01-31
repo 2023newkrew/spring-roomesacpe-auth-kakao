@@ -16,19 +16,25 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (!checkValidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
-        }
+        Member member = retrieveMember(tokenRequest.getUsername());
+        checkAuthentication(member, tokenRequest);
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        UserPrincipal principal = new UserPrincipal(member.getUsername(), member.getRole());
+        String accessToken = jwtTokenProvider.createToken(principal);
         return new TokenResponse(accessToken);
     }
 
-    private boolean checkValidLogin(String principal, String credential) {
-        Member member = memberDao.findByUsername(principal);
+    private Member retrieveMember(String username) {
+        Member member = memberDao.findByUsername(username);
         if (member == null) {
-            return false;
+            throw new AuthorizationException();
         }
-        return member.getPassword().equals(credential);
+        return member;
+    }
+
+    private void checkAuthentication(Member member, TokenRequest tokenRequest) {
+        if (!member.getPassword().equals(tokenRequest.getPassword())) {
+            throw new AuthorizationException();
+        }
     }
 }

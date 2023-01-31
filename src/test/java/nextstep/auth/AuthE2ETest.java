@@ -13,8 +13,8 @@ public class AuthE2ETest {
     @DisplayName("토큰을 생성한다")
     @Test
     public void create() {
-        TokenResponse tokenResponse = AuthUtil.createTokenForReservationExistUser();
+        String accessToken = AuthUtil.createTokenForReservationExistUser();
 
-        assertThat(tokenResponse).isNotNull();
+        assertThat(accessToken).isNotNull();
     }
 }

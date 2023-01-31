@@ -18,25 +18,28 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(UserPrincipal principal) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
+        Claims claims = Jwts.claims()
+                .setSubject(principal.getUsername())
+                .setIssuedAt(now)
+                .setExpiration(validity);
+        claims.put("role", principal.getRole());
+
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    public String getPrincipal(String token) {
-        return Jwts.parser()
+    public UserPrincipal getPrincipal(String token) {
+        Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+        return new UserPrincipal(claims.getSubject(), (String) claims.get("role"));
     }
 
     public String parseTokenFromHeader(String token) {
@@ -49,12 +52,12 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            return !Jwts.parser()
+            return Jwts.parser()
                     .setSigningKey(secretKey)
                     .parseClaimsJws(token)
                     .getBody()
                     .getExpiration()
-                    .before(new Date());
+                    .after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
