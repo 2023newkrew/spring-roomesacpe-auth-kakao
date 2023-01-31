@@ -18,14 +18,25 @@ public class MemberDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
-            resultSet.getLong("id"),
-            resultSet.getString("username"),
-            resultSet.getString("password"),
-            resultSet.getString("name"),
-            resultSet.getString("phone"),
-            resultSet.getString("role")
-    );
+    private final RowMapper<Member> rowMapper = (resultSet, rowNum) -> {
+
+        String roleName = resultSet.getString("role");
+        Role role;
+        if (roleName.equals("ADMIN")) {
+            role = Role.ADMIN;
+        } else {
+            role = Role.USER;
+        }
+
+        return new Member(
+                resultSet.getLong("id"),
+                resultSet.getString("username"),
+                resultSet.getString("password"),
+                resultSet.getString("name"),
+                resultSet.getString("phone"),
+                role
+        );
+    };
 
     public Long save(Member member) {
         String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
@@ -37,7 +48,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
-            ps.setString(5, member.getRole());
+            ps.setString(5, member.getRole().getRoleName());
             return ps;
 
         }, keyHolder);

@@ -7,6 +7,7 @@ import nextstep.CommonE2ETest;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
+import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +62,7 @@ class ReservationE2ETest extends CommonE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, "010-1234-5678", "USER");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, "010-1234-5678", Role.USER);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -74,7 +75,7 @@ class ReservationE2ETest extends CommonE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new MemberRequest("username2", PASSWORD, NAME, "010-1234-5678", "USER"))
+                .body(new MemberRequest("username2", PASSWORD, NAME, "010-1234-5678", Role.USER))
                 .when().post("/members")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())

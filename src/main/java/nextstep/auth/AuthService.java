@@ -24,7 +24,7 @@ public class AuthService {
             throw new InvalidLoginException();
         }
 
-        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRole());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()), member.getRole().getRoleName());
         return new TokenResponse(token);
     }
 }
