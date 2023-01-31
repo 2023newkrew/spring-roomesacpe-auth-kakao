@@ -1,11 +1,10 @@
 package nextstep.auth.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 public class TokenResponse {
-    public final String accessToken;
+    public String accessToken;
 
-    @JsonCreator
+    private TokenResponse() {}
+
     public TokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
