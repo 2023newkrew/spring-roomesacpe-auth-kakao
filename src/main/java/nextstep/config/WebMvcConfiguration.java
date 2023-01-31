@@ -17,11 +17,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final AuthenticationMemberArgumentResolver authenticationMemberArgumentResolver;
     private final LoginInterceptor loginInterceptor;
+    private final AdminInterceptor adminInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/reservations/**");
+
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin/**");
     }
 
     @Override
