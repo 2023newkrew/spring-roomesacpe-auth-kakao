@@ -13,10 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
+    public static final String THEME_NAME = "테마이름";
+    public static final String THEME_DESC = "테마설명";
+    public static final String THEME_DATE = "2022-08-11";
+    public static final int THEME_PRICE = 22000;
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequest body = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +38,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .param("date", "2022-08-11")
+                .param("date", THEME_DATE)
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -56,7 +61,7 @@ public class ThemeE2ETest {
     }
 
     public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequest body = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

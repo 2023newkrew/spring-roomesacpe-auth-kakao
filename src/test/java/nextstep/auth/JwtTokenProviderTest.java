@@ -8,11 +8,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("JwtTokenProvider 학습 테스트")
 class JwtTokenProviderTest {
 
+    public static final String PRINCIPAL = "1";
+
     @Test
     void createToken() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(PRINCIPAL);
 
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
@@ -21,8 +23,8 @@ class JwtTokenProviderTest {
     void getPrincipal() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(PRINCIPAL);
 
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo(PRINCIPAL);
     }
 }

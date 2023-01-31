@@ -22,17 +22,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ReservationE2ETest {
-    public static final String DATE = "2022-08-11";
-    public static final String TIME = "13:00";
+    public static final String RESERVATION_DATE = "2022-08-11";
+    public static final String RESERVATION_TIME = "13:00";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String THEME_NAME = "테마이름";
+    public static final String THEME_DESC = "테마설명";
+    public static final int THEME_PRICE = 22000;
+    public static final String NAME = "name";
+    public static final String PHONE = "010-1234-5678";
+    public static final String OTHER_USERNAME = "다른사람";
 
     private ReservationRequest request;
     private Long themeId;
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +50,7 @@ class ReservationE2ETest {
         String[] themeLocation = themeResponse.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, RESERVATION_DATE, RESERVATION_TIME);
         var scheduleResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +62,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -66,7 +72,7 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        body = new MemberRequest("다른사람", PASSWORD, "name", "010-1234-5678");
+        body = new MemberRequest("다른사람", PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -109,7 +115,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", DATE)
+                .param("date", RESERVATION_DATE)
                 .header("authorization", accessToken)
                 .when().get("/reservations")
                 .then().log().all()
@@ -163,7 +169,7 @@ class ReservationE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", DATE)
+                .param("date", RESERVATION_DATE)
                 .header("authorization", accessToken)
                 .when().get("/reservations")
                 .then().log().all()
@@ -247,7 +253,7 @@ class ReservationE2ETest {
     }
 
     private String loginAndGetOtherAccessToken() {
-        TokenRequest body = new TokenRequest("다른사람", PASSWORD);
+        TokenRequest body = new TokenRequest(OTHER_USERNAME, PASSWORD);
         var accessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

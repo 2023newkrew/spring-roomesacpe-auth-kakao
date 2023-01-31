@@ -17,11 +17,13 @@ public class MemberE2ETest {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
+    public static final String NAME = "name";
+    public static final String PHONE = "010-1234-5678";
 
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +59,7 @@ public class MemberE2ETest {
     }
 
     public void createMember() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

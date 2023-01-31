@@ -15,12 +15,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScheduleE2ETest {
-
+    public static final long THEME_ID = 1L;
+    public static final String THEME_NAME = "테마이름";
+    public static final String THEME_DESC = "테마설명";
+    public static final int THEME_PRICE = 22000;
+    public static final String SCHEDULE_DATE = "2022-08-11";
+    public static final String SCHEDULE_TIME = "13:00";
     private Long themeId;
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
+
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -36,7 +42,7 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 생성한다")
     @Test
     public void createSchedule() {
-        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        ScheduleRequest body = new ScheduleRequest(themeId, SCHEDULE_DATE, SCHEDULE_TIME);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +60,7 @@ public class ScheduleE2ETest {
         var response = RestAssured
                 .given().log().all()
                 .param("themeId", themeId)
-                .param("date", "2022-08-11")
+                .param("date", SCHEDULE_DATE)
                 .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
@@ -78,7 +84,7 @@ public class ScheduleE2ETest {
     }
 
     public static String requestCreateSchedule() {
-        ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
+        ScheduleRequest body = new ScheduleRequest(THEME_ID, SCHEDULE_DATE, SCHEDULE_TIME);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
