@@ -1,6 +1,6 @@
 package nextstep.member;
 
-import nextstep.common.Login;
+import nextstep.common.Authenticated;
 import nextstep.common.LoginMember;
 import nextstep.member.dto.MemberRequest;
 import nextstep.member.dto.MemberCreatedResponse;
@@ -25,7 +25,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberCreatedResponse> me(@Login LoginMember loginMember) {
+    public ResponseEntity<MemberCreatedResponse> me(@Authenticated LoginMember loginMember) {
         Member member = memberService.findById(loginMember.getId());
         return ResponseEntity.ok(MemberCreatedResponse.of(member));
     }

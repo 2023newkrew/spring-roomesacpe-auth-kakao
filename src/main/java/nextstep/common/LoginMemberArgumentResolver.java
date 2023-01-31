@@ -18,7 +18,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Login.class);
+        return parameter.hasParameterAnnotation(Authenticated.class);
     }
 
     @Override

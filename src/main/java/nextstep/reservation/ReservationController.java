@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.auth.AuthService;
-import nextstep.common.Login;
+import nextstep.common.Authenticated;
 import nextstep.common.LoginMember;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
@@ -38,7 +38,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createReservation(@Login LoginMember loginMember, @RequestBody ReservationRequest reservationRequest) {
+    public ResponseEntity<Void> createReservation(@Authenticated LoginMember loginMember, @RequestBody ReservationRequest reservationRequest) {
         authService.validateLoginMember(loginMember);
 
         Member member = memberService.findById(loginMember.getId());
@@ -60,7 +60,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@Login LoginMember loginMember, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@Authenticated LoginMember loginMember, @PathVariable Long id) {
         authService.validateLoginMember(loginMember);
 
         reservationService.deleteById(id, loginMember.getId());
