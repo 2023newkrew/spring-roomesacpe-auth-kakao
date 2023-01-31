@@ -1,6 +1,7 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.ThemeMethod;
 import nextstep.interfaces.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
-    @DisplayName("테마를 생성한다")
+    @DisplayName("테마를 생성한다 - 로그인 X")
     @Test
     public void create() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
@@ -22,16 +23,15 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
-        createTheme();
-
+        ThemeMethod.createTheme();
         var response = RestAssured
                 .given().log().all()
                 .param("date", "2022-08-11")
@@ -42,30 +42,18 @@ public class ThemeE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
+    @DisplayName("테마를 삭제한다 - 로그인 X")
     @Test
     void delete() {
-        Long id = createTheme();
+        Long id = ThemeMethod.createTheme();
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
-    }
 }

@@ -1,8 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.ThemeMethod;
 import nextstep.interfaces.schedule.dto.ScheduleRequest;
-import nextstep.interfaces.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,17 +21,7 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = response.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        themeId = ThemeMethod.createTheme();
     }
 
     @DisplayName("스케줄을 생성한다")

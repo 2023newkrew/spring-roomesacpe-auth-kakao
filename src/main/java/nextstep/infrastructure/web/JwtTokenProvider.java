@@ -1,11 +1,7 @@
 package nextstep.infrastructure.web;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import nextstep.interfaces.AuthorizationException;
+import io.jsonwebtoken.*;
+import nextstep.interfaces.exception.AuthorizationException;
 
 import java.util.Date;
 
@@ -14,8 +10,9 @@ public class JwtTokenProvider {
     private String secretKey = "learning-test-spring";
     private long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(String memberId, String role) {
+        Claims claims = Jwts.claims().setSubject(memberId);
+        claims.put("role", role);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -27,8 +24,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
+    public String getMemberId(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+    public String getRole(String token) {
+        return (String) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("role");
     }
 
     public boolean validateToken(String token) {
@@ -36,8 +36,16 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new AuthorizationException();
+        } catch (MalformedJwtException e){
+            throw new AuthorizationException("손상된 토큰입니다.");
+        } catch (ExpiredJwtException e){
+            throw new AuthorizationException("만료된 토큰입니다.");
+        } catch (UnsupportedJwtException e){
+            throw new AuthorizationException("지원하지 않는 토큰입니다.");
+        } catch (SignatureException e ){
+            throw new AuthorizationException("시그니처 검증에 실패한 토큰입니다.");
+        } catch (IllegalArgumentException e){
+            throw new AuthorizationException("잘못된 토큰입니다.");
         }
     }
 }

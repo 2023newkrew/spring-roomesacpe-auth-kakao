@@ -1,6 +1,6 @@
 package nextstep.domain.member;
 
-import nextstep.support.DuplicateEntityException;
+import nextstep.interfaces.exception.DuplicateEntityException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,11 +23,12 @@ public class MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             jdbcTemplate.update(connection -> {
@@ -36,23 +37,24 @@ public class MemberDao {
                 ps.setString(2, member.getPassword());
                 ps.setString(3, member.getName());
                 ps.setString(4, member.getPhone());
+                ps.setString(5, member.getRole().toString());
                 return ps;
 
             }, keyHolder);
         } catch (DataAccessException e) {
-            throw new DuplicateEntityException();
+            throw new DuplicateEntityException("이미 존재하는 맴버입니다.");
         }
 
         return keyHolder.getKey().longValue();
     }
 
     public Member findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Member findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         return jdbcTemplate.queryForObject(sql, rowMapper, username);
     }
 }

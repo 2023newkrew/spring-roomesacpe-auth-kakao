@@ -1,10 +1,12 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.Login;
+import nextstep.ThemeMethod;
+import nextstep.domain.member.MemberRole;
 import nextstep.interfaces.auth.dto.TokenRequest;
 import nextstep.interfaces.auth.dto.TokenResponse;
 import nextstep.interfaces.member.dto.MemberRequest;
-import nextstep.interfaces.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ public class AuthE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", MemberRole.MEMBER);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +55,7 @@ public class AuthE2ETest {
     @DisplayName("테마 목록을 조회한다")
     @Test
     public void showThemes() {
-        createTheme();
+        ThemeMethod.createTheme();
 
         var response = RestAssured
                 .given().log().all()
@@ -65,30 +67,37 @@ public class AuthE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("테마를 삭제한다")
+    @DisplayName("테마를 삭제한다 - 관리자 계정")
     @Test
     void delete() {
-        Long id = createTheme();
+        Long id = ThemeMethod.createTheme();
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .auth().oauth2(Login.loginAdmin())
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
+    @DisplayName("테마를 삭제한다 - 관리자 계정이 아닐 경우")
+    @Test
+    void deleteNotAdmin() {
+        Long id = ThemeMethod.createTheme();
+
+        var response = RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/themes")
+                .auth().oauth2(Login.loginUser())
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+
+
+
 }

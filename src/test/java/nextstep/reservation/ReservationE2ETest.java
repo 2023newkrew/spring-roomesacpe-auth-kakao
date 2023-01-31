@@ -3,13 +3,13 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.ThemeMethod;
 import nextstep.interfaces.auth.dto.TokenRequest;
 import nextstep.interfaces.auth.dto.TokenResponse;
 import nextstep.interfaces.member.dto.MemberRequest;
 import nextstep.domain.reservation.Reservation;
 import nextstep.interfaces.reservation.dto.ReservationRequest;
 import nextstep.interfaces.schedule.dto.ScheduleRequest;
-import nextstep.interfaces.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,17 +40,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        themeId = ThemeMethod.createTheme();
 
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
         var scheduleResponse = RestAssured

@@ -6,7 +6,7 @@ import nextstep.domain.member.MemberDao;
 import nextstep.interfaces.auth.dto.TokenRequest;
 import nextstep.interfaces.auth.dto.TokenResponse;
 import org.springframework.stereotype.Service;
-import nextstep.interfaces.AuthorizationException;
+import nextstep.interfaces.exception.AuthorizationException;
 
 @Service
 public class AuthService {
@@ -22,10 +22,10 @@ public class AuthService {
     public TokenResponse createToken(TokenRequest tokenRequest) {
         Member member = memberDao.findByUsername(tokenRequest.getUsername());
         if (member.checkWrongPassword(tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("아이디, 비밀번호가 알맞지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.createToken(member.getId().toString());
+        String accessToken = jwtTokenProvider.createToken(member.getId().toString(), member.getRole().name());
         return new TokenResponse(accessToken);
     }
 
