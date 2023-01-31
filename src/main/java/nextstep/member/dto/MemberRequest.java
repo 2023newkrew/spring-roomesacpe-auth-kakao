@@ -2,6 +2,9 @@ package nextstep.member.dto;
 
 import nextstep.member.domain.Member;
 
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
 public class MemberRequest {
     private String username;
     private String password;
@@ -46,5 +49,18 @@ public class MemberRequest {
 
     public Member toEntity() {
         return new Member(username, password, name, phone);
+    }
+
+    public boolean validate() {
+        return !isNullOrEmptyOrBlank(username, password, name) && isRightPhoneNumber(phone);
+    }
+
+    private boolean isNullOrEmptyOrBlank(String... values) {
+        return Arrays.stream(values)
+                .anyMatch(value -> value == null || value.isEmpty() || value.isBlank());
+    }
+
+    private boolean isRightPhoneNumber(String phone) {
+        return Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", phone);
     }
 }
