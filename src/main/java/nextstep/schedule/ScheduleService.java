@@ -1,6 +1,10 @@
 package nextstep.schedule;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import nextstep.exception.DuplicateEntityException;
+import nextstep.exception.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -15,9 +19,21 @@ public class ScheduleService {
         this.themeDao = themeDao;
     }
 
-    public Long create(ScheduleRequest scheduleRequest) {
-        Theme theme = themeDao.findById(scheduleRequest.getThemeId());
-        return scheduleDao.save(scheduleRequest.toEntity(theme));
+    public Long create(ScheduleRequest request) {
+        Theme theme = themeDao.findById(request.getThemeId());
+
+        if (theme == null) {
+            throw new NotExistEntityException();
+        }
+
+        LocalDate date = LocalDate.parse(request.getDate());
+        LocalTime time = LocalTime.parse(request.getTime());
+
+        if (scheduleDao.existsByThemeIdAndDateAndTime(theme.getId(), date, time)) {
+            throw new DuplicateEntityException();
+        }
+
+        return scheduleDao.save(request.toEntity(theme));
     }
 
     public List<Schedule> findByThemeIdAndDate(Long themeId, String date) {

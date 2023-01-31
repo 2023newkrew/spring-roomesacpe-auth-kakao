@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import nextstep.theme.Theme;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -74,4 +75,8 @@ public class ScheduleDao {
         jdbcTemplate.update("DELETE FROM schedule where id = ?;", id);
     }
 
+    public boolean existsByThemeIdAndDateAndTime(Long id, LocalDate date, LocalTime time) {
+        String sql = "SELECT EXISTS (SELECT id FROM schedule WHERE id = ? AND date = ? AND time = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, id, date, time);
+    }
 }

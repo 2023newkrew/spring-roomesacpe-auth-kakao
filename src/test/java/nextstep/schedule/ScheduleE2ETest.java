@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.theme.ThemeRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,26 @@ public class ScheduleE2ETest {
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("중복된 일정을 생성할 수 없다.")
+    @Test
+    void createDuplicatedSchedule() {
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/schedules")
+                .then().log().all();
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("스케줄을 조회한다")
