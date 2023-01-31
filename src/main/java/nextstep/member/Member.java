@@ -1,5 +1,9 @@
 package nextstep.member;
 
+import org.h2.util.StringUtils;
+
+import static nextstep.config.Messages.EMPTY_VALUE;
+
 public class Member {
     private Long id;
     private String username;
@@ -7,7 +11,11 @@ public class Member {
     private String name;
     private String phone;
 
+    public Member() {
+    }
+
     public Member(Long id, String username, String password, String name, String phone) {
+        checkEmptyValue(username, password);
         this.id = id;
         this.username = username;
         this.password = password;
@@ -16,6 +24,7 @@ public class Member {
     }
 
     public Member(String username, String password, String name, String phone) {
+        checkEmptyValue(username, password);
         this.username = username;
         this.password = password;
         this.name = name;
@@ -42,7 +51,9 @@ public class Member {
         return phone;
     }
 
-    public boolean checkWrongPassword(String password) {
-        return !this.password.equals(password);
+    private void checkEmptyValue(String username, String password){
+        if (StringUtils.isNullOrEmpty(username) || StringUtils.isNullOrEmpty(password)) {
+            throw new NullPointerException(EMPTY_VALUE.getMessage());
+        }
     }
 }

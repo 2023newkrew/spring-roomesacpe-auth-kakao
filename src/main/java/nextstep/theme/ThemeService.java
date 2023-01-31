@@ -1,19 +1,28 @@
 package nextstep.theme;
 
-import nextstep.support.NotExistEntityException;
+import nextstep.schedule.ScheduleDao;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
+import static nextstep.config.Messages.*;
 
 @Service
 public class ThemeService {
-    private ThemeDao themeDao;
+    private final ThemeDao themeDao;
+    private final ScheduleDao scheduleDao;
 
-    public ThemeService(ThemeDao themeDao) {
+    public ThemeService(ThemeDao themeDao, ScheduleDao scheduleDao) {
         this.themeDao = themeDao;
+        this.scheduleDao = scheduleDao;
     }
 
     public Long create(ThemeRequest themeRequest) {
+        if (themeDao.findByNameAndPrice(themeRequest)) {
+            throw new DuplicateKeyException(ALREADY_REGISTERED_THEME.getMessage());
+        }
         return themeDao.save(themeRequest.toEntity());
     }
 
@@ -22,11 +31,13 @@ public class ThemeService {
     }
 
     public void delete(Long id) {
-        Theme theme = themeDao.findById(id);
-        if (theme == null) {
-            throw new NotExistEntityException();
+        Optional<List<Theme>> themeList = themeDao.findById(id);
+        if (themeList.isEmpty() || themeList.get().isEmpty()) {
+            throw new NullPointerException(THEME_NOT_FOUND.getMessage());
         }
-
+        if (scheduleDao.isExistsByThemeId(id)) {
+            throw new DuplicateKeyException(ALREADY_REGISTERED_SCHEDULE.getMessage());
+        }
         themeDao.delete(id);
     }
 }
