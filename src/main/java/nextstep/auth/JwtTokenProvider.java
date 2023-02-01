@@ -1,10 +1,11 @@
 package nextstep.auth;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.exceptions.exception.auth.AuthorizationException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -15,8 +16,10 @@ public class JwtTokenProvider {
     private final String secretKey = "learning-test-spring";
     private final long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    public String createToken(TokenRequest tokenRequest) {
+        Claims claims = Jwts.claims().setSubject(tokenRequest.getId());
+        claims.put("role", tokenRequest.getRole());
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -28,21 +31,24 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getPrincipal(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public String getSubject(String token) {
+        return getClaim(token).getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-
-            return !claims.getBody().getExpiration().before(new Date());
+            return !getClaim(token).getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new AuthorizationException();
         }
     }
 
-    public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    private Claims getClaim(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
+
+    public String getRole(String token) {
+        return (String) getClaim(token).get("role");
+    }
+
 }

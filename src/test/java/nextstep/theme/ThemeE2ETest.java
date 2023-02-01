@@ -2,6 +2,7 @@ package nextstep.theme;
 
 import io.restassured.RestAssured;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.dto.TokenRequest;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ public class ThemeE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         member.setId(getIdFromLocation(location));
-        token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        token = jwtTokenProvider.createToken(new TokenRequest(member));
 
         ThemeRequest themeRequest = new ThemeRequest(theme);
         location = RestAssured.given().auth().oauth2(token).log().all()

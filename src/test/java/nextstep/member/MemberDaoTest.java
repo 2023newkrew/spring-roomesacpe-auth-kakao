@@ -43,7 +43,7 @@ public class MemberDaoTest {
 
     @Test
     void 없는_아이디를_조회하면_빈_객체를_반환한다() {
-        assertThat(memberDao.findById(1L)).isEqualTo(Optional.empty());
+        assertThat(memberDao.findById(100L)).isEqualTo(Optional.empty());
     }
 
     @Test

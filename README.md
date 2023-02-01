@@ -18,3 +18,10 @@
   - [ ] 자신의 예약이 아닌 경우 예약 취소가 불가능하다.
 ### 프로그래밍 요구사항
 - [ ] `HandlerMethodArgumentResolver`를 활용한다.
+
+
+# 🚀 3단계 - 관리자 역할 추가
+## 요구사항
+- [ ]  LoginRequired & AdminRequired Annotation 추가
+- [ ]  관리자 API의 앞에는 /admin을 붙여 관리자 controller url을 분리 
+- [ ]  애플리케이션이 시작될 때 지정된 관리자를 추가하는 방식으로 관리자를 관리한다.

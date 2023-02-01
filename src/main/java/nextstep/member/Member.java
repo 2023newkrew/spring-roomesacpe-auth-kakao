@@ -18,6 +18,7 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private String role;
 
     public Member(String username, String password, String name, String phone) {
         this.id = null;
@@ -25,6 +26,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = "MEMBER";
     }
 
     public boolean checkWrongPassword(String password) {

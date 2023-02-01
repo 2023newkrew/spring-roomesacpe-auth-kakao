@@ -23,10 +23,9 @@ public class MemberService {
         return memberDao.findByUsername(name).orElseThrow(MemberNotFoundException::new);
     }
 
-//    private Member notNullableMember(Member member) {
-//        if (member == null) {
-//            throw new ObjectNotFoundException("해당 멤버를 찾을 수 없습니다.");
-//        }
-//        return member;
-//    }
+    public void deleteById(Long id) {
+        memberDao.findById(id).orElseThrow(MemberNotFoundException::new);
+        memberDao.deleteById(id);
+    }
+
 }

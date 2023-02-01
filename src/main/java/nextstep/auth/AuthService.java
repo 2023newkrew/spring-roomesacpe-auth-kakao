@@ -1,6 +1,9 @@
 package nextstep.auth;
 
-import nextstep.exceptions.exception.AuthorizationException;
+import nextstep.auth.dto.LoginRequest;
+import nextstep.auth.dto.LoginResponse;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.exceptions.exception.auth.WrongPasswordException;
 import nextstep.member.Member;
 import nextstep.member.MemberService;
 import org.springframework.stereotype.Service;
@@ -17,21 +20,20 @@ public class AuthService {
         this.memberService = memberService;
     }
 
-    public TokenResponse createToken(TokenRequest request) {
-        if (checkInvalidLogin(request.getId(), request.getPassword())) {
-            throw new AuthorizationException("잘못된 비밀번호 입니다.");
-        }
-        return new TokenResponse(jwtTokenProvider.createToken(String.valueOf(request.getId())));
+    public LoginResponse createToken(LoginRequest request) {
+        Member member = memberService.findById(request.getId());
+        checkPassword(member, request.getPassword());
+        return new LoginResponse(jwtTokenProvider.createToken(TokenRequest.fromMember(member)));
     }
 
-    private boolean checkInvalidLogin(Long id, String password) {
-        return memberService
-                .findById(id)
-                .checkWrongPassword(password);
+    private static void checkPassword(Member member, String requestPassword) {
+        if (member.checkWrongPassword(requestPassword)) {
+            throw new WrongPasswordException();
+        }
     }
 
     public Member getMemberFromToken(String token) {
-        Long id = Long.valueOf(jwtTokenProvider.getPrincipal(token));
+        Long id = Long.valueOf(jwtTokenProvider.getSubject(token));
         return memberService.findById(id);
     }
 

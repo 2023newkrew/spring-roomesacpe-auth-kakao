@@ -1,5 +1,6 @@
 package nextstep.theme;
 
+import nextstep.auth.annotation.LoginRequired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,20 +23,23 @@ public class ThemeController {
     }
 
     @PostMapping
+    @LoginRequired
     public ResponseEntity<Void> createTheme(@RequestBody ThemeRequest themeRequest) {
         Long id = themeService.create(themeRequest.toEntity());
         return ResponseEntity.created(URI.create("/themes/" + id)).build();
     }
 
     @GetMapping
+    @LoginRequired
     public ResponseEntity<List<Theme>> showThemes() {
         List<Theme> results = themeService.findAll();
         return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/{id}")
+    @LoginRequired
     public ResponseEntity<Void> deleteTheme(@PathVariable Long id) {
-        themeService.delete(id);
+        themeService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }

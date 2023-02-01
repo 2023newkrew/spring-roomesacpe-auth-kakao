@@ -1,6 +1,7 @@
 package nextstep.member;
 
-import nextstep.auth.AuthenticatedMember;
+import nextstep.auth.annotation.AuthenticatedMember;
+import nextstep.auth.annotation.LoginRequired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class MemberController {
     }
 
     @GetMapping("/me")
+    @LoginRequired
     public ResponseEntity<MemberResponse> me(@AuthenticatedMember Member member) {
         return ResponseEntity.ok().body(MemberResponse.from(member));
     }

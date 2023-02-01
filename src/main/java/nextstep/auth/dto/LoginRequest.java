@@ -1,4 +1,4 @@
-package nextstep.auth;
+package nextstep.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TokenRequest {
+public class LoginRequest {
     private Long id;
     private String password;
 }

@@ -1,6 +1,7 @@
 package nextstep.reservation;
 
-import nextstep.auth.AuthenticatedMember;
+import nextstep.auth.annotation.AuthenticatedMember;
+import nextstep.auth.annotation.LoginRequired;
 import nextstep.exceptions.exception.notFound.ReservationForbiddenException;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
@@ -25,6 +26,7 @@ public class ReservationController {
     }
 
     @PostMapping
+    @LoginRequired
     public ResponseEntity<Object> createReservation(
             @RequestBody ReservationRequest reservationRequest,
             @AuthenticatedMember Member member
@@ -38,16 +40,17 @@ public class ReservationController {
     }
 
     @GetMapping
+    @LoginRequired
     public ResponseEntity<List<Reservation>> readReservations(
             @RequestParam Long themeId,
-            @RequestParam String date,
-            @AuthenticatedMember Member member
+            @RequestParam String date
     ) {
         List<Reservation> reservations = reservationService.findAllByThemeIdAndDate(themeId, date);
         return ResponseEntity.ok().body(reservations);
     }
 
     @DeleteMapping("/{id}")
+    @LoginRequired
     public ResponseEntity<Object> deleteReservation(
             @PathVariable Long id,
             @AuthenticatedMember Member member

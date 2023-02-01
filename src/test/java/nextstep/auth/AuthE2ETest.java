@@ -1,6 +1,9 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
+import nextstep.auth.dto.LoginRequest;
+import nextstep.auth.dto.LoginResponse;
+import nextstep.auth.dto.TokenRequest;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import nextstep.reservation.ReservationRequest;
@@ -40,21 +43,23 @@ public class AuthE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         member.setId(Long.parseLong(location.split("/")[2]));
-        token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
-        assertThat(Long.parseLong(jwtTokenProvider.getPrincipal(token))).isEqualTo(member.getId());
 
-        TokenRequest tokenRequest = new TokenRequest(member.getId(), member.getPassword());
+        TokenRequest tokenRequest = new TokenRequest(member);
+        token = jwtTokenProvider.createToken(tokenRequest);
+        assertThat(Long.parseLong(jwtTokenProvider.getSubject(token))).isEqualTo(member.getId());
+
+        LoginRequest loginRequest = new LoginRequest(member.getId(), member.getPassword());
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
+                .body(loginRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
 
-        String tokenPrinciple = jwtTokenProvider.getPrincipal(
-                response.as(TokenResponse.class)
+        String tokenPrinciple = jwtTokenProvider.getSubject(
+                response.as(LoginResponse.class)
                         .getAccessToken()
         );
         assertThat(Long.parseLong(tokenPrinciple)).isEqualTo(member.getId());
@@ -99,7 +104,7 @@ public class AuthE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/reservations" + 1L)
+                .when().delete("/reservations/" + 1L)
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }

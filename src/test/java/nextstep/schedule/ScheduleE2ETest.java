@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import nextstep.auth.JwtTokenProvider;
+import nextstep.auth.dto.TokenRequest;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
 import nextstep.theme.Theme;
@@ -54,7 +55,8 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         member.setId(Long.parseLong(location.split("/")[2]));
-        token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
+        TokenRequest tokenRequest = new TokenRequest(member.getId(), member.getRole());
+        token = jwtTokenProvider.createToken(tokenRequest);
 
         ThemeRequest themeRequest = new ThemeRequest(theme);
         location = RestAssured
