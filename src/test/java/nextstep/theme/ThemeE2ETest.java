@@ -1,9 +1,14 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
+import nextstep.setup.TestSetUp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -13,6 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
+    private String adminToken;
+
+    @BeforeEach
+    void setUp() {
+        adminToken = TestSetUp.getAdminToken();
+    }
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
@@ -20,8 +32,9 @@ public class ThemeE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -48,7 +61,8 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -60,8 +74,9 @@ public class ThemeE2ETest {
         String location = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

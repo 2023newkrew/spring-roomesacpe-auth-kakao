@@ -5,6 +5,7 @@ import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
 import nextstep.support.exception.AuthorizationExcpetion;
 import nextstep.support.exception.DuplicateEntityException;
+import nextstep.support.exception.NotExistEntityException;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ReservationService {
 
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateEntityException("Duplicate Reservation Creation");
         }
 
         Reservation newReservation = new Reservation(
@@ -54,13 +55,17 @@ public class ReservationService {
 
     public void deleteById(Long id, Member member) {
         Reservation reservation = reservationDao.findById(id);
-        Long memberId = reservation.getMemberId();
+
         if (reservation == null) {
-            throw new NullPointerException();
+            throw new NotExistEntityException("There is no matching Reservation");
         }
+
+        Long memberId = reservation.getMemberId();
+
         if (member.getId() != memberId) {
             throw new AuthorizationExcpetion();
         }
+
         reservationDao.deleteById(id);
     }
 }

@@ -1,11 +1,15 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
+import nextstep.setup.TestSetUp;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -17,20 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScheduleE2ETest {
 
     private Long themeId;
+    private String adminToken;
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = response.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        adminToken = TestSetUp.getAdminToken();
+
+        themeId = TestSetUp.registerTheme(adminToken);
     }
 
     @DisplayName("스케줄을 생성한다")
