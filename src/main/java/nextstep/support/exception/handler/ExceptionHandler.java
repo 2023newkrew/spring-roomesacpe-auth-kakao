@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler({InterceptorExcpetion.class})
-    public ResponseEntity<String> exceptionHandler(HttpServletRequest request, final InterceptorExcpetion e) {
+    public ResponseEntity<String> exceptionHandler(final InterceptorExcpetion e) {
         return ResponseEntity
                 .status(e.getStatus())
                 .body(e.getMessage());
