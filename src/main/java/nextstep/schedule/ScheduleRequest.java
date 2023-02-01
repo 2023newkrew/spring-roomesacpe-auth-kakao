@@ -2,11 +2,14 @@ package nextstep.schedule;
 
 import nextstep.theme.Theme;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ScheduleRequest {
+    @PositiveOrZero
     private Long themeId;
+    
     private String date;
     private String time;
 

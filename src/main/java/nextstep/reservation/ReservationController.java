@@ -3,6 +3,7 @@ package nextstep.reservation;
 import nextstep.auth.domain.LoginMember;
 import nextstep.auth.principal.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -20,7 +21,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Void> createReservation(@AuthenticationPrincipal LoginMember member,
-                                                  @RequestBody ReservationRequest reservationRequest) {
+                                                  @Validated @RequestBody ReservationRequest reservationRequest) {
         Long id = reservationService.create(member.getName(), reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id))
                 .build();

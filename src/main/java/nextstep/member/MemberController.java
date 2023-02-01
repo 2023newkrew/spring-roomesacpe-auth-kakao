@@ -3,6 +3,7 @@ package nextstep.member;
 import nextstep.auth.domain.LoginMember;
 import nextstep.auth.principal.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -17,7 +18,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<Void> createMember(@Validated @RequestBody MemberRequest memberRequest) {
         Long id = memberService.create(memberRequest);
         return ResponseEntity.created(URI.create("/members/" + id))
                 .build();
