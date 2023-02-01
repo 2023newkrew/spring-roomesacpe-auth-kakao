@@ -2,10 +2,12 @@ package nextstep.auth.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nextstep.member.Member;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Getter
 public class LoginMember {
 
@@ -18,9 +20,12 @@ public class LoginMember {
     private final Role role;
 
     public static LoginMember from(Member member) {
-        return new LoginMember(
-                member.getId(), member.getUsername(), member.getName(), member.getRole()
-        );
+        return LoginMember.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .name(member.getName())
+                .role(member.getRole())
+                .build();
     }
 
     public boolean isAdmin() {
