@@ -1,7 +1,7 @@
 package nextstep.reservation;
 
 import nextstep.auth.AuthenticationPrincipal;
-import nextstep.auth.NeedLogin;
+import nextstep.auth.NeedAuth;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,11 +18,11 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @NeedLogin
+    @NeedAuth
     @PostMapping
-    public ResponseEntity createReservation(@AuthenticationPrincipal String username,
+    public ResponseEntity createReservation(@AuthenticationPrincipal String userId,
                                             @RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(username, reservationRequest);
+        Long id = reservationService.create(Long.parseLong(userId), reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -32,11 +32,11 @@ public class ReservationController {
         return ResponseEntity.ok().body(results);
     }
 
-    @NeedLogin
+    @NeedAuth
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@AuthenticationPrincipal String username,
+    public ResponseEntity deleteReservation(@AuthenticationPrincipal String userId,
                                             @PathVariable Long id) {
-        reservationService.deleteById(username, id);
+        reservationService.deleteById(Long.parseLong(userId), id);
 
         return ResponseEntity.noContent().build();
     }

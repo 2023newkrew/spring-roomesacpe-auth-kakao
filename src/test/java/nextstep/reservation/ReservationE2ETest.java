@@ -28,6 +28,8 @@ class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String ADMIN_PASSWORD = "123";
 
     private ReservationRequest request;
     private Long themeId;
@@ -36,9 +38,21 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
+        TokenRequest adminTokenRequest = new TokenRequest(ADMIN_USERNAME, ADMIN_PASSWORD);
+        TokenResponse adminTokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminTokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+        String ADMIN_TOKEN = adminTokenResponse.getAccessToken();
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
                 .when().post("/themes")
@@ -51,6 +65,7 @@ class ReservationE2ETest {
         ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
         var scheduleResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(ADMIN_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(scheduleRequest)
                 .when().post("/schedules")

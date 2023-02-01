@@ -83,11 +83,7 @@ public class ReservationDao {
                 "inner join theme on schedule.theme_id = theme.id " +
                 "where schedule.id = ?;";
 
-        try {
-            return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
-            return null;
-        }
+        return jdbcTemplate.query(sql, rowMapper, id);
     }
 
     public void deleteById(Long id) {

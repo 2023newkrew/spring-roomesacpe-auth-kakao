@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.support.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -25,7 +26,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
-        String token = AuthorizationExtractor.extract(httpServletRequest);
+        String token = AuthorizationExtractor.extract(httpServletRequest)
+                .orElseThrow(AuthorizationException::new);
         return jwtTokenProvider.getPrincipal(token);
     }
 }

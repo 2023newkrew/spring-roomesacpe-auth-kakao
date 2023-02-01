@@ -4,8 +4,8 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleDao;
-import nextstep.support.AuthorizationException;
 import nextstep.support.DuplicateEntityException;
+import nextstep.support.ForbiddenException;
 import nextstep.support.NotExistEntityException;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class ReservationService {
         this.memberDao = memberDao;
     }
 
-    public Long create(String username, ReservationRequest reservationRequest) {
+    public Long create(Long userId, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId())
                 .orElseThrow(NotExistEntityException::new);
 
@@ -36,7 +36,7 @@ public class ReservationService {
             throw new DuplicateEntityException();
         }
 
-        Member member = memberDao.findByUsername(username)
+        Member member = memberDao.findById(userId)
                 .orElseThrow(NotExistEntityException::new);
 
         Reservation newReservation = new Reservation(
@@ -51,15 +51,15 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
-    public void deleteById(String username, Long id) {
+    public void deleteById(Long userId, Long id) {
         Reservation reservation = reservationDao.findById(id)
                 .orElseThrow(NotExistEntityException::new);
 
-        Member member = memberDao.findByUsername(username)
+        Member member = memberDao.findById(userId)
                 .orElseThrow(NotExistEntityException::new);
 
         if (!Objects.equals(member.getName(), reservation.getName())) {
-            throw new AuthorizationException("자신의 예약만 삭제할 수 있습니다.");
+            throw new ForbiddenException("자신의 예약만 삭제할 수 있습니다.");
         }
 
         reservationDao.deleteById(id);
