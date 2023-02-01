@@ -28,16 +28,4 @@ public class AuthService {
         return jwtTokenProvider.getUsername(token);
     }
 
-    public void validateUsernameAndPassword(TokenRequestDto tokenRequestDto) {
-        Member findUser = memberDao.findByUsername(tokenRequestDto.getUsername())
-            .orElseThrow(() -> new NotExistEntityException(NOT_EXIST_MEMBER.getMessage()));
-
-        if (!findUser.isMyPassword(tokenRequestDto.getPassword())) {
-            throw new NotExistEntityException(WRONG_PASSWORD.getMessage());
-        }
-
-        if (!Objects.equals(findUser.getRole(), MemberRole.valueOf(tokenRequestDto.getRole()))) {
-            throw new NotExistEntityException("잘못된 권한으로 로그인할 수 없습니다");
-        }
-    }
 }

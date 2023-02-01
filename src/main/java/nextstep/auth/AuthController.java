@@ -17,7 +17,6 @@ public class AuthController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponseDto> login(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
-        authService.validateUsernameAndPassword(tokenRequestDto);
         final String token = authService.login(tokenRequestDto);
         return ResponseEntity.ok()
             .body(new TokenResponseDto(token));
