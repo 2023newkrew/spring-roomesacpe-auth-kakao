@@ -2,6 +2,7 @@ package nextstep.resolver;
 
 import nextstep.annotation.AuthenticationPrincipal;
 import nextstep.persistence.member.LoginMember;
+import nextstep.persistence.member.Role;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -26,7 +27,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         // TODO: 유효한 로그인인 경우 LoginMember 만들어서 응답하기
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         Long loginId = (Long) request.getAttribute("loginId");
+        Role role = (Role) request.getAttribute("role");
 
-        return new LoginMember(loginId);
+        return new LoginMember(loginId, role);
     }
 }

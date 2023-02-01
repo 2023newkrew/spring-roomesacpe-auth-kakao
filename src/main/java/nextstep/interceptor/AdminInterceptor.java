@@ -1,6 +1,7 @@
 package nextstep.interceptor;
 
 import nextstep.domain.auth.AuthService;
+import nextstep.persistence.member.Role;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +15,14 @@ public class AdminInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
-        authService.get(request.getHeader("authorization").split(" ")[1], "role");
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
+        String accessToken = request.getHeader("authorization").split(" ")[1];
+
+        Role role = Role.valueOf(authService.get(accessToken, "role").toUpperCase());
+        if (role != Role.ADMIN) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return false;
+        }
+        return true;
     }
 }

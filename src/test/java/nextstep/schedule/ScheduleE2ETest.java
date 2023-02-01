@@ -1,6 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.dto.auth.TokenRequest;
+import nextstep.dto.member.MemberRequest;
 import nextstep.dto.schedule.ScheduleRequest;
 import nextstep.dto.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,27 +18,49 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScheduleE2ETest {
-    public static final long THEME_ID = 1L;
-    public static final String THEME_NAME = "테마이름";
-    public static final String THEME_DESC = "테마설명";
-    public static final int THEME_PRICE = 22000;
-    public static final String SCHEDULE_DATE = "2022-08-11";
-    public static final String SCHEDULE_TIME = "13:00";
-    public static final String WRONG_SCHEDULE_DATE = "2022-08-51";
-    public static final String WRONG_SCHEDULE_TIME = "25:00";
-    public static final long NOT_EXIST_THEME_ID = 1000L;
-    public static final long MINUS_THEME_ID = -1L;
-    public static final String NOT_EXIST_SCHEDULE_DATE = "2023-01-01";
-    public static final long NOT_EXIST_SCHEDULE_ID = 1000L;
+    private static final long THEME_ID = 1L;
+    private static final String THEME_NAME = "테마이름";
+    private static final String THEME_DESC = "테마설명";
+    private static final int THEME_PRICE = 22000;
+    private static final String SCHEDULE_DATE = "2022-08-11";
+    private static final String SCHEDULE_TIME = "13:00";
+    private static final String WRONG_SCHEDULE_DATE = "2022-08-51";
+    private static final String WRONG_SCHEDULE_TIME = "25:00";
+    private static final long NOT_EXIST_THEME_ID = 1000L;
+    private static final long MINUS_THEME_ID = -1L;
+    private static final String NOT_EXIST_SCHEDULE_DATE = "2023-01-01";
+    private static final long NOT_EXIST_SCHEDULE_ID = 1000L;
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String ADMIN_PASSWORD = "password";
+    private static final String NORMAL_USERNAME = "username";
+    private static final String NORMAL_PASSWORD = "password";
+    private static final String NAME = "name";
+    private static final String PHONE = "010-1234-5678";
     private Long themeId;
+    private String adminToken;
+    private String normalToken;
 
     @BeforeEach
     void setUp() {
+        MemberRequest body = new MemberRequest(NORMAL_USERNAME, NORMAL_PASSWORD, NAME, PHONE);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        adminToken = loginAndGetAccessToken(ADMIN_USERNAME, ADMIN_PASSWORD);
+        normalToken = loginAndGetAccessToken(NORMAL_USERNAME,NORMAL_PASSWORD);
+
         ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
 
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken)
                 .body(themeRequest)
                 .when().post("/admin/themes")
                 .then().log().all()
@@ -53,6 +77,7 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken)
                 .body(body)
                 .when().post("/admin/schedules")
                 .then().log().all()
@@ -66,6 +91,7 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken)
                 .body(body)
                 .when().post("/admin/schedules")
                 .then().log().all()
@@ -79,6 +105,7 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken)
                 .body(body)
                 .when().post("/admin/schedules")
                 .then().log().all()
@@ -92,6 +119,7 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken)
                 .body(body)
                 .when().post("/admin/schedules")
                 .then().log().all()
@@ -105,6 +133,7 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", adminToken)
                 .body(body)
                 .when().post("/admin/schedules")
                 .then().log().all()
@@ -118,9 +147,10 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", adminToken)
                 .param("themeId", themeId)
                 .param("date", SCHEDULE_DATE)
-                .when().get("/admin/schedules")
+                .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -135,9 +165,10 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", adminToken)
                 .param("themeId", NOT_EXIST_THEME_ID)
                 .param("date", SCHEDULE_DATE)
-                .when().get("/admin/schedules")
+                .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -152,9 +183,10 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", adminToken)
                 .param("themeId", NOT_EXIST_THEME_ID)
                 .param("date", NOT_EXIST_SCHEDULE_DATE)
-                .when().get("/admin/schedules")
+                .when().get("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -169,6 +201,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", adminToken)
                 .when().delete(location)
                 .then().log().all()
                 .extract();
@@ -183,6 +216,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", adminToken)
                 .when().delete("/admin/schedules/" + NOT_EXIST_SCHEDULE_ID)
                 .then().log().all()
                 .extract();
@@ -190,10 +224,56 @@ public class ScheduleE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static String requestCreateSchedule() {
+    @DisplayName("일반 사용자는 스케줄을 생성할 수 없다")
+    @Test
+    public void normalUserCannotCreateSchedule() {
+        ScheduleRequest body = new ScheduleRequest(themeId, SCHEDULE_DATE, SCHEDULE_TIME);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", normalToken)
+                .body(body)
+                .when().post("/admin/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("일반 사용자는 스케줄을 삭제할 수 없다")
+    @Test
+    void normalUserCannotDeleteSchedule() {
+        String location = requestCreateSchedule();
+
+        RestAssured
+                .given().log().all()
+                .header("authorization", normalToken)
+                .when().delete(location)
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("일반 사용자도 스케줄을 조회한다")
+    @Test
+    public void showNormalUserSchedules() {
+        requestCreateSchedule();
+
+        var response = RestAssured
+                .given().log().all()
+                .header("authorization", normalToken)
+                .param("themeId", themeId)
+                .param("date", SCHEDULE_DATE)
+                .when().get("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
+    }
+
+    public String requestCreateSchedule() {
         ScheduleRequest body = new ScheduleRequest(THEME_ID, SCHEDULE_DATE, SCHEDULE_TIME);
         return RestAssured
                 .given().log().all()
+                .header("authorization", adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/admin/schedules")
@@ -201,5 +281,19 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .header("Location");
+    }
+
+    private String loginAndGetAccessToken(String username, String password) {
+        TokenRequest body = new TokenRequest(username, password);
+        var accessToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().jsonPath().get("accessToken");
+
+        return "Bearer " + accessToken.toString();
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.interceptor;
 
 import nextstep.domain.auth.AuthService;
+import nextstep.persistence.member.Role;
 import nextstep.support.NotValidateTokenException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -24,7 +25,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         try {
             String principal = authService.getPrincipal(accessToken);
+            Role role = Role.valueOf(authService.get(accessToken, "role").toUpperCase());
             request.setAttribute("loginId", Long.parseLong(principal));
+            request.setAttribute("role", role);
         }
         catch (NotValidateTokenException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

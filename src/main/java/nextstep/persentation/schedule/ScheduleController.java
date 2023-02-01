@@ -11,7 +11,6 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/schedules")
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
@@ -19,7 +18,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
+    @PostMapping("/admin/schedules")
     public ResponseEntity<Void> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         if (scheduleRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
@@ -33,12 +32,12 @@ public class ScheduleController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/schedules")
     public ResponseEntity<List<Schedule>> showReservations(@RequestParam Long themeId, @RequestParam String date) {
         return ResponseEntity.ok().body(scheduleService.findByThemeIdAndDate(themeId, date));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/schedules/{id}")
     public ResponseEntity<Object> deleteReservation(@PathVariable Long id) {
         int deleteCount = scheduleService.deleteById(id);
         if (deleteCount == 0) {

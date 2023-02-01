@@ -1,6 +1,7 @@
 package nextstep.config;
 
 import nextstep.domain.auth.AuthService;
+import nextstep.interceptor.AdminInterceptor;
 import nextstep.interceptor.LoginInterceptor;
 import nextstep.resolver.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
@@ -28,5 +29,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginInterceptor(authService))
                 .addPathPatterns("/reservations/**")
                 .addPathPatterns("/members/me");
+
+        registry.addInterceptor(new AdminInterceptor(authService))
+                .addPathPatterns("/admin/**");
     }
 }
