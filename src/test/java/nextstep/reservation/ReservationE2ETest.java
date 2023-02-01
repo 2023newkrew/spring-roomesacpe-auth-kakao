@@ -3,12 +3,7 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.schedule.ScheduleRequest;
 import nextstep.setup.TestSetUp;
-import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,7 +75,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("예약을 조회한다")
@@ -127,7 +122,7 @@ class ReservationE2ETest {
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("중복 예약을 생성한다")
@@ -137,6 +132,7 @@ class ReservationE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, token)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/reservations")
@@ -163,7 +159,7 @@ class ReservationE2ETest {
 
     @DisplayName("없는 예약을 삭제한다")
     @Test
-    void createNotExistReservation() {
+    void deleteNotExistReservation() {
         var response = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, token)

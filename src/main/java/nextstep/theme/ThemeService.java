@@ -29,7 +29,7 @@ public class ThemeService {
     public void delete(Long id) {
         Theme theme = themeDao.findById(id);
         if (theme == null) {
-            throw new NotExistEntityException();
+            throw new NotExistEntityException("There is no matching Theme");
         }
 
         themeDao.delete(id);
