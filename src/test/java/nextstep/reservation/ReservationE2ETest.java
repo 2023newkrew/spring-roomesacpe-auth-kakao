@@ -42,7 +42,7 @@ class ReservationE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -82,7 +82,7 @@ class ReservationE2ETest {
         var accessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TokenRequest("username", "password", "member"))
+                .body(new TokenRequest("username", "password"))
                 .when().post("/login/token")
                 .then().log().all()
                 .extract().as(TokenResponse.class).getAccessToken();

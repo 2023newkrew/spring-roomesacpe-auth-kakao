@@ -36,7 +36,7 @@ public class AuthE2ETest {
     @DisplayName("토큰을 생성한다")
     @Test
     public void create() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD, "member");
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -52,7 +52,7 @@ public class AuthE2ETest {
     @DisplayName("유저네임에 해당하는 멤버가 없는 경우, 예외 발생")
     @Test
     public void notExistOfMember() {
-        TokenRequest body = new TokenRequest("notmember", PASSWORD, "member");
+        TokenRequest body = new TokenRequest("notmember", PASSWORD);
         RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -67,7 +67,7 @@ public class AuthE2ETest {
         var accessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TokenRequest(USERNAME, PASSWORD, "member"))
+                .body(new TokenRequest(USERNAME, PASSWORD))
                 .when().post("/login/token")
                 .then().log().all()
                 .extract().as(TokenResponse.class).getAccessToken();

@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -49,7 +51,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .when().delete("admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -62,7 +64,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
