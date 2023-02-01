@@ -1,8 +1,9 @@
 package nextstep.auth;
 
 import io.restassured.RestAssured;
-import nextstep.member.MemberRequest;
-import nextstep.theme.ThemeRequest;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
+import nextstep.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthE2ETest {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    private Long memberId;
+    public static final String NAME = "name";
+    public static final String PHONE = "010-1234-5678";
+    public static final String WRONG_PASSWORD = "wrong password";
+    public static final String WRONG_USERNAME = "wrong username";
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -48,45 +52,55 @@ public class AuthE2ETest {
         assertThat(response.as(TokenResponse.class)).isNotNull();
     }
 
-    @DisplayName("테마 목록을 조회한다")
+    @DisplayName("username에 null값이 입력되면 토큰을 생성할 수 없다.")
     @Test
-    public void showThemes() {
-        createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .param("date", "2022-08-11")
-                .when().get("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-        assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
-    }
-
-    @DisplayName("테마를 삭제한다")
-    @Test
-    void delete() {
-        Long id = createTheme();
-
-        var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public Long createTheme() {
-        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
-        String location = RestAssured
+    public void cannnotCreateTokenWithNullUsername() {
+        TokenRequest body = new TokenRequest(null, PASSWORD);
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("password에 null값이 입력되면 토큰을 생성할 수 없다.")
+    @Test
+    public void cannnotCreateTokenWithNullPassword() {
+        TokenRequest body = new TokenRequest(USERNAME, null);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("존재하지 않는 username이 입력되면 토큰을 생성할 수 없다.")
+    @Test
+    public void cannnotCreateTokenWithWrongUsername() {
+        TokenRequest body = new TokenRequest(WRONG_USERNAME, PASSWORD);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("잘못된 password를 입력하면 토큰을 생성할 수 없다.")
+    @Test
+    public void cannnotCreateTokenWithWrongPassword() {
+        TokenRequest body = new TokenRequest(USERNAME, WRONG_PASSWORD);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }
