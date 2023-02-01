@@ -1,6 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
 import nextstep.schedule.dto.ScheduleRequest;
 import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,19 +18,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@Sql("/truncate.sql")
+@Sql({"/truncate.sql", "/create_admin.sql"})
 public class ScheduleE2ETest {
+    public static final String USERNAME = "admin";
+    public static final String PASSWORD = "password";
 
     private Long themeId;
+    private String token;
 
     @BeforeEach
     void setUp() {
+        token = createDummyToken();
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .header("authorization", token)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -91,5 +98,21 @@ public class ScheduleE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
                 .header("Location");
+    }
+
+    String createDummyToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        String dummyToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class)
+                .getAccessToken();
+
+        return "BEARER " + dummyToken;
     }
 }

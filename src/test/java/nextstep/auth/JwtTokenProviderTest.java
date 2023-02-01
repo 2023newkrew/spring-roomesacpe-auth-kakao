@@ -8,7 +8,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtTokenProvider 학습 테스트")
-@Sql("/truncate.sql")
+@Sql({"/truncate.sql", "/create_admin.sql"})
 class JwtTokenProviderTest {
 
     @Test

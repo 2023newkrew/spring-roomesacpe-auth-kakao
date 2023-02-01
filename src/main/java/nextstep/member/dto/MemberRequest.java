@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.member.enums.Role;
 
 @Getter
 @AllArgsConstructor
@@ -20,4 +21,7 @@ public class MemberRequest {
 
     @NotNull
     private String phone;
+
+    @NotNull
+    private Role role;
 }

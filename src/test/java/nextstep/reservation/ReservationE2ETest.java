@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.member.dto.MemberRequest;
+import nextstep.member.enums.Role;
 import nextstep.reservation.dto.ReservationRequest;
 import nextstep.reservation.entity.Reservation;
 import nextstep.schedule.dto.ScheduleRequest;
@@ -25,8 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/truncate.sql")
+@Sql({"/truncate.sql", "/create_admin.sql"})
 class ReservationE2ETest {
+    public static final String USERNAME = "admin";
+    public static final String PASSWORD = "password";
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
@@ -36,15 +39,18 @@ class ReservationE2ETest {
     private Long scheduleId;
     private Long memberId;
     private String accessToken;
+    private String adminToken;
 
     @BeforeEach
     void setUp() {
+        adminToken = createDummyToken();
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .header("authorization", adminToken)
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -63,7 +69,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", Role.ADMIN);
         var memberResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -190,5 +196,21 @@ class ReservationE2ETest {
                 .when().post("/reservations")
                 .then().log().all()
                 .extract();
+    }
+
+    private String createDummyToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        String dummyToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class)
+                .getAccessToken();
+
+        return "BEARER " + dummyToken;
     }
 }

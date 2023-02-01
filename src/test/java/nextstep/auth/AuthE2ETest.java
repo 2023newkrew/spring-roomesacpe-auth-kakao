@@ -3,7 +3,9 @@ package nextstep.auth;
 import io.restassured.RestAssured;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.auth.dto.TokenResponse;
+import nextstep.global.util.JwtTokenProvider;
 import nextstep.member.dto.MemberRequest;
+import nextstep.member.enums.Role;
 import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,22 +20,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Sql("/truncate.sql")
+@Sql({"/truncate.sql", "/create_admin.sql"})
 public class AuthE2ETest {
-    public static final String USERNAME = "username";
+    public static final String USERNAME = "admin";
     public static final String PASSWORD = "password";
+    public static final String NAME = "admin";
     private Long memberId;
+    private String token;
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
+        token = createDummyToken();
     }
 
     @DisplayName("토큰을 생성한다")
@@ -73,8 +70,10 @@ public class AuthE2ETest {
         Long id = createTheme();
 
         var response = RestAssured
-                .given().log().all()
-                .when().delete("/themes/" + id)
+                .given().
+                    header("authorization", token)
+                .log().all()
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
@@ -84,13 +83,31 @@ public class AuthE2ETest {
     public Long createTheme() {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         String location = RestAssured
-                .given().log().all()
+                .given().
+                    header("authorization", token)
+                .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
         return Long.parseLong(location.split("/")[2]);
+    }
+
+    String createDummyToken() {
+        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+        String dummyToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class)
+                .getAccessToken();
+
+        return "BEARER " + dummyToken;
     }
 }

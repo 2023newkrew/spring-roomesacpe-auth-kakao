@@ -2,6 +2,7 @@ package nextstep.member.dao;
 
 import lombok.AllArgsConstructor;
 import nextstep.member.entity.MemberEntity;
+import nextstep.member.enums.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,11 +22,12 @@ public class MemberDaoImpl implements MemberDao {
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            Role.of(resultSet.getString("role"))
     );
 
     public Long save(MemberEntity member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -34,21 +36,21 @@ public class MemberDaoImpl implements MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setString(5, member.getRole().toString());
             return ps;
-
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
     }
 
     public Optional<MemberEntity> findById(Long id) {
-        String sql = "SELECT id, username, password, name, phone from member where id = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where id = ?;";
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
     public Optional<MemberEntity> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
 
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, username));
     }
