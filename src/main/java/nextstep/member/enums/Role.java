@@ -6,10 +6,10 @@ import java.util.Optional;
 public enum Role {
     ADMIN,
     USER,
-    NONE;
+    ANONYMOUS;
 
     public static Role of(String role) {
         return Optional.ofNullable(Role.valueOf(role.toUpperCase(Locale.ROOT)))
-                .orElse(NONE);
+                .orElse(ANONYMOUS);
     }
 }
