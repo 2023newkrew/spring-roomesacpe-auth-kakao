@@ -20,9 +20,9 @@ public class ReservationController {
 
     @NeedAuth
     @PostMapping
-    public ResponseEntity createReservation(@AuthenticationPrincipal String username,
+    public ResponseEntity createReservation(@AuthenticationPrincipal String userId,
                                             @RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(username, reservationRequest);
+        Long id = reservationService.create(Long.parseLong(userId), reservationRequest);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -34,9 +34,9 @@ public class ReservationController {
 
     @NeedAuth
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@AuthenticationPrincipal String username,
+    public ResponseEntity deleteReservation(@AuthenticationPrincipal String userId,
                                             @PathVariable Long id) {
-        reservationService.deleteById(username, id);
+        reservationService.deleteById(Long.parseLong(userId), id);
 
         return ResponseEntity.noContent().build();
     }

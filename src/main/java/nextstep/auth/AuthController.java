@@ -27,7 +27,7 @@ public class AuthController {
         if (member.checkWrongPassword(request.getPassword())) {
             throw new AuthorizationException("비밀번호가 올바르지 않습니다.");
         }
-        String accessToken = jwtTokenProvider.createToken(request.getUsername());
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return ResponseEntity.ok().body(new TokenResponse(accessToken));
     }
 }

@@ -41,8 +41,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
 
         if (needAuth.role().equals(Role.ADMIN)) {
-            String username = jwtTokenProvider.getPrincipal(accessToken);
-            Member member = memberDao.findByUsername(username)
+            Long userId = Long.parseLong(jwtTokenProvider.getPrincipal(accessToken));
+            Member member = memberDao.findById(userId)
                     .orElseThrow(NotExistEntityException::new);
             if (!member.isAdmin()) {
                 throw new AuthorizationException("접근 권한이 없습니다.");

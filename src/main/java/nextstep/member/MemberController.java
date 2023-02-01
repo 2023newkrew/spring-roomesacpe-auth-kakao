@@ -28,8 +28,8 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity me(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
-        String username = jwtTokenProvider.getPrincipal(token);
-        Member member = memberService.findByUsername(username);
+        Long userId = Long.valueOf(jwtTokenProvider.getPrincipal(token));
+        Member member = memberService.findById(userId);
         return ResponseEntity.ok(member);
     }
 }
