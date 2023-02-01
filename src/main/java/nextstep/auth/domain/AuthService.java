@@ -6,6 +6,8 @@ import nextstep.support.NotExistEntityException;
 import nextstep.support.NotValidateTokenException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
 
@@ -15,11 +17,11 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public String createAccessToken(Member member, String password) {
+    public Optional<String> createAccessToken(Member member, String password) {
         if (member.checkWrongPassword(password)) {
-            throw new NotExistEntityException();
+            return Optional.empty();
         }
-        return jwtTokenProvider.createToken(member.getId().toString());
+        return Optional.of(jwtTokenProvider.createToken(member.getId().toString()));
     }
 
     public String getPrincipal(String accessToken) {

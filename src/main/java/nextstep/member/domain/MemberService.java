@@ -5,6 +5,8 @@ import nextstep.member.persistence.MemberDao;
 import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MemberService {
     private final MemberDao memberDao;
@@ -17,11 +19,11 @@ public class MemberService {
         return memberDao.save(memberRequest.toEntity());
     }
 
-    public Member findById(Long id) {
-        return memberDao.findById(id).orElseThrow(NotExistEntityException::new);
+    public Optional<Member> findById(Long id) {
+        return memberDao.findById(id);
     }
 
-    public Member findByUsername(String username) {
-        return memberDao.findByUsername(username).orElseThrow(NotExistEntityException::new);
+    public Optional<Member> findByUsername(String username) {
+        return memberDao.findByUsername(username);
     }
 }

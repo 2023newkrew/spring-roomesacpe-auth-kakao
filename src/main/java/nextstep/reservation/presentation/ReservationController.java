@@ -22,7 +22,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createReservation(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<Void> createReservation(@AuthenticationPrincipal LoginMember loginMember,
                                                      @RequestBody ReservationRequest reservationRequest) {
         if (reservationRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
@@ -38,14 +38,14 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteReservation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteReservation(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
         reservationService.deleteById(id, loginMember.getId());
 
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> onException(Exception e) {
+    public ResponseEntity<Void> onException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
 }

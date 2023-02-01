@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/login")
 public class AuthController {
@@ -30,13 +32,11 @@ public class AuthController {
         if (tokenRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
         }
-        try {
-            Member member = memberService.findByUsername(tokenRequest.getUsername());
-            String accessToken = authService.createAccessToken(member, tokenRequest.getPassword());
-            return ResponseEntity.ok(new TokenResponse(accessToken));
-        }
-        catch(NotExistEntityException e) {
+        Optional<Member> member = memberService.findByUsername(tokenRequest.getUsername());
+        if (member.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
+        Optional<String> accessToken = authService.createAccessToken(member.get(), tokenRequest.getPassword());
+        return accessToken.map(s -> ResponseEntity.ok(new TokenResponse(s))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

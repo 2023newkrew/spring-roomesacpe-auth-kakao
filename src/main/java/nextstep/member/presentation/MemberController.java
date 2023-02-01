@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/members")
@@ -20,7 +21,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createMember(@RequestBody MemberRequest memberRequest) {
+    public ResponseEntity<Void> createMember(@RequestBody MemberRequest memberRequest) {
         if (memberRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
         }
@@ -29,8 +30,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Object> me(@AuthenticationPrincipal LoginMember loginMember) {
-        Member member = memberService.findById(loginMember.getId());
-        return ResponseEntity.ok(member);
+    public ResponseEntity<Member> me(@AuthenticationPrincipal LoginMember loginMember) {
+        Optional<Member> member = memberService.findById(loginMember.getId());
+        return member.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 }

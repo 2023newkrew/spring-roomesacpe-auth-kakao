@@ -20,7 +20,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+    public ResponseEntity<Void> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         if (scheduleRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
         }
