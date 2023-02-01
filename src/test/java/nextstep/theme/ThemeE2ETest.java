@@ -1,29 +1,52 @@
 package nextstep.theme;
 
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class ThemeE2ETest {
+import io.restassured.RestAssured;
+import java.util.List;
+import nextstep.AbstractE2ETest;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+public class ThemeE2ETest extends AbstractE2ETest {
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
+        String adminToken = createBearerToken("admin", "admin");
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
         RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("일반 회원은 테마를 생성할 수 없다.")
+    @Test
+    void createThemeByNormalMember() {
+        createMember("username", "password", "name", "010-1234-1234");
+        String normalMemberToken = createBearerToken("username", "password");
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
+        RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, normalMemberToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -45,23 +68,70 @@ public class ThemeE2ETest {
     @Test
     void delete() {
         Long id = createTheme();
+        String adminToken = createBearerToken("admin", "admin");
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
+                .when().delete("/admin/themes/" + id)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("일반 사용자는 테마를 삭제할 수 없다.")
+    @Test
+    void deleteThemeByNormalMember() {
+        Long id = createTheme();
+        createMember("username", "password", "name", "010-1234-1234");
+        String normalMemberToken = createBearerToken("username", "password");
+
+        var response = RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, normalMemberToken)
+                .when().delete("/admin/themes/" + id)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void createByInvalidFormatRequest(String name, String desc, int price) {
+        String adminToken = createBearerToken("admin", "admin");
+        ThemeRequest request = new ThemeRequest(name, desc, price);
+
+        RestAssured.given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().log().all()
+                .post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private static List<Arguments> createByInvalidFormatRequest() {
+        return List.of(
+                Arguments.of("n".repeat(21), "desc", 10_000),
+                Arguments.of("name", "d".repeat(256), 10_000),
+                Arguments.of("name", "desc", -1),
+                Arguments.of("name", "desc", 100_001)
+        );
+    }
+
     public Long createTheme() {
+        String adminToken = createBearerToken("admin", "admin");
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+
         String location = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

@@ -1,8 +1,8 @@
 package nextstep.auth;
 
+import nextstep.exception.InvalidLoginException;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.InvalidLoginException;
 import org.springframework.stereotype.Service;
 
 @Service

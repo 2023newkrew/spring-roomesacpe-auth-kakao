@@ -1,22 +1,23 @@
 package nextstep.member;
 
-import javax.swing.JWindow;
-import nextstep.auth.AuthenticationPrincipal;
-import nextstep.auth.JwtTokenProvider;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
+import nextstep.auth.AuthenticationPrincipal;
+import nextstep.exception.DuplicateEntityException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping
@@ -26,8 +27,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal Long id) {
-        Member member = memberService.findById(id);
+    public ResponseEntity<MemberResponse> me(@AuthenticationPrincipal Long memberId) {
+        Member member = memberService.findById(memberId);
         MemberResponse memberResponse = new MemberResponse(
                 member.getId(), member.getUsername(), member.getName(), member.getPhone()
         );
