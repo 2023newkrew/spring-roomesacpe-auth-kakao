@@ -1,12 +1,12 @@
 package nextstep.reservation;
 
+import java.beans.ConstructorProperties;
+
 public class ReservationRequest {
 
-    private Long scheduleId;
+    private final Long scheduleId;
 
-    public ReservationRequest() {
-    }
-
+    @ConstructorProperties({"scheduleId"})
     public ReservationRequest(Long scheduleId) {
         this.scheduleId = scheduleId;
     }
