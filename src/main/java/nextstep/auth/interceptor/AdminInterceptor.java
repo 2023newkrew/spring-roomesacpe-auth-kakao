@@ -18,10 +18,10 @@ public class AdminInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         LoginMember ctx = loginMemberContextHolder.getContext();
-        if (ctx == null) {
+        if (ctx == null || !ctx.isAdmin()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return false;
         }
-        return ctx.isAdmin();
+        return true;
     }
 }
