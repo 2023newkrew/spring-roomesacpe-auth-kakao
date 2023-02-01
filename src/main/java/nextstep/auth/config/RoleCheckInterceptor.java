@@ -1,14 +1,14 @@
 package nextstep.auth.config;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
-@Component
+@Configuration
 public class RoleCheckInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
 
