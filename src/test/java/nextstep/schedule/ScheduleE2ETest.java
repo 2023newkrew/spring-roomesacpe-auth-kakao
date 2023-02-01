@@ -7,6 +7,7 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
+import nextstep.member.Role;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ public class ScheduleE2ETest {
             .password("password")
             .phone("010-1234-5678")
             .name("name")
+            .role(Role.MEMBER)
             .build();
 
     private final Theme theme = Theme.builder()

@@ -9,6 +9,7 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
+import nextstep.member.Role;
 import nextstep.schedule.Schedule;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.Theme;
@@ -35,6 +36,7 @@ class ReservationE2ETest {
             .password("password")
             .name("name")
             .phone("010-1234-5678")
+            .role(Role.MEMBER)
             .build();
 
     private final Theme theme = Theme.builder()

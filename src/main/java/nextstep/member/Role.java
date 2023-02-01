@@ -4,10 +4,19 @@ import java.util.Arrays;
 import nextstep.exceptions.exception.InvalidRoleException;
 
 public enum Role {
-    ADMIN, MEMBER;
+    ADMIN(2), MEMBER(1);
 
-    public boolean isAdmin() {
-        return this.equals(ADMIN);
+    private final int level;
+    Role(int level) {
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public boolean isAvailable(Role role) {
+        return this.level >= role.level;
     }
 
     public static Role from(String role) {

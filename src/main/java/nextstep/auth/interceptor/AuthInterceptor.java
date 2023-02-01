@@ -10,6 +10,7 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.annotation.AdminOnly;
 import nextstep.auth.annotation.LoginRequired;
 import nextstep.exceptions.exception.auth.AuthorizationException;
+import nextstep.exceptions.exception.auth.ForbiddenException;
 import nextstep.exceptions.exception.auth.NotAdminException;
 import nextstep.exceptions.exception.auth.TokenNotFoundException;
 import nextstep.member.Role;
@@ -31,9 +32,10 @@ public class AuthInterceptor implements HandlerInterceptor {
         getRoleIfRequiredAuthorization(handler).ifPresent(
                 requiredRole -> {
                     setAccessTokenToRequestAttribute(request);
-                    if (requiredRole.isAdmin()) {
-                        checkAdmin(request);
-                    }
+                    checkRoleFromRequest(request, requiredRole);
+//                    if (requiredRole.isAdmin()) {
+//                        checkAdmin(request);
+//                    }
                 }
         );
         return true;
@@ -73,11 +75,15 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
     }
 
-    private void checkAdmin(HttpServletRequest request) {
+    private void checkRoleFromRequest(HttpServletRequest request, Role requiredRole) {
         String token = (String) request.getAttribute("accessToken");
-        if (!jwtTokenProvider.getRole(token).equals("ADMIN")) {
-            throw new NotAdminException();
+        Role loginMemberRole = Role.from(jwtTokenProvider.getRole(token));
+        if (!loginMemberRole.isAvailable(requiredRole)) {
+            throw new ForbiddenException();
         }
+//        if (!jwtTokenProvider.getRole(token).equals("ADMIN")) {
+//            throw new NotAdminException();
+//        }
     }
 
 }
