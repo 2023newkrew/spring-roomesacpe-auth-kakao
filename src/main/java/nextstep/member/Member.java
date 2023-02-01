@@ -18,15 +18,14 @@ public class Member {
     private String password;
     private String name;
     private String phone;
-    private String role;
+    private Role role;
+
+    public Member(Long id, String username, String password, String name, String phone, String role) {
+        this(id, username, password, name, phone, Role.from(role));
+    }
 
     public Member(String username, String password, String name, String phone) {
-        this.id = null;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
-        this.role = "MEMBER";
+        this(null, username, password, name, phone, Role.MEMBER);
     }
 
     public boolean checkWrongPassword(String password) {

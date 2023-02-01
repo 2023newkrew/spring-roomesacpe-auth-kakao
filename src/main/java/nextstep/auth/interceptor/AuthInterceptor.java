@@ -1,5 +1,8 @@
 package nextstep.auth.interceptor;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.auth.AuthorizationExtractor;
@@ -9,6 +12,7 @@ import nextstep.auth.annotation.LoginRequired;
 import nextstep.exceptions.exception.auth.AuthorizationException;
 import nextstep.exceptions.exception.auth.NotAdminException;
 import nextstep.exceptions.exception.auth.TokenNotFoundException;
+import nextstep.member.Role;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -24,21 +28,30 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (isRequiredAccessToken(handler)) {
-            setAccessTokenToRequestAttribute(request);
-        }
-        if (isAdminOnly(handler)) {
-            checkAdmin(request);
-        }
+        getRoleIfRequiredAuthorization(handler).ifPresent(
+                requiredRole -> {
+                    setAccessTokenToRequestAttribute(request);
+                    if (requiredRole.isAdmin()) {
+                        checkAdmin(request);
+                    }
+                }
+        );
         return true;
     }
 
-    private boolean isRequiredAccessToken(Object handler) {
+    private Optional<Role> getRoleIfRequiredAuthorization(Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
-        return handlerMethod.getMethodAnnotation(LoginRequired.class) != null ||
-                handlerMethod.getMethod().getDeclaringClass().getAnnotation(AdminOnly.class) != null ||
-                handlerMethod.getMethodAnnotation(AdminOnly.class) != null;
+
+        return Stream.of(handlerMethod.getMethodAnnotation(LoginRequired.class),
+                        handlerMethod.getMethodAnnotation(AdminOnly.class),
+                        handlerMethod.getMethod().getDeclaringClass().getAnnotation(LoginRequired.class),
+                        handlerMethod.getMethod().getDeclaringClass().getAnnotation(AdminOnly.class)
+                )
+                .filter(Objects::nonNull)
+                .map(annotation -> ((LoginRequired) annotation).requiredRole())
+                .findFirst();
     }
+
 
     private void setAccessTokenToRequestAttribute(HttpServletRequest request) {
         String token = extractToken(request);
@@ -58,13 +71,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new AuthorizationException();
         }
-    }
-
-    private boolean isAdminOnly(Object handler) {
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-
-        return handlerMethod.getMethodAnnotation(AdminOnly.class) != null ||
-                handlerMethod.getMethod().getDeclaringClass().getAnnotation(AdminOnly.class) != null;
     }
 
     private void checkAdmin(HttpServletRequest request) {
