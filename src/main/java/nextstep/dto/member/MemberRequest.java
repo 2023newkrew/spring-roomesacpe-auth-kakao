@@ -1,6 +1,7 @@
 package nextstep.dto.member;
 
 import nextstep.persistence.member.Member;
+import nextstep.persistence.member.Role;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -49,7 +50,7 @@ public class MemberRequest {
     }
 
     public Member toEntity() {
-        return new Member(username, password, name, phone);
+        return new Member(username, password, name, phone, Role.NORMAL);
     }
 
     public boolean isNotValid() {

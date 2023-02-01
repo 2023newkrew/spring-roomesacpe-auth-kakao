@@ -20,6 +20,7 @@ public class ThemeE2ETest {
     public static final int THEME_PRICE = 22000;
     public static final long WRONG_THEME_ID = 1000L;
     public static final int MINUS_PRICE = -1;
+    public static final String BASE_THEME_URI = "/admin/themes";
 
     @DisplayName("테마를 생성한다")
     @Test
@@ -29,7 +30,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -42,7 +43,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -55,7 +56,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -68,7 +69,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -81,7 +82,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -94,7 +95,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -107,7 +108,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -120,7 +121,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -132,7 +133,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().get("/themes")
+                .when().get(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -146,7 +147,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + id)
+                .when().delete(BASE_THEME_URI + "/" + id)
                 .then().log().all()
                 .extract();
 
@@ -160,7 +161,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/themes/" + WRONG_THEME_ID)
+                .when().delete(BASE_THEME_URI + "/" + WRONG_THEME_ID)
                 .then().log().all()
                 .extract();
 
@@ -173,10 +174,10 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/themes")
+                .when().post(BASE_THEME_URI)
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+        return Long.parseLong(location.split("/")[3]);
     }
 }

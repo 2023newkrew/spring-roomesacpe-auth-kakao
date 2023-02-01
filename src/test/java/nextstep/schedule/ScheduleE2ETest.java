@@ -38,7 +38,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -54,7 +54,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -67,7 +67,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -80,7 +80,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -93,7 +93,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -106,7 +106,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -120,7 +120,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .param("themeId", themeId)
                 .param("date", SCHEDULE_DATE)
-                .when().get("/schedules")
+                .when().get("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -137,7 +137,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .param("themeId", NOT_EXIST_THEME_ID)
                 .param("date", SCHEDULE_DATE)
-                .when().get("/schedules")
+                .when().get("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -154,7 +154,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .param("themeId", NOT_EXIST_THEME_ID)
                 .param("date", NOT_EXIST_SCHEDULE_DATE)
-                .when().get("/schedules")
+                .when().get("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
@@ -183,7 +183,7 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete("/schedules/" + NOT_EXIST_SCHEDULE_ID)
+                .when().delete("/admin/schedules/" + NOT_EXIST_SCHEDULE_ID)
                 .then().log().all()
                 .extract();
 
@@ -196,7 +196,7 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()

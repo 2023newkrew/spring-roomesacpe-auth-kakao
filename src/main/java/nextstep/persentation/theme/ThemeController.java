@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/themes")
+@RequestMapping("/admin/themes")
 public class ThemeController {
     private final ThemeService themeService;
 
@@ -25,7 +25,7 @@ public class ThemeController {
             return ResponseEntity.badRequest().build();
         }
         Long id = themeService.create(themeRequest);
-        return ResponseEntity.created(URI.create("/themes/" + id)).build();
+        return ResponseEntity.created(URI.create("/admin/themes/" + id)).build();
     }
 
     @GetMapping

@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/schedules")
+@RequestMapping("/admin/schedules")
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
@@ -26,7 +26,7 @@ public class ScheduleController {
         }
         try {
             Long id = scheduleService.create(scheduleRequest);
-            return ResponseEntity.created(URI.create("/schedules/" + id)).build();
+            return ResponseEntity.created(URI.create("/admin/schedules/" + id)).build();
         }
         catch(NotExistEntityException e) {
             return ResponseEntity.badRequest().build();
