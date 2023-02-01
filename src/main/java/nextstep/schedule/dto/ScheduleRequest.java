@@ -6,6 +6,7 @@ import nextstep.theme.domain.Theme;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class ScheduleRequest {
     private Long themeId;
@@ -49,25 +50,25 @@ public class ScheduleRequest {
         );
     }
 
-    public boolean isValid() {
-        return themeId != null && themeId > 0 && isValidDate(date) && isValidTime(time);
+    public boolean isNotValid() {
+        return Objects.isNull(themeId) || themeId <= 0 || isNotValidDate(date) || isNotValidTime(time);
     }
 
-    private boolean isValidDate(String date) {
+    private boolean isNotValidDate(String date) {
         try {
             LocalDate.parse(date);
-            return true;
-        } catch(DateTimeException e) {
             return false;
+        } catch(DateTimeException e) {
+            return true;
         }
     }
 
-    private boolean isValidTime(String time) {
+    private boolean isNotValidTime(String time) {
         try {
             LocalTime.parse(time);
-            return true;
-        } catch(DateTimeException e) {
             return false;
+        } catch(DateTimeException e) {
+            return true;
         }
     }
 }

@@ -1,6 +1,9 @@
 package nextstep.auth.dto;
 
 
+import java.util.Objects;
+import java.util.function.Predicate;
+
 public class TokenRequest {
     private String username;
     private String password;
@@ -23,7 +26,12 @@ public class TokenRequest {
         return password;
     }
 
-    public boolean isValid() {
-        return username != null && password != null;
+    public boolean isNotValid() {
+        return isNull(username) || isNull(password);
+    }
+
+    private <T> boolean isNull(T value) {
+        Predicate<T> nullPredicate = Objects::isNull;
+        return nullPredicate.test(value);
     }
 }

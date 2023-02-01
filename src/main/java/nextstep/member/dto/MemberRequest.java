@@ -3,6 +3,7 @@ package nextstep.member.dto;
 import nextstep.member.domain.Member;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class MemberRequest {
@@ -51,16 +52,16 @@ public class MemberRequest {
         return new Member(username, password, name, phone);
     }
 
-    public boolean isValid() {
-        return !isNullOrEmptyOrBlank(username, password, name) && isRightPhoneNumber(phone);
+    public boolean isNotValid() {
+        return isNullOrEmptyOrBlank(username, password, name) || isWrongPhoneNumber(phone);
     }
 
     private boolean isNullOrEmptyOrBlank(String... values) {
         return Arrays.stream(values)
-                .anyMatch(value -> value == null || value.isEmpty() || value.isBlank());
+                .anyMatch(value -> Objects.isNull(value) || value.isEmpty() || value.isBlank());
     }
 
-    private boolean isRightPhoneNumber(String phone) {
-        return Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", phone);
+    private boolean isWrongPhoneNumber(String phone) {
+        return !Pattern.matches("^\\d{3}-\\d{3,4}-\\d{4}$", phone);
     }
 }

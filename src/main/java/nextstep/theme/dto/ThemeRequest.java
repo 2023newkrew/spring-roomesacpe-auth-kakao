@@ -3,6 +3,7 @@ package nextstep.theme.dto;
 import nextstep.theme.domain.Theme;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ThemeRequest {
     private String name;
@@ -46,12 +47,12 @@ public class ThemeRequest {
         );
     }
 
-    public boolean isValid() {
-        return price >= 0 && !isNullOrEmptyOrBlank(name, desc);
+    public boolean isNotValid() {
+        return price < 0 || isNullOrEmptyOrBlank(name, desc);
     }
 
     private boolean isNullOrEmptyOrBlank(String... values) {
         return Arrays.stream(values)
-                .anyMatch(value -> value == null || value.isEmpty() || value.isBlank());
+                .anyMatch(value -> Objects.isNull(value) || value.isEmpty() || value.isBlank());
     }
 }

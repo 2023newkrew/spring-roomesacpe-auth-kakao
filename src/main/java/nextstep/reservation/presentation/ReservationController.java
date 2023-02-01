@@ -24,7 +24,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Object> createReservation(@AuthenticationPrincipal LoginMember loginMember,
                                                      @RequestBody ReservationRequest reservationRequest) {
-        if (!reservationRequest.isValid()) {
+        if (reservationRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
         }
         Long id = reservationService.create(reservationRequest, loginMember.getId());

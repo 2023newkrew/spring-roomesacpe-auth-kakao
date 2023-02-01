@@ -27,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest tokenRequest) {
-        if (!tokenRequest.isValid()) {
+        if (tokenRequest.isNotValid()) {
             return ResponseEntity.badRequest().build();
         }
         try {

@@ -1,6 +1,7 @@
 package nextstep.reservation.dto;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ReservationRequest {
     private Long scheduleId;
@@ -24,12 +25,12 @@ public class ReservationRequest {
         return name;
     }
 
-    public boolean isValid() {
-        return scheduleId != null && scheduleId > 0 && !isNullOrEmptyOrBlank(name);
+    public boolean isNotValid() {
+        return Objects.isNull(scheduleId) || scheduleId <= 0 || isNullOrEmptyOrBlank(name);
     }
 
     private boolean isNullOrEmptyOrBlank(String... values) {
         return Arrays.stream(values)
-                .anyMatch(value -> value == null || value.isEmpty() || value.isBlank());
+                .anyMatch(value -> Objects.isNull(value) || value.isEmpty() || value.isBlank());
     }
 }
