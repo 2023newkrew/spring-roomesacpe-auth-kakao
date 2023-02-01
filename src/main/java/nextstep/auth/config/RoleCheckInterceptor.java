@@ -20,6 +20,6 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
         String role = jwtTokenProvider.getRole(token);
 
-        return Objects.equals(role, "ADMIN");
+        return Objects.equals(role, "admin");
     }
 }

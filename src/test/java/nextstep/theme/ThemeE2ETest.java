@@ -1,7 +1,11 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
+import nextstep.member.dto.MemberRequest;
 import nextstep.theme.dto.ThemeRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +20,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
+
+    private String adminToken;
+
+    @BeforeEach
+    void setUp() {
+        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "admin");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        adminToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("admin_username", "password"))
+                .when().post("/login/token")
+                .then().log().all()
+                .extract().as(TokenResponse.class).getAccessToken();
+    }
+
     @DisplayName("테마를 생성한다")
     @Test
     public void create() {
@@ -24,6 +52,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(adminToken)
                 .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
@@ -51,6 +80,7 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminToken)
                 .when().delete("admin/themes/" + id)
                 .then().log().all()
                 .extract();
@@ -64,6 +94,7 @@ public class ThemeE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(adminToken)
                 .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())

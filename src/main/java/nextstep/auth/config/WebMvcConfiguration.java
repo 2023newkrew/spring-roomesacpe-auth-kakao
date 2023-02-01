@@ -25,9 +25,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         resolvers.add(authenticationPrincipalArgumentResolver);
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(roleCheckInterceptor)
-//                .addPathPatterns("/admin/**");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(roleCheckInterceptor)
+                .addPathPatterns("/admin/**");
+    }
 }
