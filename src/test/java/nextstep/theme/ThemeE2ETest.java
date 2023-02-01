@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ThemeE2ETest {
 
     private String adminToken;
+    private String Token;
 
     @BeforeEach
     void setUp() {
@@ -42,6 +43,24 @@ public class ThemeE2ETest {
                 .when().post("/login/token")
                 .then().log().all()
                 .extract().as(TokenResponse.class).getAccessToken();
+
+        MemberRequest Body = new MemberRequest("username", "password", "name", "010-1234-5678", "member");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(Body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        Token = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("username", "password"))
+                .when().post("/login/token")
+                .then().log().all()
+                .extract().as(TokenResponse.class).getAccessToken();
     }
 
     @DisplayName("테마를 생성한다")
@@ -56,6 +75,34 @@ public class ThemeE2ETest {
                 .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("허가되지 않은 토큰에 대한 생성은 불가하다.")
+    @Test
+    public void unauthorizedCreate() {
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .auth().oauth2("Unauthorized")
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("일반 유저의 테마 생성은 불가하다.")
+    @Test
+    public void noneAdminCreate() {
+        ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .auth().oauth2(Token)
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -86,6 +133,36 @@ public class ThemeE2ETest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("허가되지 않은 토큰으로 테마 삭제는 불가하다.")
+    @Test
+    public void unauthorizedDelete() {
+        Long id = createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2("Unauthorized")
+                .when().delete("admin/themes/" + id)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("일반 유저의 테마 삭제는 불가하다.")
+    @Test
+    public void noneAdminDelete() {
+        Long id = createTheme();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(Token)
+                .when().delete("admin/themes/" + id)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public Long createTheme() {

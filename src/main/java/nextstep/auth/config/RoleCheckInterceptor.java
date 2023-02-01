@@ -1,5 +1,6 @@
 package nextstep.auth.config;
 
+import nextstep.exception.AuthorizationException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,6 +21,10 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
         String role = jwtTokenProvider.getRole(token);
 
-        return Objects.equals(role, "admin");
+        if (!Objects.equals(role, "admin")){
+            throw new AuthorizationException();
+        }
+
+        return true;
     }
 }
