@@ -4,6 +4,7 @@ import nextstep.member.Member;
 import nextstep.member.MemberDao;
 import nextstep.member.Role;
 import nextstep.support.AuthorizationException;
+import nextstep.support.ForbiddenException;
 import nextstep.support.NotExistEntityException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -45,7 +46,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             Member member = memberDao.findById(userId)
                     .orElseThrow(NotExistEntityException::new);
             if (!member.isAdmin()) {
-                throw new AuthorizationException("접근 권한이 없습니다.");
+                throw new ForbiddenException("접근 권한이 없습니다.");
             }
         }
         return true;

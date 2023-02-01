@@ -19,24 +19,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScheduleE2ETest {
 
     private Long themeId;
-    private static final String USERNAME = "admin";
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String MEMBER_USERNAME = "member";
     private static final String PASSWORD = "123";
     private static String ADMIN_TOKEN;
+    private static String MEMBER_TOKEN;
+
 
 
     @BeforeEach
     void setUp() {
-        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
-        TokenResponse tokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(TokenResponse.class);
-        ADMIN_TOKEN = tokenResponse.getAccessToken();
+        ADMIN_TOKEN = getAccessToken(ADMIN_USERNAME, PASSWORD);
+        MEMBER_TOKEN = getAccessToken(MEMBER_USERNAME, PASSWORD);
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
@@ -49,6 +43,20 @@ public class ScheduleE2ETest {
                 .extract();
         String[] themeLocation = response.header("Location").split("/");
         themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+    }
+
+    private static String getAccessToken(String username, String password) {
+        TokenRequest tokenRequest = new TokenRequest(username, password);
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
     }
 
     @DisplayName("스케줄을 생성한다")
@@ -72,10 +80,11 @@ public class ScheduleE2ETest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(MEMBER_TOKEN)
                 .body(body)
                 .when().post("/schedules")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("스케줄을 조회한다")
@@ -117,11 +126,12 @@ public class ScheduleE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(MEMBER_TOKEN)
                 .when().delete(location)
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     public static String requestCreateSchedule() {

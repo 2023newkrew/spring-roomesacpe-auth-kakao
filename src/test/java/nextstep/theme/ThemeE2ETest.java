@@ -17,14 +17,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ThemeE2ETest {
 
-    private static final String USERNAME = "admin";
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String MEMBER_USERNAME = "member";
     private static final String PASSWORD = "123";
     private static String ADMIN_TOKEN;
+    private static String MEMBER_TOKEN;
+
 
 
     @BeforeEach
     void setUp() {
-        TokenRequest tokenRequest = new TokenRequest(USERNAME, PASSWORD);
+        ADMIN_TOKEN = getAccessToken(ADMIN_USERNAME, PASSWORD);
+        MEMBER_TOKEN = getAccessToken(MEMBER_USERNAME, PASSWORD);
+    }
+
+    private static String getAccessToken(String username, String password) {
+        TokenRequest tokenRequest = new TokenRequest(username, password);
         TokenResponse tokenResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -34,7 +42,7 @@ public class ThemeE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(TokenResponse.class);
-        ADMIN_TOKEN = tokenResponse.getAccessToken();
+        return tokenResponse.getAccessToken();
     }
 
     @DisplayName("테마를 생성한다")
@@ -57,11 +65,12 @@ public class ThemeE2ETest {
         ThemeRequest body = new ThemeRequest("테마이름", "테마설명", 22000);
         RestAssured
                 .given().log().all()
+                .auth().oauth2(MEMBER_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
                 .when().post("/themes")
                 .then().log().all()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("테마 목록을 조회한다")
@@ -101,11 +110,12 @@ public class ThemeE2ETest {
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(MEMBER_TOKEN)
                 .when().delete("/themes/" + id)
                 .then().log().all()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     public Long createTheme() {

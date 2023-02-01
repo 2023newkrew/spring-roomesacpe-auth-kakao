@@ -19,6 +19,15 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(value = {
+            ForbiddenException.class
+    })
+    public ResponseEntity<String> handleForbiddenRequest(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(value = {
             AuthorizationException.class
     })
     public ResponseEntity<String> handleUnauthorizedRequest(RuntimeException exception) {
