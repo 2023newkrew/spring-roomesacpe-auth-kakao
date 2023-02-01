@@ -21,7 +21,7 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity<Object> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-        if (!scheduleRequest.validate()) {
+        if (!scheduleRequest.isValid()) {
             return ResponseEntity.badRequest().build();
         }
         try {

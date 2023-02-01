@@ -46,7 +46,7 @@ public class ThemeRequest {
         );
     }
 
-    public boolean validate() {
+    public boolean isValid() {
         return price >= 0 && !isNullOrEmptyOrBlank(name, desc);
     }
 

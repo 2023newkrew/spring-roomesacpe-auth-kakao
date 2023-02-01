@@ -23,7 +23,7 @@ public class TokenRequest {
         return password;
     }
 
-    public boolean validate() {
+    public boolean isValid() {
         return username != null && password != null;
     }
 }

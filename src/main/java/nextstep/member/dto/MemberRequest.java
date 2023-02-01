@@ -51,7 +51,7 @@ public class MemberRequest {
         return new Member(username, password, name, phone);
     }
 
-    public boolean validate() {
+    public boolean isValid() {
         return !isNullOrEmptyOrBlank(username, password, name) && isRightPhoneNumber(phone);
     }
 

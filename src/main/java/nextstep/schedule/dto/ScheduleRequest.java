@@ -49,7 +49,7 @@ public class ScheduleRequest {
         );
     }
 
-    public boolean validate() {
+    public boolean isValid() {
         return themeId != null && themeId > 0 && isValidDate(date) && isValidTime(time);
     }
 

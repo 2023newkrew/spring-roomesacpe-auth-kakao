@@ -24,7 +24,7 @@ public class ReservationRequest {
         return name;
     }
 
-    public boolean validate() {
+    public boolean isValid() {
         return scheduleId != null && scheduleId > 0 && !isNullOrEmptyOrBlank(name);
     }
 
