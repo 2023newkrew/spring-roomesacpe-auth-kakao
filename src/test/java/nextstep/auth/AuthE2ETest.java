@@ -3,10 +3,7 @@ package nextstep.auth;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.MemberRequest;
-import nextstep.member.Role;
 import nextstep.theme.ThemeRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,18 +19,6 @@ public class AuthE2ETest {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-
-    @BeforeEach
-    void setUp() {
-        MemberRequest body = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678", Role.ADMIN);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-    }
 
     @DisplayName("토큰을 생성한다")
     @Test

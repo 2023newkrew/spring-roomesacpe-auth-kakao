@@ -5,8 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
-import nextstep.member.Role;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,15 +32,6 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", Role.ADMIN);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-
         String accessToken = createAccessToken();
 
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
