@@ -35,7 +35,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String accessToken = AuthorizationExtractor.extract(request);
+        String accessToken = AuthorizationExtractor.extract(request)
+                .orElseThrow(() -> new AuthorizationException("인증이 필요합니다."));
         boolean validationResult = jwtTokenProvider.validateToken(accessToken);
         if (!validationResult) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");

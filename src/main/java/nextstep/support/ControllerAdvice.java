@@ -1,5 +1,6 @@
 package nextstep.support;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,5 +35,14 @@ public class ControllerAdvice {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(exception.getMessage());
+    }
+
+    @ExceptionHandler(value = {
+            DataAccessException.class
+    })
+    public ResponseEntity<String> handleInternalError(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("DB 오류");
     }
 }
