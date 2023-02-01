@@ -1,6 +1,6 @@
 package nextstep.interceptor;
 
-import nextstep.auth.domain.AuthService;
+import nextstep.domain.auth.AuthService;
 import nextstep.support.NotValidateTokenException;
 import org.springframework.web.servlet.HandlerInterceptor;
 

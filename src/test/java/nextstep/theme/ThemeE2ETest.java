@@ -1,7 +1,7 @@
 package nextstep.theme;
 
 import io.restassured.RestAssured;
-import nextstep.theme.dto.ThemeRequest;
+import nextstep.dto.theme.ThemeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
