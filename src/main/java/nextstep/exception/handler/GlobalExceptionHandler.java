@@ -27,8 +27,7 @@ public class GlobalExceptionHandler {
                 .getName(), errorCode.getMessage());
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus()
-                        .value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode));
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -38,8 +37,7 @@ public class GlobalExceptionHandler {
                 .getName(), errorCode.getMessage());
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus()
-                        .value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -57,8 +55,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus()
-                        .value(), message));
+                .body(new ErrorResponse(errorCode));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -69,7 +66,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus()
-                        .value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode));
     }
 }
