@@ -20,7 +20,7 @@ public class MemberE2ETest {
     @DisplayName("멤버를 생성한다")
     @Test
     public void create() {
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", Role.USER);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +33,7 @@ public class MemberE2ETest {
     @DisplayName("멤버를 조회한다")
     @Test
     public void readMember() {
-        createMember("username", "password", "name", "010-1234-5678");
+        createMember("username", "password", "name", "010-1234-5678", Role.USER);
         String token = createToken("username", "password");
 
         MemberResponse response = RestAssured.given().log().all()
@@ -59,11 +59,11 @@ public class MemberE2ETest {
                 .when().log().all()
                 .get("/members/me")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void createMember(String username, String password, String name, String phone) {
-        MemberRequest body = new MemberRequest(username, password, name, phone);
+    private void createMember(String username, String password, String name, String phone, Role role) {
+        MemberRequest body = new MemberRequest(username, password, name, phone, role);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
