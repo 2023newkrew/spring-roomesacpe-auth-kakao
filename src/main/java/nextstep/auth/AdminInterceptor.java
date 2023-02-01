@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.support.ForbiddenException;
 import nextstep.support.UnauthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,7 +22,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         String role = jwtTokenProvider.getRole(credential);
 
         if (!Objects.equals(role, "ADMIN")) {
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
         }
 
         return true;

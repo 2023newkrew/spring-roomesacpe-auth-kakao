@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.support.ForbiddenException;
 import nextstep.support.InvalidLoginException;
 import nextstep.support.UnauthorizedException;
 import org.springframework.http.HttpStatus;
@@ -18,5 +19,10 @@ public class AuthAdvice {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> onUnauthorizedException(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<String> onForbiddenException(Exception e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 }
