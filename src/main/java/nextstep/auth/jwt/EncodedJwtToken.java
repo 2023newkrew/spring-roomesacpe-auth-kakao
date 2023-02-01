@@ -2,11 +2,11 @@ package nextstep.auth.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import nextstep.auth.AuthContext;
 
 import java.util.Date;
 
 public class EncodedJwtToken {
-    private static final String SECRET_KEY = "learning-test-spring-learning-test-spring";
     private static final Long validityInMilliseconds = 3600000L;
 
     private final String principal;
@@ -23,7 +23,7 @@ public class EncodedJwtToken {
                 .setSubject(principal)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .signWith(Keys.hmacShaKeyFor(AuthContext.SECRET_KEY.getBytes()))
                 .compact();
     }
 }
