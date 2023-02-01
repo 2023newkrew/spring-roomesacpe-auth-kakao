@@ -25,7 +25,7 @@ public class ReservationService {
     public Long create(Member member, Schedule schedule) {
         List<Reservation> reservation = reservationDao.findByScheduleId(schedule.getId());
         if (!reservation.isEmpty()) {
-            throw new DuplicateEntityException();
+            throw new DuplicateEntityException("이미 해당 스케줄에 예약이 존재합니다.");
         }
 
         return reservationDao.save(new Reservation(schedule, member));

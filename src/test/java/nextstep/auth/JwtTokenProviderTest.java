@@ -1,5 +1,6 @@
 package nextstep.auth;
 
+import nextstep.common.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,17 +13,20 @@ class JwtTokenProviderTest {
     void createToken() {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(2515L, Role.MEMBER);
 
-        assertThat(jwtTokenProvider.validateToken(token)).isTrue();
+        assertThat(jwtTokenProvider.isValidToken(token)).isTrue();
     }
 
     @Test
-    void getPrincipal() {
+    void getClaims() {
+        Long id = 611L;
+        Role role = Role.MEMBER;
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(id, role);
 
-        assertThat(jwtTokenProvider.getPrincipal(token)).isEqualTo("1");
+        assertThat(jwtTokenProvider.getClaims(token).get("id", Long.class)).isEqualTo(id);
+        assertThat(jwtTokenProvider.getClaims(token).get("role", String.class)).isEqualTo("MEMBER");
     }
 }

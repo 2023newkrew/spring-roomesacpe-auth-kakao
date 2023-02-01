@@ -1,6 +1,5 @@
 package nextstep.schedule.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
 import nextstep.theme.dto.ThemeResponse;

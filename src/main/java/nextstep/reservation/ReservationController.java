@@ -1,6 +1,5 @@
 package nextstep.reservation;
 
-import nextstep.auth.AuthService;
 import nextstep.common.Authenticated;
 import nextstep.common.LoginMember;
 import nextstep.member.Member;
@@ -22,16 +21,14 @@ import java.util.stream.Collectors;
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final AuthService authService;
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final ThemeService themeService;
 
 
-    public ReservationController(ReservationService reservationService, AuthService authService,
-                                 MemberService memberService, ScheduleService scheduleService, ThemeService themeService) {
+    public ReservationController(ReservationService reservationService, MemberService memberService,
+                                 ScheduleService scheduleService, ThemeService themeService) {
         this.reservationService = reservationService;
-        this.authService = authService;
         this.memberService = memberService;
         this.scheduleService = scheduleService;
         this.themeService = themeService;
@@ -39,8 +36,6 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Void> createReservation(@Authenticated LoginMember loginMember, @RequestBody ReservationRequest reservationRequest) {
-        authService.validateLoginMember(loginMember);
-
         Member member = memberService.findById(loginMember.getId());
         Schedule schedule = scheduleService.findById(reservationRequest.getScheduleId());
         Long id = reservationService.create(member, schedule);
@@ -61,8 +56,6 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@Authenticated LoginMember loginMember, @PathVariable Long id) {
-        authService.validateLoginMember(loginMember);
-
         reservationService.deleteById(id, loginMember.getId());
         return ResponseEntity.noContent().build();
     }

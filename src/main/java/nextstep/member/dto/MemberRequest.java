@@ -1,5 +1,6 @@
 package nextstep.member.dto;
 
+import nextstep.common.Role;
 import nextstep.member.Member;
 
 public class MemberRequest {
@@ -31,7 +32,8 @@ public class MemberRequest {
         return phone;
     }
 
+
     public Member toEntity() {
-        return new Member(username, password, name, phone);
+        return new Member(username, password, name, phone, Role.MEMBER);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.reservation;
 
+import nextstep.common.Role;
 import nextstep.member.Member;
 import nextstep.schedule.Schedule;
 import nextstep.theme.Theme;
@@ -41,7 +42,8 @@ public class ReservationDao {
                     resultSet.getString("member.username"),
                     resultSet.getString("member.password"),
                     resultSet.getString("member.name"),
-                    resultSet.getString("member.phone"))
+                    resultSet.getString("member.phone"),
+                    Role.valueOf(resultSet.getString("member.role")))
     );
 
     public Long save(Reservation reservation) {
@@ -61,7 +63,7 @@ public class ReservationDao {
 
     public List<Reservation> findAllByThemeIdAndDate(Long themeId, String date) {
         String sql = "SELECT reservation.id, " +
-                "member.id, member.username, member.password, member.phone, member.name, " +
+                "member.id, member.username, member.password, member.phone, member.name, member.role, " +
                 "schedule.id, schedule.theme_id, schedule.date, schedule.time, " +
                 "theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
@@ -74,7 +76,7 @@ public class ReservationDao {
 
     public Optional<Reservation> findById(Long id) {
         String sql = "SELECT reservation.id, " +
-                "member.id, member.username, member.password, member.phone, member.name, " +
+                "member.id, member.username, member.password, member.phone, member.name, member.role, " +
                 "schedule.id, schedule.theme_id, schedule.date, schedule.time, " +
                 "theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
@@ -92,7 +94,7 @@ public class ReservationDao {
 
     public List<Reservation> findByScheduleId(Long id) {
         String sql = "SELECT reservation.id, " +
-                "member.id, member.username, member.password, member.phone, member.name, " +
+                "member.id, member.username, member.password, member.phone, member.name, member.role, " +
                 "schedule.id, schedule.theme_id, schedule.date, schedule.time, " +
                 "theme.id, theme.name, theme.desc, theme.price " +
                 "from reservation " +
@@ -100,13 +102,7 @@ public class ReservationDao {
                 "inner join theme on schedule.theme_id = theme.id " +
                 "inner join member on reservation.member_id = member.id " +
                 "where schedule.id = ?;";
-        try {
-            return jdbcTemplate.query(sql, rowMapper, id);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+        return jdbcTemplate.query(sql, rowMapper, id);
     }
 
     public void deleteById(Long id) {

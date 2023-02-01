@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/login")
 public class AuthController {
     private final AuthService authService;
-
     private final MemberService memberService;
 
     public AuthController(AuthService authService, MemberService memberService) {
@@ -26,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request){
-       Member member = memberService.getByNameAndPassword(request.getUsername(), request.getPassword());
+       Member member = memberService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
        TokenResponse response  = authService.createToken(member);
         return ResponseEntity.ok(response);
     }

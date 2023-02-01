@@ -1,14 +1,15 @@
 package nextstep.auth;
 
+import io.jsonwebtoken.Claims;
 import nextstep.auth.dto.TokenResponse;
 import nextstep.common.LoginMember;
+import nextstep.common.Role;
+import nextstep.exception.ForbiddenException;
 import nextstep.member.Member;
 import nextstep.exception.UnauthorizedAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -18,18 +19,28 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public void validateLoginMember(LoginMember loginMember) {
-        if (Objects.isNull(loginMember)) {
-            throw new UnauthorizedAccessException("인증되지 않은 사용자입니다.");
-        }
-    }
-
     public TokenResponse createToken(Member member) {
-        String payload = String.valueOf(member.getId());
-        String token = jwtTokenProvider.createToken(payload);
+        String token = jwtTokenProvider.createToken(member.getId(), member.getRole());
         return new TokenResponse(token);
     }
 
+    public Boolean isValid(HttpServletRequest request) {
+        String token = extractToken(request);
+        if (!jwtTokenProvider.isValidToken(token)) {
+            throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
+        }
+        return true;
+    }
+
+    public Boolean isAdmin(HttpServletRequest request) {
+        String token = extractToken(request);
+        LoginMember loginMember = decodeToken(token);
+
+        if (!Role.ADMIN.equals(loginMember.getRole())) {
+            throw new ForbiddenException("권한이 부족합니다.");
+        }
+        return true;
+    }
 
     public String extractToken(HttpServletRequest request) {
         if (request.getHeader("Authorization") == null) {
@@ -38,12 +49,14 @@ public class AuthService {
         return request.getHeader("Authorization").split(" ")[1];
     }
 
-    public Long decodeToken(String token) {
+    public LoginMember decodeToken(String token) {
         try {
-            return Long.valueOf(jwtTokenProvider.getPrincipal(token));
+            Claims claims = jwtTokenProvider.getClaims(token);
+            Long id = claims.get("id", Long.class);
+            Role role = Role.valueOf(claims.get("role", String.class));
+            return new LoginMember(id, role);
         } catch (IllegalArgumentException e) {
             throw new UnauthorizedAccessException("유효하지 않은 토큰입니다.");
         }
     }
-
 }

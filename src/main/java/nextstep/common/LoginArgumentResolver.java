@@ -9,10 +9,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     private final AuthService authService;
 
-    public LoginMemberArgumentResolver(AuthService authService) {
+    public LoginArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
@@ -26,8 +26,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         try {
             String token = authService.extractToken(request);
-            Long id = authService.decodeToken(token);
-            return new LoginMember(id);
+            return authService.decodeToken(token);
         } catch (Exception e){
             return null;
         }
