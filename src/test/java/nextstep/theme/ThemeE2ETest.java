@@ -3,6 +3,7 @@ package nextstep.theme;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.setup.TestSetUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,18 +22,7 @@ public class ThemeE2ETest {
 
     @BeforeEach
     void setUp() {
-        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
-        var adminTokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(adminTokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-
-        TokenResponse adminTokenResponse1 = adminTokenResponse.response().getBody().as(TokenResponse.class);
-        adminToken = adminTokenResponse1.getAccessToken();
+        adminToken = TestSetUp.getAdminToken();
     }
 
     @DisplayName("테마를 생성한다")

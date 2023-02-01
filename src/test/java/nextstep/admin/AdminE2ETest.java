@@ -1,9 +1,7 @@
 package nextstep.admin;
 
 import io.restassured.RestAssured;
-import nextstep.auth.TokenRequest;
-import nextstep.auth.TokenResponse;
-import nextstep.member.MemberRequest;
+import nextstep.setup.TestSetUp;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,45 +17,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AdminE2ETest {
+    private Long memberId;
     private String adminToken;
     private String token;
 
     @BeforeEach
     void setUp() {
-        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
-        var adminTokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(adminTokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+        memberId = TestSetUp.registerMember();
 
-        TokenResponse adminTokenResponse1 = adminTokenResponse.response().getBody().as(TokenResponse.class);
-        adminToken = adminTokenResponse1.getAccessToken();
+        adminToken = TestSetUp.getAdminToken();
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value());
-
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
-        var tokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-
-        TokenResponse tokenResponse1 = tokenResponse.response().getBody().as(TokenResponse.class);
-        token = tokenResponse1.getAccessToken();
+        token = TestSetUp.getUserToken();
     }
 
     @DisplayName("관리자는 테마를 생성할 수 있다")

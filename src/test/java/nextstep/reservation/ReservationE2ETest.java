@@ -7,6 +7,7 @@ import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
+import nextstep.setup.TestSetUp;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,69 +38,15 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
-        var adminTokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(adminTokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+        adminToken = TestSetUp.getAdminToken();
 
-        TokenResponse adminTokenResponse1 = adminTokenResponse.response().getBody().as(TokenResponse.class);
-        adminToken = adminTokenResponse1.getAccessToken();
+        themeId = TestSetUp.registerTheme(adminToken);
 
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, adminToken)
-                .body(themeRequest)
-                .when().post("/admin/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        scheduleId = TestSetUp.registerSchedule(themeId);
 
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, DATE, TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+        memberId = TestSetUp.registerMember();
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(body)
-                .when().post("/members")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
-        TokenRequest tokenRequest = new TokenRequest("username", "password");
-        var tokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
-
-        TokenResponse tokenResponse1 = tokenResponse.response().getBody().as(TokenResponse.class);
-        token = tokenResponse1.getAccessToken();
+        token = TestSetUp.getUserToken();
 
         request = new ReservationRequest(
                 scheduleId,

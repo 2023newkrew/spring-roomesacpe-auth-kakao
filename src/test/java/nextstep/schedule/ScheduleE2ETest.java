@@ -3,6 +3,7 @@ package nextstep.schedule;
 import io.restassured.RestAssured;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.setup.TestSetUp;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,31 +25,9 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        TokenRequest adminTokenRequest = new TokenRequest("admin", "admin");
-        var adminTokenResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(adminTokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract();
+        adminToken = TestSetUp.getAdminToken();
 
-        TokenResponse adminTokenResponse1 = adminTokenResponse.response().getBody().as(TokenResponse.class);
-        adminToken = adminTokenResponse1.getAccessToken();
-
-        ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
-        var response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, adminToken)
-                .body(themeRequest)
-                .when().post("/admin/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = response.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+        themeId = TestSetUp.registerTheme(adminToken);
     }
 
     @DisplayName("스케줄을 생성한다")
