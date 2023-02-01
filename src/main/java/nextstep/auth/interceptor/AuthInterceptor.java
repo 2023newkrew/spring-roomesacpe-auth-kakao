@@ -11,7 +11,6 @@ import nextstep.auth.annotation.AdminOnly;
 import nextstep.auth.annotation.LoginRequired;
 import nextstep.exceptions.exception.auth.AuthorizationException;
 import nextstep.exceptions.exception.auth.ForbiddenException;
-import nextstep.exceptions.exception.auth.NotAdminException;
 import nextstep.exceptions.exception.auth.TokenNotFoundException;
 import nextstep.member.Role;
 import org.springframework.stereotype.Component;
@@ -33,9 +32,6 @@ public class AuthInterceptor implements HandlerInterceptor {
                 requiredRole -> {
                     setAccessTokenToRequestAttribute(request);
                     checkRoleFromRequest(request, requiredRole);
-//                    if (requiredRole.isAdmin()) {
-//                        checkAdmin(request);
-//                    }
                 }
         );
         return true;
@@ -81,9 +77,6 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (!loginMemberRole.isAvailable(requiredRole)) {
             throw new ForbiddenException();
         }
-//        if (!jwtTokenProvider.getRole(token).equals("ADMIN")) {
-//            throw new NotAdminException();
-//        }
     }
 
 }
