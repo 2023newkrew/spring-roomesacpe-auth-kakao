@@ -2,16 +2,18 @@ package nextstep.member;
 
 public class MemberRequest {
 
-    private String username;
-    private String password;
-    private String name;
-    private String phone;
+    private final String username;
+    private final String password;
+    private final String name;
+    private final String phone;
+    private final Role role;
 
-    public MemberRequest(String username, String password, String name, String phone) {
+    public MemberRequest(String username, String password, String name, String phone, Role role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.role = role;
     }
 
     public String getUsername() {
@@ -30,7 +32,11 @@ public class MemberRequest {
         return phone;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     public Member toEntity() {
-        return new Member(username, password, name, phone);
+        return new Member(username, password, name, phone, role);
     }
 }

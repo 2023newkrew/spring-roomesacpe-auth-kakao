@@ -2,6 +2,7 @@ package nextstep.reservation;
 
 import nextstep.auth.JwtTokenProvider;
 import nextstep.exception.InaccessibleReservationException;
+import nextstep.member.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class ReservationControllerTest {
     class DeleteReservation {
 
         private final Long userId = 1L;
-        private final String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId));
+        private final String userToken = "Bearer " + jwtTokenProvider.createToken(String.valueOf(userId), Role.USER);
         private final Long reservationId = 1L;
 
         @Test

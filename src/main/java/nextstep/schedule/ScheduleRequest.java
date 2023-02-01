@@ -7,9 +7,9 @@ import java.time.LocalTime;
 
 public class ScheduleRequest {
 
-    private Long themeId;
-    private String date;
-    private String time;
+    private final Long themeId;
+    private final String date;
+    private final String time;
 
     public ScheduleRequest(Long themeId, String date, String time) {
         this.themeId = themeId;
