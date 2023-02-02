@@ -26,4 +26,17 @@ public class MemberE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
+
+    @DisplayName("잘못된 역할을 가진 멤버를 생성 요청한다.")
+    @Test
+    public void createWithInvalidRole() {
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "INVALID");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 }
