@@ -1,7 +1,5 @@
 package nextstep.common;
 
-import static nextstep.common.exception.ExceptionMessage.NOT_EXIST_MEMBER;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,21 +42,21 @@ public @interface ValidLoginRequest {
         public boolean isValid(TokenRequestDto tokenRequestDto, ConstraintValidatorContext context) {
             try {
                 MemberResponseDto findUser = memberService.findByUsername(tokenRequestDto.getUsername());
-                validUserName(findUser, tokenRequestDto);
-                validRole(findUser, tokenRequestDto);
+                validateUserName(findUser, tokenRequestDto);
+                validateRole(findUser, tokenRequestDto);
             } catch (RuntimeException runtimeException) {
                 return false;
             }
             return true;
         }
 
-        private void validUserName(MemberResponseDto memberResponseDto, TokenRequestDto tokenRequestDto) {
+        private void validateUserName(MemberResponseDto memberResponseDto, TokenRequestDto tokenRequestDto) {
             if (!Objects.equals(memberResponseDto.getUsername(), tokenRequestDto.getUsername())) {
                 throw new NotExistEntityException();
             }
         }
 
-        private void validRole(MemberResponseDto memberResponseDto, TokenRequestDto tokenRequestDto) {
+        private void validateRole(MemberResponseDto memberResponseDto, TokenRequestDto tokenRequestDto) {
             if (!Objects.equals(memberResponseDto.getMemberRole(), tokenRequestDto.getRole())) {
                 throw new NotExistEntityException();
             }
