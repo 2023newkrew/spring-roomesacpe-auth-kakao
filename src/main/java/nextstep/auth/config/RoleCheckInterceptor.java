@@ -17,7 +17,7 @@ public class RoleCheckInterceptor implements HandlerInterceptor {
         this.jwtTokenProvider = jwtTokenProvider;
     }
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws  Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object obj) throws AuthorizationException {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
         String role = jwtTokenProvider.getRole(token);
 
