@@ -59,6 +59,10 @@ public class Member {
         this.userType = userType;
     }
 
+    public boolean isAdmin() {
+        return this.userType.equals(UserType.ADMIN);
+    }
+
     @Override
     public String toString() {
         return "Member{" +
