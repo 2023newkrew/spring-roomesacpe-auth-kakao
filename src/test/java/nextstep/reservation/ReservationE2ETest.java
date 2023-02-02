@@ -36,7 +36,7 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "admin");
+        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "ADMIN");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -80,7 +80,7 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "member");
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "MEMBER");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

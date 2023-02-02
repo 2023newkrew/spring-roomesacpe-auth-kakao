@@ -33,7 +33,7 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), member.getRole());
+        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername(), member.getRole().name());
         return new TokenResponse(accessToken);
     }
 

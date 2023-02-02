@@ -24,7 +24,7 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "admin");
+        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "ADMIN");
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
