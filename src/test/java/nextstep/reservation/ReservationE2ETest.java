@@ -27,22 +27,40 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ReservationE2ETest {
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
-    public static final String NAME = "name";
 
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
-    private Long memberId;
     private String token;
+    private String adminToken;
 
     @BeforeEach
     void setUp() {
+        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "ADMIN");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        adminToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("admin_username", "password"))
+                .when().post("/login/token")
+                .then().log().all()
+                .extract().as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var themeResponse = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -62,8 +80,8 @@ class ReservationE2ETest {
         String[] scheduleLocation = scheduleResponse.header("Location").split("/");
         scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
 
-        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678");
-        var memberResponse = RestAssured
+        MemberRequest body = new MemberRequest("username", "password", "name", "010-1234-5678", "MEMBER");
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
@@ -72,21 +90,17 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
-        String[] memberLocation = memberResponse.header("Location").split("/");
-        memberId = Long.parseLong(memberLocation[memberLocation.length - 1]);
-
         request = new ReservationRequest(
                 scheduleId,
                 "username"
         );
-        var accessToken = RestAssured
+        token = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new TokenRequest("username", "password"))
                 .when().post("/login/token")
                 .then().log().all()
                 .extract().as(TokenResponse.class).getAccessToken();
-        token = accessToken;
     }
 
     @DisplayName("예약을 생성한다")

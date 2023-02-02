@@ -1,6 +1,9 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.dto.TokenRequest;
+import nextstep.auth.dto.TokenResponse;
+import nextstep.member.dto.MemberRequest;
 import nextstep.schedule.dto.ScheduleRequest;
 import nextstep.theme.dto.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,12 +24,31 @@ public class ScheduleE2ETest {
 
     @BeforeEach
     void setUp() {
+        MemberRequest adminBody = new MemberRequest("admin_username", "password", "name", "010-1234-5678", "ADMIN");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(adminBody)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+
+        String adminToken = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest("admin_username", "password"))
+                .when().post("/login/token")
+                .then().log().all()
+                .extract().as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .auth().oauth2(adminToken)
+                .when().post("admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
