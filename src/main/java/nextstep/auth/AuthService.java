@@ -19,15 +19,14 @@ public class AuthService {
     }
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        validateUsernamePassword(tokenRequest.getUsername(), tokenRequest.getPassword());
+        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+        validateUsernamePassword(member, tokenRequest.getPassword());
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(member.getId()+"", member.getRole());
         return new TokenResponse(accessToken);
     }
 
-    private void validateUsernamePassword(String username, String password) throws UnAuthorizedException {
-        Member member = memberDao.findByUsername(username);
-
+    private void validateUsernamePassword(Member member, String password) throws UnAuthorizedException {
         if (member == null) {
             throw new UnAuthorizedException();
         }
@@ -36,5 +35,4 @@ public class AuthService {
             throw new UnAuthorizedException();
         }
     }
-
 }

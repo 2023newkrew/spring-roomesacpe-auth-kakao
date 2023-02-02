@@ -36,7 +36,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new UnAuthorizedException();
         }
 
-        return jwtTokenProvider.getPrincipal(token);
+        return Long.parseLong(jwtTokenProvider.getPrincipal(token));
     }
 
     private String parseTokenFromHeader(String header) {

@@ -1,6 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,15 +19,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ScheduleE2ETest {
 
     private Long themeId;
+    private String adminKey = "";
 
     @BeforeEach
     void setUp() {
+        TokenRequest body = new TokenRequest("root", "1234");
+        var adminResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+
+        adminKey = adminResponse.as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + adminKey)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
@@ -39,9 +55,10 @@ public class ScheduleE2ETest {
         ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
         RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + adminKey)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -49,7 +66,7 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 조회한다")
     @Test
     public void showSchedules() {
-        requestCreateSchedule();
+        requestCreateSchedule(adminKey);
 
         var response = RestAssured
                 .given().log().all()
@@ -66,24 +83,26 @@ public class ScheduleE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        String location = requestCreateSchedule();
+        String location = requestCreateSchedule(adminKey);
 
         var response = RestAssured
                 .given().log().all()
-                .when().delete(location)
+                .header("authorization", "Bearer " + adminKey)
+                .when().delete("/admin" +location)
                 .then().log().all()
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static String requestCreateSchedule() {
+    public static String requestCreateSchedule(String adminKey) {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         return RestAssured
                 .given().log().all()
+                .header("authorization", "Bearer " + adminKey)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/schedules")
+                .when().post("/admin/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()

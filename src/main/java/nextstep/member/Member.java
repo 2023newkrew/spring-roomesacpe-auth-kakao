@@ -6,6 +6,7 @@ public class Member {
     private String password;
     private String name;
     private String phone;
+    private String role;
 
     public Member(Long id, String username, String password, String name, String phone) {
         this.id = id;
@@ -21,6 +22,7 @@ public class Member {
         this.name = name;
         this.phone = phone;
     }
+
 
     public Long getId() {
         return id;
@@ -42,7 +44,11 @@ public class Member {
         return phone;
     }
 
+    public String getRole() {
+        return role;
+    }
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }
+
 }
