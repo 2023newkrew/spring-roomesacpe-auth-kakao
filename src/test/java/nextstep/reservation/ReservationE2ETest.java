@@ -3,12 +3,12 @@ package nextstep.reservation;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.dto.TokenRequest;
-import nextstep.member.dto.MemberRequest;
-import nextstep.reservation.domain.Reservation;
-import nextstep.reservation.dto.ReservationRequest;
-import nextstep.schedule.dto.ScheduleRequest;
-import nextstep.theme.dto.ThemeRequest;
+import nextstep.dto.auth.TokenRequest;
+import nextstep.dto.dto.ReservationRequest;
+import nextstep.dto.member.MemberRequest;
+import nextstep.dto.schedule.ScheduleRequest;
+import nextstep.dto.theme.ThemeRequest;
+import nextstep.persistence.reservation.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,30 +44,6 @@ class ReservationE2ETest {
 
     @BeforeEach
     void setUp() {
-        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
-        var themeResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(themeRequest)
-                .when().post("/themes")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] themeLocation = themeResponse.header("Location").split("/");
-        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
-
-        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, RESERVATION_DATE, RESERVATION_TIME);
-        var scheduleResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(scheduleRequest)
-                .when().post("/schedules")
-                .then().log().all()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract();
-        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
-        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
-
         MemberRequest body = new MemberRequest(USERNAME, PASSWORD, NAME, PHONE);
         RestAssured
                 .given().log().all()
@@ -88,6 +64,33 @@ class ReservationE2ETest {
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
 
+        String accessToken = loginAndGetAccessToken("admin");
+        ThemeRequest themeRequest = new ThemeRequest(THEME_NAME, THEME_DESC, THEME_PRICE);
+        var themeResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", accessToken)
+                .body(themeRequest)
+                .when().post("/admin/themes")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] themeLocation = themeResponse.header("Location").split("/");
+        themeId = Long.parseLong(themeLocation[themeLocation.length - 1]);
+
+        ScheduleRequest scheduleRequest = new ScheduleRequest(themeId, RESERVATION_DATE, RESERVATION_TIME);
+        var scheduleResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", accessToken)
+                .body(scheduleRequest)
+                .when().post("/admin/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract();
+        String[] scheduleLocation = scheduleResponse.header("Location").split("/");
+        Long scheduleId = Long.parseLong(scheduleLocation[scheduleLocation.length - 1]);
+
         request = new ReservationRequest(
                 scheduleId,
                 "브라운"
@@ -97,7 +100,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 생성한다")
     @Test
     void create() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -114,7 +117,7 @@ class ReservationE2ETest {
     @DisplayName("음수 스케줄번호로 예약을 생성할 수 없다.")
     @Test
     void cannotCreateReservationWithMinusThemeId() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -131,7 +134,7 @@ class ReservationE2ETest {
     @DisplayName("없는 스케줄번호로 예약을 생성할 수 없다.")
     @Test
     void cannotCreateReservationWithNotExistThemeId() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -148,7 +151,7 @@ class ReservationE2ETest {
     @DisplayName("null인 이름으로 예약을 생성할 수 없다.")
     @Test
     void cannotCreateReservationWithNullName() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -165,7 +168,7 @@ class ReservationE2ETest {
     @DisplayName("Empty String인 이름으로 예약을 생성할 수 없다.")
     @Test
     void cannotCreateReservationWithEmptyName() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -182,7 +185,7 @@ class ReservationE2ETest {
     @DisplayName("Blank인 이름으로 예약을 생성할 수 없다.")
     @Test
     void cannotCreateReservationWithBlankName() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -201,7 +204,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 조회한다")
     @Test
     void show() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         createReservation(accessToken);
 
@@ -221,7 +224,7 @@ class ReservationE2ETest {
     @DisplayName("없는 테마의 예약은 조회할 수 없다.")
     @Test
     void cannotShowNotExistThemeReservation() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         createReservation(accessToken);
 
@@ -240,7 +243,7 @@ class ReservationE2ETest {
     @DisplayName("예약을 삭제한다")
     @Test
     void delete() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var reservation = createReservation(accessToken);
 
@@ -257,7 +260,7 @@ class ReservationE2ETest {
     @DisplayName("중복 예약을 생성할 수 없다.")
     @Test
     void cannotCreateDuplicateReservation() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         createReservation(accessToken);
 
@@ -276,7 +279,7 @@ class ReservationE2ETest {
     @DisplayName("예약이 없을 때 예약 목록을 조회한다")
     @Test
     void showEmptyReservations() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -294,7 +297,7 @@ class ReservationE2ETest {
     @DisplayName("없는 예약을 삭제할 수 없다.")
     @Test
     void cannotCreateNotExistReservation() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         var response = RestAssured
                 .given().log().all()
@@ -309,7 +312,7 @@ class ReservationE2ETest {
     @DisplayName("다른 사람의 예약을 삭제할 수 없다.")
     @Test
     void cannotDeleteNotMyReservation() {
-        String accessToken = loginAndGetAccessToken();
+        String accessToken = loginAndGetAccessToken(USERNAME);
 
         String otherAccessToken = loginAndGetOtherAccessToken();
 
@@ -350,8 +353,8 @@ class ReservationE2ETest {
                 .extract();
     }
 
-    private String loginAndGetAccessToken() {
-        TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
+    private String loginAndGetAccessToken(String username) {
+        TokenRequest body = new TokenRequest(username, PASSWORD);
         var accessToken = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
