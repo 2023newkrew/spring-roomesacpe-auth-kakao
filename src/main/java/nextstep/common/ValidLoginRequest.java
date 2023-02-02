@@ -16,7 +16,6 @@ import nextstep.member.dto.MemberResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-//@Component
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ValidLoginRequest.ExistMemberValidator.class)
