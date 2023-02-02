@@ -126,7 +126,7 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
-        return Long.parseLong(location.split("/")[2]);
+        return extractId(location);
     }
 
     private void requestCreateAdminMember() {
@@ -142,7 +142,7 @@ public class ThemeE2ETest {
                 .extract().header("Location");
 
         // 멤버에게 관리자 권한 설정
-        Long memberId = Long.parseLong(location.split("/")[2]);
+        Long memberId = extractId(location);
         ChangeUserTypeRequest changeUserTypeRequest = new ChangeUserTypeRequest(memberId, UserType.ADMIN, secretKey);
 
         RestAssured
@@ -180,7 +180,7 @@ public class ThemeE2ETest {
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");
-        Long memberId = Long.parseLong(location.split("/")[2]);
+        Long memberId = extractId(location);
         normalMember = memberDao.findById(memberId);
 
         // 토큰 생성
@@ -194,5 +194,10 @@ public class ThemeE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(TokenResponse.class);
         normalMemberToken = tokenResponse.getAccessToken();
+    }
+
+    private long extractId(String location) {
+        String[] split = location.split("/");
+        return Long.parseLong(split[split.length-1]);
     }
 }
