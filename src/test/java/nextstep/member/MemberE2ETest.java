@@ -24,6 +24,7 @@ public class MemberE2ETest {
             .password("password")
             .name("name")
             .phone("010-1234-5678")
+            .role(Role.MEMBER)
             .build();
     private String token;
 

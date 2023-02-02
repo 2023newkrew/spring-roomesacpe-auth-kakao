@@ -26,7 +26,7 @@ public class MemberResponse {
                 .password(member.getPassword())
                 .name(member.getName())
                 .phone(member.getPhone())
-                .role(member.getRole())
+                .role(member.getRole().toString())
                 .build();
     }
 

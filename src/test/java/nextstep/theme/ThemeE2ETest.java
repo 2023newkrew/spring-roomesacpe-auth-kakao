@@ -5,6 +5,7 @@ import nextstep.auth.JwtTokenProvider;
 import nextstep.auth.dto.TokenRequest;
 import nextstep.member.Member;
 import nextstep.member.MemberRequest;
+import nextstep.member.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class ThemeE2ETest {
             .password("password")
             .phone("010-1234-5678")
             .name("name")
+            .role(Role.MEMBER)
             .build();
 
     private final Theme theme = Theme.builder()
