@@ -51,6 +51,10 @@ public class Member {
         return phone;
     }
 
+    public UserType getUserType() {
+        return userType;
+    }
+
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
     }
