@@ -5,13 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class MemberRequest {
+public class MemberResponse {
+
+    private final Long id;
     private final String username;
     private final String password;
     private final String name;
     private final String phone;
-
-    public Member toEntity() {
-        return new Member(username, password, name, phone);
-    }
 }

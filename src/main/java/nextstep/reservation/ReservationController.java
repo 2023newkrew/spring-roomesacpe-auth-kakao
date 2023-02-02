@@ -1,26 +1,30 @@
 package nextstep.reservation;
 
-import nextstep.auth.annotation.Authenticated;
-import nextstep.auth.LoginUser;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.Authenticated;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/reservations")
+@RequiredArgsConstructor
 public class ReservationController {
 
     public final ReservationService reservationService;
 
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
-
     @PostMapping
-    public ResponseEntity<Object> createReservation(@RequestBody ReservationRequest reservationRequest) {
-        Long id = reservationService.create(reservationRequest);
+    public ResponseEntity<Object> createReservation(@RequestBody ReservationRequest reservationRequest, @Authenticated Long memberId) {
+        Long id = reservationService.create(reservationRequest, memberId);
         return ResponseEntity.created(URI.create("/reservations/" + id)).build();
     }
 
@@ -31,8 +35,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteReservation(@PathVariable Long id, @Authenticated LoginUser loginUser) {
-        reservationService.deleteById(id, loginUser.getId());
+    public ResponseEntity<Object> deleteReservation(@PathVariable Long id, @Authenticated Long memberId) {
+        reservationService.deleteById(id, memberId);
 
         return ResponseEntity.noContent().build();
     }

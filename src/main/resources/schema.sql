@@ -31,5 +31,6 @@ CREATE TABLE member
     password varchar(20) not null,
     name     varchar(20) not null,
     phone    varchar(20) not null,
+    admin    bool        not null,
     primary key (id)
 );
