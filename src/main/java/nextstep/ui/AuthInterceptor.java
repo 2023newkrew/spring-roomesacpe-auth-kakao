@@ -3,6 +3,7 @@ package nextstep.ui;
 import nextstep.auth.AuthService;
 import nextstep.auth.AuthorizationExtractor;
 import nextstep.member.Member;
+import nextstep.support.AuthenticationException;
 import nextstep.support.PermissionException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -22,6 +23,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = AuthorizationExtractor.extract(request);
+        if (token == null) {
+            throw new AuthenticationException();
+        }
         Member member = authService.getMemberFromToken(token);
         if (!member.isAdmin()) {
             throw new PermissionException();
