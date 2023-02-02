@@ -26,4 +26,10 @@ public class MemberController {
         MemberResponse response = MemberResponse.of(member);
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/type")
+    public ResponseEntity changeUserType(@RequestBody ChangeUserTypeRequest changeUserTypeRequest) {
+        Long id = memberService.editType(changeUserTypeRequest);
+        return ResponseEntity.ok(URI.create("/members/" + id));
+    }
 }

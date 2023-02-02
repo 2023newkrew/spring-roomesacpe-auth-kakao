@@ -1,25 +1,34 @@
 package nextstep.member;
 
+import nextstep.type.UserType;
+
 public class Member {
     private Long id;
     private final String username;
     private String password;
     private String name;
     private String phone;
+    private UserType userType;
 
-    public Member(Long id, String username, String password, String name, String phone) {
+    public Member(Long id, String username, String password, String name, String phone, UserType userType) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.phone = phone;
+        this.userType = userType;
+    }
+
+    public Member(Long id, String username, String password, String name, String phone) {
+        this(id, username, password, name, phone, UserType.NORMAL);
+    }
+
+    public Member(String username, String password, String name, String phone, UserType userType) {
+        this(null, username, password, name, phone, userType);
     }
 
     public Member(String username, String password, String name, String phone) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.phone = phone;
+        this(null, username, password, name, phone, UserType.NORMAL);
     }
 
     public Long getId() {
@@ -42,8 +51,20 @@ public class Member {
         return phone;
     }
 
+    public UserType getUserType() {
+        return userType;
+    }
+
     public boolean checkWrongPassword(String password) {
         return !this.password.equals(password);
+    }
+
+    public void changeType(UserType userType) {
+        this.userType = userType;
+    }
+
+    public boolean isAdmin() {
+        return this.userType.equals(UserType.ADMIN);
     }
 
     @Override

@@ -5,12 +5,18 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.auth.TokenRequest;
 import nextstep.auth.TokenResponse;
+import nextstep.member.ChangeUserTypeRequest;
+import nextstep.member.Member;
+import nextstep.member.MemberDao;
 import nextstep.member.MemberRequest;
 import nextstep.schedule.ScheduleRequest;
 import nextstep.theme.ThemeRequest;
+import nextstep.type.UserType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,17 +32,26 @@ class ReservationE2ETest {
     public static final String AUTHORIZATION = "Authorization";
     public static String BEARER_TYPE = "Bearer";
     public static final String USERNAME = "username";
+    public static final String ADMINUSERNAME = "adminusername";
     public static final String PASSWORD = "password";
 
     public static final String DATE = "2022-08-11";
     public static final String TIME = "13:00";
     public static final String NAME = "name";
 
+    @Autowired
+    MemberDao memberDao;
+
+    @Value("change-usertype-key")
+    String secretKey;
+
     private ReservationRequest request;
     private Long themeId;
     private Long scheduleId;
     private Long memberId;
     private String accessToken;
+    private Member adminMember;
+    private String adminMemberToken;
 
     @BeforeEach
     void setUp() {
@@ -232,7 +247,7 @@ class ReservationE2ETest {
                 .extract();
     }
 
-    private static TokenResponse requestCreateToken() {
+    private TokenResponse requestCreateToken() {
         TokenRequest body = new TokenRequest(USERNAME, PASSWORD);
 
         TokenResponse tokenResponse = RestAssured
@@ -246,7 +261,47 @@ class ReservationE2ETest {
         return tokenResponse;
     }
 
-    private static void requestCreateMember() {
+    private void requestCreateAdminMember() {
+        // 멤버 생성
+        MemberRequest memberRequest = new MemberRequest(ADMINUSERNAME, PASSWORD, "name", "010-1234-5678");
+        String location = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract().header("Location");
+
+        // 멤버에게 관리자 권한 설정
+        Long memberId = Long.parseLong(location.split("/")[2]);
+        ChangeUserTypeRequest changeUserTypeRequest = new ChangeUserTypeRequest(memberId, UserType.ADMIN, secretKey);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(changeUserTypeRequest)
+                .when().patch("/members/type")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        // 관리자 멤버의 토큰 생성
+        adminMember = memberDao.findById(memberId);
+        TokenRequest tokenRequest = new TokenRequest(adminMember.getUsername(), adminMember.getPassword());
+
+        TokenResponse tokenResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(TokenResponse.class);
+
+        adminMemberToken = tokenResponse.getAccessToken();
+    }
+
+    private void requestCreateMember() {
         MemberRequest memberRequestBody = new MemberRequest(USERNAME, PASSWORD, "name", "010-1234-5678");
 
         RestAssured
@@ -260,7 +315,8 @@ class ReservationE2ETest {
     }
 
     private static long extractId(String location) {
-        return Long.parseLong(location.split("/")[2]);
+        String[] split = location.split("/");
+        return Long.parseLong(split[split.length - 1]);
     }
 
     private String requestCreateSchedule() {
@@ -276,13 +332,15 @@ class ReservationE2ETest {
         return scheduleLocation;
     }
 
-    private static String requestCreateTheme() {
+    private String requestCreateTheme() {
+        requestCreateAdminMember();
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         String themeLocation = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminMemberToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
-                .when().post("/themes")
+                .when().post("/admin/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract().header("Location");

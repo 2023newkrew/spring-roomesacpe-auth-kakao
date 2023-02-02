@@ -1,15 +1,21 @@
 package nextstep.member;
 
 import nextstep.support.NotExistEntityException;
+import nextstep.support.PermissionException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
+@PropertySource("classpath:secrets.yml")
 public class MemberService {
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
+    private final String secretKey;
 
-    public MemberService(MemberDao memberDao) {
+    public MemberService(MemberDao memberDao, @Value("change-usertype-key") String secretKey) {
         this.memberDao = memberDao;
+        this.secretKey = secretKey;
     }
 
     public Long create(MemberRequest memberRequest) {
@@ -32,5 +38,13 @@ public class MemberService {
             throw new NotExistEntityException();
         }
         return member;
+    }
+
+    public Long editType(ChangeUserTypeRequest request) {
+        // 멤버의 타입 변경을 위해서는 적절한 비밀키가 필요하다
+        if (!request.getSecretKey().equals(secretKey)) {
+            throw new PermissionException();
+        }
+        return memberDao.editType(request.getUserId(), request.getUserType());
     }
 }
