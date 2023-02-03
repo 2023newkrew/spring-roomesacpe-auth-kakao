@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,19 +12,17 @@ import roomescape.entity.Member;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class MemberRepository {
-    private static final RowMapper<Member> rowMapper = (resultSet, rowNum) -> new Member(
+    private static final RowMapper<Member> ROW_MAPPER = (resultSet, rowNum) -> new Member(
             resultSet.getLong("id"),
             resultSet.getString("username"),
             resultSet.getString("password"),
             resultSet.getString("name"),
-            resultSet.getString("phone")
+            resultSet.getString("phone"),
+            resultSet.getBoolean("is_admin")
     );
     private final NamedParameterJdbcTemplate jdbc;
-
-    public MemberRepository(NamedParameterJdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
 
     public Long insert(String username, String password, String name, String phone) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -37,10 +36,10 @@ public class MemberRepository {
     }
 
     public Member selectById(Long id) {
-        return jdbc.queryForObject("select id, username, password, name, phone from member where id = :id", Map.of("id", id), rowMapper);
+        return jdbc.queryForObject("select id, username, password, name, phone, is_admin from member where id = :id", Map.of("id", id), ROW_MAPPER);
     }
 
     public Member selectByUsername(String username) {
-        return jdbc.queryForObject("select id, username, password, name, phone from member where username = :username", Map.of("username", username), rowMapper);
+        return jdbc.queryForObject("select id, username, password, name, phone, is_admin from member where username = :username", Map.of("username", username), ROW_MAPPER);
     }
 }

@@ -1,5 +1,6 @@
 package roomescape.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@RequiredArgsConstructor
 public class ThemeRepository {
     private static final String SELECT_PAGE = "select theme.id, theme.name, theme.desc, theme.price from theme order by id limit :limit offset :offset";
     private static final String SELECT_BY_ID = "select theme.id, theme.name, theme.desc, theme.price from theme where id = :id";
@@ -27,11 +29,6 @@ public class ThemeRepository {
             rs.getInt(4)
     );
     private final NamedParameterJdbcTemplate jdbc;
-
-    public ThemeRepository(NamedParameterJdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
-
 
     public Long insert(String name, String desc, int price) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -61,10 +58,6 @@ public class ThemeRepository {
     }
 
     public int delete(long id) {
-        try {
-            return jdbc.update(DELETE_THEME, Map.of("id", id));
-        } catch (DataAccessException sqlException) {
-            return 0;
-        }
+        return jdbc.update(DELETE_THEME, Map.of("id", id));
     }
 }
