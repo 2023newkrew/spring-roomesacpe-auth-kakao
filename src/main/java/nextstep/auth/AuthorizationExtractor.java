@@ -1,14 +1,15 @@
 package nextstep.auth;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
-import nextstep.support.AuthorizationException;
+import nextstep.exception.CustomException;
+import nextstep.exception.ErrorCode;
 
 public class AuthorizationExtractor {
 
-    public static final String AUTHORIZATION = "Authorization";
-
-    public static String BEARER_TYPE = "Bearer";
+    public static final String BEARER_TYPE = "Bearer";
 
     public static final String ACCESS_TOKEN_TYPE = AuthorizationExtractor.class.getSimpleName() + ".ACCESS_TOKEN_TYPE";
 
@@ -32,12 +33,12 @@ public class AuthorizationExtractor {
 
     public static String getTokenFromHeader(final String authHeader) {
         if (authHeader == null) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
         String[] authInfo = authHeader.split(" ");
 
         if (authInfo.length != 2) {
-            throw new AuthorizationException();
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         return authInfo[1];

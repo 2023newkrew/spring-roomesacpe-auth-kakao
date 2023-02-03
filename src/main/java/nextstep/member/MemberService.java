@@ -1,6 +1,7 @@
 package nextstep.member;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.AuthMemberDTO;
 import nextstep.auth.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class MemberService {
     }
 
     public Member findMemberByToken(String token) {
-        String username = jwtTokenProvider.getUsername(token);
-        return memberDao.findByUsername(username);
+        AuthMemberDTO authMemberDTO = jwtTokenProvider.getAuthMember(token);
+        return memberDao.findByUsername(authMemberDTO.getUsername());
     }
 }

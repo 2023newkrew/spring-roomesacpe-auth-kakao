@@ -1,13 +1,20 @@
 package nextstep.schedule;
 
-import nextstep.theme.Theme;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import nextstep.theme.Theme;
 
 public class ScheduleRequest {
+
+    @NotNull
     private Long themeId;
+
+    @NotEmpty
     private String date;
+
+    @NotEmpty
     private String time;
 
     public ScheduleRequest() {

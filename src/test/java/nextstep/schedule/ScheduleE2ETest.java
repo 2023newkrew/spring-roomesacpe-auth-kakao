@@ -1,6 +1,10 @@
 package nextstep.schedule;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
+import nextstep.auth.TokenRequest;
+import nextstep.auth.TokenResponse;
 import nextstep.theme.ThemeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,21 +14,40 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ScheduleE2ETest {
 
     private Long themeId;
 
+    private String adminToken;
+
+    private String accessToken;
+
     @BeforeEach
     void setUp() {
+        adminToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("admin", "admin"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
+        accessToken = RestAssured
+                .given().log().all()
+                .body(new TokenRequest("user", "user"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract().as(TokenResponse.class).getAccessToken();
+
         ThemeRequest themeRequest = new ThemeRequest("테마이름", "테마설명", 22000);
         var response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(themeRequest)
+                .auth().oauth2(adminToken)
                 .when().post("/themes")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
@@ -41,9 +64,24 @@ public class ScheduleE2ETest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(adminToken)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("admin이 아니면 스케줄을 생성하지 못한다")
+    @Test
+    public void userCannotCreateSchedule() {
+        ScheduleRequest body = new ScheduleRequest(themeId, "2022-08-11", "13:00");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .auth().oauth2(accessToken)
+                .when().post("/schedules")
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("스케줄을 조회한다")
@@ -63,13 +101,14 @@ public class ScheduleE2ETest {
         assertThat(response.jsonPath().getList(".").size()).isEqualTo(1);
     }
 
-    @DisplayName("예약을 삭제한다")
+    @DisplayName("스케줄을 삭제한다")
     @Test
     void delete() {
         String location = requestCreateSchedule();
 
         var response = RestAssured
                 .given().log().all()
+                .auth().oauth2(adminToken)
                 .when().delete(location)
                 .then().log().all()
                 .extract();
@@ -77,12 +116,28 @@ public class ScheduleE2ETest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static String requestCreateSchedule() {
+    @DisplayName("admin이 아니면 스케줄을 삭제하지 못한다")
+    @Test
+    void userCannotDeleteSchedule() {
+        String location = requestCreateSchedule();
+
+        var response = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(location)
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    public String requestCreateSchedule() {
         ScheduleRequest body = new ScheduleRequest(1L, "2022-08-11", "13:00");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .auth().oauth2(adminToken)
                 .when().post("/schedules")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())

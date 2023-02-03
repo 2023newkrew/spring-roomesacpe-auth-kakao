@@ -1,7 +1,10 @@
 package nextstep.reservation;
 
+import javax.validation.constraints.NotNull;
+
 public class ReservationRequest {
 
+    @NotNull
     private Long scheduleId;
 
     public ReservationRequest() {

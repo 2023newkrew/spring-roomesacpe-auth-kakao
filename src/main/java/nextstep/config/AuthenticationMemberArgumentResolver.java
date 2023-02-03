@@ -1,10 +1,6 @@
 package nextstep.config;
 
-import static nextstep.auth.AuthorizationExtractor.getTokenFromHeader;
-
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.JwtTokenProvider;
-import nextstep.support.AuthorizationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -16,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AuthenticationMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthContext authContext;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -26,14 +22,6 @@ public class AuthenticationMemberArgumentResolver implements HandlerMethodArgume
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String authHeader = webRequest.getHeader("Authorization");
-        String token = getTokenFromHeader(authHeader);
-        boolean isValidToken = jwtTokenProvider.validateToken(token);
-
-        if (!isValidToken) {
-            throw new AuthorizationException();
-        }
-
-        return jwtTokenProvider.getUsername(token);
+        return authContext.getAuthMember();
     }
 }

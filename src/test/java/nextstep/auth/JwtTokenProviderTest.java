@@ -8,21 +8,21 @@ import org.junit.jupiter.api.Test;
 @DisplayName("JwtTokenProvider 학습 테스트")
 class JwtTokenProviderTest {
 
+    public final JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+
+    private final AuthMemberDTO authMemberDTO = new AuthMemberDTO();
+
     @Test
     void createToken() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-
-        String token = jwtTokenProvider.createToken("1");
+        String token = jwtTokenProvider.createToken(authMemberDTO);
 
         assertThat(jwtTokenProvider.validateToken(token)).isTrue();
     }
 
     @Test
     void getPrincipal() {
-        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+        String token = jwtTokenProvider.createToken(authMemberDTO);
 
-        String token = jwtTokenProvider.createToken("1");
-
-        assertThat(jwtTokenProvider.getUsername(token)).isEqualTo("1");
+        assertThat(jwtTokenProvider.getAuthMember(token)).isEqualTo(authMemberDTO);
     }
 }

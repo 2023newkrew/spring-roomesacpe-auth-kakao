@@ -1,9 +1,10 @@
 package nextstep.auth;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.exception.CustomException;
+import nextstep.exception.ErrorCode;
 import nextstep.member.Member;
 import nextstep.member.MemberDao;
-import nextstep.support.AuthorizationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,16 +16,13 @@ public class AuthService {
     private final MemberDao memberDao;
 
     public TokenResponse createToken(TokenRequest tokenRequest) {
-        if (checkInvalidLogin(tokenRequest.getUsername(), tokenRequest.getPassword())) {
-            throw new AuthorizationException();
+        Member member = memberDao.findByUsername(tokenRequest.getUsername());
+
+        if (member.checkWrongPassword(tokenRequest.getPassword())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
-        String accessToken = jwtTokenProvider.createToken(tokenRequest.getUsername());
+        String accessToken = jwtTokenProvider.createToken(AuthMemberDTO.from(member));
         return new TokenResponse(accessToken);
-    }
-
-    public boolean checkInvalidLogin(String username, String password) {
-        Member member = memberDao.findByUsername(username);
-        return member.checkWrongPassword(password);
     }
 }

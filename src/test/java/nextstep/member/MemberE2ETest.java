@@ -72,7 +72,7 @@ public class MemberE2ETest {
                 .statusCode(HttpStatus.OK.value())
                 .extract().as(Member.class);
 
-        Member expectedMember = new Member(1L, givenUsername, givenPassword, givenName, givenPhone);
+        Member expectedMember = new Member(3L, givenUsername, givenPassword, givenName, givenPhone);
         assertThat(expectedMember).isEqualTo(actualMember);
     }
 }

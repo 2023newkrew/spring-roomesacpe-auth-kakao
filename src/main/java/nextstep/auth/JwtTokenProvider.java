@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -11,25 +13,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "learning-test-spring";
+    private static final String secretKey = "learning-test-spring";
 
-    private long validityInMilliseconds = 3600000;
+    private static final long validityInMilliseconds = 3600000;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+    public String createToken(AuthMemberDTO authMemberDTO) {
+        try {
+            String subject = objectMapper.writeValueAsString(authMemberDTO);
+            Claims claims = Jwts.claims().setSubject(subject);
+            Date now = new Date();
+            Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(validity)
+                    .signWith(SignatureAlgorithm.HS256, secretKey)
+                    .compact();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    public AuthMemberDTO getAuthMember(String token) {
+        try {
+            String subject = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+            return objectMapper.readValue(subject, AuthMemberDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean validateToken(String token) {
