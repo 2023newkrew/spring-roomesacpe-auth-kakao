@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationRequestDto {
+public final class ReservationRequestDto {
+
     private Long scheduleId;
 
 }

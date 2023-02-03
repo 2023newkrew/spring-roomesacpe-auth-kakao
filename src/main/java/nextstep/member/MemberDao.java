@@ -1,5 +1,6 @@
 package nextstep.member;
 
+import java.sql.PreparedStatement;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -8,8 +9,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-
-import java.sql.PreparedStatement;
 
 @Component
 @RequiredArgsConstructor
@@ -21,11 +20,12 @@ public class MemberDao {
         resultSet.getString("username"),
         resultSet.getString("password"),
         resultSet.getString("name"),
-        resultSet.getString("phone")
+        resultSet.getString("phone"),
+        MemberRole.valueOf(resultSet.getString("role"))
     );
 
     public Long save(Member member) {
-        String sql = "INSERT INTO member (username, password, name, phone) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO member (username, password, name, phone, role) VALUES (?, ?, ?, ?, ?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -34,6 +34,7 @@ public class MemberDao {
             ps.setString(2, member.getPassword());
             ps.setString(3, member.getName());
             ps.setString(4, member.getPhone());
+            ps.setString(5, member.getRole().toString());
             return ps;
 
         }, keyHolder);
@@ -43,7 +44,7 @@ public class MemberDao {
     }
 
     public Optional<Member> findByUsername(String username) {
-        String sql = "SELECT id, username, password, name, phone from member where username = ?;";
+        String sql = "SELECT id, username, password, name, phone, role from member where username = ?;";
         Member member = null;
         try {
             member = jdbcTemplate.queryForObject(sql, rowMapper, username);

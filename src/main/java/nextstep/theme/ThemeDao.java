@@ -1,5 +1,7 @@
 package nextstep.theme;
 
+import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,17 +10,15 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class ThemeDao {
+
     private final RowMapper<Theme> rowMapper = (resultSet, rowNum) -> new Theme(
-            resultSet.getLong("id"),
-            resultSet.getString("name"),
-            resultSet.getString("desc"),
-            resultSet.getInt("price")
+        resultSet.getLong("id"),
+        resultSet.getString("name"),
+        resultSet.getString("desc"),
+        resultSet.getInt("price")
     );
     private final JdbcTemplate jdbcTemplate;
 
@@ -36,7 +36,7 @@ public class ThemeDao {
         }, keyHolder);
 
         return keyHolder.getKey()
-                .longValue();
+            .longValue();
     }
 
     public Optional<Theme> findById(Long id) {
@@ -50,7 +50,7 @@ public class ThemeDao {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM reservation where id = ?;";
+        String sql = "DELETE FROM theme where id = ?;";
         jdbcTemplate.update(sql, id);
     }
 }

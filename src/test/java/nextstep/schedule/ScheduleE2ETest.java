@@ -1,6 +1,8 @@
 package nextstep.schedule;
 
 import io.restassured.RestAssured;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import nextstep.schedule.dto.ScheduleRequestDto;
 import nextstep.theme.dto.ThemeRequestDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +22,7 @@ public class ScheduleE2ETest {
     private Long themeId;
 
     public static String requestCreateSchedule() {
-        ScheduleRequestDto body = new ScheduleRequestDto(1L, "2022-08-11", "13:00");
+        ScheduleRequestDto body = new ScheduleRequestDto(1L, LocalDate.parse("2022-08-11"), LocalTime.parse("13:00"));
         return RestAssured
                 .given()
                 .log()
@@ -61,7 +63,7 @@ public class ScheduleE2ETest {
     @DisplayName("스케줄을 생성한다")
     @Test
     public void createSchedule() {
-        ScheduleRequestDto body = new ScheduleRequestDto(themeId, "2022-08-11", "13:00");
+        ScheduleRequestDto body = new ScheduleRequestDto(themeId, LocalDate.parse("2022-08-11"), LocalTime.parse("13:00"));
         RestAssured
                 .given()
                 .log()

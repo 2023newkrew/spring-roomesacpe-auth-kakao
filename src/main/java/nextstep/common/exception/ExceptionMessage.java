@@ -15,6 +15,7 @@ public enum ExceptionMessage {
     INVALID_SCHEDULE_ID("스케줄번호가 유효하지 않습니다."),
     INVALID_THEME_ID("테마번호가 유효하지 않습니다."),
     WRONG_PASSWORD("잘못된 비밀번호입니다."),
+    ADMIN_ONLY("관리자만 접근가능합니다."),
 
     ;
     private String message;
