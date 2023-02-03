@@ -1,5 +1,7 @@
 package nextstep.auth;
 
+import nextstep.auth.jwt.TokenRequest;
+import nextstep.auth.jwt.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

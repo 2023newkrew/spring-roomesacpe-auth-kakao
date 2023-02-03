@@ -1,9 +1,16 @@
 package nextstep.member;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 public class MemberRequest {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
+    @NotBlank
     private String name;
+    @Pattern(regexp = "\\d{3}-\\d{4}-\\d{4}")
     private String phone;
 
     public MemberRequest(String username, String password, String name, String phone) {

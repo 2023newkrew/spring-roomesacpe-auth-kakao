@@ -7,11 +7,13 @@ import nextstep.schedule.ScheduleDao;
 import nextstep.theme.Theme;
 import nextstep.theme.ThemeDao;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional(readOnly = true)
 public class ReservationService {
     public final ReservationDao reservationDao;
     public final ThemeDao themeDao;
@@ -23,6 +25,7 @@ public class ReservationService {
         this.scheduleDao = scheduleDao;
     }
 
+    @Transactional
     public Long create(String memberName, ReservationRequest reservationRequest) {
         Schedule schedule = scheduleDao.findById(reservationRequest.getScheduleId());
         if (schedule == null) {
@@ -51,12 +54,13 @@ public class ReservationService {
         return reservationDao.findAllByThemeIdAndDate(themeId, date);
     }
 
+    @Transactional
     public void deleteById(String memberName, Long id) {
         Reservation reservation = reservationDao.findById(id);
         if (reservation == null) {
-            throw new BusinessException(CommonErrorCode.SERVER_ERROR);
+            throw new BusinessException(CommonErrorCode.NOT_EXIST_ENTITY);
         }
-        if(!Objects.equals(reservation.getName(), memberName)) {
+        if (!Objects.equals(reservation.getName(), memberName)) {
             throw new BusinessException(CommonErrorCode.SERVER_ERROR);
         }
 

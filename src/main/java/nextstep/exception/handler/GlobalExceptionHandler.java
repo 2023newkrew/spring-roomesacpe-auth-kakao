@@ -1,5 +1,6 @@
 package nextstep.exception.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import nextstep.exception.BusinessException;
 import nextstep.exception.CommonErrorCode;
 import nextstep.exception.ErrorCode;
@@ -14,30 +15,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
+
+    private static final String LOG_FORMAT = "Exception: {}, Message: {}";
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        System.out.println(e.getMessage());
         ErrorCode errorCode = e.getErrorCode();
+        log.warn(LOG_FORMAT, e.getClass()
+                .getName(), errorCode.getMessage());
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode));
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-        System.out.println(e.toString());
         ErrorCode errorCode = CommonErrorCode.SERVER_ERROR;
+        log.warn(LOG_FORMAT, e.getClass()
+                .getName(), errorCode.getMessage());
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleArgumentNotValidException(MethodArgumentNotValidException e) {
-        System.out.println(e.getMessage());
         ErrorCode errorCode = CommonErrorCode.BAD_PARAMETER_REQUEST;
+        log.warn(LOG_FORMAT, e.getClass()
+                .getName(), errorCode.getMessage());
 
         String message = e.getBindingResult()
                 .getFieldErrors()
@@ -48,16 +55,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), message));
+                .body(new ErrorResponse(errorCode));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageException(HttpMessageNotReadableException e) {
-        System.out.println(e.getMessage());
         ErrorCode errorCode = CommonErrorCode.BAD_PARAMETER_REQUEST;
+        log.warn(LOG_FORMAT, e.getClass()
+                .getName(), errorCode.getMessage());
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage()));
+                .body(new ErrorResponse(errorCode));
     }
 }
